@@ -1,0 +1,24 @@
+# KASO Data Catalog — Agent Rules
+
+- This repository is the canonical machine-readable KASO Data Catalog.
+- Slovak production Oracle owner MC is authoritative.
+- MCCZ, TEST and TESTCZ are non-authoritative unless separately validated.
+- Database work is READ-ONLY only.
+- SQL must be compatible with SQL Navigator 5.5.4.847.
+- Oracle server version is unknown and must never be assumed.
+- Never invent table names, column names, datatypes, JOIN keys, business meanings, formulas, lifecycle rules, writer/reader/caller roles or source-of-truth semantics.
+- Oracle comments are technical clues, not business truth.
+- Unverified facts must be TREBA OVERIT or DATA GAP.
+- ChatGPT is responsible for analytical and semantic decisions.
+- Codex is responsible for repository engineering, parsing, validation, dependency graphs, diffs and artifact generation.
+- Codex must never promote business meaning autonomously without accepted evidence.
+- Confirmed facts must not be silently overwritten.
+- Changes to canonical alias, grain, JOIN key or business meaning are breaking changes.
+- Raw XLSX evidence is normally transient.
+- Evidence retention classes are TRANSIENT, REPRODUCIBLE and SNAPSHOT_CRITICAL.
+- SNAPSHOT_CRITICAL source files must be copied into evidence/snapshots, checksum recorded and commit completed before deletion of the transient original is considered safe.
+- RID and identifiers with possible leading zeroes must be preserved as text.
+- NULL must remain NULL.
+- Generated DOCX/Markdown outputs are publications, not canonical source of truth.
+- Main transactional objects, master data and important lookup/reference objects target AGENT-READY.
+- Never commit credentials, passwords, API keys or Oracle connection details.
