@@ -11,9 +11,14 @@ def summary_errors(document):
     records = document.get('records', [])
     callers = {(r.get('caller_owner'), r.get('caller_name'), r.get('caller_type')) for r in records}
     members = {(r.get('target_package'), r.get('member_name_raw')) for r in records}
-    actual = {'record_count': len(records), 'caller_count': len(callers), 'member_count': len(members)}
+    actual = {
+        'record_count': len(records),
+        'caller_count': len(callers),
+        'member_count': len(members),
+    }
     declared = document.get('summary', {})
-    errors = [f'{key}: declared {declared.get(key)!r}, actual {value!r}' for key, value in actual.items() if declared.get(key) != value]
+    errors = [f'{key}: declared {declared.get(key)!r}, actual {value!r}'
+              for key, value in actual.items() if declared.get(key) != value]
     for r in records:
         if r.get('hit_count') != len(r.get('hit_lines', [])):
             errors.append(f"{r.get('api_reference_id')}: hit_count does not match hit_lines")

@@ -155,7 +155,9 @@ def validate_bundle(documents, root=ROOT):
                 if target in ids and ids[target][1].get('kind') != 'evidence-manifest':
                     errors.append(f'{path}: evidence reference is not a manifest: {target}')
             proved = record.get('status') == 'POTVRDENÉ'
-            classified_role = record.get('role') in ('DIRECT WRITER', 'API WRITER', 'READER', 'CALLER')
+            classified_role = record.get('role') in (
+                'DIRECT WRITER', 'API WRITER', 'INDIRECT WRITER',
+                'TRIGGER SIDE EFFECT', 'READER', 'CALLER')
             if proved or classified_role:
                 if not any(e in ids and ids[e][1].get('kind') == 'evidence-manifest'
                            and ids[e][1].get('evidence_class') != 'E' for e in evidence):

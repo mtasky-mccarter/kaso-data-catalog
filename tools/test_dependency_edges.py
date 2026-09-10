@@ -1,6 +1,7 @@
 """Consistency checks for raw ALL_DEPENDENCIES closure documents."""
 from collections import Counter
 import copy
+from pathlib import Path
 import unittest
 
 from validate_catalog import ROOT, load_yaml
