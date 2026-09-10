@@ -2,15 +2,15 @@
 
 This repository is the canonical machine-readable KASO Data Catalog. It holds evidence-backed object mappings and supporting repository tools. Slovak production Oracle owner MC is authoritative; MCCZ, TEST and TESTCZ require separate validation.
 
-Read [AGENTS.md](AGENTS.md) for repository rules, evidence handling, responsibilities and data preservation requirements. All database work used to build the catalog is read-only. The Oracle server version is unknown; canonical Oracle SQL must remain compatible with SQL Navigator 5.5.4.847 unless separately validated.
+Read [AGENTS.md](AGENTS.md) for repository rules, evidence handling, ChatGPT/Codex responsibility split, `READY FOR CODEX HANDOFF`, and data preservation requirements. All database work used to build the catalog is read-only. The Oracle server version is unknown; canonical Oracle SQL must remain compatible with SQL Navigator 5.5.4.847 unless separately validated.
 
 ## Repository structure
 
 ```text
-AGENTS.md                     Repository and agent rules
+AGENTS.md                     Repository, Codex and handoff rules
 README.md                     Purpose and structure
 docs/
-  mapping-standard.md         Machine-readable repository transcription of the mapping standard
+  mapping-standard.md         Repository transcription of the mapping standard
   machine-readable-schema-v1.0.md
                               Schema model and conventions
 catalog/
@@ -26,11 +26,27 @@ sql/
   mapping-packs/              Read-only mapping SQL packs
   diagnostic/                 Read-only diagnostic SQL
 tools/                        Parsing, validation and artifact tooling
-generated/                    Generated publications, not canonical truth
+generated/                    Generated DOCX/PDF/viewer publications, not canonical truth
 schema/                       JSON Schema definitions for catalog record kinds
 examples/schema-smoke-test/   Synthetic validation bundle
 ```
 
-Schema v1.0 currently defines 22 JSON Schema record kinds, with synthetic fixtures and validator tests covering structure, global IDs, cross-file references, evidence requirements, retained evidence checksums, polymorphic relationships, dependency edges and source API references. GitHub Actions validates pull requests and `main`; branch pushes are not redundantly validated when the same change is already covered by a pull-request run.
+Schema v1.0 defines 22 JSON Schema record kinds, with synthetic fixtures and validator tests covering structure, global IDs, cross-file references, evidence requirements, retained evidence checksums, polymorphic relationships, dependency edges and source API references. GitHub Actions validates pull requests and `main`.
 
-The real `CESTOVNE_PR_L` + `CESTOVNE_PR_O` v1.1 migration is maintained as the production acceptance pilot on top of this schema. Evidence manifests belong under `evidence/manifests/`; top-level YAML files directly under `evidence/` are intentionally rejected by repository-layout tests to avoid competing sources of truth.
+`CESTOVNE_PR_L` + `CESTOVNE_PR_O` v1.1 is the first production machine-readable AGENT-READY acceptance benchmark and is already merged into `main`. Evidence manifests belong under `evidence/manifests/`; top-level YAML files directly under `evidence/` are intentionally rejected by repository-layout tests.
+
+## Working model
+
+The target pipeline is:
+
+```text
+Oracle evidence
+  -> ChatGPT semantic mapping and closure
+  -> READY FOR CODEX HANDOFF
+  -> Codex repository/build/validate engineering
+  -> reviewed PR + green CI
+  -> canonical GitHub main
+  -> generated DOCX/PDF/viewer + SQL/agent context
+```
+
+ChatGPT owns evidence interpretation and semantic closure. Codex owns engineering materialization, validation, repository changes and generated artifacts. Codex must not infer missing business meaning. A future KASO Catalog Viewer should remain a read-only presentation layer generated from the canonical catalog, never a second source of truth.
