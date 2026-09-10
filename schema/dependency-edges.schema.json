@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.example.invalid/kaso/1.0/dependency-edges.schema.json",
+  "title": "dependency-edges v1.0",
+  "type": "object",
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "kind": {"const": "dependency-edges"},
+    "id": {"$ref": "common.schema.json#/$defs/id"},
+    "environment": {"type": "string", "minLength": 1},
+    "oracle_owner_scope": {"type": ["string", "null"]},
+    "source_view": {"type": "string", "minLength": 1},
+    "summary": {
+      "type": "object",
+      "properties": {
+        "record_count": {"type": "integer", "minimum": 0},
+        "inbound_count": {"type": "integer", "minimum": 0},
+        "outbound_count": {"type": "integer", "minimum": 0},
+        "max_inbound_depth": {"type": "integer", "minimum": 0},
+        "max_outbound_depth": {"type": "integer", "minimum": 0}
+      },
+      "required": ["record_count", "inbound_count", "outbound_count", "max_inbound_depth", "max_outbound_depth"],
+      "additionalProperties": false
+    },
+    "records": {"type": "array", "items": {"$ref": "#/$defs/record"}}
+  },
+  "required": ["schema_version", "kind", "id", "environment", "source_view", "summary", "records"],
+  "additionalProperties": false,
+  "$defs": {
+    "oracle_name": {"type": "string", "minLength": 1},
+    "record": {
+      "type": "object",
+      "properties": {
+        "dependency_edge_id": {"$ref": "common.schema.json#/$defs/id"},
+        "direction": {"enum": ["INBOUND", "OUTBOUND"]},
+        "min_depth": {"type": "integer", "minimum": 1},
+        "source_owner": {"$ref": "#/$defs/oracle_name"},
+        "source_name": {"$ref": "#/$defs/oracle_name"},
+        "source_type": {"$ref": "#/$defs/oracle_name"},
+        "referenced_owner": {"$ref": "#/$defs/oracle_name"},
+        "referenced_name": {"$ref": "#/$defs/oracle_name"},
+        "referenced_type": {"$ref": "#/$defs/oracle_name"},
+        "referenced_link_name": {"type": ["string", "null"]},
+        "dependency_type": {"$ref": "#/$defs/oracle_name"},
+        "evidence_refs": {"$ref": "common.schema.json#/$defs/refs"}
+      },
+      "required": ["dependency_edge_id", "direction", "min_depth", "source_owner", "source_name", "source_type", "referenced_owner", "referenced_name", "referenced_type", "referenced_link_name", "dependency_type", "evidence_refs"],
+      "additionalProperties": false
+    }
+  }
+}
