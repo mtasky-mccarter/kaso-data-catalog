@@ -1,0 +1,193 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.example.invalid/kaso/1.0/sql-registry.schema.json",
+  "title": "sql-registry v1.0",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "kind": {
+      "const": "sql-registry"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/record"
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "kind",
+    "id",
+    "records"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "record": {
+      "type": "object",
+      "properties": {
+        "sql_id": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "title_sk": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sql_file": {
+          "allOf": [
+            {
+              "$ref": "common.schema.json#/$defs/path"
+            },
+            {
+              "pattern": "\\.sql$(?![\\s\\S])"
+            }
+          ]
+        },
+        "purpose_sk": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "input_parameters": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "$ref": "common.schema.json#/$defs/id"
+              },
+              "description_sk": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "datatype_raw": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "required": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "name",
+              "required"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "result_grain_sk": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fanout_warning_sk": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "proves_sk": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "does_not_prove_sk": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidence_refs": {
+          "$ref": "common.schema.json#/$defs/refs"
+        },
+        "compatibility": {
+          "type": "object",
+          "properties": {
+            "sql_client": {
+              "const": "SQL Navigator 5.5.4.847"
+            },
+            "oracle_server_version": {
+              "type": "null",
+              "description": "Unknown; never inferred from client version."
+            },
+            "read_only": {
+              "const": true
+            },
+            "notes_sk": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "sql_client",
+            "oracle_server_version",
+            "read_only"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "sql_id",
+        "title_sk",
+        "sql_file",
+        "compatibility",
+        "evidence_refs"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

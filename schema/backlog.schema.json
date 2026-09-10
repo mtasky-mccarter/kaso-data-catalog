@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.example.invalid/kaso/1.0/backlog.schema.json",
+  "title": "backlog v1.0",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "kind": {
+      "const": "backlog"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/record"
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "kind",
+    "id",
+    "records"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "record": {
+      "type": "object",
+      "properties": {
+        "backlog_id": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "scope_refs": {
+          "$ref": "common.schema.json#/$defs/refs"
+        },
+        "status": {
+          "enum": [
+            "TREBA OVERIŤ",
+            "DATA GAP"
+          ]
+        },
+        "blocking": {
+          "type": "boolean"
+        },
+        "question_sk": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason_sk": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "proposed_validation_type": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "proposed_test_sk": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "closure_condition_sk": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "related_evidence_refs": {
+          "$ref": "common.schema.json#/$defs/refs"
+        }
+      },
+      "required": [
+        "backlog_id",
+        "scope_refs",
+        "status",
+        "blocking",
+        "question_sk",
+        "related_evidence_refs"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

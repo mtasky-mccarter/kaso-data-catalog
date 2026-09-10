@@ -1,0 +1,405 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.example.invalid/kaso/1.0/relationships.schema.json",
+  "title": "relationships v1.0",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "kind": {
+      "const": "relationships"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/record"
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "kind",
+    "id",
+    "records"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "record": {
+      "type": "object",
+      "properties": {
+        "relationship_id": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "from_object_ref": {
+          "$ref": "common.schema.json#/$defs/ref"
+        },
+        "from_field_refs": {
+          "$ref": "common.schema.json#/$defs/refs",
+          "minItems": 1
+        },
+        "to_object_ref": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "to_field_refs": {
+          "$ref": "common.schema.json#/$defs/refs"
+        },
+        "relationship_type": {
+          "enum": [
+            "DIRECT",
+            "CONDITIONAL",
+            "POLYMORPHIC"
+          ]
+        },
+        "cardinality": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "condition_sk": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "physical_constraint_ref": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "validation_summary_sk": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fanout_risk": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "safe_usage_sk": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "orphan_test_summary": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "duplicate_test_summary": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "snapshot_date": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/$defs/date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "$ref": "common.schema.json#/$defs/status"
+        },
+        "evidence_refs": {
+          "$ref": "common.schema.json#/$defs/refs"
+        },
+        "selector_field_refs": {
+          "$ref": "common.schema.json#/$defs/refs"
+        },
+        "targets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "to_object_ref": {
+                "$ref": "common.schema.json#/$defs/ref"
+              },
+              "to_field_refs": {
+                "$ref": "common.schema.json#/$defs/refs",
+                "minItems": 1
+              },
+              "selector_condition_sk": {
+                "type": "string",
+                "minLength": 1
+              },
+              "validation_summary_sk": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "cardinality": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "fanout_risk": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "safe_usage_sk": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "orphan_test_summary": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "duplicate_test_summary": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "status": {
+                "$ref": "common.schema.json#/$defs/status"
+              },
+              "evidence_refs": {
+                "$ref": "common.schema.json#/$defs/refs"
+              }
+            },
+            "required": [
+              "to_object_ref",
+              "to_field_refs",
+              "selector_condition_sk",
+              "status",
+              "evidence_refs"
+            ],
+            "additionalProperties": false,
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "status": {
+                      "const": "POTVRDENÉ"
+                    }
+                  },
+                  "required": [
+                    "status"
+                  ]
+                },
+                "then": {
+                  "properties": {
+                    "evidence_refs": {
+                      "minItems": 1
+                    }
+                  },
+                  "required": [
+                    "evidence_refs"
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      },
+      "required": [
+        "relationship_id",
+        "from_object_ref",
+        "from_field_refs",
+        "relationship_type",
+        "status",
+        "evidence_refs"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "POTVRDENÉ"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "evidence_refs": {
+                "minItems": 1
+              }
+            },
+            "required": [
+              "evidence_refs"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "relationship_type": {
+                "const": "POLYMORPHIC"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "targets",
+              "selector_field_refs"
+            ],
+            "properties": {
+              "targets": {
+                "minItems": 2
+              },
+              "selector_field_refs": {
+                "minItems": 1
+              }
+            },
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "to_object_ref"
+                  ]
+                },
+                {
+                  "required": [
+                    "to_field_refs"
+                  ]
+                }
+              ]
+            }
+          },
+          "else": {
+            "required": [
+              "to_object_ref",
+              "to_field_refs"
+            ],
+            "properties": {
+              "to_object_ref": {
+                "$ref": "common.schema.json#/$defs/ref"
+              },
+              "to_field_refs": {
+                "minItems": 1
+              }
+            },
+            "not": {
+              "required": [
+                "targets"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "relationship_type": {
+                "const": "CONDITIONAL"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "condition_sk"
+            ],
+            "properties": {
+              "condition_sk": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

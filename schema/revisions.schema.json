@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.example.invalid/kaso/1.0/revisions.schema.json",
+  "title": "revisions v1.0",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "kind": {
+      "const": "revisions"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/record"
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "kind",
+    "id",
+    "records"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "record": {
+      "type": "object",
+      "properties": {
+        "revision_id": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "contract_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "date": {
+          "$ref": "common.schema.json#/$defs/date"
+        },
+        "breaking_change": {
+          "type": "boolean"
+        },
+        "changed_record_refs": {
+          "$ref": "common.schema.json#/$defs/refs"
+        },
+        "change_sk": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason_sk": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidence_refs": {
+          "$ref": "common.schema.json#/$defs/refs"
+        }
+      },
+      "required": [
+        "revision_id",
+        "contract_version",
+        "date",
+        "breaking_change",
+        "changed_record_refs",
+        "change_sk",
+        "evidence_refs"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

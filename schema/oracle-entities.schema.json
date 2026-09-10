@@ -1,0 +1,171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.example.invalid/kaso/1.0/oracle-entities.schema.json",
+  "title": "oracle-entities v1.0",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "kind": {
+      "const": "oracle-entities"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/record"
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "kind",
+    "id",
+    "records"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "entity_field": {
+      "type": "object",
+      "properties": {
+        "oracle_field_id": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "oracle_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "datatype_raw": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "$ref": "common.schema.json#/$defs/status"
+        },
+        "evidence_refs": {
+          "$ref": "common.schema.json#/$defs/refs"
+        }
+      },
+      "required": [
+        "oracle_field_id",
+        "oracle_name",
+        "status",
+        "evidence_refs"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "POTVRDENÉ"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "evidence_refs": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "record": {
+      "type": "object",
+      "properties": {
+        "oracle_entity_id": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "environment": {
+          "type": "string",
+          "minLength": 1
+        },
+        "oracle_owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "oracle_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "oracle_object_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_visible": {
+          "type": "boolean"
+        },
+        "boundary_only": {
+          "type": "boolean"
+        },
+        "status": {
+          "$ref": "common.schema.json#/$defs/status"
+        },
+        "evidence_refs": {
+          "$ref": "common.schema.json#/$defs/refs"
+        },
+        "limitations_sk": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/entity_field"
+          }
+        }
+      },
+      "required": [
+        "oracle_entity_id",
+        "environment",
+        "oracle_owner",
+        "oracle_name",
+        "oracle_object_type",
+        "source_visible",
+        "boundary_only",
+        "status",
+        "evidence_refs"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "POTVRDENÉ"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "evidence_refs": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
