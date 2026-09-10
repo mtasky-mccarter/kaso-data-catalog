@@ -29,6 +29,13 @@ jobs:
       - name: Install validator dependencies
         run: python -m pip install -r requirements-dev.txt
 
+      - name: Materialize staged CP pilot bundle
+        run: |
+          if [ -f .staging/cp/part-00 ]; then
+            cat .staging/cp/part-* > tools/bootstrap_cp_pilot.py
+            python tools/bootstrap_cp_pilot.py
+          fi
+
       - name: Validate catalog bundle
         run: python tools/validate_catalog.py
 
