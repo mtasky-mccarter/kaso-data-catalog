@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.example.invalid/kaso/1.0/api-references.schema.json",
+  "title": "api-references v1.0",
+  "type": "object",
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "kind": {"const": "api-references"},
+    "id": {"$ref": "common.schema.json#/$defs/id"},
+    "environment": {"type": "string", "minLength": 1},
+    "source_dataset": {"type": "string", "minLength": 1},
+    "summary": {
+      "type": "object",
+      "properties": {
+        "record_count": {"type": "integer", "minimum": 0},
+        "caller_count": {"type": "integer", "minimum": 0},
+        "member_count": {"type": "integer", "minimum": 0}
+      },
+      "required": ["record_count", "caller_count", "member_count"],
+      "additionalProperties": false
+    },
+    "records": {"type": "array", "items": {"$ref": "#/$defs/record"}}
+  },
+  "required": ["schema_version", "kind", "id", "environment", "source_dataset", "summary", "records"],
+  "additionalProperties": false,
+  "$defs": {
+    "oracle_name": {"type": "string", "minLength": 1},
+    "record": {
+      "type": "object",
+      "properties": {
+        "api_reference_id": {"$ref": "common.schema.json#/$defs/id"},
+        "caller_owner": {"$ref": "#/$defs/oracle_name"},
+        "caller_name": {"$ref": "#/$defs/oracle_name"},
+        "caller_type": {"$ref": "#/$defs/oracle_name"},
+        "target_package": {"enum": ["D_CPR_L", "D_CPR_O"]},
+        "member_name_raw": {"$ref": "#/$defs/oracle_name"},
+        "hit_count": {"type": "integer", "minimum": 1},
+        "hit_lines": {"type": "array", "items": {"type": "integer", "minimum": 1}, "minItems": 1, "uniqueItems": true},
+        "classification": {"const": "SOURCE MEMBER REFERENCE"},
+        "evidence_refs": {"$ref": "common.schema.json#/$defs/refs"},
+        "limitations_sk": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      },
+      "required": ["api_reference_id", "caller_owner", "caller_name", "caller_type", "target_package", "member_name_raw", "hit_count", "hit_lines", "classification", "evidence_refs"],
+      "additionalProperties": false
+    }
+  }
+}
