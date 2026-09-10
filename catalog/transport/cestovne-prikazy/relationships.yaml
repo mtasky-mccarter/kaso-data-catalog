@@ -1,0 +1,129 @@
+schema_version: '1.0'
+kind: relationships
+id: cp.relationships.001
+records:
+- relationship_id: cp.rel.header_bridge
+  from_object_ref: mc.object.cestovne_pr_l
+  from_field_refs:
+  - mc.field.cestovne_pr_l.rid
+  to_object_ref: mc.object.cestovne_pr_o
+  to_field_refs:
+  - mc.field.cestovne_pr_o.rid_o
+  relationship_type: DIRECT
+  cardinality: 1:N
+  fanout_risk: HIGH
+  safe_usage_sk: Pred agregáciou header metrík bridge predagregovať; RID_O+RID_V nie je UNIQUE.
+  orphan_test_summary: 0 orphanov v live profile.
+  snapshot_date: '2026-09-09'
+  status: POTVRDENÉ
+  evidence_refs:
+  - cp.evidence.a.physical
+  - cp.evidence.b.state_derived
+- relationship_id: cp.rel.ridv
+  from_object_ref: mc.object.cestovne_pr_o
+  from_field_refs:
+  - mc.field.cestovne_pr_o.rid_v
+  relationship_type: POLYMORPHIC
+  validation_summary_sk: Current MC target set 003/022/029/319; všetky live riadky sa priradili presne k jednému targetu.
+  fanout_risk: RID_V môže mať viac CP bridge riadkov; členstvo identifikovať RID_R.
+  safe_usage_sk: Prefix je routing clue; robustne potvrdiť úspešným JOINom.
+  orphan_test_summary: 0 unresolved po full target teste.
+  duplicate_test_summary: RID_O+RID_V má 10 duplicitných skupín.
+  snapshot_date: '2026-09-09'
+  status: POTVRDENÉ
+  evidence_refs:
+  - cp.evidence.b.ridv_targets
+  - cp.evidence.b.edge_cases
+  selector_field_refs:
+  - mc.field.cestovne_pr_o.rid_v
+  targets:
+  - to_object_ref: mc.oracle.mc_prijemky_list
+    to_field_refs:
+    - mc.oracle.mc_prijemky_list.field.rid
+    selector_condition_sk: RID_V prefix 003
+    validation_summary_sk: 18120/18120 matched.
+    cardinality: N:1 target
+    safe_usage_sk: Potvrdiť JOINom na PRIJEMKY_LIST.RID.
+    orphan_test_summary: 0 unresolved v profile.
+    status: POTVRDENÉ
+    evidence_refs:
+    - cp.evidence.b.ridv_targets
+  - to_object_ref: mc.oracle.mc_dlaf_l
+    to_field_refs:
+    - mc.oracle.mc_dlaf_l.field.rid
+    selector_condition_sk: RID_V prefix 022
+    validation_summary_sk: 2/2 matched.
+    cardinality: N:1 target
+    safe_usage_sk: Potvrdiť JOINom na DLAF_L.RID.
+    orphan_test_summary: 0 unresolved v profile.
+    status: POTVRDENÉ
+    evidence_refs:
+    - cp.evidence.b.ridv_targets
+  - to_object_ref: mc.oracle.mc_vyd_l
+    to_field_refs:
+    - mc.oracle.mc_vyd_l.field.rid
+    selector_condition_sk: RID_V prefix 029
+    validation_summary_sk: 337544/337544 matched.
+    cardinality: N:1 target / CP-side 1:N
+    fanout_risk: Jeden VYD môže mať viac bridge riadkov.
+    safe_usage_sk: Pri analytike agregovať bridge pred joinom na header.
+    orphan_test_summary: 0 unresolved v profile.
+    status: POTVRDENÉ
+    evidence_refs:
+    - cp.evidence.b.ridv_targets
+  - to_object_ref: mc.oracle.mc_docasny_rozvoz
+    to_field_refs:
+    - mc.oracle.mc_docasny_rozvoz.field.rid
+    selector_condition_sk: RID_V prefix 319
+    validation_summary_sk: 6735/6735 matched.
+    cardinality: N:1 target
+    safe_usage_sk: Underlying document neodvodzovať cez DOCASNY_ROZVOZ.RID_D bez live dôkazu.
+    orphan_test_summary: 0 unresolved v profile.
+    status: POTVRDENÉ
+    evidence_refs:
+    - cp.evidence.b.ridv_targets
+    - cp.evidence.b.edge_cases
+- relationship_id: cp.rel.wms
+  from_object_ref: mc.object.cestovne_pr_l
+  from_field_refs:
+  - mc.field.cestovne_pr_l.rid
+  to_object_ref: mc.oracle.mc_wms_que
+  to_field_refs:
+  - mc.oracle.mc_wms_que.field.rid_d
+  relationship_type: DIRECT
+  cardinality: 0..1 v známom snapshot-e
+  fanout_risk: Snapshot nepreukázal multiple WMS rows; nejde o event history.
+  safe_usage_sk: Použiť ako current execution boundary.
+  snapshot_date: '2026-09-09'
+  status: POTVRDENÉ
+  evidence_refs:
+  - cp.evidence.d.accepted_contract
+- relationship_id: cp.rel.route
+  from_object_ref: mc.object.cestovne_pr_l
+  from_field_refs:
+  - mc.field.cestovne_pr_l.rid
+  to_object_ref: mc.oracle.mc_cestovne_pr_trasy
+  to_field_refs:
+  - mc.oracle.mc_cestovne_pr_trasy.field.rid_cp
+  relationship_type: DIRECT
+  cardinality: 1:N podľa trasy
+  safe_usage_sk: Detail route domény patrí do CESTOVNE_PR_TRASY contractu.
+  snapshot_date: '2026-09-09'
+  status: POTVRDENÉ
+  evidence_refs:
+  - cp.evidence.b2.core_source
+  - cp.evidence.a.dependencies
+- relationship_id: cp.rel.merge
+  from_object_ref: mc.object.cestovne_pr_l
+  from_field_refs:
+  - mc.field.cestovne_pr_l.rid_cp_zluc
+  to_object_ref: mc.object.cestovne_pr_l
+  to_field_refs:
+  - mc.field.cestovne_pr_l.rid
+  relationship_type: DIRECT
+  cardinality: N:1 self-reference
+  snapshot_date: '2026-09-09'
+  status: POTVRDENÉ
+  evidence_refs:
+  - cp.evidence.a.physical
+  - cp.evidence.b2.core_source
