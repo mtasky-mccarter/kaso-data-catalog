@@ -3,32 +3,54 @@ kind: do-not-assume
 id: cp.do_not_assume.001
 records:
 - rule_id: cp.rule.01
-  scope_refs: [mc.field.cestovne_pr_o.rid_v]
+  scope_refs:
+  - mc.field.cestovne_pr_o.rid_v
   statement_sk: RID_V nie je iba výdajka/príjemka; current MC má 003/022/029/319 a source pozná ďalšie routing vetvy.
   consequence_sk: Target potvrď úspešným joinom, nie iba prefixom.
-  evidence_refs: [cp.evidence.b.ridv_targets, cp.evidence.b2.core_source]
+  evidence_refs:
+  - cp.evidence.b.ridv_targets
+  - cp.evidence.b2.core_source
 - rule_id: cp.rule.02
-  scope_refs: [mc.field.cestovne_pr_o.rid_o, mc.field.cestovne_pr_o.rid_v]
+  scope_refs:
+  - mc.field.cestovne_pr_o.rid_o
+  - mc.field.cestovne_pr_o.rid_v
   statement_sk: RID_O + RID_V nie je unikátny kľúč.
   consequence_sk: Používaj RID_R; duplicate groups sú legitímny lifecycle pattern.
-  evidence_refs: [cp.evidence.b.edge_cases]
+  evidence_refs:
+  - cp.evidence.b.edge_cases
 - rule_id: cp.rule.03
-  scope_refs: [mc.field.cestovne_pr_o.rid_r]
+  scope_refs:
+  - mc.field.cestovne_pr_o.rid_r
   statement_sk: RID_R suffix nie je bezpečne PORADIE ani line ID.
   consequence_sk: RID_R používaj ako opaque textový PK.
-  evidence_refs: [cp.evidence.b.edge_cases]
+  evidence_refs:
+  - cp.evidence.b.edge_cases
 - rule_id: cp.rule.04
-  scope_refs: [mc.field.cestovne_pr_l.uzavrel_stamp, mc.field.cestovne_pr_l.odchod_stamp, mc.field.cestovne_pr_l.prichod_stamp, mc.field.cestovne_pr_l.vybavil_stamp]
+  scope_refs:
+  - mc.field.cestovne_pr_l.uzavrel_stamp
+  - mc.field.cestovne_pr_l.odchod_stamp
+  - mc.field.cestovne_pr_l.prichod_stamp
+  - mc.field.cestovne_pr_l.vybavil_stamp
   statement_sk: Transition stamp neznamená current state.
   consequence_sk: Rollback procedúry stampy nemažú.
-  evidence_refs: [cp.evidence.b2.core_source]
+  evidence_refs:
+  - cp.evidence.b2.core_source
 - rule_id: cp.rule.05
-  scope_refs: [mc.field.cestovne_pr_l.pocet_dokl, mc.field.cestovne_pr_l.objem, mc.field.cestovne_pr_l.hmotnost, mc.field.cestovne_pr_l.pocet_pal]
+  scope_refs:
+  - mc.field.cestovne_pr_l.pocet_dokl
+  - mc.field.cestovne_pr_l.objem
+  - mc.field.cestovne_pr_l.hmotnost
+  - mc.field.cestovne_pr_l.pocet_pal
   statement_sk: Stored derived header polia nie sú garantovaná current autorita.
   consequence_sk: Pri incidente zobraz stored snapshot aj live recompute.
-  evidence_refs: [cp.evidence.b.state_derived]
+  evidence_refs:
+  - cp.evidence.b.state_derived
 - rule_id: cp.rule.06
-  scope_refs: [mc.object.cestovne_pr_l, mc.object.cestovne_pr_o]
+  scope_refs:
+  - mc.object.cestovne_pr_l
+  - mc.object.cestovne_pr_o
   statement_sk: Source-visible dependency audit nie je absolútny runtime universe.
   consequence_sk: Externý/dynamický SQL mimo Oracle source vyžaduje runtime audit/trace alebo aplikačný source.
-  evidence_refs: [cp.evidence.a.dependencies, cp.evidence.a.completeness]
+  evidence_refs:
+  - cp.evidence.a.dependencies
+  - cp.evidence.a.completeness
