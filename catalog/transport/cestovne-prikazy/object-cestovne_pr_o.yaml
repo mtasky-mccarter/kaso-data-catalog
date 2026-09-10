@@ -1,0 +1,24 @@
+schema_version: '1.0'
+kind: object
+object_id: mc.object.cestovne_pr_o
+environment: MC
+oracle_owner: MC
+oracle_name: CESTOVNE_PR_O
+object_type: TABLE
+business_object_sk: Bridge/detail dokladov cestovného príkazu
+purpose_sk: Transportný domain objekt BarIS/Dreamer/KASO.
+grain_sk: 1 riadok = 1 bridge/detailný riadok cestovného príkazu.
+maturity: AGENT-READY
+status: POTVRDENÉ
+identity_refs:
+- mc.constraint.cestovne_pr_o.xpk_c_pr_o
+field_registry_ref: cp.fields.cestovne_pr_o.001
+source_of_truth_summary_sk: RID_R je jediná bezpečná technická identita; RID_V je polymorfná dokumentová referencia.
+temporal_summary_sk: Current bridge + selektívne storno riadky; open-state removal môže riadok fyzicky odstrániť, takže nejde o úplnú membership
+  históriu.
+scope_limitations_sk:
+- Exhaustive claim sa vzťahuje na source-visible Oracle metadata/source v MC; externý runtime SQL mimo Oracle source je systémová hranica.
+evidence_refs:
+- cp.evidence.a.columns
+- cp.evidence.a.physical
+- cp.evidence.d.accepted_contract

@@ -1,0 +1,250 @@
+schema_version: '1.0'
+kind: flows
+id: cp.flows.001
+records:
+- flow_id: cp.flow.t_cestovne_pr_l_tracktrace
+  trigger_or_procedure_ref: mc.oracle.mc_t_cestovne_pr_l_tracktrace
+  event_sk: UPDATE; lifecycle prechod pod 2 -> 2/3/4
+  watched_field_refs:
+  - mc.field.cestovne_pr_l.stav
+  session_or_bypass_sk: Používa D_CPR_L.dajPlatne_Vyd_CP.
+  business_effect_sk: Track&trace požiadavky; rollback recall.
+  diagnostic_meaning_sk: Transition side effect; nie samostatná autorita current state.
+  evidence_refs:
+  - cp.evidence.a.physical
+  - cp.evidence.b2.core_source
+  calls:
+  - callee_ref: mc.oracle.mc_d_cpr_l
+    condition_sk: Výber platných výdajok cez D_CPR_L.dajPlatne_Vyd_CP.
+    sequence: 1
+  direct_mutations: []
+  side_effects:
+  - description_sk: Vkladá track&trace požiadavky pre platné výdajky; pri rollbacku nastaví recall.
+  exceptions: []
+
+- flow_id: cp.flow.t_cestovne_pr_l_wms_oue
+  trigger_or_procedure_ref: mc.oracle.mc_t_cestovne_pr_l_wms_oue
+  event_sk: UPDATE; lifecycle prechod <1 -> >=1
+  watched_field_refs:
+  - mc.field.cestovne_pr_l.stav
+  condition_sk: Pri reopen môže INI 1473 blokovať zrušenie uzavretia, ak sa CP už balí.
+  session_or_bypass_sk: Správanie reopen je podmienené INI 1473.
+  business_effect_sk: Zakladá WMS_QUE pre CP; prepočíta WMS palety/doklady.
+  diagnostic_meaning_sk: UI problém s reopen môže byť WMS guard, nie poškodený L.STAV.
+  evidence_refs:
+  - cp.evidence.a.physical
+  - cp.evidence.b2.core_source
+  calls: []
+  direct_mutations: []
+  side_effects:
+  - description_sk: Zakladá alebo synchronizuje WMS execution boundary pre cestovný príkaz a prepočítava WMS palety/doklady.
+  exceptions:
+  - description_sk: INI 1473 môže blokovať reopen, ak WMS už vykonáva balenie.
+
+- flow_id: cp.flow.t_mccarter_cestovne_pr_l
+  trigger_or_procedure_ref: mc.oracle.mc_t_mccarter_cestovne_pr_l
+  event_sk: INSERT OR UPDATE
+  condition_sk: McCarter-specific export/email/print flow pri INSERT alebo relevantnom STAV uzavretí pri POBOC=0 podľa trigger source.
+  watched_field_refs:
+  - mc.field.cestovne_pr_l.stav
+  - mc.field.cestovne_pr_l.poboc
+  - mc.field.cestovne_pr_l.flags
+  - mc.field.cestovne_pr_l.doprava
+  session_or_bypass_sk: McCarter-specific.
+  business_effect_sk: Exportné dávky, emaily a tlač podľa FLAGS/DOPRAVA.
+  diagnostic_meaning_sk: Ide o aplikačný side-effect trigger, nie autoritu business významu jednotlivých FLAGS bitov.
+  evidence_refs:
+  - cp.evidence.a.physical
+  - cp.evidence.b2.core_source
+  calls: []
+  direct_mutations: []
+  side_effects:
+  - description_sk: Generuje McCarter-specific exportné dávky, emaily a tlač podľa source podmienok FLAGS/DOPRAVA.
+  exceptions: []
+
+- flow_id: cp.flow.t_r_cestovne_pr_l
+  trigger_or_procedure_ref: mc.oracle.mc_t_r_cestovne_pr_l
+  event_sk: INSERT OR UPDATE
+  watched_field_refs: []
+  session_or_bypass_sk: Nie business history.
+  business_effect_sk: MODIF_I/MODIF_U replikačné change markery.
+  diagnostic_meaning_sk: Technický change stream; nepoužívať ako business event timeline.
+  evidence_refs:
+  - cp.evidence.a.physical
+  - cp.evidence.b2.core_source
+  calls: []
+  direct_mutations:
+  - scope_refs:
+    - mc.field.cestovne_pr_l.modif_i
+    - mc.field.cestovne_pr_l.modif_u
+    description_sk: Udržiava technické replikačné change markery MODIF_I/MODIF_U.
+  side_effects: []
+  exceptions: []
+
+- flow_id: cp.flow.t_s_cestovne_pr_l
+  trigger_or_procedure_ref: mc.oracle.mc_t_s_cestovne_pr_l
+  event_sk: UPDATE OR DELETE
+  watched_field_refs:
+  - mc.field.cestovne_pr_l.stav
+  - mc.field.cestovne_pr_l.poznamka
+  - mc.field.cestovne_pr_l.pozn
+  - mc.field.cestovne_pr_l.stav_ext_opt
+  session_or_bypass_sk: Rollback lifecycle stampy nemaže.
+  business_effect_sk: Pri UPDATE udržiava U_STAMP, transition stampy, POZNAMKA/POZN a EXT_OPT_STAMP synchronizáciu; trigger je deklarovaný aj pre DELETE.
+  diagnostic_meaning_sk: Transition stamp je auditná stopa prechodu, nie current-state flag.
+  evidence_refs:
+  - cp.evidence.a.physical
+  - cp.evidence.b2.core_source
+  calls: []
+  direct_mutations:
+  - scope_refs:
+    - mc.field.cestovne_pr_l.u_stamp
+    description_sk: Aktualizuje technický U_STAMP pri update.
+  - scope_refs:
+    - mc.field.cestovne_pr_l.uzavrel_stamp
+    - mc.field.cestovne_pr_l.odchod_stamp
+    - mc.field.cestovne_pr_l.prichod_stamp
+    - mc.field.cestovne_pr_l.vybavil_stamp
+    - mc.field.cestovne_pr_l.s_stamp
+    description_sk: Zapisuje transition stamp podľa lifecycle prechodu do stavov 1 až 5; rollback tieto stampy nemaže.
+  - scope_refs:
+    - mc.field.cestovne_pr_l.poznamka
+    - mc.field.cestovne_pr_l.pozn
+    description_sk: Synchronizuje POZNAMKA/POZN podľa trigger source.
+  - scope_refs:
+    - mc.field.cestovne_pr_l.ext_opt_stamp
+    description_sk: Udržiava EXT_OPT_STAMP pri relevantnej zmene external-optimization stavu.
+  side_effects: []
+  exceptions:
+  - description_sk: Lifecycle rollback nemaže už zapísané transition stampy.
+
+- flow_id: cp.flow.t_s_cestovne_pr_l_ins
+  trigger_or_procedure_ref: mc.oracle.mc_t_s_cestovne_pr_l_ins
+  event_sk: INSERT
+  watched_field_refs: []
+  session_or_bypass_sk: SKLAD závisí od INI 144 a session lokácie/skladu.
+  business_effect_sk: Dopĺňa SKLAD/POBOC/VYSTAVIL, číselníkový RID, flags a tree defaults.
+  diagnostic_meaning_sk: Insert defaults nemožno interpretovať bez session/INI kontextu.
+  evidence_refs:
+  - cp.evidence.a.physical
+  - cp.evidence.b2.core_source
+  calls: []
+  direct_mutations:
+  - scope_refs:
+    - mc.field.cestovne_pr_l.sklad
+    - mc.field.cestovne_pr_l.poboc
+    - mc.field.cestovne_pr_l.vystavil
+    description_sk: Dopĺňa lokáciu/pobočku/vystavujúceho používateľa podľa session a konfigurácie.
+  - scope_refs:
+    - mc.field.cestovne_pr_l.rid
+    - mc.field.cestovne_pr_l.flags
+    - mc.field.cestovne_pr_l.flags_b
+    - mc.field.cestovne_pr_l.id_tree
+    description_sk: Dopĺňa technické identifikačné a default hodnoty podľa trigger source.
+  side_effects: []
+  exceptions:
+  - description_sk: Výsledný SKLAD závisí od INI 144 a session lokácie/skladu.
+
+- flow_id: cp.flow.t_cestovne_pr_o_after
+  trigger_or_procedure_ref: mc.oracle.mc_t_cestovne_pr_o_after
+  event_sk: INSERT OR UPDATE OR DELETE
+  watched_field_refs:
+  - mc.field.cestovne_pr_o.rid_v
+  - mc.field.cestovne_pr_o.stav
+  session_or_bypass_sk: Celý blok sa preskočí pri C_SESSION.GetReplikacia=1.
+  business_effect_sk: Pre 029 synchronizuje WMS RID_CP; pre 319 synchronizuje DOCASNY_ROZVOZ Zavezeny/Nevybaveny.
+  diagnostic_meaning_sk: Replikačný update môže mať iný side-effect surface než bežný aplikačný update.
+  evidence_refs:
+  - cp.evidence.a.physical
+  - cp.evidence.b2.core_source
+  calls: []
+  direct_mutations: []
+  side_effects:
+  - description_sk: Pre RID_V prefix 029 synchronizuje WMS väzbu RID_CP.
+  - description_sk: Pre RID_V prefix 319 synchronizuje DOCASNY_ROZVOZ stav Zavezeny/Nevybaveny.
+  exceptions:
+  - description_sk: C_SESSION.GetReplikacia=1 preskočí WMS a DOCASNY_ROZVOZ side effects.
+
+- flow_id: cp.flow.t_cestovne_pr_o_naklady
+  trigger_or_procedure_ref: mc.oracle.mc_t_cestovne_pr_o_naklady
+  event_sk: UPDATE NAKL
+  watched_field_refs:
+  - mc.field.cestovne_pr_o.nakl
+  - mc.field.cestovne_pr_o.rid_v
+  session_or_bypass_sk: Nepodporovaný document type -> NAKL NULL.
+  business_effect_sk: Pri podporovanom VYD/transfer flow prenáša náklad do výdajky a môže označiť faktúru na prepočet.
+  diagnostic_meaning_sk: O.NAKL nie je univerzálna alokácia pre všetky polymorfné typy RID_V.
+  evidence_refs:
+  - cp.evidence.a.physical
+  - cp.evidence.b2.core_source
+  calls: []
+  direct_mutations:
+  - scope_refs:
+    - mc.field.cestovne_pr_o.nakl
+    description_sk: Pri nepodporovanom document type trigger nastavuje O.NAKL na NULL.
+  side_effects:
+  - description_sk: Pri manuálnom cenníku podporovaného VYD/319->VYD flow prenáša náklad do VYD_L.SUMA_DN a môže označiť faktúru na prepočet.
+  exceptions:
+  - description_sk: RID_V prefix 319 sa pre cost routing mapuje na VYD cez ROZVOZ_QUE; negarantovať DOCASNY_ROZVOZ.RID_D ako underlying join.
+
+- flow_id: cp.flow.t_cestovne_pr_o_tracktrace
+  trigger_or_procedure_ref: mc.oracle.mc_t_cestovne_pr_o_tracktrace
+  event_sk: UPDATE; STAV prejde do 3/4
+  watched_field_refs:
+  - mc.field.cestovne_pr_o.stav
+  session_or_bypass_sk: Položkový side effect.
+  business_effect_sk: Vloží track&trace požiadavku PrijemDepo.
+  diagnostic_meaning_sk: Track&trace queue je side effect bridge transition, nie autorita O.STAV.
+  evidence_refs:
+  - cp.evidence.a.physical
+  - cp.evidence.b2.core_source
+  calls: []
+  direct_mutations: []
+  side_effects:
+  - description_sk: Pri prechode O.STAV do 3/4 vloží položkovú track&trace požiadavku PrijemDepo.
+  exceptions: []
+
+- flow_id: cp.flow.t_r_cestovne_pr_o
+  trigger_or_procedure_ref: mc.oracle.mc_t_r_cestovne_pr_o
+  event_sk: INSERT OR UPDATE
+  watched_field_refs: []
+  session_or_bypass_sk: Nie business history.
+  business_effect_sk: MODIF_I/MODIF_U replikačné change markery.
+  diagnostic_meaning_sk: Technický change stream; nepoužívať ako business event timeline.
+  evidence_refs:
+  - cp.evidence.a.physical
+  - cp.evidence.b2.core_source
+  calls: []
+  direct_mutations:
+  - scope_refs:
+    - mc.field.cestovne_pr_o.modif_i
+    - mc.field.cestovne_pr_o.modif_u
+    description_sk: Udržiava technické replikačné change markery MODIF_I/MODIF_U.
+  side_effects: []
+  exceptions: []
+
+- flow_id: cp.flow.t_s_cestovne_pr_o
+  trigger_or_procedure_ref: mc.oracle.mc_t_s_cestovne_pr_o
+  event_sk: INSERT OR UPDATE
+  watched_field_refs:
+  - mc.field.cestovne_pr_o.miesto_dod
+  - mc.field.cestovne_pr_o.adresa
+  - mc.field.cestovne_pr_o.rid_adr_dod
+  session_or_bypass_sk: RID_ADR_DOD má dual target address logic.
+  business_effect_sk: I_STAMP/U_STAMP; RID_ADR_DOD normalizácia.
+  diagnostic_meaning_sk: RID_ADR_DOD sa nesmie interpretovať ako jeden enforced FK target.
+  evidence_refs:
+  - cp.evidence.a.physical
+  - cp.evidence.b2.core_source
+  calls: []
+  direct_mutations:
+  - scope_refs:
+    - mc.field.cestovne_pr_o.i_stamp
+    - mc.field.cestovne_pr_o.u_stamp
+    description_sk: Udržiava technické insert/update stampy.
+  - scope_refs:
+    - mc.field.cestovne_pr_o.rid_adr_dod
+    description_sk: Normalizuje RID_ADR_DOD podľa MIESTO_DOD/ADRESA dual-target logiky.
+  side_effects: []
+  exceptions:
+  - description_sk: RID_ADR_DOD má dve disabled/not-validated FK deklarácie; cieľ neurčovať iba z constraint metadata.

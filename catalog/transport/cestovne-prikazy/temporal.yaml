@@ -1,0 +1,82 @@
+schema_version: '1.0'
+kind: temporal
+id: cp.temporal.001
+records:
+- temporal_rule_id: cp.temporal.uzavrel_stamp
+  scope_refs:
+  - mc.field.cestovne_pr_l.uzavrel_stamp
+  classification: TRANSITION STAMP
+  transition_or_event_sk: Prechod do STAV=1
+  writer_or_source_ref: mc.oracle.mc_t_s_cestovne_pr_l
+  rollback_behavior_sk: Rollback ho nemaže.
+  reconstructable: false
+  history_limitations_sk: Nie je multi-event história; z jedného stampu nemožno rekonštruovať všetky prechody.
+  status: POTVRDENÉ
+  evidence_refs:
+  - cp.evidence.b2.core_source
+  - cp.evidence.d.accepted_contract
+- temporal_rule_id: cp.temporal.odchod_stamp
+  scope_refs:
+  - mc.field.cestovne_pr_l.odchod_stamp
+  classification: TRANSITION STAMP
+  transition_or_event_sk: Prechod do STAV=2
+  writer_or_source_ref: mc.oracle.mc_t_s_cestovne_pr_l
+  rollback_behavior_sk: ZrusNaCeste ho nemaže.
+  reconstructable: false
+  history_limitations_sk: Nie je multi-event história; z jedného stampu nemožno rekonštruovať všetky prechody.
+  status: POTVRDENÉ
+  evidence_refs:
+  - cp.evidence.b2.core_source
+  - cp.evidence.d.accepted_contract
+- temporal_rule_id: cp.temporal.prichod_stamp
+  scope_refs:
+  - mc.field.cestovne_pr_l.prichod_stamp
+  classification: TRANSITION STAMP
+  transition_or_event_sk: Prechod do STAV=3
+  writer_or_source_ref: mc.oracle.mc_t_s_cestovne_pr_l
+  rollback_behavior_sk: ZrusZavezeny ho nemaže.
+  reconstructable: false
+  history_limitations_sk: Nie je multi-event história; z jedného stampu nemožno rekonštruovať všetky prechody.
+  status: POTVRDENÉ
+  evidence_refs:
+  - cp.evidence.b2.core_source
+  - cp.evidence.d.accepted_contract
+- temporal_rule_id: cp.temporal.vybavil_stamp
+  scope_refs:
+  - mc.field.cestovne_pr_l.vybavil_stamp
+  classification: TRANSITION STAMP
+  transition_or_event_sk: Prechod do STAV=4
+  writer_or_source_ref: mc.oracle.mc_t_s_cestovne_pr_l
+  rollback_behavior_sk: ZrusVybaveny ho nemaže.
+  reconstructable: false
+  history_limitations_sk: Nie je multi-event história; z jedného stampu nemožno rekonštruovať všetky prechody.
+  status: POTVRDENÉ
+  evidence_refs:
+  - cp.evidence.b2.core_source
+  - cp.evidence.d.accepted_contract
+- temporal_rule_id: cp.temporal.s_stamp
+  scope_refs:
+  - mc.field.cestovne_pr_l.s_stamp
+  classification: TRANSITION STAMP
+  transition_or_event_sk: Prechod do STAV=5
+  writer_or_source_ref: mc.oracle.mc_t_s_cestovne_pr_l
+  rollback_behavior_sk: Current storno marker, nie event timeline.
+  reconstructable: false
+  history_limitations_sk: Nie je multi-event história; z jedného stampu nemožno rekonštruovať všetky prechody.
+  status: POTVRDENÉ
+  evidence_refs:
+  - cp.evidence.b2.core_source
+  - cp.evidence.d.accepted_contract
+- temporal_rule_id: cp.temporal.bridge_membership
+  scope_refs:
+  - mc.object.cestovne_pr_o
+  classification: SELECTIVE HISTORY
+  transition_or_event_sk: Aktuálne členstvo + časť storno lifecycle riadkov.
+  writer_or_source_ref: mc.oracle.mc_d_cpr_l
+  rollback_behavior_sk: Pri otvorenom/rozpracovanom CP môže removal riadok fyzicky DELETE-nuť.
+  reconstructable: false
+  history_limitations_sk: Neexistencia bridge riadku nedokazuje, že dokument nikdy na CP nebol.
+  status: POTVRDENÉ
+  evidence_refs:
+  - cp.evidence.b2.core_source
+  - cp.evidence.d.accepted_contract

@@ -1,0 +1,64 @@
+schema_version: '1.0'
+kind: playbooks
+id: cp.playbooks.001
+records:
+- playbook_id: cp.playbook.state_mismatch
+  symptom_sk: UI ukazuje iný stav CP než SQL STAV
+  first_sql_ref: cp.sql.header_state
+  does_not_prove_sk: Transition stampy nie sú current state.
+  next_step_sk: Porovnaj raw STAV, FLAGS_B a effective state.
+  temporal_boundary_sk: Current snapshot oddeľ od selective history/transition audit.
+- playbook_id: cp.playbook.missing_duplicate_doc
+  symptom_sk: Doklad na CP chýba alebo sa objavuje viackrát
+  first_sql_ref: cp.sql.find_document_cp
+  does_not_prove_sk: Neexistencia riadku nevylučuje historické členstvo.
+  next_step_sk: Zobraz všetky bridge lifecycle riadky vrátane STAV=5.
+  temporal_boundary_sk: Current snapshot oddeľ od selective history/transition audit.
+- playbook_id: cp.playbook.derived_mismatch
+  symptom_sk: Nesedí POCET_DOKL/OBJEM/HMOTNOST/POCET_PAL
+  first_sql_ref: cp.sql.stored_vs_live
+  does_not_prove_sk: Rozdiel nie je automaticky data error.
+  next_step_sk: Porovnaj stored header a live recompute.
+  temporal_boundary_sk: Current snapshot oddeľ od selective history/transition audit.
+- playbook_id: cp.playbook.wms_reopen
+  symptom_sk: CP nejde znovu otvoriť
+  first_sql_ref: cp.sql.wms_boundary
+  does_not_prove_sk: Nedokazuje príčinu bez INI/trigger kontextu.
+  next_step_sk: Skontroluj raw/effective state a WMS boundary.
+  temporal_boundary_sk: Current snapshot oddeľ od selective history/transition audit.
+- playbook_id: cp.playbook.cost_mismatch
+  symptom_sk: Nesedí náklad dopravy
+  first_sql_ref: cp.sql.cost_view
+  does_not_prove_sk: O.NAKL nie je univerzálny pre všetky RID_V.
+  next_step_sk: Rozliš header planned/actual a row allocation.
+  temporal_boundary_sk: Current snapshot oddeľ od selective history/transition audit.
+- playbook_id: cp.playbook.wms_issue_cp
+  symptom_sk: WMS výdajky neukazuje správne CP
+  first_sql_ref: cp.sql.bridge_rows
+  does_not_prove_sk: Replikačný bypass môže preskočiť side effect.
+  next_step_sk: Skontroluj 029 bridge STAV/ID_R_V a následne WMS.
+  temporal_boundary_sk: Current snapshot oddeľ od selective history/transition audit.
+- playbook_id: cp.playbook.temp_319
+  symptom_sk: Temporary transport 319
+  first_sql_ref: cp.sql.ridv_classification
+  does_not_prove_sk: Underlying document neodvodzuj z RID_D bez dôkazu.
+  next_step_sk: Potvrď O.RID_V -> DOCASNY_ROZVOZ.RID.
+  temporal_boundary_sk: Current snapshot oddeľ od selective history/transition audit.
+- playbook_id: cp.playbook.merge
+  symptom_sk: Zlúčený CP
+  first_sql_ref: cp.sql.merge_trace
+  does_not_prove_sk: Prázdny starý CP nie je automaticky chyba.
+  next_step_sk: Sleduj RID_CP_ZLUC self-reference.
+  temporal_boundary_sk: Current snapshot oddeľ od selective history/transition audit.
+- playbook_id: cp.playbook.dates
+  symptom_sk: DATUM_O/DATUM_P vyzerá automaticky
+  first_sql_ref: cp.sql.header_state
+  does_not_prove_sk: Bez INI/source contextu neurčuje pôvod času.
+  next_step_sk: NaCeste/Zavezeny môžu dátum predplniť podľa konfigurácie.
+  temporal_boundary_sk: Current snapshot oddeľ od selective history/transition audit.
+- playbook_id: cp.playbook.financial
+  symptom_sk: Finančné vysporiadanie nesedí
+  first_sql_ref: cp.sql.bridge_rows
+  does_not_prove_sk: Header je agregovaný stav.
+  next_step_sk: Začni row STAV_FIN_VYSP a route stopmi.
+  temporal_boundary_sk: Current snapshot oddeľ od selective history/transition audit.
