@@ -1,0 +1,44 @@
+schema_version: '1.0'
+kind: backlog
+id: cp.backlog.001
+records:
+- backlog_id: cp.backlog.derived_history_root_cause
+  scope_refs: [mc.field.cestovne_pr_l.pocet_dokl, mc.field.cestovne_pr_l.objem, mc.field.cestovne_pr_l.hmotnost, mc.field.cestovne_pr_l.pocet_pal]
+  status: DATA GAP
+  blocking: false
+  question_sk: Aký je presný root cause historickej divergencie stored derived header polí voči dnešnému recompute?
+  reason_sk: Nie je potrebné pre bezpečný contract, ale môže byť potrebné pre root-cause historických incidentov.
+  proposed_validation_type: Targeted historical/edge validation
+  proposed_test_sk: Vzorka mismatch CP podľa obdobia/stavu + historické ROZVOZ_QUE/bridge stopy.
+  closure_condition_sk: Jednoznačne preukázaný mechanizmus divergencie alebo potvrdená systémová history boundary.
+  related_evidence_refs: [cp.evidence.b.state_derived]
+- backlog_id: cp.backlog.docasny_underlying
+  scope_refs: [mc.oracle.mc_docasny_rozvoz]
+  status: TREBA OVERIŤ
+  blocking: false
+  question_sk: Aký je canonical deeper underlying document contract pre 319 use case?
+  reason_sk: Current DOCASNY_ROZVOZ.RID_D bol v edge profile NULL; detail patrí do ROZVOZ/DOCASNY domény.
+  proposed_validation_type: Live JOIN + source mapping
+  proposed_test_sk: Mapovať iba pri konkrétnom use case.
+  closure_condition_sk: Potvrdený target JOIN a temporal contract v autoritatívnom ROZVOZ/DOCASNY katalógu.
+  related_evidence_refs: [cp.evidence.b.ridv_targets, cp.evidence.b.edge_cases]
+- backlog_id: cp.backlog.source_019_244
+  scope_refs: [mc.field.cestovne_pr_o.rid_v]
+  status: TREBA OVERIŤ
+  blocking: false
+  question_sk: Objavia sa v current MC persisted CP bridge source-supported prefixy 019 alebo 244?
+  reason_sk: Source ich podporuje, current CP_08 ich nepozoroval.
+  proposed_validation_type: Live population revalidation
+  proposed_test_sk: Revalidovať iba pri use case alebo po zmene populácie.
+  closure_condition_sk: Live match na potvrdený target alebo explicitné vyradenie legacy vetvy.
+  related_evidence_refs: [cp.evidence.b2.core_source, cp.evidence.b.ridv_targets]
+- backlog_id: cp.backlog.state_6
+  scope_refs: [mc.field.cestovne_pr_l.stav]
+  status: TREBA OVERIŤ
+  blocking: false
+  question_sk: Je CP_Skompletizovany=6 reálne používaný v MC runtime?
+  reason_sk: Source constant existuje, source komentár spochybňuje použitie a live count bol 0.
+  proposed_validation_type: Source/UI/live revalidation
+  proposed_test_sk: Overiť pri výskyte alebo konkrétnom UI use case.
+  closure_condition_sk: Live výskyt + business/UI potvrdenie alebo preukázaná legacy nepoužívanosť.
+  related_evidence_refs: [cp.evidence.b2.core_source, cp.evidence.b.state_derived]
