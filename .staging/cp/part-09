@@ -9,5 +9,12 @@ def main():
             if root.resolve() not in target.parents:
                 raise RuntimeError(f"unsafe path: {member.name}")
         tf.extractall(root)
+    sql_registry = root / "catalog/transport/cestovne-prikazy/sql-registry.yaml"
+    text = sql_registry.read_text(encoding="utf-8")
+    text = text.replace(
+        "    sql_client: SQL Navigator 5.5.4.847\n    read_only: true",
+        "    sql_client: SQL Navigator 5.5.4.847\n    oracle_server_version: null\n    read_only: true",
+    )
+    sql_registry.write_text(text, encoding="utf-8")
 
 if __name__=="__main__": main()
