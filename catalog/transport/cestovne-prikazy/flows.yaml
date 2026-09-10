@@ -4,7 +4,7 @@ id: cp.flows.001
 records:
 - flow_id: cp.flow.t_cestovne_pr_l_tracktrace
   trigger_or_procedure_ref: mc.oracle.mc_t_cestovne_pr_l_tracktrace
-  event_sk: prechod pod 2 -> 2/3/4
+  event_sk: UPDATE; lifecycle prechod pod 2 -> 2/3/4
   watched_field_refs:
   - mc.field.cestovne_pr_l.stav
   session_or_bypass_sk: Používa D_CPR_L.dajPlatne_Vyd_CP.
@@ -24,7 +24,7 @@ records:
 
 - flow_id: cp.flow.t_cestovne_pr_l_wms_oue
   trigger_or_procedure_ref: mc.oracle.mc_t_cestovne_pr_l_wms_oue
-  event_sk: prechod <1 -> >=1
+  event_sk: UPDATE; lifecycle prechod <1 -> >=1
   watched_field_refs:
   - mc.field.cestovne_pr_l.stav
   condition_sk: Pri reopen môže INI 1473 blokovať zrušenie uzavretia, ak sa CP už balí.
@@ -43,7 +43,8 @@ records:
 
 - flow_id: cp.flow.t_mccarter_cestovne_pr_l
   trigger_or_procedure_ref: mc.oracle.mc_t_mccarter_cestovne_pr_l
-  event_sk: INSERT / STAV uzavretie pri POBOC=0
+  event_sk: INSERT OR UPDATE
+  condition_sk: McCarter-specific export/email/print flow pri INSERT alebo relevantnom STAV uzavretí pri POBOC=0 podľa trigger source.
   watched_field_refs:
   - mc.field.cestovne_pr_l.stav
   - mc.field.cestovne_pr_l.poboc
@@ -63,7 +64,7 @@ records:
 
 - flow_id: cp.flow.t_r_cestovne_pr_l
   trigger_or_procedure_ref: mc.oracle.mc_t_r_cestovne_pr_l
-  event_sk: INSERT/UPDATE
+  event_sk: INSERT OR UPDATE
   watched_field_refs: []
   session_or_bypass_sk: Nie business history.
   business_effect_sk: MODIF_I/MODIF_U replikačné change markery.
@@ -82,14 +83,14 @@ records:
 
 - flow_id: cp.flow.t_s_cestovne_pr_l
   trigger_or_procedure_ref: mc.oracle.mc_t_s_cestovne_pr_l
-  event_sk: UPDATE
+  event_sk: UPDATE OR DELETE
   watched_field_refs:
   - mc.field.cestovne_pr_l.stav
   - mc.field.cestovne_pr_l.poznamka
   - mc.field.cestovne_pr_l.pozn
   - mc.field.cestovne_pr_l.stav_ext_opt
   session_or_bypass_sk: Rollback lifecycle stampy nemaže.
-  business_effect_sk: U_STAMP, transition stampy, POZNAMKA/POZN a EXT_OPT_STAMP synchronizácia.
+  business_effect_sk: Pri UPDATE udržiava U_STAMP, transition stampy, POZNAMKA/POZN a EXT_OPT_STAMP synchronizáciu; trigger je deklarovaný aj pre DELETE.
   diagnostic_meaning_sk: Transition stamp je auditná stopa prechodu, nie current-state flag.
   evidence_refs:
   - cp.evidence.a.physical
@@ -146,7 +147,7 @@ records:
 
 - flow_id: cp.flow.t_cestovne_pr_o_after
   trigger_or_procedure_ref: mc.oracle.mc_t_cestovne_pr_o_after
-  event_sk: INSERT/UPDATE/DELETE
+  event_sk: INSERT OR UPDATE OR DELETE
   watched_field_refs:
   - mc.field.cestovne_pr_o.rid_v
   - mc.field.cestovne_pr_o.stav
@@ -188,7 +189,7 @@ records:
 
 - flow_id: cp.flow.t_cestovne_pr_o_tracktrace
   trigger_or_procedure_ref: mc.oracle.mc_t_cestovne_pr_o_tracktrace
-  event_sk: STAV prejde do 3/4
+  event_sk: UPDATE; STAV prejde do 3/4
   watched_field_refs:
   - mc.field.cestovne_pr_o.stav
   session_or_bypass_sk: Položkový side effect.
@@ -205,7 +206,7 @@ records:
 
 - flow_id: cp.flow.t_r_cestovne_pr_o
   trigger_or_procedure_ref: mc.oracle.mc_t_r_cestovne_pr_o
-  event_sk: INSERT/UPDATE
+  event_sk: INSERT OR UPDATE
   watched_field_refs: []
   session_or_bypass_sk: Nie business history.
   business_effect_sk: MODIF_I/MODIF_U replikačné change markery.
@@ -224,9 +225,9 @@ records:
 
 - flow_id: cp.flow.t_s_cestovne_pr_o
   trigger_or_procedure_ref: mc.oracle.mc_t_s_cestovne_pr_o
-  event_sk: INSERT/UPDATE
+  event_sk: INSERT OR UPDATE
   watched_field_refs:
-  - mc.field.cestovne_pr_o.miest_dod
+  - mc.field.cestovne_pr_o.miesto_dod
   - mc.field.cestovne_pr_o.adresa
   - mc.field.cestovne_pr_o.rid_adr_dod
   session_or_bypass_sk: RID_ADR_DOD má dual target address logic.
