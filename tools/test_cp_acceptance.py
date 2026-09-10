@@ -1,6 +1,6 @@
 """Acceptance gate for the real CESTOVNE_PR_L/O v1.1 machine-readable pilot.
 
-This test is intentionally domain-specific.  It does not infer business truth; it
+This test is intentionally domain-specific. It does not infer business truth; it
 checks that the reviewed v1.1 contract has not been silently truncated while
 being represented by the generic schema.
 """
@@ -65,19 +65,33 @@ class CPV11AcceptanceTests(unittest.TestCase):
         }
         self.assertTrue(expected.issubset(names), sorted(expected - names))
 
-    def test_direct_dependency_register_has_107_unique_objects(self):
-        records = load("dependencies.yaml")["records"]
-        direct = [r for r in records if r["direction"] == "INBOUND" and r["depth"] == 1]
-        self.assertEqual(107, len({r["source_ref"] for r in direct}))
+    def test_direct_dependency_register_has_107_unique_oracle_objects(self):
+        # v1.1 defines this count from CP_13 / ALL_DEPENDENCIES, not from the
+        # curated dependencies.yaml register, which may also contain explicit
+        # application/API boundary records.
+        records = load("dependency-closure.yaml")["records"]
+        direct = [r for r in records
+                  if r["direction"] == "INBOUND" and r["min_depth"] == 1]
+        direct_objects = {
+            (r["source_owner"], r["source_name"], r["source_type"])
+            for r in direct
+        }
+        self.assertEqual(107, len(direct_objects))
+        self.assertEqual({"MC"}, {owner for owner, _, _ in direct_objects})
 
     def test_dependency_closure_edge_counts_match_reviewed_v11(self):
-        records = load("dependency-closure.yaml")["records"]
+        doc = load("dependency-closure.yaml")
+        records = doc["records"]
         inbound = [r for r in records if r["direction"] == "INBOUND"]
         outbound = [r for r in records if r["direction"] == "OUTBOUND"]
         self.assertEqual(348, len(inbound))
         self.assertEqual(1296, len(outbound))
-        self.assertEqual(4, max(r["depth"] for r in inbound))
-        self.assertEqual(8, max(r["depth"] for r in outbound))
+        self.assertEqual(4, max(r["min_depth"] for r in inbound))
+        self.assertEqual(8, max(r["min_depth"] for r in outbound))
+        self.assertEqual(348, doc["summary"]["inbound_count"])
+        self.assertEqual(1296, doc["summary"]["outbound_count"])
+        self.assertEqual(4, doc["summary"]["max_inbound_depth"])
+        self.assertEqual(8, doc["summary"]["max_outbound_depth"])
 
     def test_canonical_sql_toolkit_is_complete_and_read_only_declared(self):
         registry = load("sql-registry.yaml")["records"]
