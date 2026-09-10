@@ -1,8 +1,8 @@
 # KASO Data Catalog - Mapping Method & Agent-Ready Standard
 
-## v2.1 - ChatGPT / AI-friendly reference
+## v2.2 - ChatGPT / Codex handoff & canonical pipeline
 
-Tento dokument je zámerne formátovaný jednoducho: bez grafických prvkov, text boxov, log, farebných významov a layoutových závislostí. Primárnym cieľom je presná orientácia ChatGPT, Codexu a ďalších AI nástrojov v pravidlách KASO Data Catalogu. Human-readable DOCX zostáva publikačný výstup; budúci canonical source of truth má byť machine-readable a version-controlled.
+Tento dokument je zámerne formátovaný jednoducho: bez grafických prvkov, text boxov, log, farebných významov a layoutových závislostí. Primárnym cieľom je presná orientácia ChatGPT, Codexu a ďalších AI nástrojov v pravidlách KASO Data Catalogu. Human-readable DOCX zostáva publikačný výstup. Canonical source of truth je machine-readable, version-controlled KASO Data Catalog v GitHub repozitári; publikácie a viewery sa z neho generujú.
 
 ## 0. AI QUICK CONTRACT
 
@@ -33,6 +33,14 @@ PRIMARY_HUMAN_BUSINESS_AUTHORITY: Martin / používateľ - business význam, re�
 CHATGPT_ROLE: Analytický orchestrátor: discovery, Mapping Packy, interpretácia, backlog, playbooky, contract.
 
 CODEX_ROLE: Engineering vrstva: parsing, consistency checks, dependency graph, diff, repository, generovanie artefaktov. Codex neurčuje business význam bez dôkazu.
+
+CANONICAL_SOURCE_OF_TRUTH: GitHub `main` machine-readable catalog. DOCX/PDF/web viewer sú odvodené publikácie, nie konkurenčná autorita.
+
+HANDOFF_GATE: `READY FOR CODEX HANDOFF` - ChatGPT ho smie vyhlásiť až po semantic closure a uzavretí blocking backlogu pre cieľový scope.
+
+CODEX_ENTRYPOINT: najprv prečíta `AGENTS.md`, aktuálny mapping standard, handoff package a existujúci domain contract; potom vykoná iba engineering kroky.
+
+VIEWER_ROLE: read-only prezentačná vrstva generovaná z canonical YAML; nesmie obsahovať význam, ktorý nie je v canonical contracte.
 
 ### 0.1 Absolútne pravidlá
 
@@ -113,7 +121,7 @@ EXHAUSTIVE DEPENDENCY-GRADE: Navyše primerane uzavretý source-visible dependen
 
 AGENT-READY: Objekt je bezpečne použiteľný človekom alebo AI v deklarovanom scope; blocking backlog je uzavretý a systémové hranice sú explicitné.
 
-## 4. KASO MAPPING METHOD v2.1
+## 4. KASO MAPPING METHOD v2.2
 
 Mapovanie prebieha evidence-first v siedmich fázach. Fázy sa môžu čiastočne prekrývať, ale objekt sa nesmie uzavrieť skôr, než spĺňa Definition of Done pre cieľový status.
 
@@ -297,82 +305,141 @@ SQL Navigator je klient, ktorý posiela Oracle SQL databáze. Schopnosť konkré
 - Externý domain contract sa referencuje autoritatívnou verziou; detail sa zbytočne neduplikuje.
 
 ## 14. ROLY
-MARTIN / BUSINESS OWNER: Spúšťa read-only Mapping Packy, exportuje výsledky, poskytuje UI/business validáciu a schvaľuje reálny význam/výnimky. Nemá ručne reverse-engineerovať source, ak sa dá potrebný dôkaz exportovať.
+MARTIN / BUSINESS OWNER: Spúšťa read-only Mapping Packy, exportuje výsledky, poskytuje UI/business validáciu a schvaľuje reálny význam/výnimky. Nemá ručne reverse-engineerovať source, ak sa potrebný dôkaz dá exportovať.
 
-CHATGPT: Navrhuje discovery a Mapping Packy, analyzuje exporty, rozhoduje čo je dôkaz vs hypotéza, pripravuje backlog, playbooky, canonical SQL a finálny contract. Nesmie domýšľať názvy ani business význam.
+CHATGPT / MAPPING ORCHESTRATOR: Vedie F0-F6. Pred discovery vyhľadá existujúci machine-readable katalóg a Project files, navrhuje Mapping Packy, analyzuje exporty, odlišuje dôkaz od hypotézy, uzatvára business/temporal/mutation/dependency contract, pripravuje backlog, playbooky a canonical SQL. ChatGPT rozhoduje o semantic closure; nesmie domýšľať názvy ani business význam.
 
-CODEX: Spracúva súbory a repozitár, parsuje exporty, robí consistency checks, dependency graph, linter, diff a generovanie artefaktov. Nesmie autonómne povýšiť business význam bez dôkazu D/C/B podľa situácie.
+CODEX / CATALOG ENGINEER: Nastupuje po `READY FOR CODEX HANDOFF`. Číta `AGENTS.md` a handoff package, spracúva súbory a repozitár, materializuje schválený contract do YAML/SQL/evidence manifests, robí parsing, consistency checks, dependency graph, lint, diff, testy, PR a generovanie publikácií/viewera. Nesmie vytvoriť nový business fakt, meniť význam, povýšiť status ani uzavrieť backlog bez dôkazu dodaného ChatGPT/business ownerom.
 
-## 15. BUDÚCI CANONICAL FORMÁT - MACHINE READABLE
-DOCX je human-readable publikačný výstup. Dlhodobý source of truth má byť strojovo čitateľný a version-controlled. Konkrétnu implementáciu repozitára táto verzia ešte nezavádza.
+## 15. CANONICAL MACHINE-READABLE FORMÁT A PUBLIKAČNÝ PIPELINE
+Canonical source of truth je machine-readable KASO Data Catalog vo version-controlled GitHub repozitári. DOCX/PDF a budúci web viewer sú odvodené human-readable publikácie.
 
-- Každý objekt, pole, JOIN, rule, dependency a evidence má mať samostatne adresovateľný záznam.
-- Oracle názvy sa zachovávajú presne. Canonical aliasy sú anglicky, ASCII, snake_case.
-- Status a evidence nesmú byť iba vo voľnom texte; musia byť strojovo validovateľné.
-- Potvrdená znalosť master objektu sa nereplikuje do každej domény; ostatné objekty na ňu odkazujú.
-- Z machine-readable vrstvy sa má dať generovať DOCX, SQL context pre agentov, index, dependency mapa a validačné reporty.
-- Codex je vhodný na build/validate/diff workflow; ChatGPT na analytické rozhodnutia a business orchestration.
+- Každý objekt, pole, JOIN, rule, dependency, evidence, backlog a revision má samostatne adresovateľný záznam.
+- Oracle názvy sa zachovávajú presne; canonical aliasy sú anglicky, ASCII, snake_case.
+- Status a evidence sú strojovo validovateľné, nie iba vo voľnom texte.
+- Potvrdená znalosť master/externej domény sa neduplikuje; ostatné contracts na ňu odkazujú.
+- GitHub `main` je autorita po úspešnom review/CI. Feature branch/PR je návrh, nie potvrdený canonical stav.
+- DOCX sa po zavedení generátora generuje z canonical vrstvy; ručná oprava DOCX nesmie potichu meniť canonical význam.
+- Web viewer je read-only frontend nad canonical catalogom: vyhľadávanie objektov/polí/JOINov/packageov/triggerov, dependency mapa, evidence, SQL, backlog a revision history.
+- Viewer ani generátor nesmú dopĺňať chýbajúci business význam heuristikou.
 
-Oracle evidence -> machine-readable canonical catalog -> generated documentation + SQL toolkit + agent context
+Pipeline:
 
-## 16. AGENT-READY DEFINITION OF DONE v2.1
+Oracle evidence -> ChatGPT semantic mapping -> READY FOR CODEX HANDOFF -> Codex engineering -> PR/validation -> GitHub main canonical catalog -> generated DOCX/PDF/viewer + SQL/agent context
+
+## 16. AGENT-READY DEFINITION OF DONE v2.2
 - [ ] Existujúci katalóg bol pred discovery prehľadaný.
 - [ ] MC autoritatívne metadata sú kompletné pre deklarovaný scope.
 - [ ] Granularita a identity scope sú uzavreté.
 - [ ] Úplný field inventory a canonical aliasy sú zdokumentované.
 - [ ] PK/UQ/FK/CHECK/indexy sú zdokumentované vrátane validation statusu.
-- [ ] Hlavné JOINy sú live otestované a majú cardinality contract.
-- [ ] JOIN fan-out safety je explicitná.
+- [ ] Hlavné JOINy sú live otestované a majú cardinality contract + fan-out safety.
 - [ ] Source of truth vs snapshot/current/history je rozlíšený.
 - [ ] State/quantity/value model je uzavretý podľa relevance.
 - [ ] Relevantné triggers/packages/procedures sú zmapované.
-- [ ] Mutation matrix existuje pre kritické polia.
-- [ ] Direct/indirect dependency contract je primerane uzavretý.
-- [ ] Core API caller / synonym / grant / job / cross-schema boundaries sú uzavreté podľa relevance.
-- [ ] Runtime boundary je explicitne uvedená.
-- [ ] DQ a edge cases sú zdokumentované.
-- [ ] DO NOT ASSUME sekcia existuje.
-- [ ] Diagnostic playbooky existujú podľa relevance.
-- [ ] Canonical read-only SQL toolkit je pripravený.
-- [ ] SQL je kompatibilne navrhnutý pre SQL Navigator 5.5.4.847; version-sensitive syntax nie je použitá bez overenia.
+- [ ] Mutation Matrix existuje pre kritické polia.
+- [ ] Direct/indirect dependency contract a core API caller surface sú primerane uzavreté.
+- [ ] Synonym/grant/job/cross-schema/runtime boundaries sú uzavreté podľa relevance.
+- [ ] DQ a edge cases, DO NOT ASSUME, playbooky a canonical read-only SQL existujú.
+- [ ] SQL rešpektuje SQL Navigator 5.5.4.847; version-sensitive syntax nie je použitá bez overenia.
 - [ ] Mapping backlog nemá blocking body.
-- [ ] Evidence/provenance a snapshot dátumy sú evidované.
-- [ ] Revision history je aktualizovaná.
+- [ ] Evidence/provenance, snapshot dátumy a revision history sú aktualizované.
 - [ ] Kritické business významy sú potvrdené relevantným dôkazom.
+- [ ] ChatGPT vykonal semantic closure audit a vydal `READY FOR CODEX HANDOFF`.
+- [ ] Codex materializoval contract bez semantic loss; generic + domain acceptance testy a CI prešli.
+- [ ] PR diff obsahuje iba zamýšľané zmeny a po merge je canonical `main` zelený.
 
 ## 17. KRITÉRIUM, KEDY PRESTAŤ S DIGGINGOM
-Digging sa ukončí, keď sú všetky blocking otázky pre cieľový contract uzavreté a zostávajúce nejasnosti sú explicitné neblokujúce boundaries alebo DATA GAP. AGENT-READY nevyžaduje nekonečný reverse engineering každej tranzitívnej závislosti bez business hodnoty; vyžaduje dostatočný contract pre bezpečné autonómne použitie.
+Digging sa ukončí, keď sú všetky blocking otázky pre cieľový contract uzavreté a zostávajúce nejasnosti sú explicitné neblokujúce boundaries alebo DATA GAP. AGENT-READY nevyžaduje nekonečný reverse engineering každej tranzitívnej závislosti bez business hodnoty; vyžaduje dostatočný contract pre bezpečné autonómne použitie. Potom sa už nepokračuje v všeobecnom discovery, ale vykoná sa semantic closure a handoff.
 
-## 18. HANDOVER INŠTRUKCIA PRE NOVÝ CHAT / CODEX
-1. Read this standard first.
-2. Search existing KASO Data Catalog before proposing new mapping.
-3. Treat OWNER=MC as authoritative for Slovak production.
-4. Use read-only SQL only. Target SQL Navigator 5.5.4.847 and conservative Oracle syntax.
-5. Do not guess. Put unverified claims only into Mapping backlog as TREBA OVERIŤ or DATA GAP.
-6. Start with MP-01 Discovery, then continue autonomously through live profile, source/mutation, dependency, business/temporal validation, diagnostic layer and closure.
-7. Ask Martin for another export or UI/business validation only when a concrete gap blocks safe contract closure.
-8. Default target for main transaction objects, master data and important lookups is AGENT-READY.
+## 18. CHATGPT -> CODEX HANDOFF PROTOCOL
+`READY FOR CODEX HANDOFF` je formálny prechod medzi analytickou a engineering vrstvou. ChatGPT ho vyhlási iba vtedy, keď:
 
-## 19. UZAVRETÉ ROZHODNUTIA
+1. blocking backlog pre cieľový scope = 0;
+2. AGENT-READY semantic DoD je splnený alebo je explicitne uvedený nižší schválený target maturity;
+3. všetky tvrdenia určené na materializáciu majú status a evidence/provenance;
+4. neblokujúce DATA GAP/boundaries sú explicitné;
+5. je jasné, ktoré existujúce canonical záznamy sa vytvárajú, menia alebo iba referencujú.
+
+Povinný handoff package obsahuje minimálne:
+
+```text
+KASO CODEX HANDOFF
+Domain:
+Objects:
+Target maturity:
+Authoritative environment: MC
+Canonical repo/path:
+Existing canonical refs:
+Approved evidence / Mapping Packs:
+Confirmed semantic contract:
+Critical JOINs + fan-out rules:
+Source-of-truth / temporal rules:
+Mutation/dependency boundaries:
+DO NOT ASSUME:
+Blocking backlog: NONE | items
+Non-blocking gaps/boundaries:
+Canonical SQL to materialize:
+Repository actions required:
+Publication actions required:
+Acceptance tests / expected counts:
+Breaking-change flag + revision note:
+```
+
+Handoff nie je náhrada dôkazov. Pri väčšom objekte má odkazovať na evidence/exporty a finálny mapping contract, nie ich celé duplikovať.
+
+## 19. CODEX ENGINEERING WORKFLOW
+Po handoffe Codex:
+
+1. prečíta `AGENTS.md`, mapping standard a existujúci domain contract v `main`;
+2. vytvorí feature branch; canonical `main` nemení nekontrolovane;
+3. prenesie iba schválené fakty do machine-readable records a evidence manifests;
+4. zachová stabilné ID a revision/change-management pravidlá; breaking change explicitne označí;
+5. spustí validator, generic testy, domain acceptance gate a SQL safety lint podľa relevance;
+6. skontroluje unresolved references, duplicate IDs, evidence requirements a semantic-loss acceptance assertions;
+7. pripraví PR s jasným scope, známymi boundaries a výsledkom testov;
+8. merge povolí až pri zelenom CI a čistom diff-e; po merge overí `main` workflow;
+9. generuje/aktualizuje DOCX/PDF/viewer iba z canonical vrstvy, keď je generátor dostupný.
+
+Codex pri konflikte, chýbajúcom dôkaze alebo nejasnom business význame nezvolí „najpravdepodobnejšie“ riešenie. Zastaví engineering konkrétneho faktu a vráti ho ChatGPT ako `HANDOFF BLOCKED` s presným dôvodom.
+
+## 20. NOVÝ CHAT - POVINNÉ SPRÁVANIE
+Ak používateľ otvorí nový chat v KASO projekte a zadá nový objekt/skupinu objektov:
+
+1. najprv vyhľadaj Project files a canonical GitHub catalog; zisti existujúce facts/backlog/boundaries;
+2. neopakuj POTVRDENÉ mapping bez dôvodu; priprav delta scope;
+3. pokračuj F0-F6 a Mapping Pack workflow autonómne;
+4. pýtaj ďalší export alebo UI/business potvrdenie iba pri konkrétnom blocking gape;
+5. default target významných objektov = AGENT-READY;
+6. po semantic closure explicitne oznám `READY FOR CODEX HANDOFF` a vytvor handoff package;
+7. Codex používaj na repository/build/validate/publish engineering, nie na určovanie neovereného business významu.
+
+## 21. UZAVRETÉ ROZHODNUTIA
 1. KASO Data Catalog je enterprise firemný dátový contract, nie projektová dokumentácia.
 2. Hlavné transakčné objekty, master dáta a významné lookupy smerujú defaultne na AGENT-READY.
-3. AGENT-READY je relatívne k deklarovanému scope a dostupným dôkazom; hranice sa uvádzajú explicitne.
-4. Mapovanie je evidence-first, výhradne read-only a autoritatívne pre slovenskú produkciu iba na MC.
-5. Source/mutation a dependency closure sú povinnou súčasťou významných agent-ready objektov.
-6. Dokumentácia musí rozlišovať current, snapshot, derived, audit/history a DATA GAP.
-7. Používateľská manuálna práca sa minimalizuje cez širšie Mapping Packy.
-8. SQL workflow je viazaný na SQL Navigator 5.5.4.847; DB server verziu nemožno domýšľať.
-9. Budúci canonical source of truth bude machine-readable/version-controlled; DOCX bude publikačný výstup.
-10. ChatGPT zostáva analytický orchestrátor, Codex engineering/automation vrstva, Martin business autorita.
-11. Ďalšia fáza projektu: navrhnúť machine-readable schému a pilotne previesť uzavretý CESTOVNE_PR_L/O v1.1.
+3. Mapovanie je evidence-first, výhradne read-only a pre slovenskú produkciu autoritatívne iba na MC.
+4. ChatGPT vlastní semantic mapping a closure; Codex vlastní engineering materializáciu a validáciu.
+5. Formálny prechod je `READY FOR CODEX HANDOFF` + štandardizovaný handoff package.
+6. Canonical source of truth je machine-readable GitHub `main`; DOCX/PDF/viewer sú odvodené publikácie.
+7. Source/mutation, temporal contract a dependency closure sú povinné pre významné agent-ready objekty.
+8. Používateľská manuálna práca sa minimalizuje cez širšie Mapping Packy.
+9. SQL workflow je viazaný na SQL Navigator 5.5.4.847; DB server verziu nemožno domýšľať.
+10. Runtime SQL mimo Oracle-visible source zostáva explicitná systémová hranica.
+11. CESTOVNE_PR_L/O v1.1 je prvý production machine-readable AGENT-READY pilot a acceptance benchmark.
+12. Webový KASO Catalog Viewer má byť read-only prezentačná vrstva generovaná z canonical catalogu, nie nový source of truth.
 
-## 20. REFERENČNÉ KATALÓGOVÉ ZDROJE
+## 22. REFERENČNÉ KATALÓGOVÉ ZDROJE
+- GitHub `mtasky-mccarter/kaso-data-catalog`, branch `main`: canonical machine-readable KASO Data Catalog.
+- `AGENTS.md`: záväzné repository/Codex pravidlá.
+- `docs/mapping-standard.md`: repository transcription tohto štandardu.
 - KASO Data Catalog - Technical & Diagnostic Reference - cestovné príkazy v1.1: benchmark EXHAUSTIVE DEPENDENCY-GRADE / AGENT-READY.
 - KASO Data Catalog - Technical & Diagnostic Reference - obchodné prípady v1.2: diagnostic-grade field/JOIN/temporal/fan-out contract.
 - KASO Data Catalog - Technical & Diagnostic Reference - výdajky v1.0: mutation, quantity, return lifecycle a WMS/transport boundaries.
 - KASO Data Catalog Other Mapped Objects v0.4: prechodné objekty, WMS backlog, externé domain contracts a provenance.
 
-## 21. REVÍZNA HISTÓRIA
+## 23. REVÍZNA HISTÓRIA
+2.2 - 10. 9. 2026: Formalizovaný ChatGPT -> Codex handoff. Zavedený stav `READY FOR CODEX HANDOFF`, povinný handoff package, Codex engineering workflow, nový-chat protocol, GitHub `main` ako canonical source of truth a DOCX/PDF/viewer ako odvodené publikácie. Aktualizovaný AGENT-READY DoD o repository acceptance a post-merge CI.
+
 2.1 - 9. 9. 2026: ChatGPT/AI-friendly repackaging. Odstránené design-manual závislosti; obsah preusporiadaný na parser-friendly headings, key-value pravidlá a jednoduché listy. Doplnený záväzný SQL klient SQL Navigator 5.5.4.847 a compatibility contract bez predpokladania Oracle serverovej verzie.
 
 2.0 - 9. 9. 2026: Prvý samostatný enterprise Mapping Method & Agent-Ready Standard. Zavedený AGENT-READY by default pre firemné dátové jadro, evidence-first workflow, Mapping Pack standard, dependency closure, temporal contract a roly ChatGPT/Codex/business owner.
