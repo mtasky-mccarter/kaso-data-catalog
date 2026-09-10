@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.example.invalid/kaso/1.0/playbooks.schema.json",
+  "title": "playbooks v1.0",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "kind": {
+      "const": "playbooks"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/record"
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "kind",
+    "id",
+    "records"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "record": {
+      "type": "object",
+      "properties": {
+        "playbook_id": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "symptom_sk": {
+          "type": "string",
+          "minLength": 1
+        },
+        "first_sql_ref": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "proves_sk": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "does_not_prove_sk": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "next_step_sk": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "flow_refs": {
+          "$ref": "common.schema.json#/$defs/refs"
+        },
+        "dependency_or_boundary_refs": {
+          "$ref": "common.schema.json#/$defs/refs"
+        },
+        "temporal_boundary_sk": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "playbook_id",
+        "symptom_sk",
+        "first_sql_ref"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

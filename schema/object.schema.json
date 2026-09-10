@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.example.invalid/kaso/1.0/object.schema.json",
+  "title": "object v1.0",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "kind": {
+      "const": "object"
+    },
+    "object_id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "environment": {
+      "type": "string",
+      "minLength": 1
+    },
+    "oracle_owner": {
+      "type": "string",
+      "minLength": 1
+    },
+    "oracle_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "object_type": {
+      "type": "string",
+      "minLength": 1
+    },
+    "business_object_sk": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "purpose_sk": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "grain_sk": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "maturity": {
+      "$ref": "common.schema.json#/$defs/maturity"
+    },
+    "status": {
+      "$ref": "common.schema.json#/$defs/status"
+    },
+    "identity_refs": {
+      "$ref": "common.schema.json#/$defs/refs"
+    },
+    "field_registry_ref": {
+      "$ref": "common.schema.json#/$defs/ref"
+    },
+    "source_of_truth_summary_sk": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "temporal_summary_sk": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "scope_limitations_sk": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "evidence_refs": {
+      "$ref": "common.schema.json#/$defs/refs"
+    }
+  },
+  "required": [
+    "schema_version",
+    "kind",
+    "object_id",
+    "environment",
+    "oracle_owner",
+    "oracle_name",
+    "object_type",
+    "maturity",
+    "status",
+    "field_registry_ref",
+    "evidence_refs"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "POTVRDENÉ"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "evidence_refs": {
+            "minItems": 1
+          }
+        },
+        "required": [
+          "evidence_refs"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.example.invalid/kaso/1.0/do-not-assume.schema.json",
+  "title": "do-not-assume v1.0",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "kind": {
+      "const": "do-not-assume"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/record"
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "kind",
+    "id",
+    "records"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "record": {
+      "type": "object",
+      "properties": {
+        "rule_id": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "scope_refs": {
+          "$ref": "common.schema.json#/$defs/refs"
+        },
+        "statement_sk": {
+          "type": "string",
+          "minLength": 1
+        },
+        "consequence_sk": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidence_refs": {
+          "$ref": "common.schema.json#/$defs/refs"
+        }
+      },
+      "required": [
+        "rule_id",
+        "scope_refs",
+        "statement_sk",
+        "evidence_refs"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

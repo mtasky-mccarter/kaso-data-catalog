@@ -1,0 +1,197 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.example.invalid/kaso/1.0/fields.schema.json",
+  "title": "fields v1.0",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "kind": {
+      "const": "fields"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/record"
+      }
+    },
+    "object_ref": {
+      "$ref": "common.schema.json#/$defs/ref"
+    }
+  },
+  "required": [
+    "schema_version",
+    "kind",
+    "id",
+    "records",
+    "object_ref"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "record": {
+      "type": "object",
+      "properties": {
+        "field_id": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "oracle_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ordinal_position": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "datatype_raw": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "nullable": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "default_raw": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "oracle_comment": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "canonical_alias": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/$defs/alias"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "business_definition_sk": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "$ref": "common.schema.json#/$defs/status"
+        },
+        "temporal_classification": {
+          "$ref": "common.schema.json#/$defs/temporal"
+        },
+        "authority_role": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "authoritative_source_ref": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lookup_ref": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "replacement_ref": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidence_refs": {
+          "$ref": "common.schema.json#/$defs/refs"
+        },
+        "limitations_sk": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "field_id",
+        "oracle_name",
+        "ordinal_position",
+        "datatype_raw",
+        "nullable",
+        "status",
+        "evidence_refs"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "POTVRDENÉ"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "evidence_refs": {
+                "minItems": 1
+              }
+            },
+            "required": [
+              "evidence_refs"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

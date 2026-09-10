@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.example.invalid/kaso/1.0/common.schema.json",
+  "title": "Shared catalog types v1.0",
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9_.:-]*$(?![\\s\\S])"
+    },
+    "ref": {
+      "$ref": "#/$defs/id",
+      "description": "Stable record ID, never a display label or filesystem path."
+    },
+    "refs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/ref"
+      },
+      "uniqueItems": true
+    },
+    "status": {
+      "enum": [
+        "POTVRDENÉ",
+        "TECHNICKY ZNÁME",
+        "ODVODENÉ",
+        "TREBA OVERIŤ",
+        "DATA GAP",
+        "NEPOUŽÍVAŤ",
+        "DEPENDENCY ONLY"
+      ]
+    },
+    "maturity": {
+      "enum": [
+        "DISCOVERY",
+        "CORE MAPPED",
+        "DIAGNOSTIC-GRADE",
+        "EXHAUSTIVE DEPENDENCY-GRADE",
+        "AGENT-READY"
+      ]
+    },
+    "temporal": {
+      "enum": [
+        "RAW CURRENT",
+        "STORED SNAPSHOT",
+        "DERIVED CURRENT",
+        "TRANSITION STAMP",
+        "LAST UPDATE",
+        "SELECTIVE HISTORY",
+        "DATA GAP"
+      ]
+    },
+    "evidence_class": {
+      "enum": [
+        "A",
+        "B",
+        "B2",
+        "C",
+        "D",
+        "E"
+      ]
+    },
+    "retention_class": {
+      "enum": [
+        "TRANSIENT",
+        "REPRODUCIBLE",
+        "SNAPSHOT_CRITICAL"
+      ]
+    },
+    "dependency_role": {
+      "enum": [
+        "CORE DOMAIN",
+        "DIRECT WRITER",
+        "API WRITER",
+        "READER",
+        "CALLER",
+        "DEPENDENCY ONLY",
+        "ACCESS CAPABILITY"
+      ]
+    },
+    "alias": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$(?![\\s\\S])"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.{1,2}(?:/|$))[A-Za-z0-9_.-]+(?:/[A-Za-z0-9_.-]+)*$(?![\\s\\S])"
+    },
+    "raw_scalar": {
+      "type": [
+        "string",
+        "number",
+        "boolean",
+        "null"
+      ],
+      "description": "Quote identifiers with leading zeroes. null is a source null, never an invented label."
+    }
+  }
+}

@@ -1,0 +1,205 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.example.invalid/kaso/1.0/flows.schema.json",
+  "title": "flows v1.0",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "kind": {
+      "const": "flows"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/record"
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "kind",
+    "id",
+    "records"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "record": {
+      "type": "object",
+      "properties": {
+        "flow_id": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "trigger_or_procedure_ref": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "event_sk": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "condition_sk": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "watched_field_refs": {
+          "$ref": "common.schema.json#/$defs/refs"
+        },
+        "session_or_bypass_sk": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "business_effect_sk": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "diagnostic_meaning_sk": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidence_refs": {
+          "$ref": "common.schema.json#/$defs/refs"
+        },
+        "calls": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "callee_ref": {
+                "$ref": "common.schema.json#/$defs/ref"
+              },
+              "condition_sk": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "sequence": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "required": [
+              "callee_ref",
+              "sequence"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "direct_mutations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "scope_refs": {
+                "$ref": "common.schema.json#/$defs/refs"
+              },
+              "description_sk": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "description_sk"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "side_effects": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "scope_refs": {
+                "$ref": "common.schema.json#/$defs/refs"
+              },
+              "description_sk": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "description_sk"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "exceptions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "scope_refs": {
+                "$ref": "common.schema.json#/$defs/refs"
+              },
+              "description_sk": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "description_sk"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "flow_id",
+        "trigger_or_procedure_ref",
+        "evidence_refs"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

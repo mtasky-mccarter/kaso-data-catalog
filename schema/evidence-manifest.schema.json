@@ -1,0 +1,260 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.example.invalid/kaso/1.0/evidence-manifest.schema.json",
+  "title": "evidence-manifest v1.0",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "kind": {
+      "const": "evidence-manifest"
+    },
+    "evidence_id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "evidence_class": {
+      "$ref": "common.schema.json#/$defs/evidence_class"
+    },
+    "mapping_pack": {
+      "enum": [
+        "MP-01",
+        "MP-02",
+        "MP-03",
+        "MP-04",
+        "MP-05",
+        "MP-06",
+        null
+      ]
+    },
+    "environment": {
+      "type": "string",
+      "minLength": 1
+    },
+    "oracle_owner": {
+      "type": "string",
+      "minLength": 1
+    },
+    "captured_at": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/timestamp"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "snapshot_date": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/date"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "source_client": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "query_ref": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/ref"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "source_file": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "sha256": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{64}$(?![\\s\\S])"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "retention_class": {
+      "$ref": "common.schema.json#/$defs/retention_class"
+    },
+    "raw_retained": {
+      "type": "boolean"
+    },
+    "repository_path": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/path"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "result_summary_sk": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "supports_record_refs": {
+      "$ref": "common.schema.json#/$defs/refs"
+    },
+    "limitations_sk": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "processed_at": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/timestamp"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "review_status": {
+      "type": "string",
+      "minLength": 1
+    },
+    "result_summary": {
+      "type": "object",
+      "properties": {
+        "summary_sk": {
+          "type": "string",
+          "minLength": 1
+        },
+        "observations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "$ref": "common.schema.json#/$defs/id"
+              },
+              "value": {
+                "$ref": "common.schema.json#/$defs/raw_scalar"
+              },
+              "unit": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "scope_ref": {
+                "anyOf": [
+                  {
+                    "$ref": "common.schema.json#/$defs/ref"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "name",
+              "value"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "summary_sk",
+        "observations"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "kind",
+    "evidence_id",
+    "evidence_class",
+    "environment",
+    "oracle_owner",
+    "retention_class",
+    "raw_retained",
+    "supports_record_refs",
+    "review_status"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "retention_class": {
+            "const": "SNAPSHOT_CRITICAL"
+          }
+        },
+        "required": [
+          "retention_class"
+        ]
+      },
+      "then": {
+        "required": [
+          "sha256",
+          "repository_path",
+          "raw_retained"
+        ],
+        "properties": {
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-fA-F0-9]{64}$(?![\\s\\S])"
+          },
+          "raw_retained": {
+            "const": true
+          },
+          "repository_path": {
+            "allOf": [
+              {
+                "$ref": "common.schema.json#/$defs/path"
+              },
+              {
+                "pattern": "^evidence/snapshots/.+"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}
