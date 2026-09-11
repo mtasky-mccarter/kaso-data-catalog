@@ -15,7 +15,7 @@ Schema v1.0 je navrhnutá pre evidence-first mapovanie Oracle objektov v KASO. S
 - Oracle serverová verzia nie je potvrdená. Canonical SQL je deklarovaný ako read-only a kompatibilný so SQL Navigator 5.5.4.847 v overenom scope.
 
 ## 3. Record kinds
-Schema v1.0 momentálne obsahuje 22 JSON Schema Draft 2020-12 definícií:
+Schema v1.0 momentálne obsahuje 23 JSON Schema Draft 2020-12 definícií:
 
 1. `object` — business/physical contract objektu, granularita, identita, maturity a scope.
 2. `fields` — úplný fyzický field inventory, datatype, NULL/default/comment, alias, význam, status a evidencia.
@@ -28,17 +28,18 @@ Schema v1.0 momentálne obsahuje 22 JSON Schema Draft 2020-12 definícií:
 9. `flows` — event/podmienka → watched fields → bypass → calls → direct mutations → side effects → exceptions → business/diagnostic effect.
 10. `dependencies` — klasifikovaný dependency register.
 11. `dependency-edges` — source-visible direct/transitive dependency closure s depth a edge provenance.
-12. `oracle-entities` — technické Oracle objekty/boundaries, ktoré nemusia mať plný business-object contract.
-13. `api-references` — source member referencie na core package API, caller/member/hit-line register.
-14. `data-quality` — snapshotované DQ pozorovania a diagnostické limity.
-15. `do-not-assume` — explicitné zákazy nebezpečných inferencií.
-16. `playbooks` — diagnostické postupy symptóm → SQL → dôkaz/limit → next step/boundary.
-17. `sql-registry` — registry canonical read-only SQL a kompatibilita.
-18. `backlog` — TREBA OVERIŤ/DATA GAP s blocking flagom a closure condition.
-19. `revisions` — revision history a breaking-change evidencia.
-20. `evidence-manifest` — provenance, evidence class, snapshot, retention a checksum.
-21. `contract` — agregujúci domain contract s object/component/boundary/evidence refs.
-22. `common` — zdieľané typy: ID, refs, alias, status, maturity, temporal class, evidence class a retention.
+12. `dependency-nodes` — unikátne inbound/outbound closure uzly s minimálnou depth; uzol nie je dependency edge.
+13. `oracle-entities` — technické Oracle objekty/boundaries, ktoré nemusia mať plný business-object contract.
+14. `api-references` — source member referencie na core package API, caller/member/hit-line register.
+15. `data-quality` — snapshotované DQ pozorovania a diagnostické limity.
+16. `do-not-assume` — explicitné zákazy nebezpečných inferencií.
+17. `playbooks` — diagnostické postupy symptóm → SQL → dôkaz/limit → next step/boundary.
+18. `sql-registry` — registry canonical read-only SQL a kompatibilita.
+19. `backlog` — TREBA OVERIŤ/DATA GAP s blocking flagom a closure condition.
+20. `revisions` — revision history a breaking-change evidencia.
+21. `evidence-manifest` — provenance, evidence class, snapshot, retention a checksum.
+22. `contract` — agregujúci domain contract s object/component/boundary/evidence refs.
+23. `common` — zdieľané typy: ID, refs, alias, status, maturity, temporal class, evidence class a retention.
 
 ## 4. Stable IDs a reference graph
 Každý záznam, ktorý môže byť cieľom cross-file väzby, používa stabilné ID. ID nie je display label ani filesystem path. Validator vytvorí globálny index ID a kontroluje duplicity aj unresolved refs.
@@ -51,7 +52,7 @@ Evidence manifest eviduje minimálne `evidence_id`, triedu A/B/B2/C/D/E, prostre
 Canonical evidence umiestnenie je `evidence/manifests/`. Projektový layout test zámerne odmieta YAML manifesty priamo v koreňovom `evidence/`, aby nevznikli dve konkurenčné kópie toho istého dôkazu.
 
 ## 6. Dependency a API hardening
-`dependencies` zachytáva klasifikovanú rolu objektu voči contractu; `dependency-edges` zachytáva graph closure. Pri exhaustive audite sa direct/transitive counts musia viazať na konkrétny evidence dataset a depth.
+`dependencies` zachytáva klasifikovanú rolu objektu voči contractu; `dependency-edges` zachytáva skutočné graph hrany a `dependency-nodes` unikátne členstvo uzla v closure. Pri exhaustive audite sa direct/transitive counts musia viazať na konkrétny evidence dataset a depth. Edge count a node count sa nesmú zamieňať.
 
 `api-references` zachytáva source-visible member referencie na core package API. Summary (`record_count`, `caller_count`, `member_count`) je testovaný proti records a každý `hit_count` proti počtu `hit_lines`. Tento register dokazuje source member reference, nie automaticky runtime frequency ani business autoritu.
 

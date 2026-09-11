@@ -1,0 +1,230 @@
+schema_version: '1.0'
+kind: relationships
+id: vyd.relationships.001
+records:
+- relationship_id: vyd.rel.line_header
+  from_object_ref: mc.object.vyd_o
+  from_field_refs:
+  - mc.field.vyd_o.rid_o
+  to_object_ref: mc.object.vyd_l
+  to_field_refs:
+  - mc.field.vyd_l.rid
+  relationship_type: DIRECT
+  cardinality: N:1
+  condition_sk: null
+  validation_summary_sk: Deklarovaný FK ENABLED/VALIDATED; orphan count 0.
+  fanout_risk: null
+  safe_usage_sk: null
+  orphan_test_summary: null
+  duplicate_test_summary: null
+  snapshot_date: '2026-09-09'
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+- relationship_id: vyd.rel.line_stock_card
+  from_object_ref: mc.object.vyd_o
+  from_field_refs:
+  - mc.field.vyd_o.kod_id
+  to_object_ref: vyd.oracle.01e7b2f15c19e6d43d71f206
+  to_field_refs:
+  - vyd.oracle_field.42f37d6d62423f9ce965dc63
+  relationship_type: DIRECT
+  cardinality: N:1
+  condition_sk: null
+  validation_summary_sk: Deklarovaný FK; orphan count 0.
+  fanout_risk: null
+  safe_usage_sk: KOD_ID=204 je technická paleta.
+  orphan_test_summary: null
+  duplicate_test_summary: null
+  snapshot_date: '2026-09-09'
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+- relationship_id: vyd.rel.line_stock_balance
+  from_object_ref: mc.object.vyd_o
+  from_field_refs:
+  - mc.field.vyd_o.id_sz
+  to_object_ref: vyd.oracle.02cf754cf59912a9fb74f610
+  to_field_refs:
+  - vyd.oracle_field.6fb40d1c1638aaae0e4c9f4c
+  relationship_type: DIRECT
+  cardinality: N:1
+  condition_sk: null
+  validation_summary_sk: Deklarovaný FK + triggerové guardy.
+  fanout_risk: null
+  safe_usage_sk: null
+  orphan_test_summary: null
+  duplicate_test_summary: null
+  snapshot_date: '2026-09-09'
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+- relationship_id: vyd.rel.header_order
+  from_object_ref: mc.object.vyd_l
+  from_field_refs:
+  - mc.field.vyd_l.rid_v
+  to_object_ref: vyd.oracle.f1dfff357c6da5d31924380f
+  to_field_refs:
+  - vyd.oracle_field.611acdd0f83dbaeeb74e6dbf
+  relationship_type: CONDITIONAL
+  cardinality: podmienená 1:N
+  condition_sk: Header boundary; nie každý typ výdajky má objednávku.
+  validation_summary_sk: null
+  fanout_risk: null
+  safe_usage_sk: null
+  orphan_test_summary: null
+  duplicate_test_summary: null
+  snapshot_date: '2026-09-09'
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+- relationship_id: vyd.rel.helper_line
+  from_object_ref: mc.object.vyd_o_p_prij
+  from_field_refs:
+  - mc.field.vyd_o_p_prij.rid
+  - mc.field.vyd_o_p_prij.id_r
+  to_object_ref: mc.object.vyd_o
+  to_field_refs:
+  - mc.field.vyd_o.rid_o
+  - mc.field.vyd_o.id_r
+  relationship_type: DIRECT
+  cardinality: N:1
+  condition_sk: null
+  validation_summary_sk: 74 198 / 74 198 helper riadkov matched.
+  fanout_risk: Jeden VYD_O riadok môže mať viac helper linkov; max pozorované 37.
+  safe_usage_sk: null
+  orphan_test_summary: null
+  duplicate_test_summary: null
+  snapshot_date: '2026-09-09'
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+- relationship_id: vyd.rel.receipt_header_backref
+  from_object_ref: mc.oracle.mc_prijemky_list
+  from_field_refs:
+  - vyd.oracle_field.f8449d7169962bfa57889295
+  to_object_ref: mc.object.vyd_l
+  to_field_refs:
+  - mc.field.vyd_l.rid
+  relationship_type: DIRECT
+  cardinality: N:1
+  condition_sk: null
+  validation_summary_sk: 343 886 matched; 4 unmatched z 343 890 non-null.
+  fanout_risk: null
+  safe_usage_sk: Unmatched riadok nie je automaticky data error.
+  orphan_test_summary: null
+  duplicate_test_summary: null
+  snapshot_date: '2026-09-09'
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+- relationship_id: vyd.rel.wms_current
+  from_object_ref: mc.object.vyd_l
+  from_field_refs:
+  - mc.field.vyd_l.rid
+  to_object_ref: mc.oracle.mc_wms_que
+  to_field_refs:
+  - mc.oracle.mc_wms_que.field.rid_d
+  relationship_type: DIRECT
+  cardinality: 0..1 v snapshot-e
+  condition_sk: null
+  validation_summary_sk: 683 745 with WMS; 59 819 without; multiple=0.
+  fanout_risk: null
+  safe_usage_sk: Current execution snapshot, nie event história.
+  orphan_test_summary: null
+  duplicate_test_summary: null
+  snapshot_date: '2026-09-09'
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+- relationship_id: vyd.rel.transport_bridge
+  from_object_ref: mc.object.vyd_l
+  from_field_refs:
+  - mc.field.vyd_l.rid
+  to_object_ref: mc.object.cestovne_pr_o
+  to_field_refs:
+  - mc.field.cestovne_pr_o.rid_v
+  relationship_type: DIRECT
+  cardinality: 0..N
+  condition_sk: null
+  validation_summary_sk: 336 008 with CP; 407 556 without.
+  fanout_risk: 1 454 VYD_L malo viac bridge riadkov.
+  safe_usage_sk: Pred analytickým joinom agregovať CESTOVNE_PR_O po RID_V.
+  orphan_test_summary: null
+  duplicate_test_summary: null
+  snapshot_date: '2026-09-09'
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+- relationship_id: vyd.rel.line_source_polymorphic
+  from_object_ref: mc.object.vyd_o
+  from_field_refs:
+  - mc.field.vyd_o.rid_v
+  relationship_type: POLYMORPHIC
+  cardinality: null
+  condition_sk: null
+  physical_constraint_ref: null
+  validation_summary_sk: null
+  fanout_risk: 019 môže mať 1:N source trace.
+  safe_usage_sk: Prefix je routing selector; úspešný JOIN sa overuje samostatne.
+  orphan_test_summary: null
+  duplicate_test_summary: null
+  snapshot_date: '2026-09-09'
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  selector_field_refs:
+  - mc.field.vyd_o.rid_v
+  targets:
+  - to_object_ref: vyd.oracle.c05d6994b969d9ce00ed3039
+    to_field_refs:
+    - vyd.oracle_field.bab5f939901b3bda52a6c5f7
+    - vyd.oracle_field.28e27c20d26a7e205b0e057d
+    selector_condition_sk: SUBSTR(RID_V,1,3)='019'; canonical form RID_O||'!'||ID_R.
+    validation_summary_sk: 2 486 928 / 2 486 928 matched; 0 unmatched.
+    cardinality: 1:N source trace
+    fanout_risk: Jedna order line môže viesť na viac VYD_O.
+    safe_usage_sk: Vylúčiť KOD_ID=204 podľa použitia.
+    orphan_test_summary: 0 unmatched.
+    duplicate_test_summary: null
+    status: POTVRDENÉ
+    evidence_refs:
+    - vyd.evidence.evidence_11
+    - vyd.evidence.evidence_15
+  - to_object_ref: vyd.oracle.ba7adb3f9e378f9703b4d1b3
+    to_field_refs:
+    - vyd.oracle_field.cb4b124a432584dc7ebf8aea
+    selector_condition_sk: SUBSTR(RID_V,1,3)='003'.
+    validation_summary_sk: 294 068 / 294 068 matched; target RID_R je v 003 population unikátny.
+    cardinality: N:1 target unique
+    fanout_risk: null
+    safe_usage_sk: Použiť RID_R ako potvrdený 003 line target.
+    orphan_test_summary: 0 unmatched.
+    duplicate_test_summary: 0 target duplicít v potvrdenej populácii.
+    status: POTVRDENÉ
+    evidence_refs:
+    - vyd.evidence.evidence_11
+    - vyd.evidence.evidence_15
+  - to_object_ref: vyd.oracle.252e0ec50e37e50014ab19de
+    to_field_refs:
+    - vyd.oracle_field.f68f5078a9660dbad07300fa
+    selector_condition_sk: SUBSTR(RID_V,1,3)='021'.
+    validation_summary_sk: Routing do RekO domény je source-potvrdený; presný direct JOIN nebol samostatne hardenovaný.
+    cardinality: null
+    fanout_risk: null
+    safe_usage_sk: Pokračovať do samostatného REK contractu; selector nie je dôkaz JOINu.
+    orphan_test_summary: null
+    duplicate_test_summary: null
+    status: TREBA OVERIŤ
+    evidence_refs:
+    - vyd.evidence.evidence_09
+    - vyd.evidence.evidence_15

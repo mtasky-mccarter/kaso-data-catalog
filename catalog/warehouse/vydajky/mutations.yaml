@@ -1,0 +1,259 @@
+schema_version: '1.0'
+kind: mutations
+id: vyd.mutations.001
+records:
+- mutation_id: vyd.mutation.01
+  target_refs:
+  - mc.field.vyd_o.p_rez
+  writer_ref: vyd.oracle.ae9dfa6aeb9e76f6b7860bd3
+  writer_role: Source-confirmed writer/call chain
+  event_sk: null
+  condition_sk: INSERT/UPDATE/DELETE; ODPIS=0; special negative issue branches
+  watched_field_refs: []
+  session_or_bypass_sk: null
+  call_refs: []
+  direct_mutations_sk: T_VYD_O_REZ -> C_SZ.RezervujTrig -> C_SKLAD_ZASOB_P
+  side_effects_sk: Fyzická stock rezervácia + passive layer ID_PS_RezVyd.
+  exceptions_sk: null
+  business_effect_sk: null
+  diagnostic_meaning_sk: Fyzická stock rezervácia + passive layer ID_PS_RezVyd.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_09
+  - vyd.evidence.evidence_15
+- mutation_id: vyd.mutation.02
+  target_refs:
+  - mc.object.vyd_l
+  - mc.object.vyd_o
+  writer_ref: vyd.oracle.ae9dfa6aeb9e76f6b7860bd3
+  writer_role: Source-confirmed writer/call chain
+  event_sk: null
+  condition_sk: Pri zvýšení/znížení issue reservation na 019-linked line, INI 909 + session podmienky
+  watched_field_refs: []
+  session_or_bypass_sk: null
+  call_refs: []
+  direct_mutations_sk: T_VYD_O_REZ
+  side_effects_sk: Rezervácia sa môže presúvať medzi order-side a issue-side; SetNelogujRezervacie/NakladyOP bránia
+    reentrant side effects.
+  exceptions_sk: null
+  business_effect_sk: null
+  diagnostic_meaning_sk: Rezervácia sa môže presúvať medzi order-side a issue-side; SetNelogujRezervacie/NakladyOP
+    bránia reentrant side effects.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_09
+  - vyd.evidence.evidence_15
+- mutation_id: vyd.mutation.03
+  target_refs:
+  - mc.field.vyd_o.p_vyskl
+  writer_ref: vyd.oracle.2afbf829eac9fd99866652da
+  writer_role: Source-confirmed writer/call chain
+  event_sk: null
+  condition_sk: Picking / issue lifecycle
+  watched_field_refs: []
+  session_or_bypass_sk: null
+  call_refs: []
+  direct_mutations_sk: D_VYDAJ_* + T_SZ_P_VYD_O
+  side_effects_sk: Vstup do remaining_to_pick a header warehouse state.
+  exceptions_sk: null
+  business_effect_sk: null
+  diagnostic_meaning_sk: Vstup do remaining_to_pick a header warehouse state.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_09
+  - vyd.evidence.evidence_15
+- mutation_id: vyd.mutation.04
+  target_refs:
+  - mc.field.vyd_o.p_del
+  writer_ref: vyd.oracle.2afbf829eac9fd99866652da
+  writer_role: Source-confirmed writer/call chain
+  event_sk: null
+  condition_sk: Redukcia/storno
+  watched_field_refs: []
+  session_or_bypass_sk: null
+  call_refs: []
+  direct_mutations_sk: D_VYDAJ_* + T_SZ_P_VYD_O + T_HZ_VYD_O
+  side_effects_sk: Mení net_issue_qty; historizované spolu s POCET/CENA/ZLAVY cez HZ definition 0001005.
+  exceptions_sk: null
+  business_effect_sk: null
+  diagnostic_meaning_sk: Mení net_issue_qty; historizované spolu s POCET/CENA/ZLAVY cez HZ definition 0001005.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_09
+  - vyd.evidence.evidence_15
+- mutation_id: vyd.mutation.05
+  target_refs:
+  - mc.field.vyd_o.p_prij
+  writer_ref: vyd.oracle.4f3a1fa90be99e5433aee264
+  writer_role: Source-confirmed writer/call chain
+  event_sk: null
+  condition_sk: Spätný príjem/return
+  watched_field_refs: []
+  session_or_bypass_sk: null
+  call_refs: []
+  direct_mutations_sk: Return/receipt flow + T_SZ_P_VYD_O
+  side_effects_sk: Používa sa v return a passive stock formula POCET-P_DEL-P_PRIJ.
+  exceptions_sk: null
+  business_effect_sk: null
+  diagnostic_meaning_sk: Používa sa v return a passive stock formula POCET-P_DEL-P_PRIJ.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_09
+  - vyd.evidence.evidence_15
+- mutation_id: vyd.mutation.06
+  target_refs:
+  - mc.object.vyd_o_p_prij
+  writer_ref: vyd.oracle.0a4577d6c443e1ed7f65001b
+  writer_role: Source-confirmed writer/call chain
+  event_sk: null
+  condition_sk: Vratky, RekO, výmeny, temp flow
+  watched_field_refs: []
+  session_or_bypass_sk: null
+  call_refs: []
+  direct_mutations_sk: C_VYD_O_P_PRIJ + T_VRATKY_VYD_O/L
+  side_effects_sk: Udržiava 1:N return/exchange coverage a target RID_R_VRAT.
+  exceptions_sk: null
+  business_effect_sk: null
+  diagnostic_meaning_sk: Udržiava 1:N return/exchange coverage a target RID_R_VRAT.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_09
+  - vyd.evidence.evidence_15
+- mutation_id: vyd.mutation.07
+  target_refs:
+  - mc.field.vyd_l.flags_s
+  writer_ref: vyd.oracle.b1e6f82cec605538319249fb
+  writer_role: Source-confirmed writer/call chain
+  event_sk: null
+  condition_sk: Zmeny line quantities / processing
+  watched_field_refs: []
+  session_or_bypass_sk: null
+  call_refs: []
+  direct_mutations_sk: D_VYDAJ_L / C_DOKL_L.PrepocetStavuVyskl + T_S_VYD_L/T_SZ_P_VYD_L
+  side_effects_sk: Header stav vyskladnenia + side effects pri 2/3/5 hraniciach.
+  exceptions_sk: null
+  business_effect_sk: null
+  diagnostic_meaning_sk: Header stav vyskladnenia + side effects pri 2/3/5 hraniciach.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_09
+  - vyd.evidence.evidence_15
+- mutation_id: vyd.mutation.08
+  target_refs:
+  - mc.object.vyd_l
+  - mc.object.vyd_o
+  writer_ref: vyd.oracle.09e88864c90a7026cb2c0228
+  writer_role: Source-confirmed writer/call chain
+  event_sk: null
+  condition_sk: DELETE VYD_L
+  watched_field_refs: []
+  session_or_bypass_sk: null
+  call_refs: []
+  direct_mutations_sk: T_VYD_L_PRIJEM
+  side_effects_sk: Pri delete vynuluje receipt back-reference.
+  exceptions_sk: null
+  business_effect_sk: null
+  diagnostic_meaning_sk: Pri delete vynuluje receipt back-reference.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_09
+  - vyd.evidence.evidence_15
+- mutation_id: vyd.mutation.09
+  target_refs:
+  - mc.object.vyd_l
+  - mc.object.vyd_o
+  writer_ref: vyd.oracle.dd1f145b12b8526a9a69b308
+  writer_role: Source-confirmed writer/call chain
+  event_sk: null
+  condition_sk: 003 return/receipt branch
+  watched_field_refs: []
+  session_or_bypass_sk: null
+  call_refs: []
+  direct_mutations_sk: D_VYDAJ_O/O2
+  side_effects_sk: Issue domain môže mutovať receipt-side quantity snapshot.
+  exceptions_sk: null
+  business_effect_sk: null
+  diagnostic_meaning_sk: Issue domain môže mutovať receipt-side quantity snapshot.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_09
+  - vyd.evidence.evidence_15
+- mutation_id: vyd.mutation.10
+  target_refs:
+  - mc.object.vyd_l
+  - mc.object.vyd_o
+  writer_ref: vyd.oracle.ca486d579aeaf391554600e4
+  writer_role: Source-confirmed writer/call chain
+  event_sk: null
+  condition_sk: RID_V prefix 018
+  watched_field_refs: []
+  session_or_bypass_sk: null
+  call_refs: []
+  direct_mutations_sk: T_SZ_P_VYD_O
+  side_effects_sk: Synchronizácia issue quantity do external complaint/delivery domain.
+  exceptions_sk: null
+  business_effect_sk: null
+  diagnostic_meaning_sk: Synchronizácia issue quantity do external complaint/delivery domain.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_09
+  - vyd.evidence.evidence_15
+- mutation_id: vyd.mutation.11
+  target_refs:
+  - mc.object.vyd_l
+  - mc.object.vyd_o
+  writer_ref: vyd.oracle.8849a5bd6f54a46e59289d10
+  writer_role: Source-confirmed writer/call chain
+  event_sk: null
+  condition_sk: Zmena VYD_L.MIESTO_DOD
+  watched_field_refs: []
+  session_or_bypass_sk: null
+  call_refs: []
+  direct_mutations_sk: T_VYD_L_AFTER -> C_WMS_QUE.NastavMiestoDod
+  side_effects_sk: Synchronizácia WMS execution contextu.
+  exceptions_sk: null
+  business_effect_sk: null
+  diagnostic_meaning_sk: Synchronizácia WMS execution contextu.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_09
+  - vyd.evidence.evidence_15
+- mutation_id: vyd.mutation.12
+  target_refs:
+  - mc.object.vyd_l
+  - mc.object.vyd_o
+  writer_ref: vyd.oracle.8849a5bd6f54a46e59289d10
+  writer_role: Source-confirmed writer/call chain
+  event_sk: null
+  condition_sk: Zmena DOPRAVA/TYP_UHRADY/PARTNER/MIESTO_DOD/ADRESA
+  watched_field_refs: []
+  session_or_bypass_sk: null
+  call_refs: []
+  direct_mutations_sk: T_VYD_L_AFTER
+  side_effects_sk: Synchronizácia delivery queue podľa RID_V=VYD_L.RID.
+  exceptions_sk: null
+  business_effect_sk: null
+  diagnostic_meaning_sk: Synchronizácia delivery queue podľa RID_V=VYD_L.RID.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_09
+  - vyd.evidence.evidence_15
+- mutation_id: vyd.mutation.13
+  target_refs:
+  - mc.field.vyd_o.rid_r_dlaf
+  writer_ref: vyd.oracle.bcffd0da0c96efb1921199a3
+  writer_role: Source-confirmed writer/call chain
+  event_sk: null
+  condition_sk: UPDATE invoice line reference
+  watched_field_refs: []
+  session_or_bypass_sk: null
+  call_refs: []
+  direct_mutations_sk: T_VYD_O_KONTROLA_NA_FAK
+  side_effects_sk: Guard proti opätovnému prelinkovaniu na inú faktúru.
+  exceptions_sk: null
+  business_effect_sk: null
+  diagnostic_meaning_sk: Guard proti opätovnému prelinkovaniu na inú faktúru.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_09
+  - vyd.evidence.evidence_15

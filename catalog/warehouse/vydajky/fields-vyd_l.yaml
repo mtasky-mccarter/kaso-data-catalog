@@ -1,0 +1,883 @@
+schema_version: '1.0'
+kind: fields
+id: vyd.fields.vyd_l
+object_ref: mc.object.vyd_l
+records:
+- field_id: mc.field.vyd_l.id
+  oracle_name: ID
+  ordinal_position: 1
+  datatype_raw: NUMBER(8,0)
+  nullable: false
+  oracle_comment: P.č.¤Poradové čislo jednoznačné za sklad a rok ()
+  canonical_alias: issue_number
+  business_definition_sk: Poradové číslo výdajky; spolu s DATUM a SKLAD tvorí alternatívnu unikátnu identitu.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.rid
+  oracle_name: RID
+  ordinal_position: 2
+  datatype_raw: VARCHAR2(16)
+  nullable: false
+  oracle_comment: RID¤Jednoznačný identifikátor záznamu v BarIS-e, zložený z identifikátora číselníka, roku vloženia
+    (DATUM), skladu (SKLAD) a poradového čísla (ID) ()
+  canonical_alias: issue_id
+  business_definition_sk: Primárny RID hlavičky výdajky. Zdrojový kľúč pre VYD_O.RID_O.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.datum
+  oracle_name: DATUM
+  ordinal_position: 3
+  datatype_raw: DATE
+  nullable: false
+  oracle_comment: Dátum¤Dátum vloženia záznamu ()
+  canonical_alias: issue_date
+  business_definition_sk: Dátum výdajky/záznamu. Nie je to samostatný spoľahlivý timestamp vzniku; technický čas
+    vloženia nesie I_STAMP.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.sklad
+  oracle_name: SKLAD
+  ordinal_position: 4
+  datatype_raw: NUMBER(3,0)
+  nullable: false
+  oracle_comment: Sklad¤Sklad za ktorú bol záznam vložený (BARTEX_POBOCKY.ID)
+  canonical_alias: warehouse_id
+  business_definition_sk: Sklad výdajky; FK na BARTEX_POBOCKY.ID.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.skratka
+  oracle_name: SKRATKA
+  ordinal_position: 5
+  datatype_raw: VARCHAR2(254)
+  nullable: false
+  oracle_comment: Skratka¤Skratka záznamu ( musí byť jednoznačná za sklad (SKLAD), štandartne je = RID) ()
+  canonical_alias: issue_code
+  business_definition_sk: Skratka/kód záznamu; unikátna v kombinácii so SKLAD.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.id_tree
+  oracle_name: ID_TREE
+  ordinal_position: 6
+  datatype_raw: NUMBER(9,0)
+  nullable: false
+  oracle_comment: Zaradenie¤Pozícia v stromovej štruktúre číselníka (CIS_TREE.ID)
+  canonical_alias: tree_id
+  business_definition_sk: Zaradenie - Pozícia v stromovej štruktúre číselníka (CIS_TREE.ID)
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.flags
+  oracle_name: FLAGS
+  ordinal_position: 7
+  datatype_raw: VARCHAR2(254)
+  nullable: true
+  oracle_comment: Príznaky¤Príznaky voľne definované užívateľom ()
+  canonical_alias: user_flags
+  business_definition_sk: Príznaky - Príznaky voľne definované užívateľom
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.flags_b
+  oracle_name: FLAGS_B
+  ordinal_position: 8
+  datatype_raw: VARCHAR2(254)
+  nullable: true
+  oracle_comment: Nastavenia¤Priznaky definované aplikáciou ()
+  canonical_alias: app_flags
+  business_definition_sk: Nastavenia - Priznaky definované aplikáciou
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.pozn
+  oracle_name: POZN
+  ordinal_position: 9
+  datatype_raw: VARCHAR2(254)
+  nullable: true
+  oracle_comment: Poznámka¤Poznámka k záznamu ()
+  canonical_alias: note
+  business_definition_sk: Poznámka - Poznámka k záznamu
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.i_stamp
+  oracle_name: I_STAMP
+  ordinal_position: 10
+  datatype_raw: VARCHAR2(17)
+  nullable: false
+  oracle_comment: Vložil¤Stamp na vloženie záznamu, nesie informáciu kto a kedy záznam vložil ()
+  canonical_alias: insert_stamp
+  business_definition_sk: Technický stamp vloženia; source T_S_VYD_L ho nastavuje cez C_Stamp.GetSessionStampTrigg.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.u_stamp
+  oracle_name: U_STAMP
+  ordinal_position: 11
+  datatype_raw: VARCHAR2(17)
+  nullable: false
+  oracle_comment: Zmenil¤Stamp na zmenu záznamu, nesie informáciu kto a kedy záznam zmenil ()
+  canonical_alias: update_stamp
+  business_definition_sk: Technický stamp poslednej zmeny; source T_S_VYD_L ho nastavuje pri UPDATE.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.s_stamp
+  oracle_name: S_STAMP
+  ordinal_position: 12
+  datatype_raw: VARCHAR2(17)
+  nullable: false
+  oracle_comment: Zrušil¤Stamp na vyradenie záznamu, nesie informáciu kto a kedy záznam vyradil ()
+  canonical_alias: remove_stamp
+  business_definition_sk: Technický stamp vyradenia/storna. Hodnota 0 znamená záznam neoznačený ako vyradený; nejde
+    o event-históriu.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.flags_s
+  oracle_name: FLAGS_S
+  ordinal_position: 13
+  datatype_raw: VARCHAR2(254)
+  nullable: false
+  oracle_comment: Stavy¤Register stavov ()
+  canonical_alias: state_flags
+  business_definition_sk: 18-znakový register stavov. Stav dokladu a stav vyskladnenia sa čítajú cez D_VYDAJ_L.GetS_STAV
+    / GetS_STAV_V.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.mena
+  oracle_name: MENA
+  ordinal_position: 14
+  datatype_raw: NUMBER(8,0)
+  nullable: false
+  oracle_comment: ¤Hodnota z tabuľky MENY (MENY.ID)
+  canonical_alias: currency_id
+  business_definition_sk: '- Hodnota z tabuľky MENY (MENY.ID)'
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.kurz
+  oracle_name: KURZ
+  ordinal_position: 15
+  datatype_raw: NUMBER(22,11)
+  nullable: false
+  oracle_comment: ¤Hodnota z tabuľky KURZY ()
+  canonical_alias: exchange_rate
+  business_definition_sk: '- Hodnota z tabuľky KURZY'
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.dph_2
+  oracle_name: DPH_2
+  ordinal_position: 16
+  datatype_raw: NUMBER(12,2)
+  nullable: false
+  oracle_comment: ¤Horná DPH ()
+  canonical_alias: vat_amount_high
+  business_definition_sk: '- Horná DPH'
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.dph_1
+  oracle_name: DPH_1
+  ordinal_position: 17
+  datatype_raw: NUMBER(12,2)
+  nullable: false
+  oracle_comment: ¤Dolná DPH ()
+  canonical_alias: vat_amount_low
+  business_definition_sk: '- Dolná DPH'
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.suma_2
+  oracle_name: SUMA_2
+  ordinal_position: 18
+  datatype_raw: NUMBER(12,2)
+  nullable: false
+  oracle_comment: ¤Základ DPH - horná sadzba ()
+  canonical_alias: taxable_base_high
+  business_definition_sk: '- Základ DPH - horná sadzba'
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.suma_1
+  oracle_name: SUMA_1
+  ordinal_position: 19
+  datatype_raw: NUMBER(12,2)
+  nullable: false
+  oracle_comment: ¤Dolná sadzba DPH ()
+  canonical_alias: taxable_base_low
+  business_definition_sk: '- Dolná sadzba DPH'
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.suma_0
+  oracle_name: SUMA_0
+  ordinal_position: 20
+  datatype_raw: NUMBER(12,2)
+  nullable: false
+  oracle_comment: ¤Základ DPH ()
+  canonical_alias: taxable_base_zero
+  business_definition_sk: '- Základ DPH'
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.suma_m
+  oracle_name: SUMA_M
+  ordinal_position: 21
+  datatype_raw: NUMBER(15,5)
+  nullable: false
+  oracle_comment: ¤Celková suma v mene ()
+  canonical_alias: total_amount_document_currency
+  business_definition_sk: '- Celková suma v mene'
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.rozdiel
+  oracle_name: ROZDIEL
+  ordinal_position: 22
+  datatype_raw: NUMBER(10,2)
+  nullable: false
+  oracle_comment: ¤Halierový rozdiel ()
+  canonical_alias: rounding_difference
+  business_definition_sk: '- Halierový rozdiel'
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.suma_s
+  oracle_name: SUMA_S
+  ordinal_position: 23
+  datatype_raw: FLOAT(126)
+  nullable: false
+  oracle_comment: ¤Suma odpisu zo skladu ()
+  canonical_alias: stock_issue_value
+  business_definition_sk: Suma skladového odpisu podľa Oracle commentu. Nie je to staré neexistujúce SUMA_O.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.suma_s2
+  oracle_name: SUMA_S2
+  ordinal_position: 24
+  datatype_raw: FLOAT(126)
+  nullable: false
+  oracle_comment: ¤Suma dodatočných nákladov ()
+  canonical_alias: additional_stock_cost_value
+  business_definition_sk: Suma dodatočných nákladov podľa Oracle commentu.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.datum_p
+  oracle_name: DATUM_P
+  ordinal_position: 25
+  datatype_raw: DATE
+  nullable: false
+  oracle_comment: ¤Dátum plnenia ()
+  canonical_alias: fulfillment_date
+  business_definition_sk: Dátum plnenia; hlavný operatívny dátum výdajky.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.splatnost
+  oracle_name: SPLATNOST
+  ordinal_position: 26
+  datatype_raw: NUMBER(5,0)
+  nullable: false
+  oracle_comment: ¤Počet dní splatnosti ()
+  canonical_alias: payment_due_days
+  business_definition_sk: '- Počet dní splatnosti'
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.splatnost_2
+  oracle_name: SPLATNOST_2
+  ordinal_position: 27
+  datatype_raw: NUMBER(5,0)
+  nullable: false
+  oracle_comment: ¤Počet dní splatnosti čiastkovej ()
+  canonical_alias: partial_due_days
+  business_definition_sk: '- Počet dní splatnosti čiastkovej'
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.suma_cs
+  oracle_name: SUMA_CS
+  ordinal_position: 28
+  datatype_raw: NUMBER(12,2)
+  nullable: false
+  oracle_comment: ¤Čiastková splatnosť ()
+  canonical_alias: partial_due_amount
+  business_definition_sk: '- Čiastková splatnosť'
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.datum_dph
+  oracle_name: DATUM_DPH
+  ordinal_position: 29
+  datatype_raw: DATE
+  nullable: true
+  oracle_comment: ¤Dátum DPH ()
+  canonical_alias: vat_date
+  business_definition_sk: '- Dátum DPH'
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.datum_ok
+  oracle_name: DATUM_OK
+  ordinal_position: 30
+  datatype_raw: DATE
+  nullable: true
+  oracle_comment: ¤Dátum spracovania dokladu systemom ()
+  canonical_alias: processing_date
+  business_definition_sk: Dátum spracovania dokladu systémom; nepoužívať ako univerzálny completion status.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.kod_o
+  oracle_name: KOD_O
+  ordinal_position: 31
+  datatype_raw: VARCHAR2(10)
+  nullable: true
+  oracle_comment: ¤Kod operacie ()
+  canonical_alias: operation_code
+  business_definition_sk: '- Kod operacie'
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.uct_str
+  oracle_name: UCT_STR
+  ordinal_position: 32
+  datatype_raw: NUMBER(8,0)
+  nullable: false
+  oracle_comment: ¤Účtovné stredisko (UCT_STR.ID)
+  canonical_alias: accounting_cost_center_id
+  business_definition_sk: '- Účtovné stredisko (UCT_STR.ID)'
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.zakazka
+  oracle_name: ZAKAZKA
+  ordinal_position: 33
+  datatype_raw: NUMBER(8,0)
+  nullable: false
+  oracle_comment: ¤Číslo zakázky (ZAKAZKY.ID)
+  canonical_alias: job_id
+  business_definition_sk: '- Číslo zakázky (ZAKAZKY.ID)'
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.partner
+  oracle_name: PARTNER
+  ordinal_position: 34
+  datatype_raw: NUMBER(8,0)
+  nullable: false
+  oracle_comment: ¤Číslo odberateľa (OBCH_PARTNERI.ID)
+  canonical_alias: customer_id
+  business_definition_sk: Odberateľ/partner; FK OBCH_PARTNERI.ID.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.miesto_dod
+  oracle_name: MIESTO_DOD
+  ordinal_position: 35
+  datatype_raw: VARCHAR2(16)
+  nullable: false
+  oracle_comment: ¤Miesto dodania (MIESTA_DODANIA.RID)
+  canonical_alias: delivery_point_id
+  business_definition_sk: Miesto dodania; FK MIESTA_DODANIA.RID.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.obsluha
+  oracle_name: OBSLUHA
+  ordinal_position: 36
+  datatype_raw: NUMBER(8,0)
+  nullable: false
+  oracle_comment: ¤Číslo obsluhujúceho (BARTEX_USERS.ID_U)
+  canonical_alias: operator_id
+  business_definition_sk: Obsluha evidovaná na hlavičke. UI význam pracovníka treba odlišovať od WMS execution atribútov.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.doprava
+  oracle_name: DOPRAVA
+  ordinal_position: 37
+  datatype_raw: NUMBER(8,0)
+  nullable: false
+  oracle_comment: ¤Hodnota z číselníka DRUHY_DOPRAVY (DRUHY_DOPRAVY.ID)
+  canonical_alias: transport_type_id
+  business_definition_sk: Druh dopravy; FK DRUHY_DOPRAVY.ID.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.pocet_pol
+  oracle_name: POCET_POL
+  ordinal_position: 38
+  datatype_raw: NUMBER(8,0)
+  nullable: false
+  oracle_comment: ¤Počet položiek  ()
+  canonical_alias: line_count_snapshot
+  business_definition_sk: Snapshot počtu položiek na hlavičke; pri diagnostike sa line count radšej prepočíta z
+    VYD_O.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.uct_stamp
+  oracle_name: UCT_STAMP
+  ordinal_position: 39
+  datatype_raw: VARCHAR2(17)
+  nullable: false
+  oracle_comment: ¤Stamp na zaučtovanie záznamu ()
+  canonical_alias: accounting_stamp
+  business_definition_sk: '- Stamp na zaučtovanie záznamu'
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.ext_dokument
+  oracle_name: EXT_DOKUMENT
+  ordinal_position: 40
+  datatype_raw: VARCHAR2(254)
+  nullable: true
+  oracle_comment: ¤Číslo objednávky ()
+  canonical_alias: external_document_number
+  business_definition_sk: '- Číslo objednávky'
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.ucet_doklad
+  oracle_name: UCET_DOKLAD
+  ordinal_position: 41
+  datatype_raw: NUMBER(8,0)
+  nullable: false
+  oracle_comment: ¤Saldokontný účet dokladu (UCTY.ID)
+  canonical_alias: document_account_id
+  business_definition_sk: '- Saldokontný účet dokladu (UCTY.ID)'
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.rid_v
+  oracle_name: RID_V
+  ordinal_position: 42
+  datatype_raw: VARCHAR2(16)
+  nullable: false
+  oracle_comment: ¤vazba na podnetný doklad ()
+  canonical_alias: source_document_ref
+  business_definition_sk: Polymorfná väzba na podnetný/zdrojový doklad. Typ cieľa sa nesmie určovať bez prefixu
+    a úspešného joinu.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.sposob_obj
+  oracle_name: SPOSOB_OBJ
+  ordinal_position: 43
+  datatype_raw: VARCHAR2(16)
+  nullable: false
+  oracle_comment: ¤Sposob objednania (SPOSOB_OBJEDNANIA.RID)
+  canonical_alias: order_method_id
+  business_definition_sk: '- Sposob objednania (SPOSOB_OBJEDNANIA.RID)'
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.sposob_kont
+  oracle_name: SPOSOB_KONT
+  ordinal_position: 44
+  datatype_raw: VARCHAR2(16)
+  nullable: false
+  oracle_comment: ¤Sposob kontaktu (SPOSOB_KONTAKTU.RID)
+  canonical_alias: contact_method_id
+  business_definition_sk: '- Sposob kontaktu (SPOSOB_KONTAKTU.RID)'
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.sklad_kam
+  oracle_name: SKLAD_KAM
+  ordinal_position: 45
+  datatype_raw: NUMBER(8,0)
+  nullable: true
+  oracle_comment: ¤Sklad kam je výdajka smerovaná z hladiska presunu ()
+  canonical_alias: target_warehouse_id
+  business_definition_sk: Cieľový sklad pri presune.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.trt_ucto
+  oracle_name: TRT_UCTO
+  ordinal_position: 46
+  datatype_raw: NUMBER(1,0)
+  nullable: false
+  oracle_comment: null
+  canonical_alias: accounting_processing_flag
+  business_definition_sk: Technický stĺpec; presný business význam zatiaľ nebol potrebný pre diagnostic core.
+  status: TREBA OVERIŤ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.trt_vystavil
+  oracle_name: TRT_VYSTAVIL
+  ordinal_position: 47
+  datatype_raw: NUMBER(8,0)
+  nullable: false
+  oracle_comment: null
+  canonical_alias: issued_by_id
+  business_definition_sk: Technický stĺpec; presný business význam zatiaľ nebol potrebný pre diagnostic core.
+  status: TREBA OVERIŤ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.davka
+  oracle_name: DAVKA
+  ordinal_position: 48
+  datatype_raw: NUMBER(8,0)
+  nullable: false
+  oracle_comment: null
+  canonical_alias: batch_id
+  business_definition_sk: Technický stĺpec; presný business význam zatiaľ nebol potrebný pre diagnostic core.
+  status: TREBA OVERIŤ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.modif_u
+  oracle_name: MODIF_U
+  ordinal_position: 49
+  datatype_raw: NUMBER
+  nullable: false
+  oracle_comment: null
+  canonical_alias: replication_update_seq
+  business_definition_sk: Replikačný update marker nastavovaný T_R_VYD_L.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.modif_i
+  oracle_name: MODIF_I
+  ordinal_position: 50
+  datatype_raw: NUMBER
+  nullable: false
+  oracle_comment: null
+  canonical_alias: replication_insert_seq
+  business_definition_sk: Replikačný insert marker nastavovaný T_R_VYD_L.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.datum_b
+  oracle_name: DATUM_B
+  ordinal_position: 51
+  datatype_raw: DATE
+  nullable: false
+  oracle_comment: Dátum balenia¤Dátum balenia ()
+  canonical_alias: packing_date
+  business_definition_sk: Dátum balenia.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.garant_b
+  oracle_name: GARANT_B
+  ordinal_position: 52
+  datatype_raw: NUMBER(1,0)
+  nullable: false
+  oracle_comment: Garantované balenie¤Garantované balenie ()
+  canonical_alias: guaranteed_packing_flag
+  business_definition_sk: Garantované balenie - Garantované balenie
+  status: TREBA OVERIŤ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.prep_udaje
+  oracle_name: PREP_UDAJE
+  ordinal_position: 53
+  datatype_raw: VARCHAR2(254)
+  nullable: true
+  oracle_comment: null
+  canonical_alias: preparation_data
+  business_definition_sk: Technický stĺpec; presný business význam zatiaľ nebol potrebný pre diagnostic core.
+  status: TREBA OVERIŤ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.pocet_bal
+  oracle_name: POCET_BAL
+  ordinal_position: 54
+  datatype_raw: NUMBER
+  nullable: false
+  oracle_comment: null
+  canonical_alias: package_count
+  business_definition_sk: Fyzické pole počtu balení; nie je potvrdené ako autoritatívny počet paliet/paletových
+    miest.
+  status: TREBA OVERIŤ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.suma_dn
+  oracle_name: SUMA_DN
+  ordinal_position: 55
+  datatype_raw: NUMBER
+  nullable: false
+  oracle_comment: null
+  canonical_alias: dn_amount
+  business_definition_sk: Technický stĺpec; presný business význam zatiaľ nebol potrebný pre diagnostic core.
+  status: TREBA OVERIŤ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.suma_on
+  oracle_name: SUMA_ON
+  ordinal_position: 56
+  datatype_raw: NUMBER
+  nullable: false
+  oracle_comment: null
+  canonical_alias: on_amount
+  business_definition_sk: Technický stĺpec; presný business význam zatiaľ nebol potrebný pre diagnostic core.
+  status: TREBA OVERIŤ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.typ_uhrady
+  oracle_name: TYP_UHRADY
+  ordinal_position: 57
+  datatype_raw: VARCHAR2(16)
+  nullable: false
+  oracle_comment: null
+  canonical_alias: payment_type_id
+  business_definition_sk: Technický stĺpec; presný business význam zatiaľ nebol potrebný pre diagnostic core.
+  status: TECHNICKY ZNÁME
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.typ_cis
+  oracle_name: TYP_CIS
+  ordinal_position: 58
+  datatype_raw: VARCHAR2(16)
+  nullable: false
+  oracle_comment: null
+  canonical_alias: issue_type_code
+  business_definition_sk: Typ výdajky; FK TYPY_CIS.ID.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.klub_karta
+  oracle_name: KLUB_KARTA
+  ordinal_position: 59
+  datatype_raw: VARCHAR2(16)
+  nullable: true
+  oracle_comment: null
+  canonical_alias: club_card_id
+  business_definition_sk: Technický stĺpec; presný business význam zatiaľ nebol potrebný pre diagnostic core.
+  status: TECHNICKY ZNÁME
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.kontakt
+  oracle_name: KONTAKT
+  ordinal_position: 60
+  datatype_raw: VARCHAR2(16)
+  nullable: true
+  oracle_comment: null
+  canonical_alias: contact_id
+  business_definition_sk: Technický stĺpec; presný business význam zatiaľ nebol potrebný pre diagnostic core.
+  status: TECHNICKY ZNÁME
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.datum_c
+  oracle_name: DATUM_C
+  ordinal_position: 61
+  datatype_raw: DATE
+  nullable: false
+  oracle_comment: null
+  canonical_alias: date_c
+  business_definition_sk: Technický stĺpec; presný business význam zatiaľ nebol potrebný pre diagnostic core.
+  status: TREBA OVERIŤ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.xml_data
+  oracle_name: XML_DATA
+  ordinal_position: 62
+  datatype_raw: XMLTYPE
+  nullable: true
+  oracle_comment: null
+  canonical_alias: raw_xml
+  business_definition_sk: Štruktúrovaný XML payload. Interpretovať iba cez potvrdené tagy/source.
+  status: TECHNICKY ZNÁME
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.rid_ed
+  oracle_name: RID_ED
+  ordinal_position: 63
+  datatype_raw: VARCHAR2(16)
+  nullable: true
+  oracle_comment: Exportná dávka¤Exportná dávka (EXP_DAVKY.RID)
+  canonical_alias: export_batch_id
+  business_definition_sk: Referencia na exportnú dávku; FK EXP_DAVKY.RID.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.fakt_davka
+  oracle_name: FAKT_DAVKA
+  ordinal_position: 64
+  datatype_raw: VARCHAR2(254)
+  nullable: true
+  oracle_comment: null
+  canonical_alias: invoice_batch_ref
+  business_definition_sk: Technický stĺpec; presný business význam zatiaľ nebol potrebný pre diagnostic core.
+  status: TREBA OVERIŤ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.priorita
+  oracle_name: PRIORITA
+  ordinal_position: 65
+  datatype_raw: NUMBER
+  nullable: false
+  oracle_comment: null
+  canonical_alias: priority
+  business_definition_sk: Priorita. Presný business contract závisí od workflow.
+  status: TECHNICKY ZNÁME
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.adresa
+  oracle_name: ADRESA
+  ordinal_position: 66
+  datatype_raw: NUMBER
+  nullable: false
+  oracle_comment: null
+  canonical_alias: address_interest_id
+  business_definition_sk: FK na MIESTA_ZAUJMU.ID.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
+- field_id: mc.field.vyd_l.rid_likv
+  oracle_name: RID_LIKV
+  ordinal_position: 67
+  datatype_raw: VARCHAR2(16)
+  nullable: true
+  oracle_comment: null
+  canonical_alias: liquidation_ref
+  business_definition_sk: Technický stĺpec; presný business význam zatiaľ nebol potrebný pre diagnostic core.
+  status: TREBA OVERIŤ
+  evidence_refs:
+  - vyd.evidence.evidence_11
+  - vyd.evidence.evidence_15
+  limitations_sk: []
