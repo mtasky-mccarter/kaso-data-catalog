@@ -12,6 +12,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import yaml
+import reportlab
 from docx import Document
 from docx.enum.section import WD_ORIENT
 from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT, WD_TABLE_ALIGNMENT
@@ -304,14 +305,13 @@ def build_docx(data, output: Path):
 
 
 def register_pdf_fonts():
-    candidates=[
-        ("/System/Library/Fonts/Supplemental/Arial.ttf","/System/Library/Fonts/Supplemental/Arial Bold.ttf"),
-        ("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf","/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"),
-    ]
-    for regular,bold in candidates:
-        if Path(regular).is_file() and Path(bold).is_file():
-            pdfmetrics.registerFont(TTFont("CPRegular",regular)); pdfmetrics.registerFont(TTFont("CPBold",bold)); return
-    raise RuntimeError("No Unicode TrueType font available for PDF generation")
+    font_dir = Path(reportlab.__file__).resolve().parent / "fonts"
+    regular = font_dir / "Vera.ttf"
+    bold = font_dir / "VeraBd.ttf"
+    if not regular.is_file() or not bold.is_file():
+        raise RuntimeError("Pinned ReportLab Unicode fonts are unavailable")
+    pdfmetrics.registerFont(TTFont("CPRegular", regular))
+    pdfmetrics.registerFont(TTFont("CPBold", bold))
 
 
 def pdf_table(rows,widths,header=True):
