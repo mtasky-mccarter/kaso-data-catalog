@@ -148,7 +148,8 @@ class CPV11AcceptanceTests(unittest.TestCase):
 
     def test_mutation_matrix_covers_reviewed_critical_surfaces(self):
         records = load("mutations.yaml")["records"]
-        ids = {r["mutation_id"] for r in records}
+        by_id = {r["mutation_id"]: r for r in records}
+        ids = set(by_id)
         expected = {
             "cp.mutation.header_state", "cp.mutation.bridge_state",
             "cp.mutation.derived_header", "cp.mutation.header_cost",
@@ -158,6 +159,19 @@ class CPV11AcceptanceTests(unittest.TestCase):
             "cp.mutation.bridge_insert", "cp.mutation.wms_319_side_effect",
         }
         self.assertTrue(expected.issubset(ids), sorted(expected - ids))
+        self.assertEqual(
+            {
+                "mc.oracle.mc_wms_que.field.rid_cp",
+                "mc.oracle.mc_docasny_rozvoz.field.zavezeny",
+                "mc.oracle.mc_docasny_rozvoz.field.nevybaveny",
+            },
+            set(by_id["cp.mutation.wms_319_side_effect"]["target_refs"]),
+        )
+        external_cost = by_id["cp.mutation.bridge_cost_external_effect"]
+        self.assertEqual(
+            ["mc.oracle.mc_vyd_l.field.suma_dn"], external_cost["target_refs"]
+        )
+        self.assertIn("externou boundary", external_cost["side_effects_sk"])
 
     def test_trigger_flows_are_structured_not_free_text_only(self):
         records = load("flows.yaml")["records"]
@@ -170,7 +184,21 @@ class CPV11AcceptanceTests(unittest.TestCase):
                             record["exceptions"], record["flow_id"])
         after = next(r for r in records if r["flow_id"] == "cp.flow.t_cestovne_pr_o_after")
         self.assertIn("GetReplikacia=1", after["session_or_bypass_sk"])
+        after_scopes = {ref for effect in after["side_effects"] for ref in effect["scope_refs"]}
+        self.assertEqual({
+            "mc.oracle.mc_wms_que.field.rid_cp",
+            "mc.oracle.mc_docasny_rozvoz.field.zavezeny",
+            "mc.oracle.mc_docasny_rozvoz.field.nevybaveny",
+        }, after_scopes)
+        wms = next(r for r in records if r["flow_id"] == "cp.flow.t_cestovne_pr_l_wms_oue")
+        self.assertIn("INI 1473", wms["session_or_bypass_sk"])
+        cost = next(r for r in records if r["flow_id"] == "cp.flow.t_cestovne_pr_o_naklady")
+        self.assertEqual(
+            {"mc.oracle.mc_vyd_l.field.suma_dn"},
+            {ref for effect in cost["side_effects"] for ref in effect["scope_refs"]},
+        )
         stamps = next(r for r in records if r["flow_id"] == "cp.flow.t_s_cestovne_pr_l")
+        self.assertIn("nemaže", stamps["session_or_bypass_sk"])
         mutated = {ref for m in stamps["direct_mutations"] for ref in m["scope_refs"]}
         for ref in {
             "mc.field.cestovne_pr_l.uzavrel_stamp", "mc.field.cestovne_pr_l.odchod_stamp",
@@ -197,12 +225,74 @@ class CPV11AcceptanceTests(unittest.TestCase):
     def test_canonical_sql_toolkit_is_complete_and_read_only_declared(self):
         registry = load("sql-registry.yaml")["records"]
         self.assertEqual(11, len(registry))
+        by_id = {record["sql_id"]: record for record in registry}
+        expected_parameters = {
+            "cp.sql.header_state": ["cp_rid"],
+            "cp.sql.bridge_rows": ["cp_rid"],
+            "cp.sql.ridv_classification": ["cp_rid"],
+            "cp.sql.stored_vs_live": ["cp_rid"],
+            "cp.sql.duplicate_membership": [],
+            "cp.sql.find_document_cp": ["document_rid"],
+            "cp.sql.wms_boundary": ["cp_rid"],
+            "cp.sql.merge_trace": ["cp_rid"],
+            "cp.sql.cost_view": ["cp_rid"],
+            "cp.sql.state_anomaly": [],
+            "cp.sql.dependency_check": [],
+        }
         for record in registry:
             compatibility = record["compatibility"]
             self.assertEqual("SQL Navigator 5.5.4.847", compatibility["sql_client"])
             self.assertIsNone(compatibility["oracle_server_version"])
             self.assertIs(True, compatibility["read_only"])
             self.assertTrue((ROOT / record["sql_file"]).is_file(), record["sql_file"])
+            self.assertEqual(
+                expected_parameters[record["sql_id"]],
+                [parameter["name"] for parameter in record.get("input_parameters", [])],
+            )
+            for key in ("purpose_sk", "result_grain_sk", "fanout_warning_sk", "proves_sk", "does_not_prove_sk"):
+                self.assertTrue(record.get(key), f"{record['sql_id']} missing {key}")
+        self.assertIn("1:N", by_id["cp.sql.bridge_rows"]["fanout_warning_sk"])
+        self.assertIn("históri", by_id["cp.sql.bridge_rows"]["does_not_prove_sk"])
+        self.assertIn("agregujú", by_id["cp.sql.stored_vs_live"]["fanout_warning_sk"])
+        self.assertIn("nie je automaticky", by_id["cp.sql.duplicate_membership"]["does_not_prove_sk"])
+        self.assertIn("1:N", by_id["cp.sql.find_document_cp"]["fanout_warning_sk"])
+        self.assertIn("historická uniqueness", by_id["cp.sql.wms_boundary"]["fanout_warning_sk"])
+        self.assertIn("nesmie násobiť", by_id["cp.sql.cost_view"]["fanout_warning_sk"])
+        self.assertIn("nie je automaticky", by_id["cp.sql.state_anomaly"]["does_not_prove_sk"])
+        self.assertIn("runtime SQL universe", by_id["cp.sql.dependency_check"]["does_not_prove_sk"])
+
+    def test_playbook_to_sql_mapping_and_semantic_limits_are_deliberate(self):
+        records = load("playbooks.yaml")["records"]
+        by_id = {record["playbook_id"]: record for record in records}
+        expected = {
+            "cp.playbook.state_mismatch": "cp.sql.header_state",
+            "cp.playbook.missing_duplicate_doc": "cp.sql.find_document_cp",
+            "cp.playbook.derived_mismatch": "cp.sql.stored_vs_live",
+            "cp.playbook.wms_reopen": "cp.sql.wms_boundary",
+            "cp.playbook.cost_mismatch": "cp.sql.cost_view",
+            "cp.playbook.wms_issue_cp": "cp.sql.bridge_rows",
+            "cp.playbook.temp_319": "cp.sql.ridv_classification",
+            "cp.playbook.merge": "cp.sql.merge_trace",
+            "cp.playbook.dates": "cp.sql.header_state",
+            "cp.playbook.financial": "cp.sql.bridge_rows",
+        }
+        self.assertEqual(expected, {key: row["first_sql_ref"] for key, row in by_id.items()})
+        for record in records:
+            for key in ("proves_sk", "does_not_prove_sk", "temporal_boundary_sk"):
+                self.assertTrue(record.get(key), f"{record['playbook_id']} missing {key}")
+            self.assertTrue(record["dependency_or_boundary_refs"])
+        self.assertEqual(
+            ["cp.flow.t_cestovne_pr_o_after"],
+            by_id["cp.playbook.temp_319"]["flow_refs"],
+        )
+
+    def test_final_closure_freezes_contract_v11_without_breaking_change(self):
+        revisions = load("revisions.yaml")["records"]
+        closure = next(r for r in revisions if r["revision_id"] == "cp.revision.1_1_final_closure")
+        self.assertEqual("1.1", closure["contract_version"])
+        self.assertFalse(closure["breaking_change"])
+        self.assertIn("zmrazené", closure["reason_sk"])
+        self.assertIn("evidence", closure["reason_sk"])
 
     def test_agent_ready_objects_and_nonblocking_backlog(self):
         for obj in (load("object-cestovne_pr_l.yaml"), load("object-cestovne_pr_o.yaml")):

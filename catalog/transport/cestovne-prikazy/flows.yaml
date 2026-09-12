@@ -20,8 +20,9 @@ records:
   direct_mutations: []
   side_effects:
   - description_sk: Vkladá track&trace požiadavky pre platné výdajky; pri rollbacku nastaví recall.
+    scope_refs:
+    - mc.oracle.mc_tracktrace_que_l
   exceptions: []
-
 - flow_id: cp.flow.t_cestovne_pr_l_wms_oue
   trigger_or_procedure_ref: mc.oracle.mc_t_cestovne_pr_l_wms_oue
   event_sk: UPDATE; lifecycle prechod <1 -> >=1
@@ -38,13 +39,15 @@ records:
   direct_mutations: []
   side_effects:
   - description_sk: Zakladá alebo synchronizuje WMS execution boundary pre cestovný príkaz a prepočítava WMS palety/doklady.
+    scope_refs:
+    - mc.oracle.mc_wms_que
   exceptions:
   - description_sk: INI 1473 môže blokovať reopen, ak WMS už vykonáva balenie.
-
 - flow_id: cp.flow.t_mccarter_cestovne_pr_l
   trigger_or_procedure_ref: mc.oracle.mc_t_mccarter_cestovne_pr_l
   event_sk: INSERT OR UPDATE
-  condition_sk: McCarter-specific export/email/print flow pri INSERT alebo relevantnom STAV uzavretí pri POBOC=0 podľa trigger source.
+  condition_sk: McCarter-specific export/email/print flow pri INSERT alebo relevantnom STAV uzavretí pri POBOC=0
+    podľa trigger source.
   watched_field_refs:
   - mc.field.cestovne_pr_l.stav
   - mc.field.cestovne_pr_l.poboc
@@ -61,7 +64,6 @@ records:
   side_effects:
   - description_sk: Generuje McCarter-specific exportné dávky, emaily a tlač podľa source podmienok FLAGS/DOPRAVA.
   exceptions: []
-
 - flow_id: cp.flow.t_r_cestovne_pr_l
   trigger_or_procedure_ref: mc.oracle.mc_t_r_cestovne_pr_l
   event_sk: INSERT OR UPDATE
@@ -80,7 +82,6 @@ records:
     description_sk: Udržiava technické replikačné change markery MODIF_I/MODIF_U.
   side_effects: []
   exceptions: []
-
 - flow_id: cp.flow.t_s_cestovne_pr_l
   trigger_or_procedure_ref: mc.oracle.mc_t_s_cestovne_pr_l
   event_sk: UPDATE OR DELETE
@@ -90,7 +91,8 @@ records:
   - mc.field.cestovne_pr_l.pozn
   - mc.field.cestovne_pr_l.stav_ext_opt
   session_or_bypass_sk: Rollback lifecycle stampy nemaže.
-  business_effect_sk: Pri UPDATE udržiava U_STAMP, transition stampy, POZNAMKA/POZN a EXT_OPT_STAMP synchronizáciu; trigger je deklarovaný aj pre DELETE.
+  business_effect_sk: Pri UPDATE udržiava U_STAMP, transition stampy, POZNAMKA/POZN a EXT_OPT_STAMP synchronizáciu;
+    trigger je deklarovaný aj pre DELETE.
   diagnostic_meaning_sk: Transition stamp je auditná stopa prechodu, nie current-state flag.
   evidence_refs:
   - cp.evidence.a.physical
@@ -117,7 +119,6 @@ records:
   side_effects: []
   exceptions:
   - description_sk: Lifecycle rollback nemaže už zapísané transition stampy.
-
 - flow_id: cp.flow.t_s_cestovne_pr_l_ins
   trigger_or_procedure_ref: mc.oracle.mc_t_s_cestovne_pr_l_ins
   event_sk: INSERT
@@ -144,7 +145,6 @@ records:
   side_effects: []
   exceptions:
   - description_sk: Výsledný SKLAD závisí od INI 144 a session lokácie/skladu.
-
 - flow_id: cp.flow.t_cestovne_pr_o_after
   trigger_or_procedure_ref: mc.oracle.mc_t_cestovne_pr_o_after
   event_sk: INSERT OR UPDATE OR DELETE
@@ -161,10 +161,14 @@ records:
   direct_mutations: []
   side_effects:
   - description_sk: Pre RID_V prefix 029 synchronizuje WMS väzbu RID_CP.
+    scope_refs:
+    - mc.oracle.mc_wms_que.field.rid_cp
   - description_sk: Pre RID_V prefix 319 synchronizuje DOCASNY_ROZVOZ stav Zavezeny/Nevybaveny.
+    scope_refs:
+    - mc.oracle.mc_docasny_rozvoz.field.zavezeny
+    - mc.oracle.mc_docasny_rozvoz.field.nevybaveny
   exceptions:
   - description_sk: C_SESSION.GetReplikacia=1 preskočí WMS a DOCASNY_ROZVOZ side effects.
-
 - flow_id: cp.flow.t_cestovne_pr_o_naklady
   trigger_or_procedure_ref: mc.oracle.mc_t_cestovne_pr_o_naklady
   event_sk: UPDATE NAKL
@@ -183,10 +187,13 @@ records:
     - mc.field.cestovne_pr_o.nakl
     description_sk: Pri nepodporovanom document type trigger nastavuje O.NAKL na NULL.
   side_effects:
-  - description_sk: Pri manuálnom cenníku podporovaného VYD/319->VYD flow prenáša náklad do VYD_L.SUMA_DN a môže označiť faktúru na prepočet.
+  - description_sk: Pri manuálnom cenníku podporovaného VYD/319->VYD flow prenáša náklad do VYD_L.SUMA_DN a môže
+      označiť faktúru na prepočet.
+    scope_refs:
+    - mc.oracle.mc_vyd_l.field.suma_dn
   exceptions:
-  - description_sk: RID_V prefix 319 sa pre cost routing mapuje na VYD cez ROZVOZ_QUE; negarantovať DOCASNY_ROZVOZ.RID_D ako underlying join.
-
+  - description_sk: RID_V prefix 319 sa pre cost routing mapuje na VYD cez ROZVOZ_QUE; negarantovať DOCASNY_ROZVOZ.RID_D
+      ako underlying join.
 - flow_id: cp.flow.t_cestovne_pr_o_tracktrace
   trigger_or_procedure_ref: mc.oracle.mc_t_cestovne_pr_o_tracktrace
   event_sk: UPDATE; STAV prejde do 3/4
@@ -202,8 +209,9 @@ records:
   direct_mutations: []
   side_effects:
   - description_sk: Pri prechode O.STAV do 3/4 vloží položkovú track&trace požiadavku PrijemDepo.
+    scope_refs:
+    - mc.oracle.mc_tracktrace_que_l
   exceptions: []
-
 - flow_id: cp.flow.t_r_cestovne_pr_o
   trigger_or_procedure_ref: mc.oracle.mc_t_r_cestovne_pr_o
   event_sk: INSERT OR UPDATE
@@ -222,7 +230,6 @@ records:
     description_sk: Udržiava technické replikačné change markery MODIF_I/MODIF_U.
   side_effects: []
   exceptions: []
-
 - flow_id: cp.flow.t_s_cestovne_pr_o
   trigger_or_procedure_ref: mc.oracle.mc_t_s_cestovne_pr_o
   event_sk: INSERT OR UPDATE
