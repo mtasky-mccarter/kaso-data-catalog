@@ -23,11 +23,13 @@ PUBLICATIONS = {
     "cestovne-prikazy": {
         "subject_sk": "cestovné príkazy",
         "generator": "tools/generate_cp_publication.py",
+        "legacy_basename": "cestovne-prikazy-v1.1",
         "revisions": "catalog/transport/cestovne-prikazy/revisions.yaml",
     },
     "vydajky": {
         "subject_sk": "výdajky",
         "generator": "tools/generate_vyd_publication.py",
+        "legacy_basename": "vydajky-v1.1",
         "revisions": "catalog/warehouse/vydajky/revisions.yaml",
     },
 }
@@ -56,26 +58,57 @@ def publication_basename(config: dict, version: str) -> str:
 
 
 def run_domain_generator(root: Path, config: dict, temporary_output: Path) -> tuple[Path, Path, Path]:
-    subprocess.run(
-        [
-            sys.executable,
-            str(root / config["generator"]),
-            "--root",
-            str(root),
-            "--output-dir",
-            str(temporary_output),
-        ],
-        cwd=root,
-        check=True,
-    )
-    docx = list(temporary_output.glob("*.docx"))
-    pdf = list(temporary_output.glob("*.pdf"))
-    manifests = list(temporary_output.glob("*.manifest.yaml"))
-    if len(docx) != 1 or len(pdf) != 1 or len(manifests) != 1:
+    """Run a legacy domain generator through a transient flat staging area.
+
+    The existing CP/VYD generators still calculate manifest hashes through their historic
+    `generated/<short-name>` paths. The orchestrator keeps that implementation detail
+    isolated: flat files exist only while the legacy generator runs and are always removed
+    before control returns. Canonical committed output is written only to per-publication
+    folders by `generate_one`.
+    """
+    staging_dir = root / "generated"
+    staging_dir.mkdir(parents=True, exist_ok=True)
+    legacy = config["legacy_basename"]
+    staged = [
+        staging_dir / f"{legacy}.docx",
+        staging_dir / f"{legacy}.pdf",
+        staging_dir / f"{legacy}.manifest.yaml",
+    ]
+    collisions = [path for path in staged if path.exists()]
+    if collisions:
         raise RuntimeError(
-            f"Domain generator {config['generator']} must emit exactly one DOCX, one PDF and one manifest"
+            "Legacy flat publication staging paths must be absent before generation: "
+            + ", ".join(path.as_posix() for path in collisions)
         )
-    return docx[0], pdf[0], manifests[0]
+
+    try:
+        subprocess.run(
+            [
+                sys.executable,
+                str(root / config["generator"]),
+                "--root",
+                str(root),
+                "--output-dir",
+                str(staging_dir),
+            ],
+            cwd=root,
+            check=True,
+        )
+        if not all(path.is_file() for path in staged):
+            missing = [path.as_posix() for path in staged if not path.is_file()]
+            raise RuntimeError("Domain generator did not emit expected staging files: " + ", ".join(missing))
+
+        temporary_output.mkdir(parents=True, exist_ok=True)
+        copied = []
+        for path in staged:
+            destination = temporary_output / path.name
+            shutil.copyfile(path, destination)
+            copied.append(destination)
+        return copied[0], copied[1], copied[2]
+    finally:
+        for path in staged:
+            if path.exists():
+                path.unlink()
 
 
 def generate_one(root: Path, slug: str, output_root: Path) -> tuple[Path, Path, Path]:
