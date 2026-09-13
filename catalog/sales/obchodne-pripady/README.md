@@ -1,5 +1,12 @@
 # Obchodné prípady — engineering scaffold
 
+Phase A update (2026-09-13): the handoff is received and retained in
+`docs/handoffs/odb-phase-a.txt`. Its target is DIAGNOSTIC-GRADE, version 1.2,
+breaking_change=false; publication and merge remain forbidden. Referenced source
+files are still missing. See `docs/handoffs/odb-phase-a-intake.md` and updated
+`backlog.yaml` for current blockers. The sections below describe the original
+scaffold baseline; statements about an absent handoff are superseded by this update.
+
 HANDOFF BLOCKED. This is a DISCOVERY scaffold, not an approved v1.2 domain contract.
 All files use existing schema v1.0 record kinds. No schema changes are required.
 `HANDOFF BLOCKED` is explanatory text; machine status remains `DATA GAP` /

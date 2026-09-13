@@ -1,0 +1,311 @@
+READY FOR CODEX HANDOFF — PHASE A
+DIAGNOSTIC-GRADE CANONICAL MATERIALIZATION
+
+Repository:
+mtasky-mccarter/kaso-data-catalog
+
+Existing branch:
+feat/sales-obchodne-pripady-v1.2
+
+Existing scaffold commit:
+fd90c03a
+
+Do NOT recreate the scaffold and do NOT reset the branch.
+Continue from the existing scaffold.
+
+DOMAIN
+sales / obchodne-pripady
+
+ORACLE OBJECTS
+MC.OBJ_ODB_L
+MC.OBJ_ODB_O
+
+AUTHORITATIVE ENVIRONMENT
+MC — Slovak production.
+
+MCCZ, TEST and TESTCZ are separate environments and are not evidence
+for the MC contract unless separately validated.
+
+TARGET FOR THIS PHASE
+DIAGNOSTIC-GRADE canonical materialization.
+
+Do NOT upgrade maturity to AGENT-READY in this phase.
+EXHAUSTIVE DEPENDENCY-GRADE hardening will be supplied later.
+
+APPROVED SEMANTIC SOURCE
+KASO Data Catalog - Technical & Diagnostic Reference -
+obchodné prípady v1.2
+
+The approved v1.2 document is the human semantic contract for this
+initial materialization.
+
+Do not reinterpret or improve its business meaning.
+Do not infer missing meanings from names, Oracle comments or code.
+
+APPROVED EVIDENCE SCOPE
+Use only supplied/approved MC evidence for OBJ_ODB_L / OBJ_ODB_O:
+- physical metadata
+- constraints/indexes
+- trigger/package source
+- production read-only profiling
+- ODB_DIAG mapping packs
+- approved business/UI validation
+- v1.2 revision and release assertions
+
+If a materialized claim cannot be tied to approved evidence,
+return HANDOFF BLOCKED for that claim rather than guessing.
+
+CONFIRMED OBJECT CONTRACT
+
+OBJ_ODB_L
+- grain: one row = one order document/header
+- identity: RID
+- 79 physical columns
+
+OBJ_ODB_O
+- grain: one row = one order line
+- identity: RID_O + ID_R
+- 44 physical columns
+
+Primary relationship:
+OBJ_ODB_L.RID = OBJ_ODB_O.RID_O
+cardinality: 1:N
+
+OBJ_ODB_O is the quantity authority for the order.
+Header states are process/control snapshots and must not replace
+raw line quantity logic.
+
+CONFIRMED RELEASE COUNTS
+- OBJ_ODB_L fields: 79
+- OBJ_ODB_O fields: 44
+- OBJ_ODB_L triggers: 17
+- OBJ_ODB_O triggers: 33
+- total triggers: 50
+
+QUANTITY CONTRACT
+Preserve exactly the approved v1.2 formulas and interpretation limits.
+
+open_qty:
+POCET - P_DEL - P_DEL_DOD - P_FAK - P_VYD - P_OBJ
+
+coverage_qty:
+P_REZ + P_REZ_IS + P_REZ_PL + P_OBJ_D + P_DISPO + P_VYKR
+
+uncovered_qty:
+open_qty - coverage_qty
+
+Preserve the documented CHECK/DECODE nuance where applicable.
+
+Do not reinterpret P_REZ as an additional fulfilment subtraction.
+
+TEMPORAL CONTRACT
+Preserve distinctions between:
+RAW CURRENT
+STORED SNAPSHOT
+DERIVED CURRENT
+TRANSITION STAMP
+LAST UPDATE
+SELECTIVE HISTORY
+DATA GAP
+
+Current master-data JOINs must not be represented as historical
+transaction-time master snapshots unless evidence proves that.
+
+CRITICAL RELATIONSHIP / FAN-OUT RULES
+Preserve the v1.2 Relationship Contract Register.
+
+For 1:N relationships:
+- do not create accidental fan-out,
+- aggregate child branches before joining when required,
+- use EXISTS where existence is the question,
+- document grain and interpretation limits.
+
+IDENTITY
+RID/code values with possible leading zeroes remain text.
+
+MC-local uniqueness is confirmed only in the declared environment.
+Do not claim global uniqueness across MC/MCCZ/TEST/TESTCZ.
+
+EXISTING VYD BOUNDARY IDS
+Do not modify or duplicate:
+
+MC.OBJ_ODB_L
+vyd.oracle.f1dfff357c6da5d31924380f
+
+MC.OBJ_ODB_O
+vyd.oracle.c05d6994b969d9ce00ed3039
+
+These remain VYD-owned technical boundary entity records.
+
+The new sales-domain canonical objects should use:
+mc.object.obj_odb_l
+mc.object.obj_odb_o
+
+Reconcile cross-domain references explicitly.
+Do not replace the existing VYD IDs or silently redirect them.
+
+MUTATION / SOURCE CONTRACT
+Materialize only source-confirmed behavior already approved in v1.2,
+including relevant flows for:
+- reservation
+- quantity changes
+- action/pricing allocation
+- issue-side order mutations
+- invoice-side order mutations
+- purchasing coverage
+- cancellation
+- passive stock / stock reservation
+- replication/session bypass controls
+
+Do not label a dependency as WRITER/READER/API WRITER unless evidence
+supports that role.
+
+DO NOT ASSUME
+Preserve at minimum:
+
+- P_VYD != customer delivery.
+- P_REZ is not subtracted from open_qty.
+- P_DEL/P_DEL_DOD do not automatically mean business non-delivery.
+- RID_CT_Z and RID_CT_A may legitimately coexist.
+- ID_SZ='0000' is a valid technical sentinel.
+- SARZA is not authoritative final issued batch.
+- CENA < 0 is not automatically an error.
+- disabled FK to CT_O does not guarantee referential integrity.
+- DATUM_OK IS NOT NULL != completed order.
+- TYP_CIS != FLAGS_S[20].
+- P_REZ=0 != no coverage.
+
+BOUNDARY CONTRACTS
+Keep VYD, invoice, purchasing, pricing, stock, master-data and other
+external domains as boundaries unless the approved v1.2 contract
+contains specific confirmed details.
+
+Do not expand external domains into full contracts.
+
+BACKLOG
+Preserve existing NON-BLOCKING / FUTURE DOMAIN items, including:
+- CENA_OCA detail
+- OK detail
+- XML/domain-index detail
+- ZMENY_VYKRYTIA_OBJ_ODB future mapping
+- deeper CT_* architecture
+- OBJ_D_NAVRH / OBJD lifecycle
+- cross-environment RID/global identity
+- master temporal validity
+- exact invoice-line persistent join
+
+These gaps do not block DIAGNOSTIC-GRADE materialization.
+
+They MUST NOT be silently converted into confirmed facts.
+
+REPOSITORY ACTIONS
+
+Materialize into:
+catalog/sales/obchodne-pripady/
+
+Populate:
+- contract.yaml
+- object-obj_odb_l.yaml
+- fields-obj_odb_l.yaml
+- object-obj_odb_o.yaml
+- fields-obj_odb_o.yaml
+- constraints.yaml
+- indexes.yaml
+- relationships.yaml
+- value-domains.yaml
+- flows.yaml
+- mutations.yaml
+- temporal.yaml
+- data-quality.yaml
+- do-not-assume.yaml
+- playbooks.yaml
+- backlog.yaml
+- revisions.yaml
+- oracle-entities.yaml
+- sql-registry.yaml
+
+Populate dependency/API files only to the level supported by currently
+approved evidence.
+
+Do not fabricate exhaustive closure.
+
+Create accepted evidence manifests under:
+evidence/manifests/odb/
+
+Materialize approved read-only diagnostics under:
+sql/diagnostic/obchodne-pripady/
+
+EVIDENCE RULE
+Every materialized claim must have status + evidence.
+
+Use existing schema v1.0.
+Do not create a new schema kind merely for convenience.
+
+Preserve source NULL as YAML null.
+Preserve Oracle names and literals exactly.
+
+REVISION
+Documentation revision:
+v1.2
+
+Revision meaning:
+Hardening according to the memorandum:
+history/temporal coverage, identity scope, master-data temporal boundary,
+Relationship Contract Register, JOIN fan-out guardrails and Word metadata
+publication hygiene.
+
+BREAKING CHANGE
+No.
+
+This is initial canonical GitHub materialization of an already approved
+semantic contract.
+
+CURRENT MATURITY
+DIAGNOSTIC-GRADE.
+
+Do not claim EXHAUSTIVE DEPENDENCY-GRADE or AGENT-READY yet.
+
+ACCEPTANCE TESTS
+At minimum assert lossless representation of:
+- 79 OBJ_ODB_L fields
+- 44 OBJ_ODB_O fields
+- 17 OBJ_ODB_L triggers
+- 33 OBJ_ODB_O triggers
+- header-line identity/join
+- quantity formulas
+- critical DO NOT ASSUME rules
+- temporal categories
+- mutation boundaries
+- relationship/fan-out safeguards
+- non-blocking backlog preservation
+
+Do not create facts merely to satisfy an expected count.
+
+VALIDATION
+Run:
+python tools/validate_catalog.py
+python -m unittest discover -s tools -p 'test_*.py' -v
+domain-specific ODB acceptance tests
+ODB SQL safety tests
+
+Publication must remain blocked in PHASE A.
+Do not generate DOCX/PDF yet.
+
+Do not merge to main yet.
+
+FINAL RESPONSE REQUIRED
+Return:
+
+1. Materialized file count.
+2. Field/trigger/relationship/mutation counts.
+3. Evidence manifests created.
+4. SQL files materialized.
+5. Unresolved references.
+6. Duplicate global IDs.
+7. Remaining blocking items for AGENT-READY.
+8. Validation/test results.
+9. Diff summary.
+10. Exact commit SHA.
+
+If any approved semantic fact cannot be represented losslessly,
+return HANDOFF BLOCKED with the exact fact and schema limitation.
