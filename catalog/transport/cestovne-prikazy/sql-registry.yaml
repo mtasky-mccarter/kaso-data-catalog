@@ -5,7 +5,7 @@ records:
 - sql_id: cp.sql.header_state
   title_sk: header state
   sql_file: sql/diagnostic/cestovne-prikazy/header_state.sql
-  purpose_sk: Canonical read-only diagnostický SQL pre CP.
+  purpose_sk: Current header raw/effective state a selective transition audit.
   input_parameters:
   - name: cp_rid
     description_sk: RID cestovného príkazu, zachovať ako text.
@@ -18,10 +18,14 @@ records:
     oracle_server_version: null
     read_only: true
     notes_sk: Konzervatívna Oracle syntax; serverová verzia nie je potvrdená.
+  result_grain_sk: Jeden CESTOVNE_PR_L header.
+  fanout_warning_sk: SQL nepripája bridge; nespôsobuje header fan-out.
+  proves_sk: Current raw/effective state a vybrané auditné stopy.
+  does_not_prove_sk: Nepreukazuje úplnú event históriu; transition stamp nie je current state.
 - sql_id: cp.sql.bridge_rows
   title_sk: bridge rows
   sql_file: sql/diagnostic/cestovne-prikazy/bridge_rows.sql
-  purpose_sk: Canonical read-only diagnostický SQL pre CP.
+  purpose_sk: Current CP bridge riadky vrátane zrušených lifecycle väzieb.
   input_parameters:
   - name: cp_rid
     description_sk: RID cestovného príkazu, zachovať ako text.
@@ -34,10 +38,14 @@ records:
     oracle_server_version: null
     read_only: true
     notes_sk: Konzervatívna Oracle syntax; serverová verzia nie je potvrdená.
+  result_grain_sk: Jeden CESTOVNE_PR_O bridge riadok.
+  fanout_warning_sk: CESTOVNE_PR_L -> CESTOVNE_PR_O je 1:N; každý bridge riadok zostáva samostatný.
+  proves_sk: Current bridge membership vrátane STAV=5, RID_R, ID_R_V a financial state.
+  does_not_prove_sk: Nepreukazuje úplnú membership históriu, pretože open-state removal môže riadok DELETE-nuť.
 - sql_id: cp.sql.ridv_classification
   title_sk: ridv classification
   sql_file: sql/diagnostic/cestovne-prikazy/ridv_classification.sql
-  purpose_sk: Canonical read-only diagnostický SQL pre CP.
+  purpose_sk: Current polymorfná klasifikácia CESTOVNE_PR_O.RID_V.
   input_parameters:
   - name: cp_rid
     description_sk: RID cestovného príkazu, zachovať ako text.
@@ -50,10 +58,14 @@ records:
     oracle_server_version: null
     read_only: true
     notes_sk: Konzervatívna Oracle syntax; serverová verzia nie je potvrdená.
+  result_grain_sk: Jeden CESTOVNE_PR_O bridge riadok s current target klasifikáciou.
+  fanout_warning_sk: RID_V môže byť vo viacerých CP bridge riadkoch; identitou bridge je RID_R.
+  proves_sk: Current MC target set 003/022/029/319 cez úspešné target JOINy.
+  does_not_prove_sk: Source-supported, current-nepozorované target typy ani budúce typy bez revalidácie.
 - sql_id: cp.sql.stored_vs_live
   title_sk: stored vs live
   sql_file: sql/diagnostic/cestovne-prikazy/stored_vs_live.sql
-  purpose_sk: Canonical read-only diagnostický SQL pre CP.
+  purpose_sk: Stored header snapshot vedľa current recompute aktívneho bridge/ROZVOZ_QUE.
   input_parameters:
   - name: cp_rid
     description_sk: RID cestovného príkazu, zachovať ako text.
@@ -66,10 +78,14 @@ records:
     oracle_server_version: null
     read_only: true
     notes_sk: Konzervatívna Oracle syntax; serverová verzia nie je potvrdená.
+  result_grain_sk: Jeden CESTOVNE_PR_L header.
+  fanout_warning_sk: Bridge a ROZVOZ_QUE sa pred header joinom agregujú; inak by vznikol fan-out.
+  proves_sk: Current rozdiel stored POCET_DOKL/OBJEM/HMOTNOST/POCET_PAL voči recompute.
+  does_not_prove_sk: Rozdiel nie je automaticky data error; stored snapshot môže reprezentovať starší procesný stav.
 - sql_id: cp.sql.duplicate_membership
   title_sk: duplicate membership
   sql_file: sql/diagnostic/cestovne-prikazy/duplicate_membership.sql
-  purpose_sk: Canonical read-only diagnostický SQL pre CP.
+  purpose_sk: Detekcia current RID_O + RID_V skupín s viac bridge riadkami.
   evidence_refs:
   - cp.evidence.d.accepted_contract
   compatibility:
@@ -77,10 +93,15 @@ records:
     oracle_server_version: null
     read_only: true
     notes_sk: Konzervatívna Oracle syntax; serverová verzia nie je potvrdená.
+  result_grain_sk: Jedna duplicitná RID_O + RID_V skupina.
+  fanout_warning_sk: Výstup zámerne agreguje lifecycle bridge riadky a vracia iba skupiny COUNT(*) > 1.
+  proves_sk: Current duplicate membership groups a počet STAV=5 riadkov.
+  does_not_prove_sk: Duplicitná skupina nie je automaticky chyba; schválený snapshot obsahoval lifecycle pattern
+    3+5 a 5+5.
 - sql_id: cp.sql.find_document_cp
   title_sk: find document cp
   sql_file: sql/diagnostic/cestovne-prikazy/find_document_cp.sql
-  purpose_sk: Canonical read-only diagnostický SQL pre CP.
+  purpose_sk: Vyhľadanie všetkých current CP bridge riadkov pre konkrétny dokument.
   input_parameters:
   - name: document_rid
     description_sk: RID referencovaného dokumentu, zachovať ako text.
@@ -93,10 +114,14 @@ records:
     oracle_server_version: null
     read_only: true
     notes_sk: Konzervatívna Oracle syntax; serverová verzia nie je potvrdená.
+  result_grain_sk: Jeden CESTOVNE_PR_O bridge výskyt dokumentu v CP.
+  fanout_warning_sk: Jeden dokument môže mať viac bridge riadkov a viac CP; výsledok je 1:N.
+  proves_sk: Current CP membership riadky pre :document_rid vrátane STAV=5.
+  does_not_prove_sk: Neexistencia riadku nevylučuje historické členstvo po fyzickom DELETE.
 - sql_id: cp.sql.wms_boundary
   title_sk: wms boundary
   sql_file: sql/diagnostic/cestovne-prikazy/wms_boundary.sql
-  purpose_sk: Canonical read-only diagnostický SQL pre CP.
+  purpose_sk: Current CP a WMS execution boundary.
   input_parameters:
   - name: cp_rid
     description_sk: RID cestovného príkazu, zachovať ako text.
@@ -109,10 +134,14 @@ records:
     oracle_server_version: null
     read_only: true
     notes_sk: Konzervatívna Oracle syntax; serverová verzia nie je potvrdená.
+  result_grain_sk: Jeden CESTOVNE_PR_L header s current WMS_QUE matchom.
+  fanout_warning_sk: Cardinalita 0..1 platí pre známy snapshot; nie je to historická uniqueness garancia.
+  proves_sk: Current CP raw/effective state a dostupný WMS execution snapshot.
+  does_not_prove_sk: Nepreukazuje WMS event históriu ani príčinu reopen problému bez INI 1473/trigger contextu.
 - sql_id: cp.sql.merge_trace
   title_sk: merge trace
   sql_file: sql/diagnostic/cestovne-prikazy/merge_trace.sql
-  purpose_sk: Canonical read-only diagnostický SQL pre CP.
+  purpose_sk: Current self-reference starého a cieľového zlúčeného CP.
   input_parameters:
   - name: cp_rid
     description_sk: RID cestovného príkazu, zachovať ako text.
@@ -125,10 +154,14 @@ records:
     oracle_server_version: null
     read_only: true
     notes_sk: Konzervatívna Oracle syntax; serverová verzia nie je potvrdená.
+  result_grain_sk: Jeden matching starý CP riadok pre RID alebo RID_CP_ZLUC podmienku.
+  fanout_warning_sk: OR podmienka môže vrátiť viac starých CP smerujúcich na rovnaký cieľ.
+  proves_sk: Current RID_CP_ZLUC väzbu a raw state starého/cieľového CP.
+  does_not_prove_sk: Prázdny alebo zrušený starý CP nie je automaticky chyba.
 - sql_id: cp.sql.cost_view
   title_sk: cost view
   sql_file: sql/diagnostic/cestovne-prikazy/cost_view.sql
-  purpose_sk: Canonical read-only diagnostický SQL pre CP.
+  purpose_sk: Current header a bridge nákladový pohľad.
   input_parameters:
   - name: cp_rid
     description_sk: RID cestovného príkazu, zachovať ako text.
@@ -141,10 +174,14 @@ records:
     oracle_server_version: null
     read_only: true
     notes_sk: Konzervatívna Oracle syntax; serverová verzia nie je potvrdená.
+  result_grain_sk: Jeden CESTOVNE_PR_O bridge riadok; header sa opakuje pre každý bridge.
+  fanout_warning_sk: CESTOVNE_PR_L -> CESTOVNE_PR_O je 1:N; header cost sa pri agregácii nesmie násobiť.
+  proves_sk: Current L.NAKL_P, L.NAKL_S, TYP_ROZP_NAKL a O.NAKL.
+  does_not_prove_sk: O.NAKL nie je univerzálny náklad pre ľubovoľný RID_V target.
 - sql_id: cp.sql.state_anomaly
   title_sk: state anomaly
   sql_file: sql/diagnostic/cestovne-prikazy/state_anomaly.sql
-  purpose_sk: Canonical read-only diagnostický SQL pre CP.
+  purpose_sk: Current shortlist divergencií header a bridge state.
   evidence_refs:
   - cp.evidence.d.accepted_contract
   compatibility:
@@ -152,10 +189,15 @@ records:
     oracle_server_version: null
     read_only: true
     notes_sk: Konzervatívna Oracle syntax; serverová verzia nie je potvrdená.
+  result_grain_sk: Jeden CESTOVNE_PR_O bridge riadok označený state podmienkou.
+  fanout_warning_sk: Header -> bridge je 1:N; výsledok je shortlist jednotlivých bridge riadkov.
+  proves_sk: Current header/bridge state kombinácie vybrané detector podmienkou.
+  does_not_prove_sk: Výsledok nie je automaticky data error; source umožňuje prechodné kombinácie napríklad 0/1
+    a 1/2.
 - sql_id: cp.sql.dependency_check
   title_sk: dependency check
   sql_file: sql/diagnostic/cestovne-prikazy/dependency_check.sql
-  purpose_sk: Canonical read-only diagnostický SQL pre CP.
+  purpose_sk: Revalidačný direct dependency check CP core surface.
   evidence_refs:
   - cp.evidence.d.accepted_contract
   compatibility:
@@ -163,3 +205,7 @@ records:
     oracle_server_version: null
     read_only: true
     notes_sk: Konzervatívna Oracle syntax; serverová verzia nie je potvrdená.
+  result_grain_sk: Jeden ALL_DEPENDENCIES edge na CP core target.
+  fanout_warning_sk: Jeden source objekt môže mať viac dependency edge riadkov podľa targetu.
+  proves_sk: Current source-visible compile-time direct dependencies na CP core objekty.
+  does_not_prove_sk: Nepreukazuje absolútny runtime SQL universe ani writer/reader rolu bez source klasifikácie.

@@ -11,25 +11,26 @@ records:
   event_sk: Lifecycle transition
   direct_mutations_sk: UpdateStavCP synchronizuje štandardný O.STAV a L.STAV; fiktívny stav zapisuje FLAGS_B.
   side_effects_sk: WMS/tracktrace/obaly podľa konkrétneho prechodu.
-  diagnostic_meaning_sk: Current stav čítaj z L.STAV a pri extended stave cez D_CPR_L.GetStavCPZlozExt; transition stampy nie sú current-state flagy.
+  diagnostic_meaning_sk: Current stav čítaj z L.STAV a pri extended stave cez D_CPR_L.GetStavCPZlozExt; transition
+    stampy nie sú current-state flagy.
   status: POTVRDENÉ
   evidence_refs:
   - cp.evidence.b2.core_source
-
 - mutation_id: cp.mutation.bridge_state
   target_refs:
   - mc.field.cestovne_pr_o.stav
   writer_ref: mc.oracle.mc_d_cpr_l
   writer_role: CORE DOMAIN
   event_sk: Add/remove/status sync
-  direct_mutations_sk: VyradDoklad môže STAV=5 alebo fyzický DELETE podľa lifecycle; UpdateStavCP mení nezrušené bridge.
+  direct_mutations_sk: VyradDoklad môže STAV=5 alebo fyzický DELETE podľa lifecycle; UpdateStavCP mení nezrušené
+    bridge.
   side_effects_sk: C_ROZVOZ_QUE, C_DOKL_OBAL a HANDYGO patria do ďalšieho writer/caller surface podľa source.
-  diagnostic_meaning_sk: O.STAV môže byť pred/za header stavom; STAV=5 neznamená, že každý historicky vyradený bridge zostane fyzicky zachovaný.
+  diagnostic_meaning_sk: O.STAV môže byť pred/za header stavom; STAV=5 neznamená, že každý historicky vyradený bridge
+    zostane fyzicky zachovaný.
   status: POTVRDENÉ
   evidence_refs:
   - cp.evidence.b2.core_source
   - cp.evidence.b2.d_cpr_o
-
 - mutation_id: cp.mutation.derived_header
   target_refs:
   - mc.field.cestovne_pr_l.pocet_dokl
@@ -41,12 +42,12 @@ records:
   event_sk: PrepocitajObsahC
   direct_mutations_sk: Prepočítava header stored snapshoty z aktívneho bridge/ROZVOZ_QUE.
   side_effects_sk: C_ROZVOZ_QUE vie podľa source zapisovať subset týchto polí.
-  diagnostic_meaning_sk: Stored snapshot môže historicky divergovat od dnešného recompute; pri incidente porovnaj obe vrstvy.
+  diagnostic_meaning_sk: Stored snapshot môže historicky divergovat od dnešného recompute; pri incidente porovnaj
+    obe vrstvy.
   status: POTVRDENÉ
   evidence_refs:
   - cp.evidence.b2.core_source
   - cp.evidence.b.state_derived
-
 - mutation_id: cp.mutation.header_cost
   target_refs:
   - mc.field.cestovne_pr_l.nakl_p
@@ -56,25 +57,26 @@ records:
   event_sk: Header transport cost flow
   direct_mutations_sk: D_CPR_L/cost flow patrí medzi potvrdené writery header nákladov.
   side_effects_sk: C_CP_VYUCT_PREPRAVY a C_CESTOVNE_PR_TRASA sú ďalšie potvrdené cost-domain writery/boundaries.
-  diagnostic_meaning_sk: Header náklad má viac writerov; diagnostika musí pokračovať do cost/settlement domény a nesmie zamieňať NAKL_P s NAKL_S.
+  diagnostic_meaning_sk: Header náklad má viac writerov; diagnostika musí pokračovať do cost/settlement domény a
+    nesmie zamieňať NAKL_P s NAKL_S.
   status: POTVRDENÉ
   evidence_refs:
   - cp.evidence.b2.core_source
   - cp.evidence.d.accepted_contract
-
 - mutation_id: cp.mutation.bridge_cost
   target_refs:
   - mc.field.cestovne_pr_o.nakl
   writer_ref: mc.oracle.mc_c_cestovne_pr_trasa.package_body
   writer_role: DIRECT WRITER
   event_sk: Route/cost calculation
-  direct_mutations_sk: Route/cost calculation zapisuje riadkový O.NAKL; T_CESTOVNE_PR_O_NAKLADY ho pri nepodporovanom document type môže nulovať.
-  side_effects_sk: T_CESTOVNE_PR_O_NAKLADY môže pri podporovanom VYD/transfer flow propagovať náklad do VYD_L.SUMA_DN a označiť faktúru na prepočet.
+  direct_mutations_sk: Route/cost calculation zapisuje riadkový O.NAKL; T_CESTOVNE_PR_O_NAKLADY ho pri nepodporovanom
+    document type môže nulovať.
+  side_effects_sk: T_CESTOVNE_PR_O_NAKLADY môže pri podporovanom VYD/transfer flow propagovať náklad do VYD_L.SUMA_DN
+    a označiť faktúru na prepočet.
   diagnostic_meaning_sk: O.NAKL nie je univerzálny pre všetky polymorfné RID_V targety.
   status: POTVRDENÉ
   evidence_refs:
   - cp.evidence.b2.core_source
-
 - mutation_id: cp.mutation.route_stop_fields
   target_refs:
   - mc.field.cestovne_pr_o.poradie
@@ -92,7 +94,6 @@ records:
   evidence_refs:
   - cp.evidence.b2.d_cpr_o
   - cp.evidence.b2.core_source
-
 - mutation_id: cp.mutation.vehicle_driver
   target_refs:
   - mc.field.cestovne_pr_l.auto
@@ -104,11 +105,11 @@ records:
   event_sk: ZmenAuto / route-driver assignment
   direct_mutations_sk: D_CPR_L.ZmenAuto patrí medzi potvrdené writery vozidla/vodiča.
   side_effects_sk: HANDYGO a C_CESTOVNE_PR_TRASA sú ďalšie source-visible writer/caller hranice.
-  diagnostic_meaning_sk: Vozidlo a vodič môžu byť prebrané z AUTA alebo ručne zmenené; neodvodzovať pôvod hodnoty bez source/session kontextu.
+  diagnostic_meaning_sk: Vozidlo a vodič môžu byť prebrané z AUTA alebo ručne zmenené; neodvodzovať pôvod hodnoty
+    bez source/session kontextu.
   status: POTVRDENÉ
   evidence_refs:
   - cp.evidence.b2.core_source
-
 - mutation_id: cp.mutation.financial_state
   target_refs:
   - mc.field.cestovne_pr_o.stav_fin_vysp
@@ -117,13 +118,13 @@ records:
   writer_role: CORE DOMAIN
   event_sk: ZmenStavFinVysp
   direct_mutations_sk: UPDATE O.STAV_FIN_VYSP a následný prepočet agregovaného header stavu.
-  side_effects_sk: Route-stop prepočet + D_CPR_L.NastavStavFinVyspCP; C_CESTOVNE_PR_TRASA je ďalší source-visible writer surface.
+  side_effects_sk: Route-stop prepočet + D_CPR_L.NastavStavFinVyspCP; C_CESTOVNE_PR_TRASA je ďalší source-visible
+    writer surface.
   diagnostic_meaning_sk: Header STAV_FIN_VYSP je agregát aktívnych riadkov, nie nezávislý current flag.
   status: POTVRDENÉ
   evidence_refs:
   - cp.evidence.b2.d_cpr_o
   - cp.evidence.b2.core_source
-
 - mutation_id: cp.mutation.flags_b
   target_refs:
   - mc.field.cestovne_pr_l.flags_b
@@ -131,12 +132,13 @@ records:
   writer_role: CORE DOMAIN
   event_sk: Extended-state and process flag changes
   direct_mutations_sk: D_CPR_L zapisuje source-confirmed pozície FLAGS_B vrátane extended-state vrstvy.
-  side_effects_sk: C_ROZVOZ_DAVKA, C_ROZVOZ_QUE a C_DOCASNY_ROZVOZ patria medzi ďalšie source-visible writery/callers FLAGS_B.
-  diagnostic_meaning_sk: FLAGS_B obsahuje systémové aj procesné flagy; bit/pozíciu nepoužívať bez source-confirmed významu.
+  side_effects_sk: C_ROZVOZ_DAVKA, C_ROZVOZ_QUE a C_DOCASNY_ROZVOZ patria medzi ďalšie source-visible writery/callers
+    FLAGS_B.
+  diagnostic_meaning_sk: FLAGS_B obsahuje systémové aj procesné flagy; bit/pozíciu nepoužívať bez source-confirmed
+    významu.
   status: POTVRDENÉ
   evidence_refs:
   - cp.evidence.b2.core_source
-
 - mutation_id: cp.mutation.rid_v_membership
   target_refs:
   - mc.field.cestovne_pr_o.rid_v
@@ -150,7 +152,6 @@ records:
   evidence_refs:
   - cp.evidence.b2.core_source
   - cp.evidence.b.ridv_targets
-
 - mutation_id: cp.mutation.bridge_insert
   target_refs:
   - mc.object.cestovne_pr_o
@@ -162,10 +163,11 @@ records:
   status: POTVRDENÉ
   evidence_refs:
   - cp.evidence.b2.d_cpr_o
-
 - mutation_id: cp.mutation.wms_319_side_effect
   target_refs:
-  - mc.object.cestovne_pr_o
+  - mc.oracle.mc_wms_que.field.rid_cp
+  - mc.oracle.mc_docasny_rozvoz.field.zavezeny
+  - mc.oracle.mc_docasny_rozvoz.field.nevybaveny
   writer_ref: mc.oracle.mc_t_cestovne_pr_o_after
   writer_role: TRIGGER SIDE EFFECT
   event_sk: INSERT/UPDATE/DELETE
@@ -176,3 +178,18 @@ records:
   status: POTVRDENÉ
   evidence_refs:
   - cp.evidence.b2.core_source
+- mutation_id: cp.mutation.bridge_cost_external_effect
+  target_refs:
+  - mc.oracle.mc_vyd_l.field.suma_dn
+  writer_ref: mc.oracle.mc_t_cestovne_pr_o_naklady
+  writer_role: TRIGGER SIDE EFFECT
+  event_sk: UPDATE CESTOVNE_PR_O.NAKL
+  condition_sk: Podporovaný VYD/transfer flow a manuálny cenník podľa trigger source.
+  direct_mutations_sk: Prenáša bridge náklad do VYD_L.SUMA_DN.
+  side_effects_sk: Môže označiť faktúru na prepočet; presné invoice-side pole zostáva externou boundary.
+  diagnostic_meaning_sk: External cost propagácia je oddelená od canonical významu O.NAKL a nerozširuje VYD/invoice
+    business contract.
+  status: POTVRDENÉ
+  evidence_refs:
+  - cp.evidence.b2.core_source
+  - cp.evidence.d.accepted_contract
