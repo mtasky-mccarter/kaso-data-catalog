@@ -21,8 +21,19 @@ This repository is the canonical machine-readable source of truth for the KASO D
 - Canonical evidence manifests live under `evidence/manifests/`; do not place competing YAML manifests directly under `evidence/`.
 - Retained SNAPSHOT_CRITICAL evidence lives under `evidence/snapshots/` and must satisfy checksum rules.
 - Canonical read-only SQL lives under `sql/diagnostic/` or `sql/mapping-packs/`.
-- Generated publications/viewers live under `generated/` and must not be edited as the source of truth.
+- Generated publications/viewers live under `generated/<publication-slug>/` and must not be edited as the source of truth.
 - JSON Schemas live under `schema/`; synthetic fixtures under `examples/schema-smoke-test/`.
+
+## Generated publication naming and layout
+- Follow `docs/publication-standard.md` for every committed DOCX/PDF/viewer publication.
+- Every document family gets one stable version-independent ASCII kebab-case folder directly under `generated/`, for example `generated/cestovne-prikazy/` or `generated/vydajky/`.
+- Do not commit generated DOCX, PDF or publication manifest files directly under the root `generated/` directory.
+- Technical & Diagnostic Reference filenames must use exactly: `KASO Data Catalog - Technical & Diagnostic Reference - <subject_sk> v<documentation_version>` plus the appropriate extension.
+- `<subject_sk>` is the approved Slovak human-readable document subject and preserves Slovak diacritics.
+- `<documentation_version>` comes from the current approved canonical domain revision/documentation version. Do not invent a separate publication version.
+- DOCX, PDF and `.manifest.yaml` for the same publication use the same basename and live in the same publication folder.
+- Manifest artifact paths must reference the exact repository-relative generated paths and their SHA-256 values.
+- For committed canonical publications use `python tools/generate_publication.py <publication-slug>` or `python tools/generate_publication.py all`. Domain-specific generators are implementation details and may emit temporary intermediate filenames only.
 
 ## Contract semantics
 - Preserve Oracle names exactly. Canonical aliases are English ASCII `snake_case`.
@@ -55,7 +66,7 @@ Codex should perform production catalog materialization only after ChatGPT suppl
 If required evidence is missing, the handoff conflicts with `main`, or business meaning is ambiguous, do not guess. Return the specific item as `HANDOFF BLOCKED` for ChatGPT/business review.
 
 ## Codex engineering workflow
-1. Read this `AGENTS.md`, `docs/mapping-standard.md`, the handoff package and the existing domain contract in `main`.
+1. Read this `AGENTS.md`, `docs/mapping-standard.md`, `docs/publication-standard.md`, the handoff package and the existing domain contract in `main`.
 2. Work on a feature branch; do not bypass review by silently changing canonical `main`.
 3. Materialize only approved facts into catalog YAML, evidence manifests and canonical SQL.
 4. Preserve stable IDs and revision/change-management rules; mark breaking changes explicitly.
@@ -63,13 +74,14 @@ If required evidence is missing, the handoff conflicts with `main`, or business 
 6. Check unresolved references, duplicate IDs, evidence requirements and semantic-loss assertions.
 7. Prepare a focused PR containing only intended changes and explicit system/domain boundaries.
 8. Merge only with green CI and a clean diff; verify the `main` workflow after merge.
-9. Generate DOCX/PDF/viewer outputs only from the canonical layer when a generator exists.
+9. Generate DOCX/PDF/viewer outputs only from the canonical layer when a generator exists, and enforce the generated publication naming/layout standard.
 
 ## Change management
 - Do not silently overwrite a confirmed fact. Revalidate conflicts and record revisions.
 - Changes to canonical alias, grain, JOIN key or business meaning are breaking changes unless proven otherwise.
 - Population observations carry snapshot dates.
 - Deprecated/unsafe fields remain traceable and are marked rather than erased.
+- Publication folder/filename normalization alone is a repository/publication change, not a semantic contract change.
 
 ## Validation
 Before merging a catalog change:
@@ -77,7 +89,8 @@ Before merging a catalog change:
 2. Run `python -m unittest discover -s tools -p 'test_*.py' -v`.
 3. For a real mapped domain, pass its domain-specific acceptance gate in addition to generic schema tests.
 4. Keep blocking backlog empty before claiming AGENT-READY.
-5. Confirm the PR diff contains only intended schema/catalog/evidence/SQL/tooling changes.
-6. After merge, confirm the resulting `main` workflow is green.
+5. Confirm the PR diff contains only intended schema/catalog/evidence/SQL/tooling/publication changes.
+6. For publication changes, run `python tools/generate_publication.py all --check` and verify folder/filename rules.
+7. After merge, confirm the resulting `main` workflow is green.
 
 Structural validation never substitutes for Oracle/business evidence. Tests guard lossless representation and repository invariants; they do not manufacture business truth.

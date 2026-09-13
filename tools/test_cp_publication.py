@@ -9,9 +9,10 @@ import yaml
 
 
 ROOT = Path(__file__).resolve().parents[1]
-GENERATED = ROOT / "generated"
+GENERATED = ROOT / "generated" / "cestovne-prikazy"
 DOMAIN = ROOT / "catalog/transport/cestovne-prikazy"
 SQL_DIR = ROOT / "sql/diagnostic/cestovne-prikazy"
+BASENAME = "KASO Data Catalog - Technical & Diagnostic Reference - cestovné príkazy v1.1"
 
 
 def sha256(path):
@@ -31,23 +32,31 @@ def canonical_digest():
 class CPV11PublicationTests(unittest.TestCase):
     def test_manifest_provenance_and_artifact_hashes(self):
         manifest = yaml.safe_load(
-            (GENERATED / "cestovne-prikazy-v1.1.manifest.yaml").read_text(encoding="utf-8")
+            (GENERATED / f"{BASENAME}.manifest.yaml").read_text(encoding="utf-8")
         )
         self.assertEqual("mtasky-mccarter/kaso-data-catalog", manifest["repository"])
         self.assertEqual("main", manifest["canonical_branch"])
         self.assertEqual("cp.contract.cestovne_prikazy.1_1", manifest["contract_ref"])
         self.assertEqual("1.1", manifest["contract_version"])
+        self.assertEqual("1.0", manifest["publication_layout_version"])
+        self.assertEqual("cestovne-prikazy", manifest["publication_slug"])
+        self.assertEqual(BASENAME, manifest["publication_title"])
         self.assertEqual(canonical_digest(), manifest["canonical_input_sha256"])
         for artifact in manifest["artifacts"]:
             path = ROOT / artifact["path"]
             self.assertTrue(path.is_file(), path)
             self.assertEqual(artifact["sha256"], sha256(path))
-        self.assertTrue((GENERATED / "cestovne-prikazy-v1.1.docx").read_bytes().startswith(b"PK"))
-        self.assertTrue((GENERATED / "cestovne-prikazy-v1.1.pdf").read_bytes().startswith(b"%PDF"))
+        self.assertTrue((GENERATED / f"{BASENAME}.docx").read_bytes().startswith(b"PK"))
+        self.assertTrue((GENERATED / f"{BASENAME}.pdf").read_bytes().startswith(b"%PDF"))
 
     def test_publications_are_deterministically_current(self):
         subprocess.run(
-            [sys.executable, str(ROOT / "tools/generate_cp_publication.py"), "--check"],
+            [
+                sys.executable,
+                str(ROOT / "tools/generate_publication.py"),
+                "cestovne-prikazy",
+                "--check",
+            ],
             cwd=ROOT,
             check=True,
         )
