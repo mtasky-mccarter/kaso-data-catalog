@@ -1,5 +1,6 @@
 """Consistency checks for source API/member reference registries."""
 import copy
+import json
 import unittest
 
 from validate_catalog import ROOT, load_yaml, validate_document
@@ -26,9 +27,13 @@ def summary_errors(document):
 
 
 class ApiReferenceTests(unittest.TestCase):
-    def test_approved_cp_and_purchasing_targets_validate(self):
-        for target in ('D_CPR_L', 'D_CPR_O', 'D_OBJD_L', 'D_OBJD_O',
-                       'C_OBJ_D_KOMBAJN', 'C_REZ_OBJ_DOD'):
+    def test_approved_cp_vyd_and_purchasing_targets_validate(self):
+        targets = ['D_CPR_L', 'D_CPR_O', 'D_VYDAJ_L', 'D_VYDAJ_L_B',
+                   'D_VYDAJ_O', 'D_VYDAJ_O2', 'C_VYD_O_P_PRIJ', 'D_OBJD_L',
+                   'D_OBJD_O', 'C_OBJ_D_KOMBAJN', 'C_REZ_OBJ_DOD']
+        schema = json.loads((ROOT / 'schema/api-references.schema.json').read_text())
+        self.assertEqual(targets, schema['$defs']['record']['properties']['target_package']['enum'])
+        for target in targets:
             with self.subTest(target=target):
                 doc = copy.deepcopy(load_yaml(ROOT / 'examples/schema-smoke-test/api-references.yaml'))
                 doc['records'][0]['target_package'] = target

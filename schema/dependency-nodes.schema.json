@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.example.invalid/kaso/1.0/dependency-nodes.schema.json",
+  "title": "dependency-nodes v1.0",
+  "type": "object",
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "kind": {"const": "dependency-nodes"},
+    "id": {"$ref": "common.schema.json#/$defs/id"},
+    "environment": {"type": "string", "minLength": 1},
+    "source_dataset": {"type": "string", "minLength": 1},
+    "summary": {
+      "type": "object",
+      "properties": {
+        "record_count": {"type": "integer", "minimum": 0},
+        "inbound_count": {"type": "integer", "minimum": 0},
+        "outbound_count": {"type": "integer", "minimum": 0},
+        "max_inbound_depth": {"type": "integer", "minimum": 0},
+        "max_outbound_depth": {"type": "integer", "minimum": 0}
+      },
+      "required": ["record_count", "inbound_count", "outbound_count", "max_inbound_depth", "max_outbound_depth"],
+      "additionalProperties": false
+    },
+    "records": {"type": "array", "items": {"$ref": "#/$defs/record"}}
+  },
+  "required": ["schema_version", "kind", "id", "environment", "source_dataset", "summary", "records"],
+  "additionalProperties": false,
+  "$defs": {
+    "oracle_name": {"type": "string", "minLength": 1},
+    "record": {
+      "type": "object",
+      "properties": {
+        "dependency_node_id": {"$ref": "common.schema.json#/$defs/id"},
+        "direction": {"enum": ["INBOUND", "OUTBOUND"]},
+        "min_depth": {"type": "integer", "minimum": 1},
+        "node_owner": {"$ref": "#/$defs/oracle_name"},
+        "node_name": {"$ref": "#/$defs/oracle_name"},
+        "node_type": {"$ref": "#/$defs/oracle_name"},
+        "evidence_refs": {"$ref": "common.schema.json#/$defs/refs"}
+      },
+      "required": ["dependency_node_id", "direction", "min_depth", "node_owner", "node_name", "node_type", "evidence_refs"],
+      "additionalProperties": false
+    }
+  }
+}

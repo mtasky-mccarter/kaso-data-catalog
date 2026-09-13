@@ -1,0 +1,83 @@
+schema_version: '1.0'
+kind: temporal
+id: vyd.temporal.001
+records:
+- temporal_rule_id: vyd.temporal.01
+  scope_refs:
+  - mc.object.vyd_l
+  classification: RAW CURRENT
+  transition_or_event_sk: Aktuálny/uchovávaný dokladový stav
+  writer_or_source_ref: null
+  rollback_behavior_sk: null
+  reconstructable: null
+  history_limitations_sk: I_STAMP/U_STAMP/S_STAMP sú audit stamps; FLAGS_S je current lifecycle register.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_15
+  - vyd.evidence.evidence_09
+- temporal_rule_id: vyd.temporal.02
+  scope_refs:
+  - mc.object.vyd_o
+  classification: STORED SNAPSHOT
+  transition_or_event_sk: Aktuálny line snapshot
+  writer_or_source_ref: null
+  rollback_behavior_sk: null
+  reconstructable: null
+  history_limitations_sk: Množstvá P_DEL/P_VYSKL/P_PRIJ/P_REZ sú snapshot bucket-y.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_15
+  - vyd.evidence.evidence_09
+- temporal_rule_id: vyd.temporal.03
+  scope_refs:
+  - mc.object.vyd_o
+  classification: SELECTIVE HISTORY
+  transition_or_event_sk: Čiastočná event história
+  writer_or_source_ref: null
+  rollback_behavior_sk: null
+  reconstructable: false
+  history_limitations_sk: Pokryté CENA/ZLAVY/POCET/P_DEL; nie celý quantity lifecycle.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_15
+  - vyd.evidence.evidence_09
+- temporal_rule_id: vyd.temporal.04
+  scope_refs:
+  - mc.object.vyd_o
+  - mc.object.vyd_o_p_prij
+  classification: STORED SNAPSHOT
+  transition_or_event_sk: Vzťahová return evidencia
+  writer_or_source_ref: null
+  rollback_behavior_sk: null
+  reconstructable: null
+  history_limitations_sk: Môže mať viac záznamov na source line; nie univerzálny event log.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_15
+  - vyd.evidence.evidence_09
+- temporal_rule_id: vyd.temporal.05
+  scope_refs:
+  - mc.oracle.mc_wms_que
+  classification: RAW CURRENT
+  transition_or_event_sk: Current execution/task snapshot
+  writer_or_source_ref: null
+  rollback_behavior_sk: null
+  reconstructable: false
+  history_limitations_sk: Nie potvrdená event história pre všetky stavové prechody.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_15
+  - vyd.evidence.evidence_09
+- temporal_rule_id: vyd.temporal.06
+  scope_refs:
+  - mc.object.cestovne_pr_o
+  classification: RAW CURRENT
+  transition_or_event_sk: Current transport bridge
+  writer_or_source_ref: null
+  rollback_behavior_sk: null
+  reconstructable: false
+  history_limitations_sk: Môže mať multiple rows; plná história presunov nie je garantovaná.
+  status: POTVRDENÉ
+  evidence_refs:
+  - vyd.evidence.evidence_15
+  - vyd.evidence.evidence_09
