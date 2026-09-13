@@ -1,0 +1,81 @@
+schema_version: '1.0'
+kind: playbooks
+id: pur.playbooks.001
+records:
+- playbook_id: pur.playbook.overdue
+  symptom_sk: Supplier PO sa javí otvorená/overdue
+  first_sql_ref: pur.sql.overdue
+  proves_sk: Efektívny termín riadka, GetS_STAV a remaining_qty.
+  does_not_prove_sk: STAV samotný neurčuje fulfilment.
+  next_step_sk: Posúdiť jednotlivé termíny a množstvá.
+  flow_refs:
+  - pur.flow.standard
+  dependency_or_boundary_refs:
+  - pur.rel.pl_receipt
+  temporal_boundary_sk: Current snapshot nie je úplná event história.
+- playbook_id: pur.playbook.fulfilled_without_receipt
+  symptom_sk: PO je vybavená, tovar neprišiel
+  first_sql_ref: pur.sql.po_pl
+  proves_sk: PO P_PL -> všetky linked PL riadky -> P_PRIJ/remaining.
+  does_not_prove_sk: PO fulfilment != fyzický príjem.
+  next_step_sk: Použiť PL receipt trace; preveriť downstream vrstvu.
+  flow_refs:
+  - pur.flow.standard
+  dependency_or_boundary_refs:
+  - pur.rel.pl_receipt
+  temporal_boundary_sk: Current snapshot nie je úplná event história.
+- playbook_id: pur.playbook.pl_open
+  symptom_sk: PL ostáva otvorený po príjme
+  first_sql_ref: pur.sql.open_pl
+  proves_sk: GetS_STAV a otvorené line quantities.
+  does_not_prove_sk: Current lineage nemusí pokrývať celú históriu P_PRIJ.
+  next_step_sk: Skontrolovať current/pending receipt riadky a UkonciPrijemPL source vetvy.
+  flow_refs:
+  - pur.flow.handygo
+  dependency_or_boundary_refs:
+  - pur.rel.pl_receipt
+  temporal_boundary_sk: Current snapshot nie je úplná event história.
+- playbook_id: pur.playbook.po_pl_mismatch
+  symptom_sk: PO -> PL quantity mismatch
+  first_sql_ref: pur.sql.po_pl
+  proves_sk: Všetky PL riadky k PO line.
+  does_not_prove_sk: Priamy JOIN nie je bezpečný pre súčet opakovaných PO množstiev.
+  next_step_sk: Agregovať PL po zdrojovej PO line; rešpektovať 1:N.
+  flow_refs:
+  - pur.flow.standard
+  dependency_or_boundary_refs:
+  - pur.rel.pl_receipt
+  temporal_boundary_sk: Current snapshot nie je úplná event história.
+- playbook_id: pur.playbook.receipt_mismatch
+  symptom_sk: PL -> receipt mismatch
+  first_sql_ref: pur.sql.p_prij_lineage
+  proves_sk: P_PRIJ oproti predagregovanej current lineage.
+  does_not_prove_sk: Nie úplná event história ani automatický dôkaz corruption.
+  next_step_sk: Oddeliť temporal DATA GAP od dnešnej surviving lineage.
+  flow_refs:
+  - pur.flow.standard
+  dependency_or_boundary_refs:
+  - pur.rel.pl_receipt
+  temporal_boundary_sk: Current snapshot nie je úplná event história.
+- playbook_id: pur.playbook.ui_state
+  symptom_sk: UI Nevybavená, raw STAV Uzavretá
+  first_sql_ref: pur.sql.header_lines
+  proves_sk: GetS_STAV/Flag11 a raw STAV sú odlišné registre.
+  does_not_prove_sk: STAV=000-40 neznamená fulfilled.
+  next_step_sk: Použiť canonical fulfilment stav; táto kombinácia je validná.
+  flow_refs:
+  - pur.flow.standard
+  dependency_or_boundary_refs:
+  - pur.rel.pl_receipt
+  temporal_boundary_sk: Current snapshot nie je úplná event história.
+- playbook_id: pur.playbook.proposal_history
+  symptom_sk: Historický RID_N sa nepripojí
+  first_sql_ref: pur.sql.reverse_proposal
+  proves_sk: Current proposal reference a chýbajúci current target.
+  does_not_prove_sk: Nie automaticky orphan corruption.
+  next_step_sk: Rešpektovať retention/log/history boundary.
+  flow_refs:
+  - pur.flow.standard
+  dependency_or_boundary_refs:
+  - pur.rel.pl_receipt
+  temporal_boundary_sk: Current snapshot nie je úplná event história.

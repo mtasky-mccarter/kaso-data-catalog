@@ -2,7 +2,7 @@
 import copy
 import unittest
 
-from validate_catalog import ROOT, load_yaml
+from validate_catalog import ROOT, load_yaml, validate_document
 
 
 def summary_errors(document):
@@ -26,6 +26,19 @@ def summary_errors(document):
 
 
 class ApiReferenceTests(unittest.TestCase):
+    def test_approved_cp_and_purchasing_targets_validate(self):
+        for target in ('D_CPR_L', 'D_CPR_O', 'D_OBJD_L', 'D_OBJD_O',
+                       'C_OBJ_D_KOMBAJN', 'C_REZ_OBJ_DOD'):
+            with self.subTest(target=target):
+                doc = copy.deepcopy(load_yaml(ROOT / 'examples/schema-smoke-test/api-references.yaml'))
+                doc['records'][0]['target_package'] = target
+                self.assertEqual([], validate_document(doc))
+
+    def test_unapproved_api_target_remains_rejected(self):
+        doc = copy.deepcopy(load_yaml(ROOT / 'examples/schema-smoke-test/api-references.yaml'))
+        doc['records'][0]['target_package'] = 'UNAPPROVED_PACKAGE'
+        self.assertTrue(any('target_package' in error for error in validate_document(doc)))
+
     def test_synthetic_summary_matches_records(self):
         doc = load_yaml(ROOT / 'examples/schema-smoke-test/api-references.yaml')
         self.assertEqual([], summary_errors(doc))

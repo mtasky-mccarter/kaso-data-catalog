@@ -1,0 +1,30 @@
+schema_version: '1.0'
+kind: mutations
+id: pur.mutations.001
+records:
+- mutation_id: pur.mutation.pl_quantity
+  target_refs:
+  - mc.field.objd_o.p_pl
+  writer_ref: null
+  writer_role: null
+  event_sk: PL processing/reversal
+  direct_mutations_sk: Source potvrdzuje mutáciu P_PL pri spracovaní/reverzii PL.
+  business_effect_sk: P_PL pokrýva downstream PL lifecycle, nie fyzický príjem.
+  diagnostic_meaning_sk: Presný jednotlivý writer sa neurčuje z package názvu. Source export uchováva mutation kontext.
+  status: POTVRDENÉ
+  evidence_refs:
+  - pur.evidence.accepted
+  - pur.evidence.mp01_f
+- mutation_id: pur.mutation.finalisation
+  target_refs:
+  - mc.object.objd_o
+  writer_ref: pur.oracle.mc.d_objd_l.package
+  writer_role: API WRITER
+  event_sk: UkonciPrijemPL
+  condition_sk: Vetvenie podľa remaining/unreceived quantity a process/config.
+  direct_mutations_sk: null
+  side_effects_sk: Možné cancellation/shortening alebo receipt/return processing; nie každý branch zapisuje.
+  status: POTVRDENÉ
+  evidence_refs:
+  - pur.evidence.accepted
+  - pur.evidence.mp01_f

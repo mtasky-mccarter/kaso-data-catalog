@@ -1,0 +1,31 @@
+schema_version: '1.0'
+kind: flows
+id: pur.flows.001
+records:
+- flow_id: pur.flow.standard
+  trigger_or_procedure_ref: null
+  event_sk: production plan -> OBJ_D_NAVRH -> approve/reject -> supplier PO (00028) -> PL (00029) -> receipt ->
+    finalisation
+  business_effect_sk: Štandardný proces potvrdený používateľom; HandyGO spracúva príjem z PL.
+  diagnostic_meaning_sk: PO môže byť vybavená cez P_PL, kým downstream PL nemá fyzický príjem. Priama PO -> receipt
+    cesta je technicky potvrdená, business účel otvorený.
+  evidence_refs:
+  - pur.evidence.accepted
+  - pur.evidence.mp05_c
+- flow_id: pur.flow.handygo
+  trigger_or_procedure_ref: mc.oracle.mc_handygo.package_body
+  event_sk: Source LINE 5027 volá D_OBJD_L.UkonciPrijemPL(sRidObj).
+  calls:
+  - callee_ref: pur.oracle.mc.d_objd_l.package
+    sequence: 1
+    condition_sk: UkonciPrijemPL; konkrétne runtime GUI správanie za Oracle source boundary.
+  side_effects:
+  - scope_refs:
+    - mc.object.objd_o
+    description_sk: 'Finalizácia vyhodnotí neprijatý zvyšok a proces/config vetvy: bez akcie, zrušenie/skrátenie
+      zvyšku, receipt/return spracovanie.'
+  diagnostic_meaning_sk: Nezjednodušovať na jeden bezpodmienečný state update.
+  evidence_refs:
+  - pur.evidence.mp01_f
+  - pur.evidence.accepted
+  - pur.evidence.schema_approval

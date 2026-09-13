@@ -1,0 +1,249 @@
+HANDOFF RESUME — PUR-SCHEMA-001 APPROVED
+
+Decision date:
+2026-09-11
+
+Repository:
+mtasky-mccarter/kaso-data-catalog
+
+Resume branch:
+codex/purchasing-agent-ready
+
+Authoritative environment:
+MC
+
+PUR-SCHEMA-001 is APPROVED.
+
+The blocking issue is repository-schema compatibility, not missing Oracle
+or business evidence.
+
+No additional MC read-only test is required for this blocker.
+
+
+============================================================
+1. APPROVED SCHEMA CHANGE
+============================================================
+
+Update the existing:
+
+schema/api-references.schema.json
+
+Do NOT create a parallel purchasing-specific API-reference schema.
+
+Extend the existing target_package enum while preserving the current CP
+values.
+
+Approved enum values:
+
+- D_CPR_L
+- D_CPR_O
+- D_OBJD_L
+- D_OBJD_O
+- C_OBJ_D_KOMBAJN
+- C_REZ_OBJ_DOD
+
+The four purchasing additions are approved because their inclusion is
+required to losslessly materialize the already approved purchasing
+source/API evidence.
+
+This approval changes repository representation capability only.
+It does NOT create or upgrade any Oracle/business semantic claim.
+
+
+============================================================
+2. DO NOT GENERALIZE THE SCHEMA IN THIS PR
+============================================================
+
+For this purchasing PR, do NOT replace target_package enum with an
+unrestricted string/oracle_name reference.
+
+Do NOT redesign the API-reference model beyond what is required to
+materialize the approved purchasing contract.
+
+Reason:
+the minimal enum extension resolves the concrete blocker while retaining
+the existing closed validation behavior.
+
+A future generic schema redesign, if needed for additional domains, must
+be handled as a separate repository architecture change.
+
+
+============================================================
+3. REGRESSION REQUIREMENT
+============================================================
+
+Preserve all existing D_CPR_L / D_CPR_O documents and behavior.
+
+Add or extend tests so that validation demonstrates at minimum:
+
+A.
+Existing D_CPR_L and D_CPR_O API-reference examples still validate.
+
+B.
+A valid purchasing API-reference using:
+D_OBJD_L
+
+validates successfully.
+
+C.
+The approved additional targets:
+D_OBJD_O
+C_OBJ_D_KOMBAJN
+C_REZ_OBJ_DOD
+
+are accepted by the schema.
+
+D.
+An arbitrary unapproved package name is still rejected.
+
+Do not weaken unrelated schema constraints.
+
+
+============================================================
+4. APPROVED SOURCE EVIDENCE
+============================================================
+
+The specific previously blocking example is approved:
+
+Evidence:
+PUR_MP01_F_SOURCE_HITS.xlsx
+
+Oracle source:
+OWNER=MC
+NAME=HANDYGO
+TYPE=PACKAGE BODY
+LINE=5027
+
+Source call:
+
+D_OBJD_L.UkonciPrijemPL(sRidObj);
+
+Classification:
+source-confirmed API call.
+
+No new Oracle validation is required for this call.
+
+
+============================================================
+5. RESUME ORIGINAL PURCHASING HANDOFF
+============================================================
+
+After the schema change and its targeted regression test pass, resume the
+previous READY FOR CODEX HANDOFF in full.
+
+Do NOT restart semantic discovery.
+
+Do NOT request a new Oracle test merely because the repository schema
+previously could not represent the approved fact.
+
+Proceed with:
+
+- catalog/purchasing materialization
+- evidence manifests
+- canonical read-only SQL
+- API/caller references
+- dependency boundaries
+- DO NOT ASSUME register
+- temporal/data-gap representation
+- revision / breaking-change notes
+- purchasing-specific acceptance gate
+
+
+============================================================
+6. IMPORTANT API ROLE RULE
+============================================================
+
+Adding a package to target_package enum does NOT automatically prove that
+every reference to that package is a writer.
+
+Continue to classify individual source references according to evidence:
+
+- source-proven query/getter -> READER/query context
+- source-proven mutating call -> API WRITER where justified
+- source member reference without proven mutation -> SOURCE MEMBER
+  REFERENCE / appropriate repository classification
+- compile-time dependency only -> DEPENDENCY ONLY
+- grant/synonym -> ACCESS CAPABILITY
+
+Do not infer role from package name alone.
+
+
+============================================================
+7. VALIDATION
+============================================================
+
+After materialization run the complete required suite, not only the
+targeted schema reproduction:
+
+python tools/validate_catalog.py
+
+python -m unittest discover -s tools -p 'test_*.py' -v
+
+plus:
+- purchasing-specific acceptance gate
+- SQL read-only/safety checks
+- unresolved-reference checks
+- duplicate-ID checks
+- evidence checks
+- repository-layout checks
+- semantic-loss assertions where implemented
+
+The purchasing acceptance gate must also verify that the schema change
+did not remove the existing CP API-reference capability.
+
+
+============================================================
+8. CHANGE MANAGEMENT
+============================================================
+
+Record the schema modification as an engineering/schema evolution needed
+for the new purchasing domain.
+
+Do not classify this schema enum extension itself as a new Oracle
+business fact.
+
+The previously declared purchasing semantic breaking changes remain:
+
+1. OBJD_L.STAV -> D_OBJD_L.GetS_STAV(FLAGS_S) fulfilment authority
+   correction.
+
+2. OBJD_L.DATUM_P -> line-first effective delivery-date correction.
+
+3. RID prefix 020 -> OBJD family, resolve subtype through TYP_CIS.
+
+Do not conflate those semantic corrections with PUR-SCHEMA-001.
+
+
+============================================================
+9. STOP / RETURN CONDITIONS
+============================================================
+
+If another repository/schema conflict appears that prevents faithful
+materialization of an approved semantic fact:
+
+return HANDOFF BLOCKED with the exact item.
+
+Otherwise proceed through full implementation, validation and focused PR.
+
+At completion return:
+
+- branch
+- commit SHA
+- exact schema change
+- files created/modified
+- number of purchasing objects/contracts materialized
+- evidence manifests created
+- SQL files created
+- API-reference records and caller counts
+- validator result
+- unit-test result
+- purchasing acceptance result
+- SQL safety result
+- unresolved references
+- duplicate IDs
+- evidence validation result
+- PR number and URL
+- CI status
+- any remaining non-blocking gaps
+
+Do not merge with red CI.

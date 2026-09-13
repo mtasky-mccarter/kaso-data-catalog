@@ -1,0 +1,164 @@
+schema_version: '1.0'
+kind: do-not-assume
+id: pur.do_not_assume.001
+records:
+- rule_id: pur.rule.01
+  scope_refs:
+  - mc.object.objd_l
+  - mc.object.objd_o
+  - mc.object.obj_d_navrh
+  statement_sk: OBJD_L is NOT exclusively a supplier purchase order. Use TYP_CIS.
+  evidence_refs:
+  - pur.evidence.accepted
+- rule_id: pur.rule.02
+  scope_refs:
+  - mc.object.objd_l
+  - mc.object.objd_o
+  - mc.object.obj_d_navrh
+  statement_sk: S_STAMP='0' != business open.
+  evidence_refs:
+  - pur.evidence.accepted
+- rule_id: pur.rule.03
+  scope_refs:
+  - mc.object.objd_l
+  - mc.object.objd_o
+  - mc.object.obj_d_navrh
+  statement_sk: OBJD_L.STAV != authoritative fulfilment state.
+  evidence_refs:
+  - pur.evidence.accepted
+- rule_id: pur.rule.04
+  scope_refs:
+  - mc.object.objd_l
+  - mc.object.objd_o
+  - mc.object.obj_d_navrh
+  statement_sk: STAV='000-40' Uzavretá != fulfilled.
+  evidence_refs:
+  - pur.evidence.accepted
+- rule_id: pur.rule.05
+  scope_refs:
+  - mc.object.objd_l
+  - mc.object.objd_o
+  - mc.object.obj_d_navrh
+  statement_sk: STAV='000-42' / fulfilled header != proof of physical receipt.
+  evidence_refs:
+  - pur.evidence.accepted
+- rule_id: pur.rule.06
+  scope_refs:
+  - mc.object.objd_l
+  - mc.object.objd_o
+  - mc.object.obj_d_navrh
+  statement_sk: 'Canonical fulfilment state: D_OBJD_L.GetS_STAV(FLAGS_S)'
+  evidence_refs:
+  - pur.evidence.accepted
+- rule_id: pur.rule.07
+  scope_refs:
+  - mc.object.objd_l
+  - mc.object.objd_o
+  - mc.object.obj_d_navrh
+  statement_sk: Flag11 is the source-confirmed raw fulfilment state slot.
+  evidence_refs:
+  - pur.evidence.accepted
+- rule_id: pur.rule.08
+  scope_refs:
+  - mc.object.objd_l
+  - mc.object.objd_o
+  - mc.object.obj_d_navrh
+  statement_sk: P_PL != physical receipt.
+  evidence_refs:
+  - pur.evidence.accepted
+- rule_id: pur.rule.09
+  scope_refs:
+  - mc.object.objd_l
+  - mc.object.objd_o
+  - mc.object.obj_d_navrh
+  statement_sk: P_PRIJ != dynamically reconstructable SUM(current receipt rows).
+  evidence_refs:
+  - pur.evidence.accepted
+- rule_id: pur.rule.10
+  scope_refs:
+  - mc.object.objd_l
+  - mc.object.objd_o
+  - mc.object.obj_d_navrh
+  statement_sk: OBJ_D_NAVRH.RID_V_OBJ_D is a LINE RID, not OBJD_L.RID.
+  evidence_refs:
+  - pur.evidence.accepted
+- rule_id: pur.rule.11
+  scope_refs:
+  - mc.object.objd_l
+  - mc.object.objd_o
+  - mc.object.obj_d_navrh
+  statement_sk: OBJD_O.RID_N is not a safe universal historical 1:1 proposal join.
+  evidence_refs:
+  - pur.evidence.accepted
+- rule_id: pur.rule.12
+  scope_refs:
+  - mc.object.objd_l
+  - mc.object.objd_o
+  - mc.object.obj_d_navrh
+  statement_sk: RID prefix 020 != transport list. Resolve TYP_CIS.
+  evidence_refs:
+  - pur.evidence.accepted
+- rule_id: pur.rule.13
+  scope_refs:
+  - mc.object.objd_l
+  - mc.object.objd_o
+  - mc.object.obj_d_navrh
+  statement_sk: OBJD_L.DATUM_P alone != universal line delivery deadline.
+  evidence_refs:
+  - pur.evidence.accepted
+- rule_id: pur.rule.14
+  scope_refs:
+  - mc.object.objd_l
+  - mc.object.objd_o
+  - mc.object.obj_d_navrh
+  statement_sk: PO->PL is 1:N. Protect analytical queries from fan-out.
+  evidence_refs:
+  - pur.evidence.accepted
+- rule_id: pur.rule.15
+  scope_refs:
+  - mc.object.objd_l
+  - mc.object.objd_o
+  - mc.object.obj_d_navrh
+  statement_sk: PL->receipt is 1:N. Aggregate receipt rows before joining when preserving PL line grain.
+  evidence_refs:
+  - pur.evidence.accepted
+- rule_id: pur.rule.16
+  scope_refs:
+  - mc.object.objd_l
+  - mc.object.objd_o
+  - mc.object.obj_d_navrh
+  statement_sk: Grant/synonym != runtime flow.
+  evidence_refs:
+  - pur.evidence.accepted
+- rule_id: pur.rule.17
+  scope_refs:
+  - mc.object.objd_l
+  - mc.object.objd_o
+  - mc.object.obj_d_navrh
+  statement_sk: ALL_DEPENDENCIES != writer/reader proof.
+  evidence_refs:
+  - pur.evidence.accepted
+- rule_id: pur.rule.18
+  scope_refs:
+  - mc.object.objd_l
+  - mc.object.objd_o
+  - mc.object.obj_d_navrh
+  statement_sk: MCCZ/TEST/TESTCZ != MC evidence.
+  evidence_refs:
+  - pur.evidence.accepted
+- rule_id: pur.rule.19
+  scope_refs:
+  - mc.object.objd_l
+  - mc.object.objd_o
+  - mc.object.obj_d_navrh
+  statement_sk: Runtime dynamic SQL/application behavior outside Oracle source is a system boundary.
+  evidence_refs:
+  - pur.evidence.accepted
+- rule_id: pur.rule.20
+  scope_refs:
+  - mc.object.objd_l
+  - mc.object.objd_o
+  - mc.object.obj_d_navrh
+  statement_sk: Current PRIJEMKY_* rows are not guaranteed complete event history for stored P_PRIJ.
+  evidence_refs:
+  - pur.evidence.accepted

@@ -1,0 +1,96 @@
+schema_version: '1.0'
+kind: relationships
+id: pur.relationships.001
+records:
+- relationship_id: pur.rel.header_lines
+  from_object_ref: mc.object.objd_l
+  from_field_refs:
+  - mc.field.objd_l.rid
+  to_object_ref: mc.object.objd_o
+  to_field_refs:
+  - mc.field.objd_o.rid_o
+  relationship_type: DIRECT
+  cardinality: 1:N
+  fanout_risk: Pred agregáciou hlavičiek predagregovať riadky.
+  safe_usage_sk: Pred agregáciou hlavičiek predagregovať riadky.
+  status: POTVRDENÉ
+  snapshot_date: '2026-09-11'
+  evidence_refs:
+  - pur.evidence.mp02_b
+  - pur.evidence.accepted
+- relationship_id: pur.rel.proposal_po
+  from_object_ref: mc.object.obj_d_navrh
+  from_field_refs:
+  - mc.field.obj_d_navrh.rid_v_obj_d
+  to_object_ref: mc.object.objd_o
+  to_field_refs:
+  - mc.field.objd_o.rid_o
+  - mc.field.objd_o.id_r
+  relationship_type: CONDITIONAL
+  cardinality: null
+  condition_sk: N.RID_V_OBJ_D = O.RID_O || '!' || TO_CHAR(O.ID_R); O.RID_O=L.RID; L.TYP_CIS='00028'.
+  fanout_risk: LINE RID, nie header RID. 766/766 aktuálnych nenulových referencií sa zhodovalo; historickú univerzálnosť
+    neodvodzovať.
+  safe_usage_sk: LINE RID, nie header RID. 766/766 aktuálnych nenulových referencií sa zhodovalo; historickú univerzálnosť
+    neodvodzovať.
+  status: POTVRDENÉ
+  snapshot_date: '2026-09-11'
+  evidence_refs:
+  - pur.evidence.mp02_e
+  - pur.evidence.accepted
+- relationship_id: pur.rel.po_pl
+  from_object_ref: mc.object.objd_o
+  from_field_refs:
+  - mc.field.objd_o.rid_o
+  - mc.field.objd_o.id_r
+  to_object_ref: mc.object.objd_o
+  to_field_refs:
+  - mc.field.objd_o.rid_v
+  relationship_type: CONDITIONAL
+  cardinality: 1:N
+  condition_sk: PL.RID_V = PO.RID_O || '!' || TO_CHAR(PO.ID_R); PO header TYP_CIS='00028'; PL header TYP_CIS='00029'.
+  fanout_risk: PO riadok môže mať viac PL riadkov. P_PL nie je fyzický príjem.
+  safe_usage_sk: PO riadok môže mať viac PL riadkov. P_PL nie je fyzický príjem.
+  status: POTVRDENÉ
+  snapshot_date: '2026-09-11'
+  evidence_refs:
+  - pur.evidence.mp03_c
+  - pur.evidence.accepted
+- relationship_id: pur.rel.pl_receipt
+  from_object_ref: mc.object.objd_o
+  from_field_refs:
+  - mc.field.objd_o.rid_o
+  - mc.field.objd_o.id_r
+  to_object_ref: pur.oracle.mc.prijemky_obsah.table
+  to_field_refs:
+  - pur.boundary_field.mc.prijemky_obsah.rid_v
+  relationship_type: CONDITIONAL
+  cardinality: 1:N
+  condition_sk: R.RID_V = O.RID_O || '!' || TO_CHAR(O.ID_R); PL header TYP_CIS='00029'.
+  fanout_risk: Receipt riadky predagregovať podľa RID_V pred JOINom na PL; current lineage nie je úplná P_PRIJ história.
+  safe_usage_sk: Receipt riadky predagregovať podľa RID_V pred JOINom na PL; current lineage nie je úplná P_PRIJ
+    história.
+  status: POTVRDENÉ
+  snapshot_date: '2026-09-11'
+  evidence_refs:
+  - pur.evidence.mp04_c
+  - pur.evidence.accepted
+- relationship_id: pur.rel.reverse_proposal
+  from_object_ref: mc.object.objd_o
+  from_field_refs:
+  - mc.field.objd_o.rid_n
+  to_object_ref: mc.object.obj_d_navrh
+  to_field_refs:
+  - mc.field.obj_d_navrh.rid
+  relationship_type: CONDITIONAL
+  cardinality: null
+  condition_sk: O.RID_N=N.RID; FK DISABLED / NOT VALIDATED.
+  fanout_risk: Nie bezpečný univerzálny historický 1:1 JOIN; 15563 nezodpovedajúcich current návrhov zo 17215 nenulových
+    referencií je retention/history boundary.
+  safe_usage_sk: Nie bezpečný univerzálny historický 1:1 JOIN; 15563 nezodpovedajúcich current návrhov zo 17215
+    nenulových referencií je retention/history boundary.
+  status: POTVRDENÉ
+  snapshot_date: '2026-09-11'
+  evidence_refs:
+  - pur.evidence.mp02_e
+  - pur.evidence.accepted
