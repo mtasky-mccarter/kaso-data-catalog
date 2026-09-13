@@ -1,0 +1,149 @@
+schema_version: '1.0'
+kind: do-not-assume
+id: vyd.do_not_assume.001
+records:
+- rule_id: vyd.do_not_assume.01
+  scope_refs:
+  - mc.object.vyd_l
+  - mc.object.vyd_o
+  - mc.object.vyd_o_p_prij
+  statement_sk: VYD_L.STAV/STAV_V sú fyzické stĺpce
+  consequence_sk: Nie. Stavy sú v FLAGS_S a čítajú sa cez D_VYDAJ_L accessors.
+  evidence_refs:
+  - vyd.evidence.evidence_15
+- rule_id: vyd.do_not_assume.02
+  scope_refs:
+  - mc.object.vyd_l
+  - mc.object.vyd_o
+  - mc.object.vyd_o_p_prij
+  statement_sk: VYD_L.POBOC je sklad
+  consequence_sk: Nie. Fyzický stĺpec je SKLAD.
+  evidence_refs:
+  - vyd.evidence.evidence_15
+- rule_id: vyd.do_not_assume.03
+  scope_refs:
+  - mc.object.vyd_l
+  - mc.object.vyd_o
+  - mc.object.vyd_o_p_prij
+  statement_sk: VYD_L.PRIPRAVIL je fyzické pole
+  consequence_sk: Nie v aktuálnom MC. Prepared-by treba riešiť cez execution/WMS vrstvu.
+  evidence_refs:
+  - vyd.evidence.evidence_15
+- rule_id: vyd.do_not_assume.04
+  scope_refs:
+  - mc.object.vyd_l
+  - mc.object.vyd_o
+  - mc.object.vyd_o_p_prij
+  statement_sk: SUMA_O je stock value field
+  consequence_sk: Nie v aktuálnom MC. SUMA_O neexistuje; fyzické sú SUMA_S/SUMA_S2.
+  evidence_refs:
+  - vyd.evidence.evidence_15
+- rule_id: vyd.do_not_assume.05
+  scope_refs:
+  - mc.object.vyd_l
+  - mc.object.vyd_o
+  - mc.object.vyd_o_p_prij
+  statement_sk: RID_V vždy smeruje na objednávku
+  consequence_sk: Nie. 019=OBJ line, 003=receipt line, 021=RekO domain, 0=bez/technický context.
+  evidence_refs:
+  - vyd.evidence.evidence_15
+- rule_id: vyd.do_not_assume.06
+  scope_refs:
+  - mc.object.vyd_l
+  - mc.object.vyd_o
+  - mc.object.vyd_o_p_prij
+  statement_sk: Každý RID!ID_R string je OBJ line
+  consequence_sk: Nie. Prefix rozhoduje o doméne.
+  evidence_refs:
+  - vyd.evidence.evidence_15
+- rule_id: vyd.do_not_assume.07
+  scope_refs:
+  - mc.object.vyd_l
+  - mc.object.vyd_o
+  - mc.object.vyd_o_p_prij
+  statement_sk: KOD_ID=204 má vždy RID_V=0
+  consequence_sk: Nie. Existujú 019/003/021 paletové riadky; filter je KOD_ID=204.
+  evidence_refs:
+  - vyd.evidence.evidence_15
+- rule_id: vyd.do_not_assume.08
+  scope_refs:
+  - mc.object.vyd_l
+  - mc.object.vyd_o
+  - mc.object.vyd_o_p_prij
+  statement_sk: P_REZ=0 znamená mechanizmus sa nepoužíva
+  consequence_sk: Nie. Source trigger implementuje reálnu rezerváciu a transfer do OBJ.
+  evidence_refs:
+  - vyd.evidence.evidence_15
+- rule_id: vyd.do_not_assume.09
+  scope_refs:
+  - mc.object.vyd_l
+  - mc.object.vyd_o
+  - mc.object.vyd_o_p_prij
+  statement_sk: remaining_qty = POCET-P_DEL-P_VYSKL je univerzálny lifecycle vzorec
+  consequence_sk: Nie. Je správny pre nevyskladnený workload; ďalšie passive/return vrstvy používajú P_PRIJ alebo
+    iba P_DEL.
+  evidence_refs:
+  - vyd.evidence.evidence_15
+- rule_id: vyd.do_not_assume.10
+  scope_refs:
+  - mc.object.vyd_l
+  - mc.object.vyd_o
+  - mc.object.vyd_o_p_prij
+  statement_sk: P_PRIJ musí byť vždy <= P_VYSKL
+  consequence_sk: Nie technicky. 216 legacy paletových edge riadkov to porušuje; všetky KOD_ID=204.
+  evidence_refs:
+  - vyd.evidence.evidence_15
+- rule_id: vyd.do_not_assume.11
+  scope_refs:
+  - mc.object.vyd_l
+  - mc.object.vyd_o
+  - mc.object.vyd_o_p_prij
+  statement_sk: VYD_O_P_PRIJ je 1:1 s VYD_O
+  consequence_sk: Nie. RID+ID_R je 1:N, max pozorované 37 linkov.
+  evidence_refs:
+  - vyd.evidence.evidence_15
+- rule_id: vyd.do_not_assume.12
+  scope_refs:
+  - mc.object.vyd_l
+  - mc.object.vyd_o
+  - mc.object.vyd_o_p_prij
+  statement_sk: WMS_QUE je event história
+  consequence_sk: Nie. Je to current execution/task vrstva.
+  evidence_refs:
+  - vyd.evidence.evidence_15
+- rule_id: vyd.do_not_assume.13
+  scope_refs:
+  - mc.object.vyd_l
+  - mc.object.vyd_o
+  - mc.object.vyd_o_p_prij
+  statement_sk: CESTOVNE_PR_O možno priamo joinovať bez agregácie
+  consequence_sk: Nie. 1 454 výdajok mali multiple bridge riadky.
+  evidence_refs:
+  - vyd.evidence.evidence_15
+- rule_id: vyd.do_not_assume.14
+  scope_refs:
+  - mc.object.vyd_l
+  - mc.object.vyd_o
+  - mc.object.vyd_o_p_prij
+  statement_sk: S_STAMP=0 = business "aktívny" vo všetkých use-case
+  consequence_sk: Nie. Je to technický not-removed marker; business aktivita závisí od stavu a procesu.
+  evidence_refs:
+  - vyd.evidence.evidence_15
+- rule_id: vyd.do_not_assume.15
+  scope_refs:
+  - mc.object.vyd_l
+  - mc.object.vyd_o
+  - mc.object.vyd_o_p_prij
+  statement_sk: DATUM_OK != NULL = dokončená/dodaná výdajka
+  consequence_sk: Nie. Completion/delivery stav sa číta z FLAGS_S warehouse state.
+  evidence_refs:
+  - vyd.evidence.evidence_15
+- rule_id: vyd.do_not_assume.16
+  scope_refs:
+  - mc.object.vyd_l
+  - mc.object.vyd_o
+  - mc.object.vyd_o_p_prij
+  statement_sk: Počty v tomto dokumente sú konštanty
+  consequence_sk: Nie. Sú snapshoty aktívnej produkcie a počas mapovania sa mierne menili.
+  evidence_refs:
+  - vyd.evidence.evidence_15
