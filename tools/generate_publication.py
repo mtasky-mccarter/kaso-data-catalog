@@ -67,9 +67,6 @@ def run_domain_generator(root: Path, config: dict, temporary_output: Path) -> tu
         ],
         cwd=root,
         check=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
     )
     docx = list(temporary_output.glob("*.docx"))
     pdf = list(temporary_output.glob("*.pdf"))
