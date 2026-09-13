@@ -114,6 +114,51 @@ class PurchasingAcceptance(unittest.TestCase):
             self.assertIs(item['observed_live'], False)
         self.assertEqual(7, len(load('playbooks')['records']))
 
+    def test_subtype_codes_are_explicit_strings(self):
+        records = [r for r in load('value-domains')['records']
+                   if r['scope_ref'] == 'mc.field.objd_l.typ_cis']
+        self.assertEqual({'00028', '00029', '00030'}, {r['raw_value'] for r in records})
+        self.assertTrue(all(isinstance(r['raw_value'], str) for r in records))
+        text = (PUR / 'value-domains.yaml').read_text()
+        for code in ('00028', '00029', '00030'):
+            self.assertIn("raw_value: '" + code + "'", text)
+
+    def test_external_field_ids_are_owner_neutral(self):
+        doc = load_yaml(ROOT / 'catalog/transport/cestovne-prikazy/oracle-entities.yaml')
+        text = str(doc)
+        self.assertNotIn('pur.boundary_field.', text)
+        expected = {'b_users': 'id', 'miesta_zaujmu': 'id', 'obch_partneri': 'id',
+                    'miesta_dodania': 'rid', 'cis_stavy_typy': 'skratka',
+                    'bartex_pobocky': 'id', 'sklad_polohy': 'rid', 'cis_tree': 'id', 'depa': 'rid'}
+        constraints = str(load('constraints'))
+        for table, column in expected.items():
+            canonical = f'mc.oracle.mc_{table}.field.{column}'
+            self.assertIn(canonical, text)
+            self.assertIn(canonical, constraints)
+            for path in PUR.glob('*.yaml'):
+                self.assertNotIn(f'pur.boundary_field.mc.{table}.{column}', path.read_text())
+
+    def test_direct_po_receipt_is_technical_with_unproven_cardinality(self):
+        records = [r for r in load('relationships')['records']
+                   if r['relationship_id'] == 'pur.rel.po_receipt']
+        self.assertEqual(1, len(records))
+        rel = records[0]
+        self.assertEqual('mc.object.objd_o', rel['from_object_ref'])
+        self.assertEqual(['mc.field.objd_o.rid_o', 'mc.field.objd_o.id_r'], rel['from_field_refs'])
+        self.assertEqual('pur.oracle.mc.prijemky_obsah.table', rel['to_object_ref'])
+        self.assertEqual(['pur.boundary_field.mc.prijemky_obsah.rid_v'], rel['to_field_refs'])
+        self.assertEqual('CONDITIONAL', rel['relationship_type'])
+        self.assertIsNone(rel['cardinality'])
+        self.assertEqual('TECHNICKY ZNÁME', rel['status'])
+        for predicate in ("R.RID_V = O.RID_O || '!' || TO_CHAR(O.ID_R)",
+                          'O.RID_O=L.RID', "L.TYP_CIS='00028'"):
+            self.assertIn(predicate, rel['condition_sk'])
+        self.assertIn('pur.evidence.accepted', rel['evidence_refs'])
+        self.assertIn('pur.backlog.direct_receipt', rel['safe_usage_sk'])
+        gap = next(r for r in load('backlog')['records'] if r['backlog_id'] == 'pur.backlog.direct_receipt')
+        self.assertIs(gap['blocking'], False)
+        self.assertEqual('TREBA OVERIŤ', gap['status'])
+
     def test_approved_api_capability_and_handygo_locus(self):
         for target in ('D_CPR_L', 'D_CPR_O', 'D_OBJD_L', 'D_OBJD_O', 'C_OBJ_D_KOMBAJN', 'C_REZ_OBJ_DOD'):
             doc = copy.deepcopy(load_yaml(ROOT / 'examples/schema-smoke-test/api-references.yaml'))

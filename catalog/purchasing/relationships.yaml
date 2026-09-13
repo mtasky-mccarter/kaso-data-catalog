@@ -94,3 +94,21 @@ records:
   evidence_refs:
   - pur.evidence.mp02_e
   - pur.evidence.accepted
+- relationship_id: pur.rel.po_receipt
+  from_object_ref: mc.object.objd_o
+  from_field_refs:
+  - mc.field.objd_o.rid_o
+  - mc.field.objd_o.id_r
+  to_object_ref: pur.oracle.mc.prijemky_obsah.table
+  to_field_refs:
+  - pur.boundary_field.mc.prijemky_obsah.rid_v
+  relationship_type: CONDITIONAL
+  cardinality: null
+  condition_sk: R.RID_V = O.RID_O || '!' || TO_CHAR(O.ID_R); O.RID_O=L.RID; L.TYP_CIS='00028'.
+  fanout_risk: Kardinalita priamej PO vetvy nie je preukázaná; nepredpokladať 1:N ani agregovať po JOINe bez overenia grain.
+  safe_usage_sk: Technická/live cesta je potvrdená. Presný business účel zostáva TREBA OVERIŤ v pur.backlog.direct_receipt
+    (non-blocking). Štandardný business tok zostáva proposal -> supplier PO 00028 -> PL 00029 -> receipt.
+  status: TECHNICKY ZNÁME
+  snapshot_date: '2026-09-11'
+  evidence_refs:
+  - pur.evidence.accepted
