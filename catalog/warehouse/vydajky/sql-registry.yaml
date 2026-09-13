@@ -6,11 +6,15 @@ records:
   title_sk: Header + lines + odvodené stavy
   sql_file: sql/diagnostic/vydajky/01-header-lines-odvodene-stavy.sql
   purpose_sk: Header + lines + odvodené stavy
-  input_parameters: []
-  result_grain_sk: null
-  fanout_warning_sk: null
-  proves_sk: null
-  does_not_prove_sk: Výsledok je current diagnostický výrez; nepreukazuje úplnú históriu.
+  input_parameters:
+  - name: rid
+    description_sk: Bind parameter :rid.
+    datatype_raw: null
+    required: true
+  result_grain_sk: Jeden výsledný riadok na VYD_O riadok pripojený k VYD_L.
+  fanout_warning_sk: VYD_L:VYD_O je 1:N; výsledok opakuje header údaje pre každý line.
+  proves_sk: Current VYD header a line snapshot vrátane odvodených state kódov a RID_R_DLAF.
+  does_not_prove_sk: Nepreukazuje úplnú line bucket históriu ani detail DLAF domény.
   evidence_refs:
   - vyd.evidence.evidence_15
   compatibility:
@@ -22,11 +26,15 @@ records:
   title_sk: Quantity diagnostic
   sql_file: sql/diagnostic/vydajky/02-quantity-diagnostic.sql
   purpose_sk: Quantity diagnostic
-  input_parameters: []
-  result_grain_sk: null
-  fanout_warning_sk: null
-  proves_sk: null
-  does_not_prove_sk: Výsledok je current diagnostický výrez; nepreukazuje úplnú históriu.
+  input_parameters:
+  - name: rid
+    description_sk: Bind parameter :rid.
+    datatype_raw: null
+    required: true
+  result_grain_sk: Jeden výsledný riadok na VYD_O položku.
+  fanout_warning_sk: KOD_ID=204 je technická paleta a pri business fulfilment použití sa musí vylúčiť.
+  proves_sk: Current quantity bucket-y a odvodené quantity formule pre VYD_O.
+  does_not_prove_sk: P_PRIJ samostatne nepreukazuje úplný return/helper lifecycle.
   evidence_refs:
   - vyd.evidence.evidence_15
   compatibility:
@@ -38,11 +46,15 @@ records:
   title_sk: OBJ -> VYD line trace (019)
   sql_file: sql/diagnostic/vydajky/03-obj-vyd-line-trace-019.sql
   purpose_sk: OBJ -> VYD line trace (019)
-  input_parameters: []
-  result_grain_sk: null
-  fanout_warning_sk: null
-  proves_sk: null
-  does_not_prove_sk: Výsledok je current diagnostický výrez; nepreukazuje úplnú históriu.
+  input_parameters:
+  - name: order_rid
+    description_sk: Bind parameter :order_rid.
+    datatype_raw: null
+    required: true
+  result_grain_sk: OBJ_ODB_O order line a každý zodpovedajúci VYD_O issue line.
+  fanout_warning_sk: OBJ -> VYD trace 019 je 1:N; jedna order line môže viesť na viac VYD_O riadkov.
+  proves_sk: Úplný 019 match cez RID_O||'!'||ID_R s vylúčením KOD_ID=204.
+  does_not_prove_sk: OBJ.P_VYD ani existencia issue riadku nie je proof of delivery.
   evidence_refs:
   - vyd.evidence.evidence_15
   compatibility:
@@ -54,11 +66,15 @@ records:
   title_sk: VYD -> príjemka line trace (003)
   sql_file: sql/diagnostic/vydajky/04-vyd-prijemka-line-trace-003.sql
   purpose_sk: VYD -> príjemka line trace (003)
-  input_parameters: []
-  result_grain_sk: null
-  fanout_warning_sk: null
-  proves_sk: null
-  does_not_prove_sk: Výsledok je current diagnostický výrez; nepreukazuje úplnú históriu.
+  input_parameters:
+  - name: issue_rid
+    description_sk: Bind parameter :issue_rid.
+    datatype_raw: null
+    required: true
+  result_grain_sk: Jeden VYD_O 003 riadok s receipt-side matchom.
+  fanout_warning_sk: Potvrdený 003 target RID_R bol v testovanej populácii unikátny; ide o snapshot-validovaný výsledok.
+  proves_sk: 003 trace VYD_O.RID_V -> PRIJEMKY_OBSAH.RID_R; 294 068 / 294 068 matched.
+  does_not_prove_sk: Neurčuje celý receipt alebo return business lifecycle.
   evidence_refs:
   - vyd.evidence.evidence_15
   compatibility:
@@ -70,11 +86,15 @@ records:
   title_sk: Return helper bezpečne predagregovaný
   sql_file: sql/diagnostic/vydajky/05-return-helper-bezpecne-predagregovany.sql
   purpose_sk: Return helper bezpečne predagregovaný
-  input_parameters: []
-  result_grain_sk: null
-  fanout_warning_sk: null
-  proves_sk: null
-  does_not_prove_sk: Výsledok je current diagnostický výrez; nepreukazuje úplnú históriu.
+  input_parameters:
+  - name: issue_rid
+    description_sk: Bind parameter :issue_rid.
+    datatype_raw: null
+    required: true
+  result_grain_sk: Jeden VYD_O riadok s helper metrikami predagregovanými po RID + ID_R.
+  fanout_warning_sk: Helper má 1:N linky; agregácia pred joinom je povinná na zachovanie grainu VYD_O.
+  proves_sk: Current VYD_O.P_PRIJ a agregované helper return quantity/count vedľa seba.
+  does_not_prove_sk: Helper quantity nie je univerzálne totožná s VYD_O.P_PRIJ.
   evidence_refs:
   - vyd.evidence.evidence_15
   compatibility:
@@ -86,11 +106,16 @@ records:
   title_sk: WMS join bez fan-out
   sql_file: sql/diagnostic/vydajky/06-wms-join-bez-fan-out.sql
   purpose_sk: WMS join bez fan-out
-  input_parameters: []
-  result_grain_sk: null
-  fanout_warning_sk: null
-  proves_sk: null
-  does_not_prove_sk: Výsledok je current diagnostický výrez; nepreukazuje úplnú históriu.
+  input_parameters:
+  - name: issue_rid
+    description_sk: Bind parameter :issue_rid.
+    datatype_raw: null
+    required: true
+  result_grain_sk: Jeden VYD_L header s current WMS_QUE snapshotom.
+  fanout_warning_sk: V potvrdenom snapshot-e bola cardinalita 0..1; query nepreukazuje historickú unikátnosť ani
+    event históriu.
+  proves_sk: Current VYD header a dostupný WMS execution snapshot.
+  does_not_prove_sk: Nepreukazuje WMS event históriu ani historickú 0..1 cardinalitu.
   evidence_refs:
   - vyd.evidence.evidence_15
   compatibility:
@@ -102,11 +127,15 @@ records:
   title_sk: CP bridge agregovaný
   sql_file: sql/diagnostic/vydajky/07-cp-bridge-agregovany.sql
   purpose_sk: CP bridge agregovaný
-  input_parameters: []
-  result_grain_sk: null
-  fanout_warning_sk: null
-  proves_sk: null
-  does_not_prove_sk: Výsledok je current diagnostický výrez; nepreukazuje úplnú históriu.
+  input_parameters:
+  - name: issue_rid
+    description_sk: Bind parameter :issue_rid.
+    datatype_raw: null
+    required: true
+  result_grain_sk: Jeden VYD_L header s agregovanými CP bridge count-mi.
+  fanout_warning_sk: Agregácia CESTOVNE_PR_O po RID_V je povinná, pretože 1 454 VYD malo viac bridge riadkov.
+  proves_sk: Current transport bridge row/count coverage bez fan-out VYD headera.
+  does_not_prove_sk: Absencia CP nie je automaticky chyba; snapshot mal 407 556 VYD bez CP.
   evidence_refs:
   - vyd.evidence.evidence_15
   compatibility:
@@ -119,10 +148,12 @@ records:
   sql_file: sql/diagnostic/vydajky/08-anomaly-detector.sql
   purpose_sk: Anomaly detector
   input_parameters: []
-  result_grain_sk: null
-  fanout_warning_sk: null
-  proves_sk: null
-  does_not_prove_sk: Výsledok je current diagnostický výrez; nepreukazuje úplnú históriu.
+  result_grain_sk: Jeden VYD_O riadok, ktorý spĺňa aspoň jednu anomaly podmienku.
+  fanout_warning_sk: Výsledok môže obsahovať viac typov odchýlok na tom istom riadku; nejde o kategorizovaný event
+    log.
+  proves_sk: Current snapshot odchýlok quantity bucketov a P_REZ, s KOD_ID=204 vylúčeným z P_PRIJ kontroly.
+  does_not_prove_sk: P_REZ<>0 je odchýlka od testovaného snapshotu, nie dôkaz, že reservation mechanizmus je neplatný
+    alebo nepoužívaný.
   evidence_refs:
   - vyd.evidence.evidence_15
   compatibility:

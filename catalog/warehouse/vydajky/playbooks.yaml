@@ -5,80 +5,102 @@ records:
 - playbook_id: vyd.playbook.01
   symptom_sk: Výdajka stojí vo vyskladnení
   first_sql_ref: vyd.sql.01
-  proves_sk: null
-  does_not_prove_sk: null
+  proves_sk: Current header, lines, state kódy a quantity bucket-y.
+  does_not_prove_sk: DATUM_OK samostatne nepreukazuje warehouse state.
   next_step_sk: Najprv načítaj VYD_L + GetS_STAV_V + VYD_O quantity bucket-y. Ak state <2, kontroluj remaining_to_pick_qty.
     Ak state >=2 a WMS/UI nesedí, pokračuj WMS_QUE a T_S_VYD_L/D_VYDAJ_L flow. Nevyvodzuj stav z DATUM_OK.
-  flow_refs: []
-  dependency_or_boundary_refs: []
+  flow_refs:
+  - vyd.flow.t_s_vyd_l
+  - vyd.flow.t_sz_p_vyd_l
+  dependency_or_boundary_refs:
+  - mc.object.vyd_l
+  - mc.object.vyd_o
   temporal_boundary_sk: Current diagnostika; rešpektovať explicitné history boundaries.
 - playbook_id: vyd.playbook.02
   symptom_sk: Nesedí OBJ.P_VYD vs. výdajka
-  first_sql_ref: vyd.sql.02
-  proves_sk: null
-  does_not_prove_sk: null
+  first_sql_ref: vyd.sql.03
+  proves_sk: 019 trace z order lines na zodpovedajúce issue lines.
+  does_not_prove_sk: P_VYD ani issue-side fulfilment nie je proof of delivery.
   next_step_sk: Na OBJ side nájdi order line. Potom trace 019 cez VYD_O.RID_V = RID_O||!||ID_R a vylúč KOD_ID=204.
     Počítaj s 1:N fan-out. P_VYD znamená issue-side fulfilment, nie proof of delivery.
   flow_refs: []
-  dependency_or_boundary_refs: []
+  dependency_or_boundary_refs:
+  - vyd.rel.line_source_polymorphic
   temporal_boundary_sk: Current diagnostika; rešpektovať explicitné history boundaries.
 - playbook_id: vyd.playbook.03
   symptom_sk: Vratka / P_PRIJ nesedí
-  first_sql_ref: vyd.sql.03
-  proves_sk: null
-  does_not_prove_sk: null
+  first_sql_ref: vyd.sql.05
+  proves_sk: Rozdiel medzi VYD_O.P_PRIJ a predagregovanými helper linkmi.
+  does_not_prove_sk: Helper quantity nie je univerzálne totožná s P_PRIJ.
   next_step_sk: Rozlíš P_PRIJ na VYD_O od helper VYD_O_P_PRIJ. Pre 003 traceuj VYD_O.RID_V -> PRIJEMKY_OBSAH.RID_R.
     Helper agreguj po RID+ID_R. Ak ide o 021, pokračuj do RekO domény.
-  flow_refs: []
-  dependency_or_boundary_refs: []
+  flow_refs:
+  - vyd.flow.t_vratky_vyd_o
+  - vyd.flow.t_vratky_vyd_l
+  dependency_or_boundary_refs:
+  - vyd.rel.line_source_polymorphic
   temporal_boundary_sk: Current diagnostika; rešpektovať explicitné history boundaries.
 - playbook_id: vyd.playbook.04
   symptom_sk: Rezervácia nesedí
-  first_sql_ref: vyd.sql.04
-  proves_sk: null
-  does_not_prove_sk: null
+  first_sql_ref: vyd.sql.02
+  proves_sk: Current P_REZ a ostatné quantity bucket-y na VYD_O.
+  does_not_prove_sk: Nulový snapshot ani P_REZ<>0 anomaly výsledok neurčuje platnosť alebo používanie reservation
+    mechanizmu.
   next_step_sk: P_REZ na VYD_O môže byť transient a aktuálne je globálne 0. Source of behavior je T_VYD_O_REZ +
     C_SZ. Pri 019 linku prever OBJ_ODB_O.P_REZ a session flags; neporovnávaj iba dva stĺpce bez mutation path.
-  flow_refs: []
-  dependency_or_boundary_refs: []
+  flow_refs:
+  - vyd.flow.t_vyd_o_rez
+  dependency_or_boundary_refs:
+  - vyd.oracle_field.f3e990647535be1f1907722d
   temporal_boundary_sk: Current diagnostika; rešpektovať explicitné history boundaries.
 - playbook_id: vyd.playbook.05
   symptom_sk: Výdajku/položku nemožno zmeniť alebo zmazať
-  first_sql_ref: vyd.sql.05
-  proves_sk: null
-  does_not_prove_sk: null
+  first_sql_ref: vyd.sql.01
+  proves_sk: Current VYD header/line stav vrátane invoice linku a state kódov.
+  does_not_prove_sk: Current row samostatne nepreukazuje session bypass alebo úplný mutation path.
   next_step_sk: Prever T_VYD_O_REZ, T_VYD_O_DEL, T_VYD_O_ID_SZ_KONTROLA, T_VYD_O_KONTROLA_NA_FAK a session režim.
     Normálne spracované riadky majú guardy proti delete; swap/replikácia/inventory majú špeciálne bypassy.
-  flow_refs: []
-  dependency_or_boundary_refs: []
+  flow_refs:
+  - vyd.flow.t_vyd_o_rez
+  - vyd.flow.t_vyd_o_del
+  - vyd.flow.t_vyd_o_id_sz_kontrola
+  - vyd.flow.t_vyd_o_kontrola_na_fak
+  dependency_or_boundary_refs:
+  - mc.object.vyd_l
+  - mc.object.vyd_o
   temporal_boundary_sk: Current diagnostika; rešpektovať explicitné history boundaries.
 - playbook_id: vyd.playbook.06
   symptom_sk: Nesedí WMS miesto dodania
   first_sql_ref: vyd.sql.06
-  proves_sk: null
-  does_not_prove_sk: null
+  proves_sk: Current VYD/WMS snapshot bez fan-out.
+  does_not_prove_sk: Snapshot 0..1 nie je dôkaz historickej unikátnosti alebo event histórie.
   next_step_sk: Porovnaj VYD_L.MIESTO_DOD a WMS_QUE. T_VYD_L_AFTER volá C_WMS_QUE.NastavMiestoDod mimo replikácie.
     Ak VYD je správne a WMS staré, diagnostika pokračuje do WMS queue logiky.
-  flow_refs: []
-  dependency_or_boundary_refs: []
+  flow_refs:
+  - vyd.flow.t_vyd_l_after
+  dependency_or_boundary_refs:
+  - vyd.rel.wms_current
   temporal_boundary_sk: Current diagnostika; rešpektovať explicitné history boundaries.
 - playbook_id: vyd.playbook.07
   symptom_sk: Nesedí transport / cestovný príkaz
   first_sql_ref: vyd.sql.07
-  proves_sk: null
-  does_not_prove_sk: null
+  proves_sk: CP bridge coverage a count po povinnej agregácii RID_V.
+  does_not_prove_sk: Absencia CP nie je automaticky chyba.
   next_step_sk: Join CP bridge najprv agreguj po RID_V, pretože 1 454 výdajok mali viac CESTOVNE_PR_O riadkov. Absencia
     CP nie je automaticky chyba - 407 556 VYD_L v snapshot-e CP nemali.
   flow_refs: []
-  dependency_or_boundary_refs: []
+  dependency_or_boundary_refs:
+  - vyd.rel.transport_bridge
   temporal_boundary_sk: Current diagnostika; rešpektovať explicitné history boundaries.
 - playbook_id: vyd.playbook.08
   symptom_sk: Fakturačný link konflikt
-  first_sql_ref: vyd.sql.08
-  proves_sk: null
-  does_not_prove_sk: null
+  first_sql_ref: vyd.sql.01
+  proves_sk: Current VYD_O.RID_R_DLAF invoice reference.
+  does_not_prove_sk: Neopisuje úplný DLAF/invoice-side join alebo lifecycle.
   next_step_sk: Skontroluj VYD_O.RID_R_DLAF. T_VYD_O_KONTROLA_NA_FAK blokuje zmenu na inú faktúru, ak line už má
     invoice link. Detail faktúry patrí do DLAF/invoice domény.
-  flow_refs: []
-  dependency_or_boundary_refs: []
+  flow_refs:
+  - vyd.flow.t_vyd_o_kontrola_na_fak
+  dependency_or_boundary_refs:
+  - mc.field.vyd_o.rid_r_dlaf
   temporal_boundary_sk: Current diagnostika; rešpektovať explicitné history boundaries.

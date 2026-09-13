@@ -134,48 +134,84 @@ records:
   trigger_or_procedure_ref: vyd.oracle.aadf1ded9c17a79c2ad88b62
   event_sk: AFTER EACH ROW | UPDATE | STATUS=ENABLED
   condition_sk: null
-  watched_field_refs: []
+  watched_field_refs:
+  - mc.field.vyd_l.flags_s
   session_or_bypass_sk: null
-  business_effect_sk: null
-  diagnostic_meaning_sk: Source flow je materializovaný bez odhadu business efektu; detail patrí do mutation matrix
-    a trigger source.
+  business_effect_sk: Warehouse state hranice 2/3/5 zakladajú alebo odstraňujú passive stock vrstvy a súvisiace
+    komunikačné side effects.
+  diagnostic_meaning_sk: Warehouse state sa odvodzuje cez D_VYDAJ_L.GetS_STAV_V nad FLAGS_S; DATUM_OK ho samostatne
+    nepreukazuje.
   evidence_refs:
   - vyd.evidence.evidence_11
   - vyd.evidence.evidence_09
-  calls: []
+  calls:
+  - callee_ref: vyd.oracle.b1e6f82cec605538319249fb
+    sequence: 1
   direct_mutations: []
-  side_effects: []
+  side_effects:
+  - scope_refs:
+    - mc.field.vyd_l.flags_s
+    - vyd.oracle.02cf754cf59912a9fb74f610
+    description_sk: Passive stock a komunikačné side effects pri schválených stavových hraniciach 2/3/5.
   exceptions: []
 - flow_id: vyd.flow.t_sz_p_vyd_o
   trigger_or_procedure_ref: vyd.oracle.ca486d579aeaf391554600e4
   event_sk: BEFORE EACH ROW | INSERT OR UPDATE OR DELETE | STATUS=ENABLED
-  condition_sk: null
-  watched_field_refs: []
-  session_or_bypass_sk: null
-  business_effect_sk: null
-  diagnostic_meaning_sk: Source flow je materializovaný bez odhadu business efektu; detail patrí do mutation matrix
-    a trigger source.
+  condition_sk: Picking/issue quantity lifecycle; RID_V prefix 018 aktivuje REK_DOD_O synchronizáciu.
+  watched_field_refs:
+  - mc.field.vyd_o.pocet
+  - mc.field.vyd_o.p_del
+  - mc.field.vyd_o.p_vyskl
+  - mc.field.vyd_o.p_prij
+  - mc.field.vyd_o.rid_v
+  session_or_bypass_sk: C_SESSION.GetSwap môže pri DELETE ukončiť trigger bez štandardnej logiky.
+  business_effect_sk: Quantity zmeny vstupujú do prepočtu header warehouse state a passive stock vrstiev; pre prefix
+    018 synchronizujú REK_DOD_O.P_DEL/P_VYSKL.
+  diagnostic_meaning_sk: Pre diagnostiku množstiev treba odlíšiť line bucket-y, header state a externú 018 complaint/delivery
+    vetvu.
   evidence_refs:
   - vyd.evidence.evidence_11
   - vyd.evidence.evidence_09
-  calls: []
-  direct_mutations: []
-  side_effects: []
-  exceptions: []
+  calls:
+  - callee_ref: vyd.oracle.b1e6f82cec605538319249fb
+    sequence: 1
+  direct_mutations:
+  - scope_refs:
+    - vyd.oracle_field.99b9da8c553dc60e50c48d5b
+    - vyd.oracle_field.2036323efed02d9428943432
+    description_sk: Pri RID_V prefix 018 synchronizuje issue quantities do REK_DOD_O.
+  side_effects:
+  - scope_refs:
+    - mc.field.vyd_l.flags_s
+    description_sk: Spúšťa prepočet header warehouse state a passive stock vrstiev pri hraniciach 2/3/5.
+  exceptions:
+  - scope_refs:
+    - mc.field.vyd_o.rid_v
+    description_sk: REK_DOD_O synchronizácia platí pre schválenú prefix 018 vetvu.
 - flow_id: vyd.flow.t_s_vyd_l
   trigger_or_procedure_ref: vyd.oracle.934d18b12668a40f1c92164f
   event_sk: BEFORE EACH ROW | INSERT OR UPDATE | STATUS=ENABLED
   condition_sk: null
-  watched_field_refs: []
+  watched_field_refs:
+  - mc.field.vyd_l.i_stamp
+  - mc.field.vyd_l.u_stamp
+  - mc.field.vyd_l.flags_s
   session_or_bypass_sk: null
-  business_effect_sk: null
-  diagnostic_meaning_sk: Source flow je materializovaný bez odhadu business efektu; detail patrí do mutation matrix
-    a trigger source.
+  business_effect_sk: Nastavuje technické insert/update stamps a je súčasťou header state flow.
+  diagnostic_meaning_sk: I_STAMP/U_STAMP sú technické session stamps, nie business event time.
   evidence_refs:
   - vyd.evidence.evidence_11
   - vyd.evidence.evidence_09
-  calls: []
-  direct_mutations: []
+  calls:
+  - callee_ref: vyd.oracle.9d61de6544d73f29635ff02b
+    sequence: 1
+  - callee_ref: vyd.oracle.b1e6f82cec605538319249fb
+    sequence: 2
+  direct_mutations:
+  - scope_refs:
+    - mc.field.vyd_l.i_stamp
+    - mc.field.vyd_l.u_stamp
+    description_sk: Nastavuje insert/update stamp cez C_Stamp.GetSessionStampTrigg.
   side_effects: []
   exceptions: []
 - flow_id: vyd.flow.t_vratky_vyd_l
@@ -184,13 +220,15 @@ records:
   condition_sk: null
   watched_field_refs: []
   session_or_bypass_sk: null
-  business_effect_sk: null
-  diagnostic_meaning_sk: Source flow je materializovaný bez odhadu business efektu; detail patrí do mutation matrix
-    a trigger source.
+  business_effect_sk: Source-potvrdená return/reklamačná/výmenná vetva volá C_VYD_O_P_PRIJ.
+  diagnostic_meaning_sk: Flow dokladá call do return helper package; sám osebe neurčuje business význam alebo úplnosť
+    jednotlivého helper riadku.
   evidence_refs:
   - vyd.evidence.evidence_11
   - vyd.evidence.evidence_09
-  calls: []
+  calls:
+  - callee_ref: vyd.oracle.0a4577d6c443e1ed7f65001b
+    sequence: 1
   direct_mutations: []
   side_effects: []
   exceptions: []
@@ -200,13 +238,15 @@ records:
   condition_sk: null
   watched_field_refs: []
   session_or_bypass_sk: null
-  business_effect_sk: null
-  diagnostic_meaning_sk: Source flow je materializovaný bez odhadu business efektu; detail patrí do mutation matrix
-    a trigger source.
+  business_effect_sk: Source-potvrdená return/reklamačná/výmenná vetva volá C_VYD_O_P_PRIJ.
+  diagnostic_meaning_sk: Flow dokladá call do return helper package; sám osebe neurčuje business význam alebo úplnosť
+    jednotlivého helper riadku.
   evidence_refs:
   - vyd.evidence.evidence_11
   - vyd.evidence.evidence_09
-  calls: []
+  calls:
+  - callee_ref: vyd.oracle.0a4577d6c443e1ed7f65001b
+    sequence: 1
   direct_mutations: []
   side_effects: []
   exceptions: []
@@ -214,18 +254,38 @@ records:
   trigger_or_procedure_ref: vyd.oracle.8849a5bd6f54a46e59289d10
   event_sk: AFTER EACH ROW | UPDATE | STATUS=ENABLED
   condition_sk: null
-  watched_field_refs: []
-  session_or_bypass_sk: null
-  business_effect_sk: null
-  diagnostic_meaning_sk: Source flow je materializovaný bez odhadu business efektu; detail patrí do mutation matrix
-    a trigger source.
+  watched_field_refs:
+  - mc.field.vyd_l.miesto_dod
+  - mc.field.vyd_l.doprava
+  - mc.field.vyd_l.typ_uhrady
+  - mc.field.vyd_l.partner
+  - mc.field.vyd_l.adresa
+  session_or_bypass_sk: C_SESSION.GetReplikacia je replikačný bypass lokálnych side effects.
+  business_effect_sk: Synchronizuje WMS miesto dodania a delivery queue context podľa RID_V=VYD_L.RID.
+  diagnostic_meaning_sk: Rozdiel medzi VYD a WMS/ROZVOZ sa posudzuje cez trigger path a replikačný režim.
   evidence_refs:
   - vyd.evidence.evidence_11
   - vyd.evidence.evidence_09
-  calls: []
-  direct_mutations: []
+  calls:
+  - callee_ref: vyd.oracle.99c3b01ea750729e4bbdc675
+    sequence: 1
+    condition_sk: Zmena VYD_L.MIESTO_DOD mimo replikácie.
+  direct_mutations:
+  - scope_refs:
+    - vyd.oracle_field.9161ef93e3ab8ef01a70d00b
+    description_sk: Synchronizuje WMS execution context cez C_WMS_QUE.NastavMiestoDod.
+  - scope_refs:
+    - vyd.oracle_field.6593d89bee42d974ddb409a7
+    - vyd.oracle_field.5d829a2c59a97ec88be83324
+    - vyd.oracle_field.9985cff18640a5f891e9eeaa
+    - vyd.oracle_field.948563a664f0e5b4a72fe02a
+    - vyd.oracle_field.df644afa97ee2117bd19ccf2
+    description_sk: Synchronizuje delivery queue context podľa RID_V=VYD_L.RID.
   side_effects: []
-  exceptions: []
+  exceptions:
+  - scope_refs:
+    - mc.object.vyd_l
+    description_sk: Pri GetReplikacia môže byť lokálny side effect obídený.
 - flow_id: vyd.flow.t_vyd_l_after_doklad_obaly
   trigger_or_procedure_ref: mc.oracle.mc_t_vyd_l_after_doklad_obaly
   event_sk: AFTER EACH ROW | UPDATE | STATUS=ENABLED
@@ -326,16 +386,19 @@ records:
   trigger_or_procedure_ref: vyd.oracle.09e88864c90a7026cb2c0228
   event_sk: BEFORE EACH ROW | DELETE | STATUS=ENABLED
   condition_sk: null
-  watched_field_refs: []
+  watched_field_refs:
+  - mc.field.vyd_l.rid
   session_or_bypass_sk: null
-  business_effect_sk: null
-  diagnostic_meaning_sk: Source flow je materializovaný bez odhadu business efektu; detail patrí do mutation matrix
-    a trigger source.
+  business_effect_sk: Pri DELETE VYD_L vynuluje PRIJEMKY_LIST.RID_VYDAJ.
+  diagnostic_meaning_sk: Receipt back-reference sa pri delete odpojí; nejde o dôkaz vymazania receipt objektu.
   evidence_refs:
   - vyd.evidence.evidence_11
   - vyd.evidence.evidence_09
   calls: []
-  direct_mutations: []
+  direct_mutations:
+  - scope_refs:
+    - vyd.oracle_field.f8449d7169962bfa57889295
+    description_sk: Nastaví PRIJEMKY_LIST.RID_VYDAJ na NULL pri DELETE VYD_L.
   side_effects: []
   exceptions: []
 - flow_id: vyd.flow.t_vyd_l_ss
@@ -485,19 +548,22 @@ records:
 - flow_id: vyd.flow.t_vyd_o_kontrola_na_fak
   trigger_or_procedure_ref: vyd.oracle.bcffd0da0c96efb1921199a3
   event_sk: BEFORE EACH ROW | UPDATE | STATUS=ENABLED
-  condition_sk: null
-  watched_field_refs: []
+  condition_sk: UPDATE invoice line reference.
+  watched_field_refs:
+  - mc.field.vyd_o.rid_r_dlaf
   session_or_bypass_sk: null
-  business_effect_sk: null
-  diagnostic_meaning_sk: Source flow je materializovaný bez odhadu business efektu; detail patrí do mutation matrix
-    a trigger source.
+  business_effect_sk: Blokuje opätovné prelinkovanie už linknutého VYD_O riadku na inú faktúru.
+  diagnostic_meaning_sk: RID_R_DLAF potvrdzuje line invoice reference a guard; úplný DLAF lifecycle zostáva boundary.
   evidence_refs:
   - vyd.evidence.evidence_11
   - vyd.evidence.evidence_09
   calls: []
   direct_mutations: []
   side_effects: []
-  exceptions: []
+  exceptions:
+  - scope_refs:
+    - mc.field.vyd_o.rid_r_dlaf
+    description_sk: Zmena na inú faktúru je blokovaná, ak riadok už má invoice link.
 - flow_id: vyd.flow.t_vyd_o_modif_i
   trigger_or_procedure_ref: vyd.oracle.e107bf49a970d9ea503e5660
   event_sk: BEFORE EACH ROW | UPDATE | STATUS=ENABLED
@@ -549,19 +615,40 @@ records:
 - flow_id: vyd.flow.t_vyd_o_rez
   trigger_or_procedure_ref: vyd.oracle.ae9dfa6aeb9e76f6b7860bd3
   event_sk: BEFORE EACH ROW | INSERT OR UPDATE OR DELETE | STATUS=ENABLED
-  condition_sk: null
-  watched_field_refs: []
-  session_or_bypass_sk: null
-  business_effect_sk: null
-  diagnostic_meaning_sk: Source flow je materializovaný bez odhadu business efektu; detail patrí do mutation matrix
-    a trigger source.
+  condition_sk: INSERT/UPDATE/DELETE; ODPIS=0; special negative issue branches.
+  watched_field_refs:
+  - mc.field.vyd_o.p_rez
+  - mc.field.vyd_o.id_sz
+  - mc.field.vyd_o.odpis
+  - mc.field.vyd_o.rid_v
+  session_or_bypass_sk: C_SESSION.GetSwap a GetRobiSpracovanieDokladu vetvia alebo obchádzajú štandardnú logiku;
+    SetNelogujRezervacie a SetNelogujNakladyOP potláčajú reentrant side effects pri prenose P_REZ na OBJ.
+  business_effect_sk: Udržiava fyzickú stock rezerváciu a passive layer ID_PS_RezVyd; pri 019-linked riadkoch môže
+    presúvať rezerváciu medzi VYD_O.P_REZ a OBJ_ODB_O.P_REZ.
+  diagnostic_meaning_sk: P_REZ je transient reservation state. Nulový current snapshot nie je dôkaz, že reservation
+    mechanizmus je neplatný alebo nepoužívaný.
   evidence_refs:
   - vyd.evidence.evidence_11
   - vyd.evidence.evidence_09
-  calls: []
-  direct_mutations: []
-  side_effects: []
-  exceptions: []
+  calls:
+  - callee_ref: vyd.oracle.302ac7bc58cb105eaf720776
+    sequence: 1
+  - callee_ref: vyd.oracle.8da22911d24c8bf1e0e2c3ca
+    sequence: 2
+  direct_mutations:
+  - scope_refs:
+    - mc.field.vyd_o.p_rez
+    - vyd.oracle_field.f3e990647535be1f1907722d
+    description_sk: Nastavuje VYD-side reservation a pri schválenej 019/session vetve prenáša reservation na order-side.
+  side_effects:
+  - scope_refs:
+    - vyd.oracle.02cf754cf59912a9fb74f610
+    - vyd.oracle.8da22911d24c8bf1e0e2c3ca
+    description_sk: Fyzická stock rezervácia a passive layer ID_PS_RezVyd.
+  exceptions:
+  - scope_refs:
+    - mc.field.vyd_o.odpis
+    description_sk: ODPIS=0 núti P_REZ=0.
 - flow_id: vyd.flow.t_vyd_o_sk_zaloha
   trigger_or_procedure_ref: vyd.oracle.c22e76bd6d7552c19efc6284
   event_sk: BEFORE EACH ROW | INSERT OR UPDATE | STATUS=ENABLED
