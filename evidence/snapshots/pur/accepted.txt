@@ -1,0 +1,1233 @@
+READY FOR CODEX HANDOFF
+
+Project:
+KASO Data Catalog
+
+Canonical repository:
+mtasky-mccarter/kaso-data-catalog
+
+Canonical branch:
+main
+
+Authoritative Oracle environment:
+OWNER=MC
+Slovak production only.
+
+Target:
+Create and materialize a new PURCHASING domain for the supplier purchasing lifecycle.
+
+Target maturity:
+AGENT-READY within the declared purchase-to-receipt scope.
+
+IMPORTANT RESPONSIBILITY BOUNDARY
+
+ChatGPT has completed semantic mapping and closure.
+Codex is repository/catalog engineer.
+
+Do NOT invent, reinterpret, upgrade or "improve":
+- business meanings,
+- Oracle field semantics,
+- JOIN keys,
+- cardinalities,
+- source-of-truth claims,
+- lifecycle meanings,
+- state meanings,
+- writer/reader/caller roles,
+- temporal semantics.
+
+Materialize only the approved contract below.
+
+If repository structure, schema, validator or existing canonical content conflicts with this handoff, or a required semantic fact is missing, STOP and return:
+
+HANDOFF BLOCKED
+
+with the exact blocking item.
+
+Do not resolve semantic ambiguity by guessing.
+
+
+============================================================
+1. PRE-FLIGHT
+============================================================
+
+Before making any change:
+
+1. Read:
+   - AGENTS.md
+   - docs/mapping-standard.md
+   - README.md
+   - relevant JSON schemas under schema/
+   - representative existing domain contracts, especially:
+       catalog/sales/
+       catalog/warehouse/
+       catalog/transport/
+       catalog/master/
+       catalog/lookup/
+
+2. Inspect canonical main for any existing references to:
+   - OBJD_L
+   - OBJD_O
+   - OBJ_D_NAVRH
+   - OBJ_D_NAVRH_LOG
+   - OBJ_D_KOMBAJN
+   - OBJ_D_NAVRH_DOKL
+   - OBJ_D_NAVRH_L
+   - OBJ_D_NAVRH_VYR
+   - OBJ_D_PODKLAD
+   - OBJ_D_ROZD_BLOKACII
+   - D_OBJD_L
+   - D_OBJD_O
+   - C_OBJ_D_KOMBAJN
+   - C_REZ_OBJ_DOD
+   - PRIJEMKY_LIST
+   - PRIJEMKY_OBSAH
+
+3. Do not duplicate facts already materialized elsewhere.
+   Where another canonical domain is authoritative, create a boundary/reference instead.
+
+4. Confirm that purchasing does not already exist as a canonical domain.
+
+5. Create a feature branch from current main.
+
+Do not edit generated DOCX/PDF/viewer outputs as canonical source.
+
+
+============================================================
+2. DOMAIN / CREATE SCOPE
+============================================================
+
+Create a new domain under the repository convention for:
+
+catalog/purchasing/
+
+Exact file decomposition and IDs must follow existing repository conventions and schema.
+Do not invent a parallel schema/layout.
+
+Primary business/technical scope:
+
+A. Purchasing proposal / purchasing combiner
+   OBJ_D_NAVRH
+
+B. Supplier document family
+   OBJD_L
+   OBJD_O
+
+C. Supplier order subtype
+   OBJD_L/O where TYP_CIS = '00028'
+
+D. Supplier transport-list subtype
+   OBJD_L/O where TYP_CIS = '00029'
+
+E. Core purchasing APIs
+   D_OBJD_L
+   D_OBJD_O
+   C_OBJ_D_KOMBAJN
+   C_REZ_OBJ_DOD
+
+Supporting mapped objects:
+   OBJ_D_KOMBAJN
+   OBJ_D_NAVRH_DOKL
+   OBJ_D_NAVRH_L
+   OBJ_D_NAVRH_LOG
+   OBJ_D_NAVRH_VYR
+   OBJ_D_PODKLAD
+   OBJ_D_ROZD_BLOKACII
+
+Receiving boundary:
+   PRIJEMKY_LIST
+   PRIJEMKY_OBSAH
+
+Do NOT deep-map the whole receipt domain in this change.
+Document it as a boundary sufficient for the purchasing lifecycle.
+
+
+============================================================
+3. CONFIRMED BUSINESS PROCESS
+============================================================
+
+Approved standard business flow:
+
+production plan
+    ->
+purchasing proposal / purchasing combiner
+OBJ_D_NAVRH
+    ->
+approve / reject
+    ->
+supplier purchase order
+OBJD_L/O, TYP_CIS='00028'
+    ->
+supplier transport list
+OBJD_L/O, TYP_CIS='00029'
+    ->
+receipt
+PRIJEMKY_LIST / PRIJEMKY_OBSAH
+    ->
+receipt processing / PL finalisation
+
+Business confirmation:
+After physical delivery, supplier order normally transitions through a
+"Prepravný list" and HandyGO is used for receipt processing from the PL.
+
+Technical alternative path also exists:
+supplier order -> receipt directly
+
+This direct PO->receipt path is:
+POTVRDENÉ TECHNICKY / LIVE OBSERVED
+
+Its exact business use-case is NOT confirmed.
+Keep that as a non-blocking boundary, not as the standard business process.
+
+
+============================================================
+4. PROPOSAL STATE CONTRACT
+============================================================
+
+C_OBJ_D_KOMBAJN source constants:
+
+-2 = Nacenená
+-1 = Naceniť
+ 0 = Navrhnuté
+ 1 = Schválené
+ 2 = Objednané
+ 3 = Na ceste
+ 4 = Prijaté
+ 9 = Zamietnuté
+
+ZDROJ constants include:
+
+14 = Z výroby
+
+Live MC confirms ZDROJ=14 as a major current production-generated
+proposal flow.
+
+Do NOT infer that proposal states 3 and 4 are currently populated merely
+because source constants exist.
+They were not observed in the profiled current OBJ_D_NAVRH snapshot.
+
+
+============================================================
+5. PHYSICAL GRAIN / IDENTITY
+============================================================
+
+OBJD_L:
+- one row = one supplier-family document header
+- PK = RID
+
+OBJD_O:
+- one row = one supplier-family document line
+- PK = (RID_O, ID_R)
+- RID_O -> OBJD_L.RID
+- header:line = 1:N
+
+OBJ_D_NAVRH:
+- one row = one purchasing proposal/current need row
+- PK = RID
+
+OBJD_L is a GENERIC supplier-side document family.
+Do NOT model OBJD_L as "supplier purchase order only".
+
+Subtype is determined by TYP_CIS.
+
+Confirmed relevant subtype values:
+
+'00028' = ObjD Dodávateľská objednávka
+'00029' = ObjD Prepravný list
+'00030' = ObjD Komisné hlásenie
+
+
+============================================================
+6. PROPOSAL -> SUPPLIER ORDER JOIN
+============================================================
+
+Canonical current forward join:
+
+OBJ_D_NAVRH.RID_V_OBJ_D
+    =
+OBJD_O.RID_O || '!' || TO_CHAR(OBJD_O.ID_R)
+
+then:
+
+OBJD_O.RID_O = OBJD_L.RID
+
+Live validation:
+766 / 766 current non-null proposal references matched.
+All matched supplier document subtype TYP_CIS='00028'.
+
+IMPORTANT:
+
+OBJ_D_NAVRH.RID_V_OBJ_D is a LINE RID.
+It is NOT OBJD_L.RID.
+
+DO NOT JOIN:
+OBJ_D_NAVRH.RID_V_OBJ_D = OBJD_L.RID
+
+
+Reverse relationship:
+
+OBJD_O.RID_N -> OBJ_D_NAVRH.RID
+
+exists in schema/source but its FK is disabled/not validated.
+
+Live profile:
+OBJD_O.RID_N non-null: 17,215
+matched current OBJ_D_NAVRH: 1,652
+unmatched current OBJ_D_NAVRH: 15,563
+
+Some RID_N values occur on multiple OBJD_O lines.
+
+Therefore:
+OBJD_O.RID_N is NOT a safe universal historical 1:1 join to current
+OBJ_D_NAVRH.
+
+Treat this as retention/history boundary, not automatically as DQ error.
+
+
+============================================================
+7. SUPPLIER ORDER -> TRANSPORT LIST
+============================================================
+
+Line relationship:
+
+PL_OBJD_O.RID_V
+    =
+PO_OBJD_O.RID_O || '!' || TO_CHAR(PO_OBJD_O.ID_R)
+
+Supplier order line -> transport list lines is 1:N.
+
+One PO line may be split into multiple PL lines.
+
+Source confirms P_PL mutation during PL processing/reversal.
+
+Quantity meaning:
+
+PO line P_PL
+= quantity processed/covered via transport-list lifecycle.
+
+P_PL is NOT physical receipt.
+
+
+============================================================
+8. TRANSPORT LIST -> RECEIPT
+============================================================
+
+Receipt line relation:
+
+PRIJEMKY_OBSAH.RID_V
+    =
+OBJD_O.RID_O || '!' || TO_CHAR(OBJD_O.ID_R)
+
+when the referenced OBJD line is the source of the receipt line.
+
+PL line -> receipt lines is 1:N.
+
+Live active PL snapshot:
+
+active PL lines: 221,619
+PL lines with current receipt link: 76,130
+PL lines with multiple receipt lines: 25,645
+
+Therefore:
+Receipt lines MUST be aggregated before joining to PL lines in analytical
+queries when a single-row PL grain is required.
+
+
+============================================================
+9. RID PREFIX 020 CORRECTION
+============================================================
+
+DO NOT ASSUME:
+
+PRIJEMKY_OBSAH.RID_V LIKE '020%'
+means "transport list".
+
+Live classification proved that prefix 020 identifies the OBJD family and
+target document type must then be resolved using OBJD_L.TYP_CIS.
+
+Observed current/retained classification:
+
+255,188 -> active TYP_CIS='00029' transport list
+19      -> removed/retained TYP_CIS='00029'
+1,459   -> active TYP_CIS='00028' supplier order
+1       -> no current OBJD header
+
+Therefore canonical rule:
+
+RID prefix/type routing alone is insufficient to distinguish supplier
+order vs transport list inside OBJD.
+Always resolve document subtype through OBJD_L.TYP_CIS.
+
+
+============================================================
+10. QUANTITY CONTRACT
+============================================================
+
+Source-confirmed canonical line formulas:
+
+remaining_qty =
+    POCET - P_DEL - P_PRIJ - P_PL
+
+processed_qty =
+    P_DEL + P_PRIJ + P_PL
+
+Meanings:
+
+POCET
+= ordered/source document quantity
+
+P_DEL
+= cancelled/reduced quantity bucket
+
+P_PL
+= quantity transferred/covered by downstream transport-list lifecycle
+
+P_PRIJ
+= stored receipt/fulfilment bucket used by OBJD lifecycle logic
+
+Do NOT interpret P_PL as received quantity.
+
+Do NOT interpret P_DEL automatically as a physical supplier non-delivery
+reason without separate evidence.
+
+
+============================================================
+11. P_PRIJ TEMPORAL CONTRACT
+============================================================
+
+OBJD_O.P_PRIJ is a STORED CURRENT fulfilment bucket used by OBJD state
+and quantity logic.
+
+It is NOT safely reconstructable as:
+
+SUM(current PRIJEMKY_OBSAH)
+
+Live active PL profile found a large difference between stored P_PRIJ and
+currently traceable receipt lines.
+
+This occurs even in recent data.
+
+Therefore:
+
+OBJD_O.P_PRIJ
+= stored current lifecycle state
+
+current PRIJEMKY_OBSAH direct lineage
+= current surviving lineage/evidence
+
+current receipt rows
+!= guaranteed full historical source of P_PRIJ
+
+Classification:
+DATA GAP / temporal boundary
+NON-BLOCKING for declared purchasing scope.
+
+Do NOT label the mismatch population as data corruption.
+
+
+============================================================
+12. FULFILMENT STATE CONTRACT - CRITICAL
+============================================================
+
+Canonical current fulfilment state:
+
+D_OBJD_L.GetS_STAV(OBJD_L.FLAGS_S)
+
+Source-confirmed raw state slot:
+FLAGS_S position / Flag 11
+
+Values:
+
+0 = Nevybavené
+1 = Odoslané
+2 = Vybavené z časti
+3 = Vybavené
+4 = Potvrdené dodanie
+
+This is a CRITICAL semantic correction.
+
+OBJD_L.STAV is NOT the authoritative fulfilment state.
+
+Raw STAV codes include:
+
+000-38 = Otvorená
+000-40 = Uzavretá
+000-41 = Vybavená z časti
+000-42 = Vybavená
+POTVRD-DOD-4011 = Potvrdené dodanie
+
+But these raw document-state values are not safely equivalent to the
+business fulfilment state.
+
+Live MC state cross-check proved examples including:
+
+Flag11=0 Nevybavená + STAV='000-40' Uzavretá
+Flag11=3 Vybavená   + STAV='000-38' Otvorená
+
+Specifically, the snapshot included:
+40 supplier orders with STAV='000-40' while Flag11=0.
+
+Therefore DO NOT ASSUME:
+
+STAV='000-40'
+= fulfilled order
+
+For business fulfilment state use:
+D_OBJD_L.GetS_STAV(FLAGS_S)
+
+
+============================================================
+13. COMPLETION / CANCELLATION NUANCE
+============================================================
+
+Do NOT assume:
+
+Flag11=3 / STAV='000-42'
+means all quantity was physically received.
+
+Source can close remaining quantity through P_DEL.
+
+Therefore final system fulfilment can be composed of:
+- P_PRIJ
+- P_PL
+- P_DEL
+
+depending on lifecycle layer.
+
+Physical receipt must not be inferred solely from header final state.
+
+
+============================================================
+14. S_STAMP CONTRACT
+============================================================
+
+S_STAMP='0'
+means record is not marked removed/storned by the technical remove stamp.
+
+It does NOT mean:
+- business open,
+- quantity open,
+- currently actionable.
+
+Do NOT use S_STAMP='0' as business open status.
+
+
+============================================================
+15. DELIVERY-DATE / OVERDUE CONTRACT
+============================================================
+
+Canonical line-level effective delivery date:
+
+NVL(
+    OBJD_O.TERMIN_DOD,
+    NVL(
+        OBJD_L.TERMIN_DOD,
+        OBJD_L.DATUM_P
+    )
+)
+
+Live active supplier-order line profile:
+
+total profiled PO lines: 69,895
+
+OBJD_O.TERMIN_DOD used: 69,726
+header TERMIN_DOD fallback: 13
+DATUM_P fallback: 156
+
+917 lines had an effective delivery date different from OBJD_L.DATUM_P.
+
+317 supplier purchase orders contained more than one effective delivery
+date across their lines.
+
+Therefore:
+
+Do NOT use OBJD_L.DATUM_P alone as universal overdue authority.
+
+An order can contain:
+- overdue lines,
+- and lines that are not yet due.
+
+Canonical overdue diagnostics must be line-aware.
+
+
+============================================================
+16. CONFIRMED STANDARD PROCESS STATE TRANSFER
+============================================================
+
+Critical lifecycle interpretation:
+
+Supplier PO can become completely "Vybavená" at its own layer because
+its quantity has moved to P_PL.
+
+That does NOT imply the goods were received.
+
+Observed real pattern:
+
+supplier PO
+P_PL = full quantity
+Flag11 = Vybavená
+
+while downstream PL remains:
+P_PRIJ = 0
+remaining_qty > 0
+Flag11 = Nevybavený
+
+Therefore for incoming supply diagnostics:
+
+PO fulfilment and physical receipt are different lifecycle layers.
+
+
+============================================================
+17. HANDYGO / FINALISATION BOUNDARY
+============================================================
+
+Oracle source confirms HANDYGO-related flow calling:
+
+D_OBJD_L.UkonciPrijemPL(...)
+
+The PL finalisation routine evaluates remaining/unreceived quantity and
+can branch depending on process/configuration.
+
+Source-supported outcomes include:
+- no further action in some branches,
+- cancellation/shortening of unreceived remainder,
+- receipt/return related processing.
+
+Therefore do not reduce PL finalisation to one unconditional state update.
+
+Runtime GUI behavior outside Oracle-visible source remains an explicit
+application boundary.
+
+
+============================================================
+18. DEPENDENCY CONTRACT
+============================================================
+
+Relevant direct dependency/caller surface has been mapped.
+
+Important source-supported objects include, among others:
+- HANDYGO
+- D_PRIJEMKA_L
+- D_PRIJEMKA_O
+- D_OBJ_ODB_L
+- D_OBJ_ODB_O
+- D_VYDAJ_L
+- C_SKLAD_ZASOB_P
+- C_NAKLAD_PRIJEM
+- purchasing core packages/triggers
+
+Do NOT automatically classify every ALL_DEPENDENCIES edge as reader,
+writer or caller.
+
+Role hierarchy:
+
+source-proven SELECT/query
+    -> READER
+
+source-proven mutating API call / DML
+    -> WRITER or API WRITER as justified
+
+compile-time dependency without behavior evidence
+    -> DEPENDENCY ONLY
+
+grant/synonym
+    -> ACCESS CAPABILITY ONLY
+
+
+============================================================
+19. DEPENDENCY CLOSURE
+============================================================
+
+PUR_F4_A:
+direct purchasing dependency surface was mapped.
+
+Depth-2 expands heavily through common shared utilities such as C_RID.
+
+Generic deeper traversal was intentionally stopped because it no longer
+adds purchasing-specific semantic safety.
+
+This is deliberate STOP DIGGING behavior.
+
+Do not restart generic dependency crawling without a concrete blocking
+question.
+
+
+============================================================
+20. CROSS-SCHEMA BOUNDARIES
+============================================================
+
+PUR_F4_B:
+58 grants
+11 synonyms
+
+These establish access capability only.
+
+PUR_F4_C:
+0 business cross-schema inbound ALL_DEPENDENCIES edges on the defined
+core set.
+
+Outbound non-MC dependencies from core packages were Oracle/public
+infrastructure such as:
+SYS.STANDARD
+SYS.XMLTYPE
+SYS.XQSEQUENCE
+PUBLIC.DUAL
+PUBLIC.DBMS_OUTPUT
+PUBLIC.DBMS_LOB
+PUBLIC.UTL_FILE
+etc.
+
+PUR_MP06_B source-visible external hits:
+
+MC_ST.PCK_SK_DOC_INFO
+= confirmed source-visible READER of OBJD purchasing objects.
+
+It reads OBJD_L/O and uses quantity logic including:
+POCET - P_PRIJ - P_PL - P_DEL
+
+MC_WWW:
+grants/synonyms/API capability exist,
+but this closure source scan did not prove runtime source usage.
+Keep ACCESS CAPABILITY unless another approved source item proves more.
+
+MCCZ_WWW:
+non-authoritative separate-environment boundary.
+Do not use as MC business evidence.
+
+
+============================================================
+21. JOB / BACKGROUND CONTROL
+============================================================
+
+PUR_MP06_A result:
+
+DBMS_JOB direct purchasing reference = 0
+DBMS_SCHEDULER direct purchasing reference = 0
+
+Classification:
+confirmed negative Oracle-visible evidence.
+
+This does NOT prove absence of:
+- external application jobs,
+- dynamic SQL,
+- jobs outside Oracle-visible scheduler source.
+
+
+============================================================
+22. CORE CLOSURE CONTROL
+============================================================
+
+Final MC control snapshot:
+
+OBJD_L triggers = 6
+disabled OBJD_L triggers = 0
+
+OBJD_O triggers = 15
+disabled OBJD_O triggers = 0
+
+OBJ_D_NAVRH triggers = 4
+disabled OBJ_D_NAVRH triggers = 0
+
+invalid core objects = 0
+
+These values match the earlier physical discovery snapshot.
+
+
+============================================================
+23. DO NOT ASSUME REGISTER
+============================================================
+
+Materialize at least the following safeguards:
+
+1.
+OBJD_L is NOT exclusively a supplier purchase order.
+Use TYP_CIS.
+
+2.
+S_STAMP='0' != business open.
+
+3.
+OBJD_L.STAV != authoritative fulfilment state.
+
+4.
+STAV='000-40' Uzavretá != fulfilled.
+
+5.
+STAV='000-42' / fulfilled header != proof of physical receipt.
+
+6.
+Canonical fulfilment state:
+D_OBJD_L.GetS_STAV(FLAGS_S)
+
+7.
+Flag11 is the source-confirmed raw fulfilment state slot.
+
+8.
+P_PL != physical receipt.
+
+9.
+P_PRIJ != dynamically reconstructable SUM(current receipt rows).
+
+10.
+OBJ_D_NAVRH.RID_V_OBJ_D is a LINE RID, not OBJD_L.RID.
+
+11.
+OBJD_O.RID_N is not a safe universal historical 1:1 proposal join.
+
+12.
+RID prefix 020 != transport list.
+Resolve TYP_CIS.
+
+13.
+OBJD_L.DATUM_P alone != universal line delivery deadline.
+
+14.
+PO->PL is 1:N.
+Protect analytical queries from fan-out.
+
+15.
+PL->receipt is 1:N.
+Aggregate receipt rows before joining when preserving PL line grain.
+
+16.
+Grant/synonym != runtime flow.
+
+17.
+ALL_DEPENDENCIES != writer/reader proof.
+
+18.
+MCCZ/TEST/TESTCZ != MC evidence.
+
+19.
+Runtime dynamic SQL/application behavior outside Oracle source is a
+system boundary.
+
+20.
+Current PRIJEMKY_* rows are not guaranteed complete event history for
+stored P_PRIJ.
+
+
+============================================================
+24. TEMPORAL CLASSIFICATION
+============================================================
+
+Materialize temporal semantics explicitly.
+
+Examples:
+
+OBJD_L / OBJD_O current rows
+    -> RAW CURRENT / STORED CURRENT document snapshot
+
+FLAGS_S current state
+    -> RAW CURRENT state register
+
+D_OBJD_L.GetS_STAV(...)
+    -> DERIVED CURRENT state interpretation
+
+P_PRIJ / P_PL / P_DEL
+    -> STORED CURRENT lifecycle quantity buckets
+
+I_STAMP
+    -> insert audit stamp / technical creation evidence where supported
+
+U_STAMP
+    -> last-update audit stamp where supported
+
+S_STAMP
+    -> technical remove/storno stamp
+
+OBJ_D_NAVRH_LOG
+    -> selective/history-related structure
+       DO NOT call complete event history unless evidence supports it
+
+current receipt direct lineage
+    -> current surviving lineage, not complete P_PRIJ history
+
+P_PRIJ historical reconstruction
+    -> DATA GAP
+
+
+============================================================
+25. NON-BLOCKING BACKLOG
+============================================================
+
+Keep explicitly visible:
+
+A.
+Exact business purpose of direct supplier PO -> receipt path.
+Technical/live existence confirmed.
+Business role not confirmed.
+
+B.
+Full event reconstruction of P_PRIJ from receipt tables.
+Not currently possible from surviving current lineage.
+
+C.
+One historical/current receipt RID_V prefix-020 reference without a
+current OBJD header.
+Do not generalize to corruption.
+
+D.
+Exact business meaning of alternate source prefix / special source
+observed around NO255905.
+Outside core purchasing PO lifecycle.
+
+E.
+Exact UI counter/source behind the user's "objednané" display versus
+passive-stock/open-incoming quantity.
+Technical mechanism known, UI binding not proven.
+
+F.
+Cross-environment RID/global identity semantics.
+Do not assume global uniqueness across MC/MCCZ/TEST/TESTCZ.
+
+G.
+OBJ_D_NAVRH_LOG complete event-history semantics / retention.
+Not proven as complete event log.
+
+These are NON-BLOCKING for the declared AGENT-READY purchasing scope.
+
+
+============================================================
+26. APPROVED EVIDENCE SET
+============================================================
+
+Use and register the available approved evidence files if they are present
+in the Codex workspace/repository handoff.
+
+MP01:
+PUR_MP01_A_OBJECT_CANDIDATES.xlsx
+PUR_MP01_B_COLUMNS.xlsx
+PUR_MP01_C_CONSTRAINTS.xlsx
+PUR_MP01_D_INDEXES.xlsx
+PUR_MP01_E_TRIGGERS_DEPENDENCIES.xlsx
+PUR_MP01_F_SOURCE_HITS.xlsx
+
+MP02:
+PUR_MP02_A_HEADER_STATE_PROFILE.xlsx
+PUR_MP02_B_IDENTITY_CARDINALITY.xlsx
+PUR_MP02_C_QUANTITY_PROFILE.xlsx
+PUR_MP02_D_NAVRH_LIFECYCLE_PROFILE.xlsx
+PUR_MP02_E_NAVRH_ORDER_TRACE.xlsx
+PUR_MP02_F_NAVRH_TARGET_TYPE.xlsx
+
+MP03:
+PUR_MP03_A_STATE_CROSSCHECK.xlsx
+PUR_MP03_B_DELIVERY_DATE_PROFILE.xlsx
+PUR_MP03_C_PO_PL_LINK_PROFILE.xlsx
+
+MP04:
+PUR_MP04_A_PL_RECEIPT_PROFILE.xlsx
+PUR_MP04_B_OPEN_PL_DETAIL.xlsx
+PUR_MP04_C_RECEIPT_LINK_CARDINALITY.xlsx
+
+MP05:
+PUR_MP05_A_RECEIPT_020_CLASSIFICATION.xlsx
+PUR_MP05_B_PPRIJ_TEMPORAL_PROFILE.xlsx
+PUR_MP05_C_OPEN_PL_SOURCE_TRACE.xlsx
+
+F4:
+PUR_F4_A_INBOUND_CLOSURE.xlsx
+PUR_F4_B_SYNONYMS_GRANTS.xlsx
+PUR_F4_C_CROSS_SCHEMA_BACKGROUND.xlsx
+
+MP06:
+PUR_MP06_B_EXTERNAL_SOURCE_HITS.xlsx
+PUR_MP06_C_CORE_CONTROL.xlsx
+
+Additional approved evidence:
+PUR_MP06_A_BACKGROUND_JOBS
+result = 0
+
+Business/UI validation 2026-09-11:
+A real supplier order visible in application as "Nevybavená" was shown by
+the original SQL as OBJD_L.STAV='000-40' Uzavretá.
+This triggered and corroborated the Flag11/source correction.
+
+Do not fabricate a row-level RID for this UI validation because one was
+not retained as a formal evidence artifact.
+
+
+============================================================
+27. CANONICAL SQL TO MATERIALIZE
+============================================================
+
+Add read-only diagnostic SQL following existing repository conventions.
+
+Required patterns:
+
+1. proposal -> supplier PO line trace
+
+2. supplier PO -> transport-list line trace
+
+3. PL -> receipt trace with preaggregation / fan-out protection
+
+4. supplier document header + lines +:
+   D_OBJD_L.GetS_STAV(FLAGS_S)
+
+5. canonical quantity diagnostic:
+   POCET
+   P_DEL
+   P_PRIJ
+   P_PL
+   remaining_qty
+
+6. line-aware overdue supplier-order diagnostic using:
+   NVL(O.TERMIN_DOD,
+       NVL(L.TERMIN_DOD,L.DATUM_P))
+
+7. stored P_PRIJ vs current receipt-lineage diagnostic
+
+8. open transport-list diagnostic
+
+9. dependency/source trace diagnostic
+
+10. user-created overdue supplier-order report where appropriate,
+    with fulfilment state from D_OBJD_L.GetS_STAV(FLAGS_S),
+    NOT from OBJD_L.STAV.
+
+All SQL:
+- SELECT only
+- OWNER=MC
+- conservative Oracle syntax
+- compatible with SQL Navigator 5.5.4.847
+- no DML/DDL
+- no data-changing PL/SQL
+- avoid version-sensitive syntax unless already proven compatible
+
+Each SQL contract should state:
+- grain,
+- what it proves,
+- what it does NOT prove,
+- fan-out risk where relevant.
+
+
+============================================================
+28. DIAGNOSTIC PLAYBOOKS
+============================================================
+
+Materialize playbooks for at least:
+
+A.
+Supplier PO appears open / overdue
+
+Start:
+line effective delivery date
++ GetS_STAV
++ line remaining_qty
+
+Do not start from OBJD_L.STAV alone.
+
+B.
+Supplier PO says fulfilled but goods are not received
+
+Trace:
+PO line P_PL
+-> linked PL line(s)
+-> PL P_PRIJ / remaining
+-> receipt boundary
+
+C.
+Transport list remains open after receipt
+
+Check:
+GetS_STAV
+line quantities
+receipt lineage
+pending/current receipt rows where available
+UkonciPrijemPL source flow
+
+D.
+PO->PL quantity mismatch
+
+Trace PO line to all PL lines.
+Respect 1:N cardinality.
+
+E.
+PL->receipt mismatch
+
+Aggregate receipt lines first.
+Compare to stored P_PRIJ.
+Remember current receipt lineage is not full historical authority.
+
+F.
+UI says "Nevybavená" but raw STAV says "Uzavretá"
+
+Use GetS_STAV / Flag11.
+This is an expected valid state combination.
+
+G.
+Historical proposal RID_N does not resolve
+
+Do not automatically call it orphan corruption.
+Check retention/log/history boundary.
+
+
+============================================================
+29. BREAKING CHANGE / REVISION NOTE
+============================================================
+
+This materialization contains semantic corrections relative to earlier
+working interpretations.
+
+Set breaking_change = true where repository model supports it, and add an
+explicit revision note for at least:
+
+1.
+Fulfilment authority correction
+
+OLD / unsafe:
+OBJD_L.STAV as business fulfilment state
+
+NEW:
+D_OBJD_L.GetS_STAV(FLAGS_S)
+with Flag11 as raw state slot.
+
+2.
+Delivery-date correction
+
+OLD / unsafe:
+OBJD_L.DATUM_P as universal overdue date
+
+NEW:
+line-first:
+NVL(OBJD_O.TERMIN_DOD,
+    NVL(OBJD_L.TERMIN_DOD,
+        OBJD_L.DATUM_P))
+
+3.
+RID prefix correction
+
+OLD / unsafe:
+prefix 020 = transport list
+
+NEW:
+prefix 020 identifies OBJD family;
+resolve actual subtype through OBJD_L.TYP_CIS.
+
+Do not silently overwrite the previous interpretation.
+
+
+============================================================
+30. AGENT-READY ACCEPTANCE
+============================================================
+
+Create a purchasing-specific acceptance gate following the style of
+existing mature domains.
+
+Acceptance must ensure representation of at least:
+
+- declared domain/scope
+- grain and identity
+- full available field inventory
+- PK/UQ/FK/CHECK/index information
+- TYP_CIS subtype contract
+- proposal -> PO join
+- PO -> PL join
+- PL -> receipt boundary join
+- 1:N fan-out rules
+- canonical quantity formula
+- Flag11 fulfilment model
+- OBJD_L.STAV warning
+- line-level effective delivery date
+- P_PRIJ temporal DATA GAP
+- mutation/source flow
+- dependency role separation
+- grant/synonym capability boundary
+- cross-schema/environment boundary
+- background-job negative evidence
+- DO NOT ASSUME register
+- diagnostic playbooks
+- canonical SQL
+- evidence references
+- revision/breaking-change note
+- explicit non-blocking backlog
+- blocking backlog = 0
+
+Do NOT make test assertions that convert volatile production population
+counts into permanent business constants.
+
+Snapshot counts may be retained as dated evidence observations only.
+
+
+============================================================
+31. VALIDATION / REPOSITORY WORKFLOW
+============================================================
+
+After materialization run at minimum:
+
+python tools/validate_catalog.py
+
+python -m unittest discover -s tools -p 'test_*.py' -v
+
+plus:
+- purchasing-specific acceptance gate
+- SQL safety/read-only lint if repository provides one
+- unresolved-reference check
+- duplicate-ID check
+- evidence requirement check
+- semantic-loss assertions if available
+
+Confirm:
+- no DML/DDL diagnostic SQL
+- no unsupported business claims
+- no environment leakage from MCCZ/TEST/TESTCZ into MC
+- no loss of DO NOT ASSUME protections
+- no incorrect 1:1 joins where relationships are 1:N
+
+
+============================================================
+32. PR WORKFLOW
+============================================================
+
+After all checks pass:
+
+1. Review git diff.
+2. Ensure only intended purchasing/catalog/evidence/SQL/test changes exist.
+3. Commit on feature branch.
+4. Open focused PR.
+5. Do not merge if CI is red.
+6. Report:
+   - branch name
+   - commit SHA
+   - files created/changed
+   - validator results
+   - unit-test results
+   - purchasing acceptance result
+   - SQL lint result
+   - unresolved references
+   - evidence issues
+   - PR number / URL
+   - any HANDOFF BLOCKED items
+
+If merge is permitted by the normal repository workflow and all checks are
+green, merge according to repository policy and then verify the resulting
+main workflow is green.
+
+Generated DOCX/PDF/viewer artifacts may only be generated from the
+canonical layer after canonical materialization succeeds.
+
+
+============================================================
+33. STOP CONDITION
+============================================================
+
+Do not start new generic Oracle reverse engineering.
+
+Semantic mapping is CLOSED.
+
+Blocking backlog at handoff:
+0
+
+If a concrete repository/schema/evidence inconsistency prevents faithful
+materialization, return:
+
+HANDOFF BLOCKED
+
+with:
+- exact contract item,
+- exact conflicting repository/schema item,
+- what evidence is missing,
+- whether ChatGPT/business validation or a new MC read-only test is needed.
+
+Otherwise complete repository materialization and return the PR/validation
+report.
