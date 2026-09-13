@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import re
 import shutil
 import subprocess
 import sys
@@ -16,6 +17,7 @@ import yaml
 ROOT_DEFAULT = Path(__file__).resolve().parents[1]
 PUBLICATION_PREFIX = "KASO Data Catalog - Technical & Diagnostic Reference - "
 LAYOUT_VERSION = "1.0"
+VERSION_RE = re.compile(r"^(\d+)\.(\d+)$")
 
 PUBLICATIONS = {
     "cestovne-prikazy": {
@@ -38,9 +40,15 @@ def sha256(path: Path) -> str:
 def current_version(root: Path, config: dict) -> str:
     revisions = yaml.safe_load((root / config["revisions"]).read_text(encoding="utf-8"))
     records = revisions.get("records") or []
-    if not records or not records[-1].get("contract_version"):
-        raise RuntimeError(f"Missing current contract_version in {config['revisions']}")
-    return str(records[-1]["contract_version"])
+    versions = []
+    for record in records:
+        value = str(record.get("contract_version") or "")
+        match = VERSION_RE.fullmatch(value)
+        if match:
+            versions.append(((int(match.group(1)), int(match.group(2))), value))
+    if not versions:
+        raise RuntimeError(f"Missing x.y contract_version in {config['revisions']}")
+    return max(versions, key=lambda item: item[0])[1]
 
 
 def publication_basename(config: dict, version: str) -> str:
@@ -114,6 +122,16 @@ def generate_one(root: Path, slug: str, output_root: Path) -> tuple[Path, Path, 
     return target_docx, target_pdf, target_manifest
 
 
+def same_generated_file(generated_path: Path, expected_path: Path) -> bool:
+    if not expected_path.is_file():
+        return False
+    if generated_path.name.endswith(".manifest.yaml"):
+        return yaml.safe_load(generated_path.read_text(encoding="utf-8")) == yaml.safe_load(
+            expected_path.read_text(encoding="utf-8")
+        )
+    return generated_path.read_bytes() == expected_path.read_bytes()
+
+
 def check_one(root: Path, slug: str) -> None:
     expected_dir = root / "generated" / slug
     with tempfile.TemporaryDirectory() as temporary:
@@ -121,7 +139,7 @@ def check_one(root: Path, slug: str) -> None:
         mismatches = []
         for generated_path in generated:
             expected_path = expected_dir / generated_path.name
-            if not expected_path.is_file() or generated_path.read_bytes() != expected_path.read_bytes():
+            if not same_generated_file(generated_path, expected_path):
                 mismatches.append(expected_path.as_posix())
         if mismatches:
             raise SystemExit("Generated publication differs: " + ", ".join(mismatches))
