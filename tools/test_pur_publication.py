@@ -15,8 +15,8 @@ from generate_pur_publication import FONT_DIR, blocks, model, registry_parts, va
 from reportlab.pdfbase.ttfonts import TTFont
 
 ROOT = Path(__file__).resolve().parents[1]
-GENERATED = ROOT / "generated/purchasing"
-BASENAME = "KASO Data Catalog - Technical & Diagnostic Reference - nákupný lifecycle od návrhu po receiving boundary v1.0"
+GENERATED = ROOT / "generated/nakupne-objednavky"
+BASENAME = "KASO Data Catalog - Technical & Diagnostic Reference - nákupné objednávky v1.0"
 
 
 def normalized(text):
@@ -29,12 +29,11 @@ class PurchasingPublicationTests(unittest.TestCase):
         self.assertEqual("pur.contract.purchasing.1_0", manifest["contract_ref"])
         self.assertEqual("1.0", manifest["contract_version"])
         self.assertEqual("1.0", manifest["publication_layout_version"])
-        self.assertEqual("purchasing", manifest["publication_slug"])
+        self.assertEqual("nakupne-objednavky", manifest["publication_slug"])
         self.assertEqual(BASENAME, manifest["publication_title"])
         self.assertEqual("tools/generate_publication.py", manifest["publication_orchestrator"])
-        contract = yaml.safe_load((ROOT / "catalog/purchasing/contract.yaml").read_text())
-        self.assertEqual(contract["title_sk"].lower(), PUBLICATIONS["purchasing"]["subject_sk"])
-        self.assertEqual(BASENAME, publication_basename(PUBLICATIONS["purchasing"], current_version(ROOT, PUBLICATIONS["purchasing"])))
+        self.assertEqual("nákupné objednávky", PUBLICATIONS["nakupne-objednavky"]["subject_sk"])
+        self.assertEqual(BASENAME, publication_basename(PUBLICATIONS["nakupne-objednavky"], current_version(ROOT, PUBLICATIONS["nakupne-objednavky"])))
         paths = (sorted((ROOT / "catalog/purchasing").glob("*.yaml"))
                  + sorted((ROOT / "sql/diagnostic/purchasing").glob("*.sql"))
                  + sorted((ROOT / "evidence/manifests/pur").glob("*.yaml")))
@@ -44,7 +43,7 @@ class PurchasingPublicationTests(unittest.TestCase):
             digest.update(path.read_bytes() + b"\0")
         self.assertEqual([p.relative_to(ROOT).as_posix() for p in paths], manifest["canonical_inputs"])
         self.assertEqual(digest.hexdigest(), manifest["canonical_input_sha256"])
-        expected = {f"generated/purchasing/{BASENAME}{ext}" for ext in (".docx", ".pdf")}
+        expected = {f"generated/nakupne-objednavky/{BASENAME}{ext}" for ext in (".docx", ".pdf")}
         self.assertEqual(expected, {r["path"] for r in manifest["artifacts"]})
         for artifact in manifest["artifacts"]:
             path = ROOT / artifact["path"]
@@ -89,7 +88,7 @@ class PurchasingPublicationTests(unittest.TestCase):
             self.assertEqual(records, [dict(shared, **r) for r in unique])
 
     def test_publication_is_deterministically_current(self):
-        subprocess.run([sys.executable, str(ROOT / "tools/generate_publication.py"), "purchasing", "--check"], cwd=ROOT, check=True)
+        subprocess.run([sys.executable, str(ROOT / "tools/generate_publication.py"), "nakupne-objednavky", "--check"], cwd=ROOT, check=True)
 
     def test_pdf_fonts_cover_all_canonical_characters(self):
         characters = set(str(blocks(model(ROOT))))
