@@ -56,3 +56,4 @@ Oracle evidence
 ChatGPT owns evidence interpretation and semantic closure. Codex owns engineering materialization, validation, repository changes and generated artifacts. Codex must not infer missing business meaning. A future KASO Catalog Viewer should remain a read-only presentation layer generated from the canonical catalog, never a second source of truth.
 
 For canonical publication output, use `python tools/generate_publication.py <publication-slug>` or `python tools/generate_publication.py all`; use `--check` in validation workflows.
+Dokumentácia: [Nákupné objednávky](generated/nakupne-objednavky/) — Technical & Diagnostic Reference v1.0 (DOCX, PDF a manifest).

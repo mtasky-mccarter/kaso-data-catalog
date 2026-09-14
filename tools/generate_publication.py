@@ -20,10 +20,10 @@ LAYOUT_VERSION = "1.0"
 VERSION_RE = re.compile(r"^(\d+)\.(\d+)$")
 
 PUBLICATIONS = {
-    "purchasing": {
-        "subject_sk": "nákupný lifecycle od návrhu po receiving boundary",
+    "nakupne-objednavky": {
+        "subject_sk": "nákupné objednávky",
         "generator": "tools/generate_pur_publication.py",
-        "legacy_basename": "purchasing-v1.0",
+        "legacy_basename": "nakupne-objednavky-v1.0",
         "revisions": "catalog/purchasing/revisions.yaml",
     },
     "cestovne-prikazy": {

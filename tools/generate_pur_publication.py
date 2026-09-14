@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Lossless purchasing reference publication from canonical YAML and SQL only.
+"""Lossless nákupné objednávky reference publication from canonical YAML and SQL only.
 
 Both renderers consume the same ordered blocks. Shared record properties are
 factored out once per registry; every remaining property is printed per record.
@@ -41,7 +41,7 @@ DOMAIN = Path("catalog/purchasing")
 SQL_DIR = Path("sql/diagnostic/purchasing")
 EVIDENCE = Path("evidence/manifests/pur")
 # An intermediate name required by the existing publication orchestrator.
-BASENAME = "purchasing-v1.0"
+BASENAME = "nakupne-objednavky-v1.0"
 FIXED_TIME = datetime(2000, 1, 1, tzinfo=timezone.utc)
 FONT_DIR = Path(__file__).resolve().parent / "fonts/liberation"
 
@@ -114,15 +114,15 @@ def model(root):
     for row in registry:
         path = (root / row["sql_file"]).resolve()
         if path.parent != (root / SQL_DIR).resolve() or path.suffix != ".sql":
-            raise ValueError(f"Non-purchasing SQL path: {path}")
+            raise ValueError(f"SQL cesta mimo nákupných objednávok: {path}")
         sql[row["sql_id"]] = path.read_text()
     if {r["sql_file"] for r in registry} != {p.relative_to(root).as_posix() for p in (root / SQL_DIR).glob("*.sql")}:
-        raise ValueError("SQL registry does not cover canonical purchasing SQL")
+        raise ValueError("SQL register nepokrýva kanonické SQL nákupných objednávok")
     versions = {r["contract_version"] for r in docs["revisions.yaml"]["records"]}
     version = max(versions, key=lambda v: tuple(int(n) for n in v.split(".")))
     digest, inputs = canonical_digest(root)
     return {"docs": docs, "evidence": evidence, "sql": sql, "version": version,
-            "subject": docs["contract.yaml"]["title_sk"].lower(), "digest": digest, "inputs": inputs}
+            "subject": "nákupné objednávky", "digest": digest, "inputs": inputs}
 
 
 def registry_parts(records):
@@ -298,7 +298,7 @@ def build_docx(data, output):
     for name, size in [("Title", 27), ("Heading 1", 17), ("Heading 2", 12), ("Heading 3", 10)]:
         doc.styles[name].font.size = Pt(size)
     header = sec.header.paragraphs[0]
-    header.text = f"KASO Data Catalog  |  purchasing {data['version']}"
+    header.text = f"KASO Data Catalog  |  nákupné objednávky {data['version']}"
     header.runs[0].font.size = Pt(8)
     footer = sec.footer.paragraphs[0]
     footer.alignment = WD_ALIGN_PARAGRAPH.RIGHT
@@ -308,8 +308,9 @@ def build_docx(data, output):
         run.font.size = Pt(8)
     doc.add_paragraph("KASO Data Catalog", "Title")
     doc.add_paragraph("Technical & Diagnostic Reference", "Subtitle")
-    doc.add_paragraph(data["docs"]["contract.yaml"]["title_sk"], "Title")
-    doc.add_paragraph(data["docs"]["contract.yaml"]["purpose_sk"])
+    doc.add_paragraph("Nákupné objednávky", "Title")
+    doc.add_paragraph(data["docs"]["contract.yaml"]["title_sk"], "Subtitle")
+    doc.add_paragraph("Schválený MC kontrakt nákupných objednávok pre bezpečnú read-only diagnostiku.")
     for line in provenance(data):
         doc.add_paragraph(line)
     doc.add_page_break()
@@ -414,7 +415,7 @@ def build_pdf(data, output):
 
     c = data["docs"]["contract.yaml"]
     story = [Spacer(1, 8 * mm), p("KASO Data Catalog", "title"), p("Technical & Diagnostic Reference", "h2"),
-             p(c["title_sk"], "title"), p(c["purpose_sk"]), Spacer(1, 6 * mm)]
+             p("Nákupné objednávky", "title"), p(c["title_sk"], "h2"), p("Schválený MC kontrakt nákupných objednávok pre bezpečnú read-only diagnostiku."), Spacer(1, 6 * mm)]
     story.extend(p(line) for line in provenance(data))
     story.extend([PageBreak(), p("Obsah", "h1")])
     for block in blocks(data):
@@ -450,13 +451,13 @@ def build_pdf(data, output):
     def footer(canvas, doc):
         canvas.saveState()
         canvas.setFont("Pur", 7)
-        canvas.drawString(15 * mm, 9 * mm, REPOSITORY + " | main | purchasing " + data["version"])
+        canvas.drawString(15 * mm, 9 * mm, REPOSITORY + " | main | nákupné objednávky " + data["version"])
         canvas.drawRightString(282 * mm, 9 * mm, str(doc.page))
         canvas.restoreState()
 
     pdf = SimpleDocTemplate(str(output), pagesize=landscape(A4), leftMargin=15 * mm, rightMargin=15 * mm,
                             topMargin=15 * mm, bottomMargin=16 * mm, invariant=1, pageCompression=1,
-                            title=c["title_sk"], author=REPOSITORY)
+                            title="Nákupné objednávky", author=REPOSITORY)
     pdf.build(story, onFirstPage=footer, onLaterPages=footer)
 
 
@@ -472,7 +473,7 @@ def generate(root, output):
         "publication_version": "1.0", "repository": REPOSITORY, "canonical_branch": "main",
         "contract_ref": data["docs"]["contract.yaml"]["contract_id"], "contract_version": data["version"],
         "generator": "tools/generate_pur_publication.py", "generator_version": "1.0",
-        "generated_from": "canonical purchasing YAML, read-only SQL and purchasing evidence manifests",
+        "generated_from": "kanonické YAML nákupných objednávok, read-only SQL a manifesty dôkazov nákupných objednávok",
         "canonical_input_sha256": data["digest"], "canonical_inputs": data["inputs"],
         "artifacts": [{"path": p.relative_to(root).as_posix() if p.is_relative_to(root) else p.name,
                        "sha256": hashlib.sha256(p.read_bytes()).hexdigest()} for p in (docx, pdf)],
