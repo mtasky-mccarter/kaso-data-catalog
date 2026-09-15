@@ -1,9 +1,11 @@
-# ODB evidence manifests
+# ODB evidence
 
-HANDOFF BLOCKED: no approved ODB evidence package was supplied.
-Stable proposed prefix: `odb.evidence.*`. Do not create ACCEPTED manifests, evidence
-classes, dates, checksums or source filenames from the directory scaffold.
-Materialize existing `evidence-manifest` schema v1.0 only from approved provenance.
-Retained SNAPSHOT_CRITICAL inputs belong under `evidence/snapshots/` with verified SHA-256.
-See `catalog/sales/obchodne-pripady/README.md` for the required logical inputs and
-proposed manifest filenames. No YAML manifest belongs directly under `evidence/`.
+`approved-contract.yaml` je accepted D manifest používateľom schváleného human
+semantic contractu v1.2. Nenahrádza raw Oracle A/B/B2 evidence. Pôvodný DOCX bol
+pri intake overený voči SHA256SUMS; retained JSON je odvodená textová extrakcia,
+nie pôvodný DOCX. Kontrola 41 vstupov je zachovaná v
+`evidence/source-extracts/odb/intake-integrity.json`.
+
+Pri materializácii 15. 9. 2026 už pôvodný source bundle nebol na zadanej ceste.
+Raw XLSX manifests/claims sa neoznačujú ako skontrolované na základe checksumu
+samotného. Chýbajúce claims sú v domain backlogu. Publication zostáva blocked.

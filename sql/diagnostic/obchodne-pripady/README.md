@@ -1,10 +1,11 @@
 # ODB read-only diagnostics
 
-HANDOFF BLOCKED: no approved diagnostic SQL was supplied.
-This directory deliberately contains no executable SQL. Do not derive a JOIN,
-field name, formula, package call or lifecycle test from the VYD/CP examples.
-After approval, materialize standalone SQL files and corresponding `sql-registry`
-records with binds, grain, fan-out limits, proves/does-not-prove and evidence refs.
-Use the SQL Navigator 5.5.4.847 contract; Oracle server version is unknown.
-Replace the scaffold no-SQL gate with SELECT-only lint and exact registry/file
-coverage tests. A successful lint does not prove business correctness or function safety.
+20 SELECTov zo schváleného v1.2: 9 toolkit SQL vzorov a SQL pre 8 playbookov.
+Názvy `doc-<block>-<part>.sql` odkazujú na 0-based intake block a 1-based SELECT.
+Prenos opravuje iba chýbajúce whitespace hranice SQL klauzúl; bezpečnostný test
+porovnáva všetky ostatné znaky s retained approved extraction.
+
+SQL Navigator 5.5.4.847; Oracle server version unknown. Žiadny SELECT nebol týmto
+engineering behom vykonaný na MC. Grain/fan-out a interpretation limits sú
+v sql-registry, relationships a playbooks. Coverage sanity nie je ekvivalent
+úplného CHECKu s DECODE/negatívnou vetvou. Invoice-line JOIN nie je doplnený.

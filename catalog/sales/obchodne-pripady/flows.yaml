@@ -1,4 +1,506 @@
 schema_version: '1.0'
 kind: flows
 id: odb.flows.001
-records: []
+records:
+- flow_id: odb.flow.t_obj_odb_l_akcia
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_l_akcia
+  event_sk: INSERT OR UPDATE
+  business_effect_sk: Pri zmene RID_CT_A kontroluje, či otvorené položky OBJ_ODB_O existujú v CT_O pre novú akciu;
+    inak zmenu zablokuje.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda A. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_L_AKCIA | INSERT OR UPDATE | Pri zmene RID_CT_A kontroluje,
+    či otvorené položky OBJ_ODB_O existujú v CT_O pre novú akciu; inak zmenu zablokuje. | POTVRDENÉ - SOURCE'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_obj_odb_l_limit
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_l_limit
+  event_sk: INSERT OR DELETE OR UPDATE
+  business_effect_sk: Udržiava čerpanie limitu obratu za miesto dodania za obdobie cez C_CIS_LIMIT_VAZBA.cerpanie
+    pri insert/storne/zmenách SUMA_M, MENA, MIESTO_DOD, TYP_CIS.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda A. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_L_LIMIT | INSERT OR DELETE OR UPDATE | Udržiava čerpanie limitu
+    obratu za miesto dodania za obdobie cez C_CIS_LIMIT_VAZBA.cerpanie pri insert/storne/zmenách SUMA_M, MENA, MIESTO_DOD,
+    TYP_CIS. | POTVRDENÉ - SOURCE'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_obj_odb_l_povolenia
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_l_povolenia
+  event_sk: INSERT OR UPDATE
+  business_effect_sk: Pri zmene PARTNER/DATUM_P/MIESTO_DOD kontroluje relevantné položky OBJ_ODB_O+SKLAD_KARTA a
+    volá C_PARTNER.ZobrazHlaseniaPovoleni.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda A. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_L_POVOLENIA | INSERT OR UPDATE | Pri zmene PARTNER/DATUM_P/MIESTO_DOD
+    kontroluje relevantné položky OBJ_ODB_O+SKLAD_KARTA a volá C_PARTNER.ZobrazHlaseniaPovoleni. | POTVRDENÉ - SOURCE'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_obj_odb_l_typ_uhrady
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_l_typ_uhrady
+  event_sk: UPDATE
+  business_effect_sk: Pri UPDATE TYP_UHRADY volá C_DOKL_L.KontrolaNaPredajNaHotovostTrig.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda A. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_L_TYP_UHRADY | UPDATE | Pri UPDATE TYP_UHRADY volá C_DOKL_L.KontrolaNaPredajNaHotovostTrig.
+    | POTVRDENÉ - SOURCE'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_obj_odb_l_zamok_z_obsluhy
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_l_zamok_z_obsluhy
+  event_sk: INSERT OR DELETE OR UPDATE
+  business_effect_sk: Pri INSERT/UPDATE/DELETE deleguje kontrolu zámku na D_OBJ_ODB_L.KontrolaNaZamokZObsluhy. Ak
+    FLAGS_B[13]=1 a OBSLUHA nie je aktuálny používateľ, operácia je blokovaná; bypass cez C_SESSION.GetObjO_NekontrolZamokZObsluhy.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda A. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_L_ZAMOK_Z_OBSLUHY | INSERT OR DELETE OR UPDATE | Pri INSERT/UPDATE/DELETE
+    deleguje kontrolu zámku na D_OBJ_ODB_L.KontrolaNaZamokZObsluhy. Ak FLAGS_B[13]=1 a OBSLUHA nie je aktuálny používateľ,
+    operácia je blokovaná; bypass cez C_SESSION.GetObjO_NekontrolZamokZObsluhy. | POTVRDENÉ - SOURCE'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_s_obj_odb_l
+  trigger_or_procedure_ref: odb.oracle.trigger.t_s_obj_odb_l
+  event_sk: INSERT OR DELETE OR UPDATE
+  business_effect_sk: 'Hlavný lifecycle trigger: audit stampy, synchronizácia TYP_CIS <-> FLAGS_S[20], PrehodPasivneKusy
+    pri zmene formy, validácie FLAGS_B, čistenie SKLAD_ZASOB_P pri storne a zrušenie väzieb pri delete.'
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda A. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_S_OBJ_ODB_L | INSERT OR DELETE OR UPDATE | Hlavný lifecycle trigger:
+    audit stampy, synchronizácia TYP_CIS <-> FLAGS_S[20], PrehodPasivneKusy pri zmene formy, validácie FLAGS_B,
+    čistenie SKLAD_ZASOB_P pri storne a zrušenie väzieb pri delete. | POTVRDENÉ - SOURCE'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_hz_obj_odb_l
+  trigger_or_procedure_ref: odb.oracle.trigger.t_hz_obj_odb_l
+  event_sk: UPDATE
+  business_effect_sk: Pri zmene DATUM_P zapisuje historizačný záznam cez C_DEF_HIST_ZMENA.HIST_ZMIEN_Ins (ID definície
+    0001010).
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda B. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_HZ_OBJ_ODB_L | UPDATE | Pri zmene DATUM_P zapisuje historizačný záznam
+    cez C_DEF_HIST_ZMENA.HIST_ZMIEN_Ins (ID definície 0001010). | POTVRDENÉ - SOURCE'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_mc_blok
+  trigger_or_procedure_ref: odb.oracle.trigger.t_mc_blok
+  event_sk: INSERT OR UPDATE
+  business_effect_sk: Pri INSERT číta MIESTA_DODANIA.STAV_OP_BARIS; pri hodnote 4 nastaví FLAGS_S[12] na 4.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda B. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_MC_BLOK | INSERT OR UPDATE | Pri INSERT číta MIESTA_DODANIA.STAV_OP_BARIS;
+    pri hodnote 4 nastaví FLAGS_S[12] na 4. | POTVRDENÉ - SOURCE'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_mc_typ_uhrady
+  trigger_or_procedure_ref: odb.oracle.trigger.t_mc_typ_uhrady
+  event_sk: INSERT OR UPDATE
+  business_effect_sk: Pri Dealer.NET (SPOSOB_OBJ=08400000-7) preberá TYP_UHRADY z OBCH_PARTNERI; ak SPLATNOST=-1,
+    dopočíta ju cez C_PARTNER.GetSplatnostC.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda B. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_MC_TYP_UHRADY | INSERT OR UPDATE | Pri Dealer.NET (SPOSOB_OBJ=08400000-7)
+    preberá TYP_UHRADY z OBCH_PARTNERI; ak SPLATNOST=-1, dopočíta ju cez C_PARTNER.GetSplatnostC. | POTVRDENÉ -
+    SOURCE'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_obj_odb_l_after
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_l_after
+  event_sk: UPDATE
+  business_effect_sk: Pri zmene dopravy/úhrady/partnera/miesta dodania/adresy synchronizuje ROZVOZ_QUE podľa RID_V
+    = OBJ_ODB_L.RID (mimo replikačného režimu).
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda B. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_L_AFTER | UPDATE | Pri zmene dopravy/úhrady/partnera/miesta
+    dodania/adresy synchronizuje ROZVOZ_QUE podľa RID_V = OBJ_ODB_L.RID (mimo replikačného režimu). | POTVRDENÉ
+    - SOURCE'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_obj_odb_l_after_mc
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_l_after_mc
+  event_sk: INSERT
+  business_effect_sk: Pri INSERT za podmienok TYP_CIS=00093, SKLAD in (21,22,23), SKLAD_PRE=21 volá MC_OBJ_PRE_SKLAD_EMAIL.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda B. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_L_AFTER_MC | INSERT | Pri INSERT za podmienok TYP_CIS=00093,
+    SKLAD in (21,22,23), SKLAD_PRE=21 volá MC_OBJ_PRE_SKLAD_EMAIL. | POTVRDENÉ - SOURCE'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_obj_odb_l_st_pump
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_l_st_pump
+  event_sk: INSERT OR DELETE OR UPDATE
+  business_effect_sk: Pri INSERT/UPDATE/DELETE volá ST_PUMP_KONTROLA/ST_PUMP_ZMENA; sleduje dátum, sumu, S_STAMP,
+    ID a FLAGS_S[12]. Business účel subsystemu zatiaľ neuzavretý.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda B. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_L_ST_PUMP | INSERT OR DELETE OR UPDATE | Pri INSERT/UPDATE/DELETE
+    volá ST_PUMP_KONTROLA/ST_PUMP_ZMENA; sleduje dátum, sumu, S_STAMP, ID a FLAGS_S[12]. Business účel subsystemu
+    zatiaľ neuzavretý. | POTVRDENÉ - SOURCE'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_mc_mail
+  trigger_or_procedure_ref: odb.oracle.trigger.t_mc_mail
+  event_sk: INSERT OR UPDATE
+  business_effect_sk: Pri vybraných zmenách formy dokladu (FLAGS_S[20]) a členstve obsluhy v CIS_GROUPS_O volá MCCARTER.EMailODBObjed.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda C. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_MC_MAIL | INSERT OR UPDATE | Pri vybraných zmenách formy dokladu (FLAGS_S[20])
+    a členstve obsluhy v CIS_GROUPS_O volá MCCARTER.EMailODBObjed. | POTVRDENÉ - SOURCE'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_mc_nagel
+  trigger_or_procedure_ref: odb.oracle.trigger.t_mc_nagel
+  event_sk: UPDATE
+  business_effect_sk: Pri zmene FLAGS_S[13] na hodnotu >0 a SKLAD=25 nastaví PRIORITA = SQ_MC_NAGEL.NEXTVAL.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda C. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_MC_NAGEL | UPDATE | Pri zmene FLAGS_S[13] na hodnotu >0 a SKLAD=25
+    nastaví PRIORITA = SQ_MC_NAGEL.NEXTVAL. | POTVRDENÉ - SOURCE'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_obj_odb_l_darcek
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_l_darcek
+  event_sk: UPDATE
+  business_effect_sk: Pri zmene MIESTO_DOD alebo KLUB_KARTA volá C_BOD_CERPANIA.SpracujTrigLdarcekZaBod, ak nebeží
+    spracovanie dokladu.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda C. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_L_DARCEK | UPDATE | Pri zmene MIESTO_DOD alebo KLUB_KARTA
+    volá C_BOD_CERPANIA.SpracujTrigLdarcekZaBod, ak nebeží spracovanie dokladu. | POTVRDENÉ - SOURCE'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_obj_odb_l_zlava_z_bodov
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_l_zlava_z_bodov
+  event_sk: UPDATE
+  business_effect_sk: Ak objednávka obsahuje špeciálnu zľavovú SKU, blokuje zmenu KLUB_KARTA, PARTNER alebo MIESTO_DOD.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda C. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_L_ZLAVA_Z_BODOV | UPDATE | Ak objednávka obsahuje špeciálnu
+    zľavovú SKU, blokuje zmenu KLUB_KARTA, PARTNER alebo MIESTO_DOD. | POTVRDENÉ - SOURCE'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_r_obj_odb_l
+  trigger_or_procedure_ref: odb.oracle.trigger.t_r_obj_odb_l
+  event_sk: INSERT OR UPDATE
+  business_effect_sk: 'Technický replikačný/change marker: INSERT nastavuje MODIF_I zo SQ_REPLIK_INS a MODIF_U=-1;
+    UPDATE nastavuje MODIF_U zo SQ_REPLIK_UPD.'
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda C. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_R_OBJ_ODB_L | INSERT OR UPDATE | Technický replikačný/change marker:
+    INSERT nastavuje MODIF_I zo SQ_REPLIK_INS a MODIF_U=-1; UPDATE nastavuje MODIF_U zo SQ_REPLIK_UPD. | POTVRDENÉ
+    - SOURCE'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_obj_odb_o_akcia
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_o_akcia
+  event_sk: INSERT/UPDATE BEFORE
+  business_effect_sk: Akciová cenotvorba / promo logika.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda A. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_O_AKCIA | INSERT/UPDATE BEFORE | Akciová cenotvorba / promo
+    logika.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_obj_odb_o_cena
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_o_cena
+  event_sk: UPDATE BEFORE
+  business_effect_sk: Kontrola / prepočet cenových polí.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda A. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_O_CENA | UPDATE BEFORE | Kontrola / prepočet cenových polí.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_obj_odb_o_ct_limit_obj
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_o_ct_limit_obj
+  event_sk: I/U/D BEFORE
+  business_effect_sk: Limity cenotvorby / objednávky.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda A. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_O_CT_LIMIT_OBJ | I/U/D BEFORE | Limity cenotvorby / objednávky.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_obj_odb_o_dispo_zasoby
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_o_dispo_zasoby
+  event_sk: I/U BEFORE
+  business_effect_sk: Dispo zásoba / P_DISPO.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda A. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_O_DISPO_ZASOBY | I/U BEFORE | Dispo zásoba / P_DISPO.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_obj_odb_o_dovod_zrus_ins
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_o_dovod_zrus_ins
+  event_sk: UPDATE AFTER
+  business_effect_sk: Logovanie dôvodu zrušenia; používa náklad CENA_S + CENA_S2.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda A. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_O_DOVOD_ZRUS_INS | UPDATE AFTER | Logovanie dôvodu zrušenia;
+    používa náklad CENA_S + CENA_S2.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_obj_odb_o_flags_b
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_o_flags_b
+  event_sk: UPDATE BEFORE
+  business_effect_sk: Správa business flagov.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda A. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_O_FLAGS_B | UPDATE BEFORE | Správa business flagov.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_obj_odb_o_id_sz_kontrola
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_o_id_sz_kontrola
+  event_sk: I/U BEFORE
+  business_effect_sk: Validuje ID_SZ / skladovú zásobu.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda A. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_O_ID_SZ_KONTROLA | I/U BEFORE | Validuje ID_SZ / skladovú
+    zásobu.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_obj_odb_o_mnozstvo_obj_skup
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_o_mnozstvo_obj_skup
+  event_sk: I/U AFTER
+  business_effect_sk: Množstevné limity objednávkovej skupiny.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda A. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_O_MNOZSTVO_OBJ_SKUP | I/U AFTER | Množstevné limity objednávkovej
+    skupiny.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_obj_odb_o_naklady_op_rez
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_o_naklady_op_rez
+  event_sk: UPDATE BEFORE
+  business_effect_sk: Nákladová logika pri OP/rezervácii.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda A. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_O_NAKLADY_OP_REZ | UPDATE BEFORE | Nákladová logika pri OP/rezervácii.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_obj_odb_o_povolenia
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_o_povolenia
+  event_sk: I/U BEFORE
+  business_effect_sk: Aplikačné oprávnenia/kontroly.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda A. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_O_POVOLENIA | I/U BEFORE | Aplikačné oprávnenia/kontroly.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_obj_odb_o_rez
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_o_rez
+  event_sk: I/U/D BEFORE
+  business_effect_sk: Hlavný rezervačný trigger -> C_SZ.RezervujTrig; release/delete handling.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda A. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_O_REZ | I/U/D BEFORE | Hlavný rezervačný trigger -> C_SZ.RezervujTrig;
+    release/delete handling.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_obj_odb_o_rez_blokacie
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_o_rez_blokacie
+  event_sk: I/U/D AFTER
+  business_effect_sk: Rezervácie vo väzbe na blokácie.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda A. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_O_REZ_BLOKACIE | I/U/D AFTER | Rezervácie vo väzbe na blokácie.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_obj_odb_o_vaz_pol
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_o_vaz_pol
+  event_sk: UPDATE/DELETE BEFORE
+  business_effect_sk: Ochrana viazaných/makro položiek; ID_R_P/ID_R_V logika.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda A. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_O_VAZ_POL | UPDATE/DELETE BEFORE | Ochrana viazaných/makro
+    položiek; ID_R_P/ID_R_V logika.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_obj_odb_o_vaz_pol_ov
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_o_vaz_pol_ov
+  event_sk: UPDATE/DELETE BEFORE
+  business_effect_sk: Doplnková ochrana viazaných položiek.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda A. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_O_VAZ_POL_OV | UPDATE/DELETE BEFORE | Doplnková ochrana viazaných
+    položiek.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_obj_odb_o_zamok_z_obsluhy
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_o_zamok_z_obsluhy
+  event_sk: I/U/D BEFORE
+  business_effect_sk: Zámok položky podľa aplikačnej obsluhy.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda A. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_O_ZAMOK_Z_OBSLUHY | I/U/D BEFORE | Zámok položky podľa aplikačnej
+    obsluhy.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_obj_odb_o_zlavy
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_o_zlavy
+  event_sk: UPDATE AFTER
+  business_effect_sk: Kontrola nemeniteľnej ceny a zákazu ručne poskytnutej zľavy cez C_DOKL_O.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda A. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_O_ZLAVY | UPDATE AFTER | Kontrola nemeniteľnej ceny a zákazu
+    ručne poskytnutej zľavy cez C_DOKL_O.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_obj_odb_o_zrus_pocet
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_o_zrus_pocet
+  event_sk: UPDATE BEFORE
+  business_effect_sk: Kontrola/redukcia rušeného množstva.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda A. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_O_ZRUS_POCET | UPDATE BEFORE | Kontrola/redukcia rušeného
+    množstva.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_sz_p_obj_odb_o
+  trigger_or_procedure_ref: odb.oracle.trigger.t_sz_p_obj_odb_o
+  event_sk: UPDATE/DELETE AFTER
+  business_effect_sk: Synchronizácia quantity/stock coverage; potvrdzuje open_qty logiku.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda A. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_SZ_P_OBJ_ODB_O | UPDATE/DELETE AFTER | Synchronizácia quantity/stock
+    coverage; potvrdzuje open_qty logiku.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_sz_p_obj_odb_o_ins
+  trigger_or_procedure_ref: odb.oracle.trigger.t_sz_p_obj_odb_o_ins
+  event_sk: INSERT AFTER
+  business_effect_sk: Insert vetva quantity/stock synchronizácie.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda A. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_SZ_P_OBJ_ODB_O_INS | INSERT AFTER | Insert vetva quantity/stock synchronizácie.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_hz_obj_odb_o
+  trigger_or_procedure_ref: odb.oracle.trigger.t_hz_obj_odb_o
+  event_sk: UPDATE AFTER
+  business_effect_sk: Historizuje zmeny POCET, P_DEL, P_DEL_DOD, RID_CT_A cez history definition 0001006.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda B. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_HZ_OBJ_ODB_O | UPDATE AFTER | Historizuje zmeny POCET, P_DEL, P_DEL_DOD,
+    RID_CT_A cez history definition 0001006.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_mc_nagelexp
+  trigger_or_procedure_ref: odb.oracle.trigger.t_mc_nagelexp
+  event_sk: INSERT/UPDATE BEFORE
+  business_effect_sk: MC/Nagel vetva minimálnej expirácie.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda B. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_MC_NAGELEXP | INSERT/UPDATE BEFORE | MC/Nagel vetva minimálnej expirácie.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_mc_zrus
+  trigger_or_procedure_ref: odb.oracle.trigger.t_mc_zrus
+  event_sk: INSERT/UPDATE BEFORE
+  business_effect_sk: MC cancellation branch; source present.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda B. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_MC_ZRUS | INSERT/UPDATE BEFORE | MC cancellation branch; source present.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_obj_odb_l_cto_perioda
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_l_cto_perioda
+  event_sk: UPDATE AFTER
+  business_effect_sk: Cross-object aktualizácia periodickej cenotvorby; source present.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda B. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_L_CTO_PERIODA | UPDATE AFTER | Cross-object aktualizácia periodickej
+    cenotvorby; source present.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_obj_odb_o_after_ins
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_o_after_ins
+  event_sk: INSERT AFTER
+  business_effect_sk: Post-insert aplikačný flow.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda B. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_O_AFTER_INS | INSERT AFTER | Post-insert aplikačný flow.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_obj_odb_o_dokl_zmena
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_o_dokl_zmena
+  event_sk: UPDATE AFTER
+  business_effect_sk: Dokladová zmena / downstream reakcie.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda B. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_O_DOKL_ZMENA | UPDATE AFTER | Dokladová zmena / downstream
+    reakcie.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_obj_odb_o_fin_zalohy
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_o_fin_zalohy
+  event_sk: DELETE AFTER
+  business_effect_sk: Finančné zálohy.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda B. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_O_FIN_ZALOHY | DELETE AFTER | Finančné zálohy.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_obj_odb_o_rez_log
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_o_rez_log
+  event_sk: UPDATE AFTER
+  business_effect_sk: Logovanie zmien rezervácie.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda B. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_O_REZ_LOG | UPDATE AFTER | Logovanie zmien rezervácie.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_obj_odb_o_sk_zaloha
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_o_sk_zaloha
+  event_sk: I/U BEFORE
+  business_effect_sk: 'Zálohová SKU: CENA_S2 := CENA.'
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda B. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_O_SK_ZALOHA | I/U BEFORE | Zálohová SKU: CENA_S2 := CENA.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_obj_odb_o_darcek
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_o_darcek
+  event_sk: I/U/D BEFORE
+  business_effect_sk: Darčekový subsystem; mimo aktuálneho MC business scope.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda C. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_O_DARCEK | I/U/D BEFORE | Darčekový subsystem; mimo aktuálneho
+    MC business scope.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_obj_odb_o_modif_i
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_o_modif_i
+  event_sk: UPDATE BEFORE
+  business_effect_sk: Technický modification marker.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda C. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_O_MODIF_I | UPDATE BEFORE | Technický modification marker.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_obj_odb_o_zlava_za_body
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_o_zlava_za_body
+  event_sk: I/U/D AFTER
+  business_effect_sk: Body/zľavy subsystem; mimo aktuálneho MC business scope.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda C. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_O_ZLAVA_ZA_BODY | I/U/D AFTER | Body/zľavy subsystem; mimo
+    aktuálneho MC business scope.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_obj_odb_o_zlava_z_bodov
+  trigger_or_procedure_ref: odb.oracle.trigger.t_obj_odb_o_zlava_z_bodov
+  event_sk: I/U/D BEFORE
+  business_effect_sk: Body/zľavy subsystem; mimo aktuálneho MC business scope.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda C. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_OBJ_ODB_O_ZLAVA_Z_BODOV | I/U/D BEFORE | Body/zľavy subsystem; mimo
+    aktuálneho MC business scope.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- flow_id: odb.flow.t_r_obj_odb_o
+  trigger_or_procedure_ref: odb.oracle.trigger.t_r_obj_odb_o
+  event_sk: INSERT/UPDATE BEFORE
+  business_effect_sk: Replikačné markery MODIF_I/MODIF_U.
+  diagnostic_meaning_sk: 'Schválený DOCX v1.2, extraction block 199 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. Trieda C. Úplné watched fields, call chains, exceptions a bypass detaily
+    sa neodhadujú. | Detail approved table: T_R_OBJ_ODB_O | INSERT/UPDATE BEFORE | Replikačné markery MODIF_I/MODIF_U.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract

@@ -1,4 +1,381 @@
 schema_version: '1.0'
 kind: sql-registry
 id: odb.sql_registry.001
-records: []
+records:
+- sql_id: odb.sql.doc_232_1
+  title_sk: 7.1 Nesedi rezervacia / 1
+  sql_file: sql/diagnostic/obchodne-pripady/doc-232-1.sql
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+  input_parameters:
+  - name: id_r
+    required: true
+  - name: rid_o
+    required: true
+  purpose_sk: Schválený DOCX v1.2, extraction block 232 (0-based). Dokumentový prenos; raw Oracle export nebol pri
+    materializácii dostupný.
+  does_not_prove_sk: Ak open_qty=0, dalsia standardna rezervacia nema otvorené množstvo. | P_REZ=0 nie je dôkaz
+    nuloveho coverage - skontrolovat všetky coverage bucket-y. | Pri P_REZ>0 skontrolovat ID_SZ; technický empty
+    stock record nie je NULL ani neplatný FK, ale nenulova rezervacia na nom je podozrivá. | Pri zmene ID_SZ pocitat
+    s realnym stock transferom cez RezervujC(old,-qty) + RezervujC(new,+qty). | Ak order-side a stock-side stav
+    nesedia, preverit session flow (replikacia/prenos rezervácie) a az potom skladovu domenu.
+  fanout_warning_sk: Určiť grain pred JOIN; nezávislé 1:N vrstvy najprv agregovať. Pozri relationship register.
+- sql_id: odb.sql.doc_240_1
+  title_sk: 7.2 Nejde zmeniť množstvo / 1
+  sql_file: sql/diagnostic/obchodne-pripady/doc-240-1.sql
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+  input_parameters:
+  - name: id_r
+    required: true
+  - name: rid
+    required: true
+  purpose_sk: Schválený DOCX v1.2, extraction block 240 (0-based). Dokumentový prenos; raw Oracle export nebol pri
+    materializácii dostupný.
+  does_not_prove_sk: Skontrolovat formu/stav dokladu, uz kryte množstva a linked-object vetvy. | T_OBJ_ODB_O_ZRUS_POCET
+    chráni pred nekonzistentnym znizenim quantity lifecycle a ma špeciálne vetvy pre uzavreté objednávky a ďalšie
+    rezimy. | Ak existuju serial-number alebo viazane/makro riadky, zmena môže byt blokovaná dalsimi trigger-mi.
+    | Neobchadzat trigger logiku priamym DML; mapping a diagnostika su read-only.
+  fanout_warning_sk: Určiť grain pred JOIN; nezávislé 1:N vrstvy najprv agregovať. Pozri relationship register.
+- sql_id: odb.sql.doc_247_1
+  title_sk: 7.3 Nesedi storno / P_DEL / P_DEL_DOD / 1
+  sql_file: sql/diagnostic/obchodne-pripady/doc-247-1.sql
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+  input_parameters:
+  - name: id_r
+    required: true
+  - name: rid_o
+    required: true
+  purpose_sk: Schválený DOCX v1.2, extraction block 247 (0-based). Dokumentový prenos; raw Oracle export nebol pri
+    materializácii dostupný.
+  does_not_prove_sk: P_DEL a P_DEL_DOD analyzovat oddelene. | P_DEL+P_DEL_DOD nie je automaticky realny nezavoz.
+    | T_OBJ_ODB_O_DOVOD_ZRUS_INS zapisuje/koriguje dôvodovú históriu; pri P_DEL_DOD môže byt dôvod aj systemovo
+    odvodeny. | Ak príčina nie je vysvetlena order triggerom, prejst cez potvrdenych externých writerov (reservation/issue/integration).
+  fanout_warning_sk: Určiť grain pred JOIN; nezávislé 1:N vrstvy najprv agregovať. Pozri relationship register.
+- sql_id: odb.sql.doc_247_2
+  title_sk: 7.3 Nesedi storno / P_DEL / P_DEL_DOD / 2
+  sql_file: sql/diagnostic/obchodne-pripady/doc-247-2.sql
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+  input_parameters:
+  - name: id_r
+    required: true
+  - name: rid_o
+    required: true
+  purpose_sk: Schválený DOCX v1.2, extraction block 247 (0-based). Dokumentový prenos; raw Oracle export nebol pri
+    materializácii dostupný.
+  does_not_prove_sk: P_DEL a P_DEL_DOD analyzovat oddelene. | P_DEL+P_DEL_DOD nie je automaticky realny nezavoz.
+    | T_OBJ_ODB_O_DOVOD_ZRUS_INS zapisuje/koriguje dôvodovú históriu; pri P_DEL_DOD môže byt dôvod aj systemovo
+    odvodeny. | Ak príčina nie je vysvetlena order triggerom, prejst cez potvrdenych externých writerov (reservation/issue/integration).
+  fanout_warning_sk: Určiť grain pred JOIN; nezávislé 1:N vrstvy najprv agregovať. Pozri relationship register.
+- sql_id: odb.sql.doc_254_1
+  title_sk: 7.4 Nesedi cena / promo / 1
+  sql_file: sql/diagnostic/obchodne-pripady/doc-254-1.sql
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+  input_parameters:
+  - name: id_r
+    required: true
+  - name: rid_o
+    required: true
+  purpose_sk: Schválený DOCX v1.2, extraction block 254 (0-based). Dokumentový prenos; raw Oracle export nebol pri
+    materializácii dostupný.
+  does_not_prove_sk: RID_CT_A a RID_CT_Z sa mozu legitimne vyskytovať súčasne. | Pri RID_CT_A kontrolovat action
+    quantity capacity/consumption v CT_O, nie iba cenu. | T_OBJ_ODB_O_CENA a special-price flagy mozu operaciu zablokovať.
+    | ZLAVY je strukturovany payload; neparsovat odhadnutym SUBSTR. Pouzit C_DOKL_O accessors tam, kde je potrebna
+    aplikacna interpretacia. | Negativna CENA nie je automaticky chyba - v produkcii existuju legitimne zaporne
+    zalohove/zlavove riadky.
+  fanout_warning_sk: Určiť grain pred JOIN; nezávislé 1:N vrstvy najprv agregovať. Pozri relationship register.
+- sql_id: odb.sql.doc_262_1
+  title_sk: 7.5 Nesedi výdaj / P_VYD / 1
+  sql_file: sql/diagnostic/obchodne-pripady/doc-262-1.sql
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+  input_parameters:
+  - name: id_r
+    required: true
+  - name: rid_o
+    required: true
+  purpose_sk: Schválený DOCX v1.2, extraction block 262 (0-based). Dokumentový prenos; raw Oracle export nebol pri
+    materializácii dostupný.
+  does_not_prove_sk: P_VYD = vydané zo skladu, nie potvrdené doručenie zákazníkovi. | P_VYD=0 nevylucuje existenciu
+    výdajového procesu; P_VYD=POCET nedokazuje doručenie. | Ak nesedí order-side P_VYD s vydajkami, ďalší krok je
+    VYD_L/O dokument - nie domyslanie line joinu.
+  fanout_warning_sk: Určiť grain pred JOIN; nezávislé 1:N vrstvy najprv agregovať. Pozri relationship register.
+- sql_id: odb.sql.doc_262_2
+  title_sk: 7.5 Nesedi výdaj / P_VYD / 2
+  sql_file: sql/diagnostic/obchodne-pripady/doc-262-2.sql
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+  input_parameters:
+  - name: rid_o
+    required: true
+  purpose_sk: Schválený DOCX v1.2, extraction block 262 (0-based). Dokumentový prenos; raw Oracle export nebol pri
+    materializácii dostupný.
+  does_not_prove_sk: P_VYD = vydané zo skladu, nie potvrdené doručenie zákazníkovi. | P_VYD=0 nevylucuje existenciu
+    výdajového procesu; P_VYD=POCET nedokazuje doručenie. | Ak nesedí order-side P_VYD s vydajkami, ďalší krok je
+    VYD_L/O dokument - nie domyslanie line joinu.
+  fanout_warning_sk: Určiť grain pred JOIN; nezávislé 1:N vrstvy najprv agregovať. Pozri relationship register.
+- sql_id: odb.sql.doc_268_1
+  title_sk: 7.6 Nesedi fakturácia / P_FAK / 1
+  sql_file: sql/diagnostic/obchodne-pripady/doc-268-1.sql
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+  input_parameters:
+  - name: id_r
+    required: true
+  - name: rid_o
+    required: true
+  purpose_sk: Schválený DOCX v1.2, extraction block 268 (0-based). Dokumentový prenos; raw Oracle export nebol pri
+    materializácii dostupný.
+  does_not_prove_sk: P_FAK je order-side mnozstevny snapshot, nie uplny invoice source of truth. | P_FAK mozu menit
+    viacere invoice/payment flow; nepredpokladat iba jeden writer. | Cislo/stav faktury, storno a line trace treba
+    dokončit v INVOICE doméne po jej zmapovani.
+  fanout_warning_sk: Určiť grain pred JOIN; nezávislé 1:N vrstvy najprv agregovať. Pozri relationship register.
+- sql_id: odb.sql.doc_274_1
+  title_sk: 7.7 Nesedi purchasing coverage / 1
+  sql_file: sql/diagnostic/obchodne-pripady/doc-274-1.sql
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+  input_parameters:
+  - name: id_r
+    required: true
+  - name: rid_o
+    required: true
+  purpose_sk: Schválený DOCX v1.2, extraction block 274 (0-based). Dokumentový prenos; raw Oracle export nebol pri
+    materializácii dostupný.
+  does_not_prove_sk: P_OBJ_D je purchasing coverage, nie supplier PO quantity source of truth. | RID_N je purchasing
+    proposal reference; v aktualnom MC profile bol bez vyuzitia, ale source flow je potvrdený. | P_REZ_PL je explicitne
+    spojene s supplier delivery/prepravný-list coverage a môže menit SPOSOB_VYBAVENIA. | Detail OBJ_D_NAVRH/OBJD_*
+    lifecycle patri do purchasing dokumentu.
+  fanout_warning_sk: Určiť grain pred JOIN; nezávislé 1:N vrstvy najprv agregovať. Pozri relationship register.
+- sql_id: odb.sql.doc_281_1
+  title_sk: 7.8 Objednavka je v nespravnom stave / nejde uzavrieť / 1
+  sql_file: sql/diagnostic/obchodne-pripady/doc-281-1.sql
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+  input_parameters:
+  - name: rid
+    required: true
+  purpose_sk: Schválený DOCX v1.2, extraction block 281 (0-based). Dokumentový prenos; raw Oracle export nebol pri
+    materializácii dostupný.
+  does_not_prove_sk: TYP_CIS a FLAGS_S[20] su rozne osi; neporovnavat ako 1:1 ekvivalenciu. | DATUM_OK IS NOT NULL
+    nie je autoritativny completion status. | Header state vzdy porovnat s line-level quantity stavom a critical
+    trigger guardmi. | Ak je editacia blokovaná, preverit zámok na obsluhu a relevantne session bypass mechanizmy.
+  fanout_warning_sk: Určiť grain pred JOIN; nezávislé 1:N vrstvy najprv agregovať. Pozri relationship register.
+- sql_id: odb.sql.doc_281_2
+  title_sk: 7.8 Objednavka je v nespravnom stave / nejde uzavrieť / 2
+  sql_file: sql/diagnostic/obchodne-pripady/doc-281-2.sql
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+  input_parameters:
+  - name: rid
+    required: true
+  purpose_sk: Schválený DOCX v1.2, extraction block 281 (0-based). Dokumentový prenos; raw Oracle export nebol pri
+    materializácii dostupný.
+  does_not_prove_sk: TYP_CIS a FLAGS_S[20] su rozne osi; neporovnavat ako 1:1 ekvivalenciu. | DATUM_OK IS NOT NULL
+    nie je autoritativny completion status. | Header state vzdy porovnat s line-level quantity stavom a critical
+    trigger guardmi. | Ak je editacia blokovaná, preverit zámok na obsluhu a relevantne session bypass mechanizmy.
+  fanout_warning_sk: Určiť grain pred JOIN; nezávislé 1:N vrstvy najprv agregovať. Pozri relationship register.
+- sql_id: odb.sql.doc_294_1
+  title_sk: 8.1 Header + lines / 1
+  sql_file: sql/diagnostic/obchodne-pripady/doc-294-1.sql
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+  input_parameters:
+  - name: rid
+    required: true
+  purpose_sk: Schválený DOCX v1.2, extraction block 294 (0-based). Dokumentový prenos; raw Oracle export nebol pri
+    materializácii dostupný.
+  does_not_prove_sk: Dokazuje aktuálny header + line snapshot. Nedokazuje históriu zmeny jednotlivych bucketov.
+  fanout_warning_sk: Určiť grain pred JOIN; nezávislé 1:N vrstvy najprv agregovať. Pozri relationship register.
+- sql_id: odb.sql.doc_298_1
+  title_sk: 8.2 Quantity diagnostic / 1
+  sql_file: sql/diagnostic/obchodne-pripady/doc-298-1.sql
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+  input_parameters:
+  - name: rid_o
+    required: true
+  purpose_sk: Schválený DOCX v1.2, extraction block 298 (0-based). Dokumentový prenos; raw Oracle export nebol pri
+    materializácii dostupný.
+  does_not_prove_sk: Nevytvára runtime ani historický dôkaz bez vykonania na MC.
+  fanout_warning_sk: Určiť grain pred JOIN; nezávislé 1:N vrstvy najprv agregovať. Pozri relationship register.
+- sql_id: odb.sql.doc_301_1
+  title_sk: 8.3 Cancellation reason join / 1
+  sql_file: sql/diagnostic/obchodne-pripady/doc-301-1.sql
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+  input_parameters:
+  - name: rid_o
+    required: true
+  purpose_sk: Schválený DOCX v1.2, extraction block 301 (0-based). Dokumentový prenos; raw Oracle export nebol pri
+    materializácii dostupný.
+  does_not_prove_sk: LEFT JOIN zachova order line aj vtedy, ked reason record neexistuje. Ak sa hlada iba aktuálny
+    reason record, pouzit potvrdenu current-state podmienku S_STAMP=0 podla konkretneho use case.
+  fanout_warning_sk: Určiť grain pred JOIN; nezávislé 1:N vrstvy najprv agregovať. Pozri relationship register.
+- sql_id: odb.sql.doc_305_1
+  title_sk: 8.4 Product join / 1
+  sql_file: sql/diagnostic/obchodne-pripady/doc-305-1.sql
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+  input_parameters:
+  - name: rid_o
+    required: true
+  purpose_sk: Schválený DOCX v1.2, extraction block 305 (0-based). Dokumentový prenos; raw Oracle export nebol pri
+    materializácii dostupný.
+  does_not_prove_sk: LEFT JOIN je vhodny pri diagnostike, ak nechceme stratit order line pre prípad master-data
+    problemu. Pri integracnom kontrakte mozno pouzit INNER JOIN iba ak je takato strata riadku zamerna.
+  fanout_warning_sk: Určiť grain pred JOIN; nezávislé 1:N vrstvy najprv agregovať. Pozri relationship register.
+- sql_id: odb.sql.doc_309_1
+  title_sk: 8.5 Pricing references / 1
+  sql_file: sql/diagnostic/obchodne-pripady/doc-309-1.sql
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+  input_parameters:
+  - name: id_r
+    required: true
+  - name: rid_o
+    required: true
+  purpose_sk: Schválený DOCX v1.2, extraction block 309 (0-based). Dokumentový prenos; raw Oracle export nebol pri
+    materializácii dostupný.
+  does_not_prove_sk: 'Používať LEFT JOIN: FK na CT_O je pre RID_CT_A/RID_CT_Z disabled/not validated a produkcne
+    boli pozorovane orphan references.'
+  fanout_warning_sk: Určiť grain pred JOIN; nezávislé 1:N vrstvy najprv agregovať. Pozri relationship register.
+- sql_id: odb.sql.doc_313_1
+  title_sk: 8.6 Header -> issue boundary / 1
+  sql_file: sql/diagnostic/obchodne-pripady/doc-313-1.sql
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+  input_parameters:
+  - name: rid
+    required: true
+  purpose_sk: Schválený DOCX v1.2, extraction block 313 (0-based). Dokumentový prenos; raw Oracle export nebol pri
+    materializácii dostupný.
+  does_not_prove_sk: Tento join ukazuje potvrdenu header-level boundary na výdajky. Line-level reconciliation patri
+    do VYD dokumentu.
+  fanout_warning_sk: Určiť grain pred JOIN; nezávislé 1:N vrstvy najprv agregovať. Pozri relationship register.
+- sql_id: odb.sql.doc_317_1
+  title_sk: 8.7 Current coverage sanity check / 1
+  sql_file: sql/diagnostic/obchodne-pripady/doc-317-1.sql
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+  input_parameters:
+  - name: rid_o
+    required: true
+  purpose_sk: Schválený DOCX v1.2, extraction block 317 (0-based). Dokumentový prenos; raw Oracle export nebol pri
+    materializácii dostupný.
+  does_not_prove_sk: Je to diagnostický filter. Definitivnu integritu urcuju Oracle CHECK constraints, vratane špeciálnych
+    vetiev pre ODPIS a zaporne POCET.
+  fanout_warning_sk: Určiť grain pred JOIN; nezávislé 1:N vrstvy najprv agregovať. Pozri relationship register.
+- sql_id: odb.sql.doc_321_1
+  title_sk: 8.8 Fan-out detector pre cancellation history / 1
+  sql_file: sql/diagnostic/obchodne-pripady/doc-321-1.sql
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+  input_parameters:
+  - name: rid_o
+    required: true
+  purpose_sk: Schválený DOCX v1.2, extraction block 321 (0-based). Dokumentový prenos; raw Oracle export nebol pri
+    materializácii dostupný.
+  does_not_prove_sk: 'Čo dokazuje: identifikuje order-line kľúče, ktoré by sa po priamom JOINe na 1:N cancellation
+    history zobrazili viackrát. Čo nedokazuje: duplicita sama osebe nie je data-quality chyba; môže ísť o legitímne
+    historické záznamy.'
+  fanout_warning_sk: Určiť grain pred JOIN; nezávislé 1:N vrstvy najprv agregovať. Pozri relationship register.
+- sql_id: odb.sql.doc_324_1
+  title_sk: 8.9 Podmienená line-level trace objednávka -> výdajka / 1
+  sql_file: sql/diagnostic/obchodne-pripady/doc-324-1.sql
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+  input_parameters:
+  - name: rid_o
+    required: true
+  purpose_sk: Schválený DOCX v1.2, extraction block 324 (0-based). Dokumentový prenos; raw Oracle export nebol pri
+    materializácii dostupný.
+  does_not_prove_sk: 'Použitie: iba pre štandardnú predajnú výdajkovú vetvu, kde je formát VYD_O.RID_V = <RID objednávky>!<ID_R>
+    potvrdený. Výsledok môže mať viac VYD_O riadkov na jeden order line; to je očakávaný 1:N fan-out, nie dôvod
+    na SUM order množstiev po JOINe. Presný VYD lifecycle patrí do samostatného VYD dokumentu. Invoice line key
+    zatiaľ nie je potvrdený; P_FAK nie je JOIN key a heuristické invoice JOINy sa nesmú používať. | 9. DETAIL BACKLOG
+    - NEBLOKUJE DIAGNOSTIC CORE'
+  fanout_warning_sk: Určiť grain pred JOIN; nezávislé 1:N vrstvy najprv agregovať. Pozri relationship register.

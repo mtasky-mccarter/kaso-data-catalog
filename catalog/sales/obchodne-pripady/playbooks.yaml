@@ -1,4 +1,104 @@
 schema_version: '1.0'
 kind: playbooks
 id: odb.playbooks.001
-records: []
+records:
+- playbook_id: odb.playbook.doc_232
+  symptom_sk: 7.1 Nesedi rezervacia
+  first_sql_ref: odb.sql.doc_232_1
+  proves_sk: Ak open_qty=0, dalsia standardna rezervacia nema otvorené množstvo. | P_REZ=0 nie je dôkaz nuloveho
+    coverage - skontrolovat všetky coverage bucket-y. | Pri P_REZ>0 skontrolovat ID_SZ; technický empty stock record
+    nie je NULL ani neplatný FK, ale nenulova rezervacia na nom je podozrivá. | Pri zmene ID_SZ pocitat s realnym
+    stock transferom cez RezervujC(old,-qty) + RezervujC(new,+qty). | Ak order-side a stock-side stav nesedia, preverit
+    session flow (replikacia/prenos rezervácie) a az potom skladovu domenu.
+  does_not_prove_sk: Current snapshot nenahrádza kompletnú event históriu; interpretovať iba v rozsahu schválených
+    poznámok.
+  next_step_sk: Ak open_qty=0, dalsia standardna rezervacia nema otvorené množstvo. | P_REZ=0 nie je dôkaz nuloveho
+    coverage - skontrolovat všetky coverage bucket-y. | Pri P_REZ>0 skontrolovat ID_SZ; technický empty stock record
+    nie je NULL ani neplatný FK, ale nenulova rezervacia na nom je podozrivá. | Pri zmene ID_SZ pocitat s realnym
+    stock transferom cez RezervujC(old,-qty) + RezervujC(new,+qty). | Ak order-side a stock-side stav nesedia, preverit
+    session flow (replikacia/prenos rezervácie) a az potom skladovu domenu.
+- playbook_id: odb.playbook.doc_240
+  symptom_sk: 7.2 Nejde zmeniť množstvo
+  first_sql_ref: odb.sql.doc_240_1
+  proves_sk: Skontrolovat formu/stav dokladu, uz kryte množstva a linked-object vetvy. | T_OBJ_ODB_O_ZRUS_POCET
+    chráni pred nekonzistentnym znizenim quantity lifecycle a ma špeciálne vetvy pre uzavreté objednávky a ďalšie
+    rezimy. | Ak existuju serial-number alebo viazane/makro riadky, zmena môže byt blokovaná dalsimi trigger-mi.
+    | Neobchadzat trigger logiku priamym DML; mapping a diagnostika su read-only.
+  does_not_prove_sk: Current snapshot nenahrádza kompletnú event históriu; interpretovať iba v rozsahu schválených
+    poznámok.
+  next_step_sk: Skontrolovat formu/stav dokladu, uz kryte množstva a linked-object vetvy. | T_OBJ_ODB_O_ZRUS_POCET
+    chráni pred nekonzistentnym znizenim quantity lifecycle a ma špeciálne vetvy pre uzavreté objednávky a ďalšie
+    rezimy. | Ak existuju serial-number alebo viazane/makro riadky, zmena môže byt blokovaná dalsimi trigger-mi.
+    | Neobchadzat trigger logiku priamym DML; mapping a diagnostika su read-only.
+- playbook_id: odb.playbook.doc_247
+  symptom_sk: 7.3 Nesedi storno / P_DEL / P_DEL_DOD
+  first_sql_ref: odb.sql.doc_247_1
+  proves_sk: P_DEL a P_DEL_DOD analyzovat oddelene. | P_DEL+P_DEL_DOD nie je automaticky realny nezavoz. | T_OBJ_ODB_O_DOVOD_ZRUS_INS
+    zapisuje/koriguje dôvodovú históriu; pri P_DEL_DOD môže byt dôvod aj systemovo odvodeny. | Ak príčina nie je
+    vysvetlena order triggerom, prejst cez potvrdenych externých writerov (reservation/issue/integration).
+  does_not_prove_sk: Current snapshot nenahrádza kompletnú event históriu; interpretovať iba v rozsahu schválených
+    poznámok.
+  next_step_sk: P_DEL a P_DEL_DOD analyzovat oddelene. | P_DEL+P_DEL_DOD nie je automaticky realny nezavoz. | T_OBJ_ODB_O_DOVOD_ZRUS_INS
+    zapisuje/koriguje dôvodovú históriu; pri P_DEL_DOD môže byt dôvod aj systemovo odvodeny. | Ak príčina nie je
+    vysvetlena order triggerom, prejst cez potvrdenych externých writerov (reservation/issue/integration).
+- playbook_id: odb.playbook.doc_254
+  symptom_sk: 7.4 Nesedi cena / promo
+  first_sql_ref: odb.sql.doc_254_1
+  proves_sk: RID_CT_A a RID_CT_Z sa mozu legitimne vyskytovať súčasne. | Pri RID_CT_A kontrolovat action quantity
+    capacity/consumption v CT_O, nie iba cenu. | T_OBJ_ODB_O_CENA a special-price flagy mozu operaciu zablokovať.
+    | ZLAVY je strukturovany payload; neparsovat odhadnutym SUBSTR. Pouzit C_DOKL_O accessors tam, kde je potrebna
+    aplikacna interpretacia. | Negativna CENA nie je automaticky chyba - v produkcii existuju legitimne zaporne
+    zalohove/zlavove riadky.
+  does_not_prove_sk: Current snapshot nenahrádza kompletnú event históriu; interpretovať iba v rozsahu schválených
+    poznámok.
+  next_step_sk: RID_CT_A a RID_CT_Z sa mozu legitimne vyskytovať súčasne. | Pri RID_CT_A kontrolovat action quantity
+    capacity/consumption v CT_O, nie iba cenu. | T_OBJ_ODB_O_CENA a special-price flagy mozu operaciu zablokovať.
+    | ZLAVY je strukturovany payload; neparsovat odhadnutym SUBSTR. Pouzit C_DOKL_O accessors tam, kde je potrebna
+    aplikacna interpretacia. | Negativna CENA nie je automaticky chyba - v produkcii existuju legitimne zaporne
+    zalohove/zlavove riadky.
+- playbook_id: odb.playbook.doc_262
+  symptom_sk: 7.5 Nesedi výdaj / P_VYD
+  first_sql_ref: odb.sql.doc_262_1
+  proves_sk: P_VYD = vydané zo skladu, nie potvrdené doručenie zákazníkovi. | P_VYD=0 nevylucuje existenciu výdajového
+    procesu; P_VYD=POCET nedokazuje doručenie. | Ak nesedí order-side P_VYD s vydajkami, ďalší krok je VYD_L/O dokument
+    - nie domyslanie line joinu.
+  does_not_prove_sk: Current snapshot nenahrádza kompletnú event históriu; interpretovať iba v rozsahu schválených
+    poznámok.
+  next_step_sk: P_VYD = vydané zo skladu, nie potvrdené doručenie zákazníkovi. | P_VYD=0 nevylucuje existenciu výdajového
+    procesu; P_VYD=POCET nedokazuje doručenie. | Ak nesedí order-side P_VYD s vydajkami, ďalší krok je VYD_L/O dokument
+    - nie domyslanie line joinu.
+- playbook_id: odb.playbook.doc_268
+  symptom_sk: 7.6 Nesedi fakturácia / P_FAK
+  first_sql_ref: odb.sql.doc_268_1
+  proves_sk: P_FAK je order-side mnozstevny snapshot, nie uplny invoice source of truth. | P_FAK mozu menit viacere
+    invoice/payment flow; nepredpokladat iba jeden writer. | Cislo/stav faktury, storno a line trace treba dokončit
+    v INVOICE doméne po jej zmapovani.
+  does_not_prove_sk: Current snapshot nenahrádza kompletnú event históriu; interpretovať iba v rozsahu schválených
+    poznámok.
+  next_step_sk: P_FAK je order-side mnozstevny snapshot, nie uplny invoice source of truth. | P_FAK mozu menit viacere
+    invoice/payment flow; nepredpokladat iba jeden writer. | Cislo/stav faktury, storno a line trace treba dokončit
+    v INVOICE doméne po jej zmapovani.
+- playbook_id: odb.playbook.doc_274
+  symptom_sk: 7.7 Nesedi purchasing coverage
+  first_sql_ref: odb.sql.doc_274_1
+  proves_sk: P_OBJ_D je purchasing coverage, nie supplier PO quantity source of truth. | RID_N je purchasing proposal
+    reference; v aktualnom MC profile bol bez vyuzitia, ale source flow je potvrdený. | P_REZ_PL je explicitne spojene
+    s supplier delivery/prepravný-list coverage a môže menit SPOSOB_VYBAVENIA. | Detail OBJ_D_NAVRH/OBJD_* lifecycle
+    patri do purchasing dokumentu.
+  does_not_prove_sk: Current snapshot nenahrádza kompletnú event históriu; interpretovať iba v rozsahu schválených
+    poznámok.
+  next_step_sk: P_OBJ_D je purchasing coverage, nie supplier PO quantity source of truth. | RID_N je purchasing
+    proposal reference; v aktualnom MC profile bol bez vyuzitia, ale source flow je potvrdený. | P_REZ_PL je explicitne
+    spojene s supplier delivery/prepravný-list coverage a môže menit SPOSOB_VYBAVENIA. | Detail OBJ_D_NAVRH/OBJD_*
+    lifecycle patri do purchasing dokumentu.
+- playbook_id: odb.playbook.doc_281
+  symptom_sk: 7.8 Objednavka je v nespravnom stave / nejde uzavrieť
+  first_sql_ref: odb.sql.doc_281_1
+  proves_sk: TYP_CIS a FLAGS_S[20] su rozne osi; neporovnavat ako 1:1 ekvivalenciu. | DATUM_OK IS NOT NULL nie je
+    autoritativny completion status. | Header state vzdy porovnat s line-level quantity stavom a critical trigger
+    guardmi. | Ak je editacia blokovaná, preverit zámok na obsluhu a relevantne session bypass mechanizmy.
+  does_not_prove_sk: Current snapshot nenahrádza kompletnú event históriu; interpretovať iba v rozsahu schválených
+    poznámok.
+  next_step_sk: TYP_CIS a FLAGS_S[20] su rozne osi; neporovnavat ako 1:1 ekvivalenciu. | DATUM_OK IS NOT NULL nie
+    je autoritativny completion status. | Header state vzdy porovnat s line-level quantity stavom a critical trigger
+    guardmi. | Ak je editacia blokovaná, preverit zámok na obsluhu a relevantne session bypass mechanizmy.

@@ -1,4 +1,198 @@
 schema_version: '1.0'
 kind: relationships
 id: odb.relationships.001
-records: []
+records:
+- relationship_id: odb.relationship.doc_222_1
+  from_object_ref: mc.object.obj_odb_l
+  from_field_refs:
+  - mc.field.obj_odb_l.rid
+  to_object_ref: mc.object.obj_odb_o
+  to_field_refs:
+  - mc.field.obj_odb_o.rid_o
+  relationship_type: DIRECT
+  cardinality: 1:N
+  status: POTVRDENÉ
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  safe_usage_sk: Header sa pri JOINe násobí počtom položiek. Cieľový grain musí byť vopred určený.
+  validation_summary_sk: Schválený DOCX v1.2, extraction block 222 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. L.RID = O.RID_O; POTVRDENÉ
+  fanout_risk: Header sa pri JOINe násobí počtom položiek. Cieľový grain musí byť vopred určený.
+- relationship_id: odb.relationship.doc_222_2
+  from_object_ref: mc.object.obj_odb_l
+  from_field_refs:
+  - mc.field.obj_odb_l.rid
+  to_object_ref: mc.object.vyd_l
+  to_field_refs:
+  - mc.field.vyd_l.rid_v
+  relationship_type: CONDITIONAL
+  cardinality: 1:N / podmienené
+  status: POTVRDENÉ
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  safe_usage_sk: Objednávka môže mať viac výdajok; raw JOIN násobí header/order-line agregácie.
+  validation_summary_sk: Schválený DOCX v1.2, extraction block 222 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. VYD_L.RID_V = OBJ_ODB_L.RID; POTVRDENÉ boundary
+  fanout_risk: Objednávka môže mať viac výdajok; raw JOIN násobí header/order-line agregácie.
+  condition_sk: VYD_L.RID_V = OBJ_ODB_L.RID; Objednávka môže mať viac výdajok; raw JOIN násobí header/order-line
+    agregácie.
+- relationship_id: odb.relationship.doc_222_3
+  from_object_ref: mc.object.obj_odb_o
+  from_field_refs:
+  - mc.field.obj_odb_o.rid_o
+  - mc.field.obj_odb_o.id_r
+  to_object_ref: mc.object.vyd_o
+  to_field_refs:
+  - mc.field.vyd_o.rid_v
+  relationship_type: CONDITIONAL
+  cardinality: 1:N / podmienené
+  status: POTVRDENÉ
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  safe_usage_sk: Line-level trace je potvrdená iba pre príslušný issue flow; technická paleta KOD_ID=204 sa z business
+    trace vylučuje.
+  validation_summary_sk: Schválený DOCX v1.2, extraction block 222 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. VYD_O.RID_V = <RID objednávky>!<ID_R> pri štandardnej predajnej výdajke;
+    POTVRDENÉ PODMIENENE
+  fanout_risk: Line-level trace je potvrdená iba pre príslušný issue flow; technická paleta KOD_ID=204 sa z business
+    trace vylučuje.
+  condition_sk: VYD_O.RID_V = <RID objednávky>!<ID_R> pri štandardnej predajnej výdajke; Line-level trace je potvrdená
+    iba pre príslušný issue flow; technická paleta KOD_ID=204 sa z business trace vylučuje.
+- relationship_id: odb.relationship.doc_222_4
+  from_object_ref: mc.object.obj_odb_o
+  from_field_refs:
+  - mc.field.obj_odb_o.kod_id
+  to_object_ref: vyd.oracle.01e7b2f15c19e6d43d71f206
+  to_field_refs:
+  - vyd.oracle_field.42f37d6d62423f9ce965dc63
+  relationship_type: DIRECT
+  cardinality: N:1
+  status: POTVRDENÉ
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  safe_usage_sk: Bez fan-out, ak cieľový ID je unikátny; temporal master limit zostáva samostatný problém.
+  validation_summary_sk: Schválený DOCX v1.2, extraction block 222 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. KOD_ID = SKLAD_KARTA.ID; POTVRDENÉ FK
+  fanout_risk: Bez fan-out, ak cieľový ID je unikátny; temporal master limit zostáva samostatný problém.
+- relationship_id: odb.relationship.doc_222_5
+  from_object_ref: mc.object.obj_odb_o
+  from_field_refs:
+  - mc.field.obj_odb_o.id_sz
+  to_object_ref: vyd.oracle.02cf754cf59912a9fb74f610
+  to_field_refs:
+  - vyd.oracle_field.6fb40d1c1638aaae0e4c9f4c
+  relationship_type: DIRECT
+  cardinality: N:1
+  status: POTVRDENÉ
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  safe_usage_sk: Konkrétna zásoba; pri sentinel/empty stock zázname rešpektovať order reservation pravidlá.
+  validation_summary_sk: Schválený DOCX v1.2, extraction block 222 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. ID_SZ = SKLAD_ZASOB.ID; POTVRDENÉ FK
+  fanout_risk: Konkrétna zásoba; pri sentinel/empty stock zázname rešpektovať order reservation pravidlá.
+- relationship_id: odb.relationship.doc_222_6
+  from_object_ref: mc.object.obj_odb_o
+  from_field_refs:
+  - mc.field.obj_odb_o.rid_ct_a
+  to_object_ref: vyd.oracle.acf2e047611033d127973252
+  to_field_refs:
+  - vyd.oracle_field.d11ec3c52af18947511f6cfe
+  relationship_type: DIRECT
+  cardinality: N:1 logicky; FK disabled/not validated
+  status: POTVRDENÉ
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  safe_usage_sk: Referenčná integrita nie je garantovaná deklarovaným FK; LEFT JOIN + orphan kontrola.
+  validation_summary_sk: Schválený DOCX v1.2, extraction block 222 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. RID_CT_A / RID_CT_Z -> CT_O.RID_OBJ; SOURCE CONFIRMED / FK DISABLED
+  fanout_risk: Referenčná integrita nie je garantovaná deklarovaným FK; LEFT JOIN + orphan kontrola.
+- relationship_id: odb.relationship.doc_222_7
+  from_object_ref: mc.object.obj_odb_o
+  from_field_refs:
+  - mc.field.obj_odb_o.rid_ct_z
+  to_object_ref: vyd.oracle.acf2e047611033d127973252
+  to_field_refs:
+  - vyd.oracle_field.d11ec3c52af18947511f6cfe
+  relationship_type: DIRECT
+  cardinality: N:1 logicky; FK disabled/not validated
+  status: POTVRDENÉ
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  safe_usage_sk: Referenčná integrita nie je garantovaná deklarovaným FK; LEFT JOIN + orphan kontrola.
+  validation_summary_sk: Schválený DOCX v1.2, extraction block 222 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. RID_CT_A / RID_CT_Z -> CT_O.RID_OBJ; SOURCE CONFIRMED / FK DISABLED
+  fanout_risk: Referenčná integrita nie je garantovaná deklarovaným FK; LEFT JOIN + orphan kontrola.
+- relationship_id: odb.relationship.cancellation_history
+  from_object_ref: mc.object.obj_odb_o
+  from_field_refs:
+  - mc.field.obj_odb_o.rid_o
+  - mc.field.obj_odb_o.id_r
+  to_object_ref: odb.oracle.table.dovod_zrus_pol_doklad
+  to_field_refs:
+  - odb.oracle_field.dovod_zrus_pol_doklad.rid_o
+  - odb.oracle_field.dovod_zrus_pol_doklad.id_r
+  relationship_type: DIRECT
+  cardinality: 1:N história
+  status: POTVRDENÉ
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  safe_usage_sk: Pri viacerých dôvodoch sa order line násobí. Pred agregáciou order facts históriu najprv agregovať/filtrovať
+    na požadovaný grain.
+  validation_summary_sk: Schválený DOCX v1.2, extraction block 222 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný. RID_O + ID_R
+- relationship_id: odb.relationship.rid_bal
+  from_object_ref: mc.object.obj_odb_o
+  from_field_refs:
+  - mc.field.obj_odb_o.rid_bal
+  to_object_ref: vyd.oracle.3b7ad2229e879952a4c54eea
+  to_field_refs:
+  - vyd.oracle_field.0e4d4efba37d939c5282db2f
+  relationship_type: DIRECT
+  status: TECHNICKY ZNÁME
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  validation_summary_sk: Schválený DOCX v1.2, extraction block 71 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný.
+  safe_usage_sk: Nedopĺňa lifecycle externej domény; current zero nie je univerzálna absencia.
+- relationship_id: odb.relationship.rid_objekt
+  from_object_ref: mc.object.obj_odb_o
+  from_field_refs:
+  - mc.field.obj_odb_o.rid_objekt
+  to_object_ref: odb.oracle.table.dokl_objekty
+  to_field_refs:
+  - odb.oracle_field.dokl_objekty.rid
+  relationship_type: DIRECT
+  status: TECHNICKY ZNÁME
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  validation_summary_sk: Schválený DOCX v1.2, extraction block 71 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný.
+  safe_usage_sk: Nedopĺňa lifecycle externej domény; current zero nie je univerzálna absencia.
+- relationship_id: odb.relationship.dovod_blokacie
+  from_object_ref: mc.object.obj_odb_o
+  from_field_refs:
+  - mc.field.obj_odb_o.dovod_blokacie
+  to_object_ref: odb.oracle.table.dovody_blok_tovar
+  to_field_refs:
+  - odb.oracle_field.dovody_blok_tovar.id
+  relationship_type: DIRECT
+  status: TECHNICKY ZNÁME
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  validation_summary_sk: Schválený DOCX v1.2, extraction block 71 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný.
+  safe_usage_sk: Nedopĺňa lifecycle externej domény; current zero nie je univerzálna absencia.
+- relationship_id: odb.relationship.rid_n
+  from_object_ref: mc.object.obj_odb_o
+  from_field_refs:
+  - mc.field.obj_odb_o.rid_n
+  to_object_ref: odb.oracle.table.obj_d_navrh
+  to_field_refs:
+  - odb.oracle_field.obj_d_navrh.rid
+  relationship_type: DIRECT
+  status: TECHNICKY ZNÁME
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  validation_summary_sk: Schválený DOCX v1.2, extraction block 71 (0-based). Dokumentový prenos; raw Oracle export
+    nebol pri materializácii dostupný.
+  safe_usage_sk: Nedopĺňa lifecycle externej domény; current zero nie je univerzálna absencia.
