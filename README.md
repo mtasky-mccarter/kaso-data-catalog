@@ -14,6 +14,11 @@ README.md                     Purpose and structure
 docs/
   mapping-standard.md         Repository transcription of the mapping standard
   publication-standard.md     Generated publication naming/layout contract
+  codex-execution-standard-v3.md
+                              Lean Codex context/execution contract
+  handoffs/
+    codex-handoff.template.yaml
+                              Machine-readable READY FOR CODEX HANDOFF template
   machine-readable-schema-v1.0.md
                               Schema model and conventions
 catalog/
@@ -54,6 +59,18 @@ Oracle evidence
 ```
 
 ChatGPT owns evidence interpretation and semantic closure. Codex owns engineering materialization, validation, repository changes and generated artifacts. Codex must not infer missing business meaning. A future KASO Catalog Viewer should remain a read-only presentation layer generated from the canonical catalog, never a second source of truth.
+
+## Codex Lean Execution v3
+
+For new production materializations, prefer a machine-readable handoff based on `docs/handoffs/codex-handoff.template.yaml` and the context-loading rules in `docs/codex-execution-standard-v3.md`.
+
+The v3 rule is simple: repository state is memory; the Codex chat prompt is only the command. Large raw evidence should be parsed programmatically, approved facts should not be broadly rediscovered, domain tests run before full regression, and successful logs/diffs stay compact. This reduces context/token usage without relaxing evidence-first or AGENT-READY gates.
+
+Validate a completed handoff with:
+
+```sh
+python tools/check_codex_handoff.py docs/handoffs/<domain>/handoff.yaml --summary
+```
 
 For canonical publication output, use `python tools/generate_publication.py <publication-slug>` or `python tools/generate_publication.py all`; use `--check` in validation workflows.
 Dokumentácia: [Nákupné objednávky](generated/nakupne-objednavky/) — Technical & Diagnostic Reference v1.0 (DOCX, PDF a manifest).
