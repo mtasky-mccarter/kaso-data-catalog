@@ -1,0 +1,142 @@
+[
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_NAGELEXP",
+    "TYPE": "TRIGGER",
+    "LINE": 1,
+    "TEXT": "TRIGGER t_mc_nagelexp\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_NAGELEXP",
+    "TYPE": "TRIGGER",
+    "LINE": 2,
+    "TEXT": " BEFORE\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_NAGELEXP",
+    "TYPE": "TRIGGER",
+    "LINE": 3,
+    "TEXT": "  INSERT OR UPDATE\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_NAGELEXP",
+    "TYPE": "TRIGGER",
+    "LINE": 4,
+    "TEXT": " ON obj_odb_o\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_NAGELEXP",
+    "TYPE": "TRIGGER",
+    "LINE": 5,
+    "TEXT": "REFERENCING NEW AS NEW OLD AS OLD\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_NAGELEXP",
+    "TYPE": "TRIGGER",
+    "LINE": 6,
+    "TEXT": " FOR EACH ROW\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_NAGELEXP",
+    "TYPE": "TRIGGER",
+    "LINE": 7,
+    "TEXT": "declare\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_NAGELEXP",
+    "TYPE": "TRIGGER",
+    "LINE": 8,
+    "TEXT": "    nExists number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_NAGELEXP",
+    "TYPE": "TRIGGER",
+    "LINE": 9,
+    "TEXT": "    dDatum_exp date;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_NAGELEXP",
+    "TYPE": "TRIGGER",
+    "LINE": 10,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_NAGELEXP",
+    "TYPE": "TRIGGER",
+    "LINE": 11,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_NAGELEXP",
+    "TYPE": "TRIGGER",
+    "LINE": 12,
+    "TEXT": "      IF :old.id_sz!=:new.id_sz and substr(:new.id_sz,1,3)='025' THEN\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_NAGELEXP",
+    "TYPE": "TRIGGER",
+    "LINE": 13,
+    "TEXT": "    select datum_exp into dDatum_exp from sklad_zasob where id=:new.id_sz;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_NAGELEXP",
+    "TYPE": "TRIGGER",
+    "LINE": 14,
+    "TEXT": "    select nvl((select count(*) from sklad_zasob where kod_id=:new.kod_id and sklad=25 and p_1>0 and datum_exp<dDatum_exp),0) into nExists from dual;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_NAGELEXP",
+    "TYPE": "TRIGGER",
+    "LINE": 15,
+    "TEXT": "        if nExists!=0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_NAGELEXP",
+    "TYPE": "TRIGGER",
+    "LINE": 16,
+    "TEXT": "        :new.MIN_DAT_EXP:=dDatum_exp;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_NAGELEXP",
+    "TYPE": "TRIGGER",
+    "LINE": 17,
+    "TEXT": "        end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_NAGELEXP",
+    "TYPE": "TRIGGER",
+    "LINE": 18,
+    "TEXT": "    END IF;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_NAGELEXP",
+    "TYPE": "TRIGGER",
+    "LINE": 19,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_NAGELEXP",
+    "TYPE": "TRIGGER",
+    "LINE": 20,
+    "TEXT": "end;\n"
+  }
+]

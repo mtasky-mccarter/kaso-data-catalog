@@ -1,44 +1,37 @@
-# Obchodné prípady — Phase A document-backed materialization
+# Obchodné prípady v1.2
 
-Schválený human semantic contract v1.2 bol prenesený do existujúcej schema v1.0.
-Autorita prostredia: MC. Maturity: DIAGNOSTIC-GRADE. Publication blocked; closure
-nie je exhaustive a nejde o AGENT-READY. Feature branch nie je prijatý main.
+MC.OBJ_ODB_L/O: schválený semantic contract a raw physical/source closure podľa
+`docs/handoffs/odb-final-closure.txt`. Canonical YAML/SQL sú autorita; publikácie
+v `generated/obchodne-pripady/` sú odvodené. Feature branch je návrh až do merge.
 
-Materiál obsahuje 79 L polí, 44 O polí, 50 trigger summaries (17 L / 33 O),
-18 skupinových mutation záznamov, 12 relationship záznamov, 33 constraints,
-34 indexes, 10 form codes, 16 dokumentových DQ pozorovaní, 8 playbookov a
-20 SELECT súborov. CHECK záznamy obsahujú identitu/stav; ich dokumentové popisy
-sú v do-not-assume. Prázdny column_refs CHECKu nepreukazuje absenciu stĺpcov.
-Úplné výrazy ani chýbajúce názvy 8 O FK sa neodhadujú.
+79/44 polí, 130 constraints, 34 indexov, 50 triggerov; tri package spec/body
+páry vrátane supporting direct writer D_OBJ_ODB_L_B. Zachované aliases, business
+významy, SQL a existujúce VYD boundary IDs. Physical index X_OBJODBO_XML35
+zachováva pôvodné stable ID; úplný domain-index výraz zostáva neblokujúcou medzerou.
 
-Proveniencia: `evidence/source-extracts/odb/approved-contract.json` je zachovaná
-intake extrakcia schváleného DOCX; jeho pôvodný SHA-256 je v accepted manifest.
-Extrakcia nie je raw Oracle export. `intake-integrity.json` uchováva výsledok
-41 checksum kontrol zo 14. 9. 2026. Pri pokračovaní 15. 9. už pôvodný bundle
-nebol na používateľom zadanej ceste; raw XLSX nie sú predstierané ako spracované.
+Offline BFS používa presné (owner, name, type): 55 logical seeds / 58 graph seeds.
+Inbound 285 nodes / 673 edges, max node depth 3; outbound 477 / 2515, max node
+depth 4. Edge traversal depth môže byť 5 pri spätných/cyklických hranách.
+Priame hrany: 581/889. ALL_DEPENDENCIES znamená DEPENDENCY ONLY.
 
-`tools/materialize_odb_phase_a.py` reprodukuje projekciu z checksum-pinned
-extrakcie. Nevyvodzuje business význam, nerozbaľuje wildcard writerov a nemení
-source NULL na display label. Prázdne DOCX bunky vynecháva, keď nedokazujú NULL.
-Zdrojové block čísla sú 0-based indexy zachovanej extrakcie. SQL projekcia pridáva
-iba whitespace na hranice klauzúl a rozdeľuje pôvodné SELECTy pri bodkočiarke.
+MC API/source: 4515 jednotlivých lexikálnych výskytov, 595 normalizovaných
+členov, 145 source objektov. Raw spelling aj presný source riadok zostávajú
+zachované. Toto nie je dôkaz runtime writer/caller správania. 71 grants a 9
+synonyms znamenajú iba ACCESS CAPABILITY. Dva nulové job audity dokazujú iba
+absenciu priameho name match v ich explicitnom rozsahu.
 
-Existujúce VYD boundary IDs sú bez zmeny reconciliované v
-`odb.rule.vyd_identity_reconciliation`; nové sales objekty opisujú tie isté
-fyzické MC.OBJ_ODB_L/O. Master/VYD field IDs sa používajú, kde už existujú.
-Nové external entity records sú iba explicitné field boundaries, bez nového
-master business contractu.
+Deväť neblokujúcich future-domain/business medzier zostáva otvorených.
+Sedem historických Phase A blockerov zostáva v checksum-pinned snapshot histórii.
+Dynamic SQL, application runtime, external služby a iné prostredia sú hranice.
+Exhaustive closure je obmedzená na dodaný Oracle-visible snapshot MC.
 
-Rozdiel oproti VYD/CP: táto fáza má dokumentový dôkaz D, nie predstierané raw
-A/B/B2 manifests. Dependency register zachováva dokumentové DML-reference počty ako DEPENDENCY ONLY.
-Raw closure/API registre zostávajú nematerializované;
-empty register != verified zero. Deväť schválených neblokujúcich gapov zostáva.
-Backlog presne oddeľuje chýbajúce raw physical/source/closure claims a publication.
+Reprodukcia: `python tools/materialize_odb_final.py --bundle <read-only-directory>`
+kontroluje všetkých 13 SHA256 položiek pred čítaním XLSX. Raw core source je
+zachovaný ako lossless JSON projection s accepted B2 snapshot manifestmi;
+originálne XLSX sú TRANSIENT vstupy s pôvodnými hashmi, nie predstierané snapshots.
+Phase A dokumentová extrakcia ostáva traceable, nie je náhradou raw Oracle dôkazu.
 
-Potrebné vstupy pre ďalší krok: obnovená cesta k pôvodnému bundle/ZIP s
-README_HANDOFF.txt a SHA256SUMS.txt; ODB_DIAG a OBJ_ODB_O XLSX; neskôr samostatné
-OBJ_H01..H06B. Supporting DOCX zostávajú supporting references.
-
-Overenie: `python tools/validate_catalog.py`, ODB acceptance/SQL safety/publication
-fail-closed tests a repository unittest discovery. Testy nie sú Oracle execution
-ani dôkaz úplnosti dependency closure. DOCX/PDF sa v tejto fáze nevytvárajú.
+Overenie: validator, celé unittest discovery, ODB acceptance / SQL safety /
+publication testy a `python tools/generate_publication.py all --check`.
+Publikácia obsahuje úplné business registre a SQL; veľké graph/API/entity
+registre sú explicitne zhrnuté s odkazmi na úplné kanonické YAML.

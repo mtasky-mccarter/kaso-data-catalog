@@ -36,6 +36,8 @@ def rule(block, row, text, scope=OBJECTS):
     return dict(rule_id=f'odb.rule.doc_{block}_{row}',scope_refs=scope,statement_sk=text,evidence_refs=[E])
 
 def main():
+    if any(r["revision_id"].startswith("odb.revision.final_closure") for r in load("revisions")["records"]):
+        raise ValueError("Final closure exists; Phase A importer cannot overwrite it")
     all_fields={}
     for obj, block, semantic in [('OBJ_ODB_L',337,77),('OBJ_ODB_O',339,117)]:
         semantics={r[0]:r for r in rows(semantic)}

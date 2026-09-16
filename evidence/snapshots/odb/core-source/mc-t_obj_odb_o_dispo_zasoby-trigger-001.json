@@ -1,0 +1,541 @@
+[
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 1,
+    "TEXT": "TRIGGER t_obj_odb_o_dispo_zasoby\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 2,
+    "TEXT": " BEFORE\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 3,
+    "TEXT": "   INSERT OR UPDATE OF p_del, rid_v, pocet, p_del_dod\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 4,
+    "TEXT": " ON obj_odb_o\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 5,
+    "TEXT": "REFERENCING NEW AS NEW OLD AS OLD\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 6,
+    "TEXT": " FOR EACH ROW\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 7,
+    "TEXT": "declare\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 8,
+    "TEXT": "  sTypCis varchar2(254);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 9,
+    "TEXT": "  sStavU varchar2(254);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 10,
+    "TEXT": "  nPocetDZ number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 11,
+    "TEXT": "  nP_VybDZ number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 12,
+    "TEXT": "  nP_Zmena number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 13,
+    "TEXT": "  nP_ZmenaMax number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 14,
+    "TEXT": "  sID_DZ varchar2(16);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 15,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 16,
+    "TEXT": "  if inserting or updating then   \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 17,
+    "TEXT": "    select l.typ_cis, l.stav_uzavretia into sTypCis, sStavU from obj_odb_l l where rid = :new.rid_o;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 18,
+    "TEXT": "    if sTypCis = c_typy_cis.TC_ObjO_Pre_Stredisko then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 19,
+    "TEXT": "      if sStavU != d_obj_odb_l_b.STAV_UZV_OP_Uzavreta then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 20,
+    "TEXT": "        return;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 21,
+    "TEXT": "      end if; \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 22,
+    "TEXT": "    else\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 23,
+    "TEXT": "      return;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 24,
+    "TEXT": "    end if; \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 25,
+    "TEXT": "    \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 26,
+    "TEXT": "    if inserting then \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 27,
+    "TEXT": "      if :new.id_r_v = 0 and :new.id_r_p in (0, :new.id_r) then \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 28,
+    "TEXT": "        d_obj_odb_l_b.VlozDispoZasobu(psRID=>:new.rid_o, pnID_R=>:new.id_r, pnTestExist=>0, pnKodID=>:new.kod_id, psSarza=>:new.sarza, \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 29,
+    "TEXT": "          pnPocet=>:new.pocet-:new.p_del-:new.p_del_dod, psRID_V=>:new.rid_v, pnTrigger=>1);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 30,
+    "TEXT": "      end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 31,
+    "TEXT": "    end if; \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 32,
+    "TEXT": "    \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 33,
+    "TEXT": "    if updating then        \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 34,
+    "TEXT": "      if (:new.pocet != :old.pocet) or (:new.p_del != :old.p_del) or (:new.p_del_dod != :old.p_del_dod) then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 35,
+    "TEXT": "        -- mozem menit pocet na dispo zasobe len do vysky rozdielu pocet-p_rez-p_prij (constraint)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 36,
+    "TEXT": "        if :new.rid_v = '0' then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 37,
+    "TEXT": "          nP_Zmena := (:old.pocet-:old.p_del-:old.p_del_dod) - (:new.pocet-:new.p_del-:new.p_del_dod);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 38,
+    "TEXT": "          if nP_Zmena > 0 then -- znizujem pocet\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 39,
+    "TEXT": "            if c_session.GetDispoOS_NekontrolPocetZrus = 0 then \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 40,
+    "TEXT": "              begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 41,
+    "TEXT": "                select dz.pocet, dz.p_rez into nPocetDZ, nP_VybDZ from dispo_zasoby dz where dz.s_stamp = '0' and rid_v = c_rid.zlozrid_r(:new.rid_o,:new.id_r);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 42,
+    "TEXT": "              exception when no_data_found then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 43,
+    "TEXT": "                return; -- neni co menit\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 44,
+    "TEXT": "              end;  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 45,
+    "TEXT": "              \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 46,
+    "TEXT": "              if nPocetDZ-nP_Zmena < nP_VybDZ then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 47,
+    "TEXT": "                nP_ZmenaMax := nPocetDZ-nP_VybDZ;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 48,
+    "TEXT": "                c_exc.raiseerrormsg('Nemôžeš ponížiť množstvo na objednávke o ('||nP_Zmena||'), \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 49,
+    "TEXT": "                pretože sa nachádza v disponibilnej zásobe !'||chr(13)||'Možeš ho ponížiť maximálne o ('||nP_ZmenaMax||') !');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 50,
+    "TEXT": "              end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 51,
+    "TEXT": "            end if; \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 52,
+    "TEXT": "          end if;  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 53,
+    "TEXT": "        else\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 54,
+    "TEXT": "          return;       \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 55,
+    "TEXT": "        end if;  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 56,
+    "TEXT": "        \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 57,
+    "TEXT": "        update dispo_zasoby dz set dz.pocet = greatest(dz.pocet - ((:old.pocet-:old.p_del-:old.p_del_dod) - (:new.pocet-:new.p_del-:new.p_del_dod)), 0)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 58,
+    "TEXT": "        where dz.s_stamp = '0' and dz.rid_v = c_rid.zlozrid_r(:new.rid_o,:new.id_r);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 59,
+    "TEXT": "      end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 60,
+    "TEXT": "      \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 61,
+    "TEXT": "      -- rusim vazbu  (toto sa asi nikde nepouziva) \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 62,
+    "TEXT": "      if :new.rid_v = '0' and :old.rid_v != '0' then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 63,
+    "TEXT": "        if :new.id_r_v = 0 and :new.id_r_p in (0, :new.id_r) then        \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 64,
+    "TEXT": "          d_obj_odb_l_b.VlozDispoZasobu(psRID=>:new.rid_o, pnID_R=>:new.id_r, pnTestExist=>0, pnKodID=>:new.kod_id, psSarza=>:new.sarza,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 65,
+    "TEXT": "            pnPocet=>:new.pocet-:new.p_del-:new.p_del_dod, psRID_V=>:new.rid_v, pnTrigger=>1);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 66,
+    "TEXT": "        end if;   \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 67,
+    "TEXT": "      elsif :old.rid_v = '0' and :new.rid_v != '0' then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 68,
+    "TEXT": "          -- nastavujem vazbu na polozku ObjS  (toto sa asi nikde nepouziva)      \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 69,
+    "TEXT": "        select dz.id into sID_DZ from dispo_zasoby dz where dz.rid_v = c_rid.zlozrid_r(:new.rid_o,:new.id_r) and dz.s_stamp = '0';\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 70,
+    "TEXT": "        if sID_DZ is not null then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 71,
+    "TEXT": "          c_dispo_zasoba.StornoDispoRozdelenia(psID=>sID_DZ);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 72,
+    "TEXT": "          c_dispo_zasoba.StornoRIDC(psID=>sID_DZ); --rusim celu dispo zasobu          \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 73,
+    "TEXT": "        end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 74,
+    "TEXT": "      end if;   \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 75,
+    "TEXT": "    end if; \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 76,
+    "TEXT": "  end if;  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DISPO_ZASOBY",
+    "TYPE": "TRIGGER",
+    "LINE": 77,
+    "TEXT": "end;"
+  }
+]

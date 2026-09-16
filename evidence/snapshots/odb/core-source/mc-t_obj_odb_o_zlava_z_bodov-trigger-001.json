@@ -1,0 +1,219 @@
+[
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 1,
+    "TEXT": "TRIGGER t_obj_odb_o_zlava_z_bodov\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 2,
+    "TEXT": "-- EXP 16.06.2020 11:03 CHG 16.06.2020 10:42\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 3,
+    "TEXT": " BEFORE\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 4,
+    "TEXT": "   INSERT OR DELETE OR UPDATE OF rid_ct_a, cena, pocet, cena_m, p_del, rid_ct_z, p_del_dod\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 5,
+    "TEXT": " ON obj_odb_o\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 6,
+    "TEXT": "REFERENCING NEW AS NEW OLD AS OLD\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 7,
+    "TEXT": " FOR EACH ROW\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 8,
+    "TEXT": "begin    \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 9,
+    "TEXT": "  if inserting then  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 10,
+    "TEXT": "    if c_session.GetSK_UplBodDarceku_Zlava = :new.kod_id then      \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 11,
+    "TEXT": "      c_bod_cerpania.SpracujTrigOZlavaZBodov(psRIDDokl=>:new.rid_o, pnID_R=>:new.id_r, pnPocetOld=>0, pnPocetNew=>:new.pocet-:new.p_del-:new.p_del_dod, \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 12,
+    "TEXT": "        pnKodID=>:new.kod_id, pnTypOperacie=>c_bod_cerpania.TRIG_DOKLAD_O_DARCEK_INSERT);    \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 13,
+    "TEXT": "    end if;  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 14,
+    "TEXT": "  elsif updating then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 15,
+    "TEXT": "    if c_session.GetSK_UplBodDarceku_Zlava = :new.kod_id then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 16,
+    "TEXT": "      if :old.cena != :new.cena or :old.cena_m != :new.cena_m then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 17,
+    "TEXT": "        c_exc.raiseerrormsg('Nie je možné meniť cenu na zľavovej položke \"karta: '||:new.kod_id||'\" z bodov !');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 18,
+    "TEXT": "      end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 19,
+    "TEXT": "      if :old.rid_ct_a != :new.rid_ct_a or :old.rid_ct_z != :new.rid_ct_z then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 20,
+    "TEXT": "        c_exc.raiseerrormsg('Nie je možné meniť akciu/zmluvu na zľavovej položke \"karta: '||:new.kod_id||'\" z bodov !');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 21,
+    "TEXT": "      end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 22,
+    "TEXT": "      c_bod_cerpania.SpracujTrigOZlavaZBodov(psRIDDokl=>:old.rid_o, pnID_R=>:old.id_r, pnPocetOld=>:old.pocet-:old.p_del-:old.p_del_dod, pnPocetNew=>:new.pocet-:new.p_del-:new.p_del_dod, \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 23,
+    "TEXT": "        pnKodID=>:new.kod_id, pnTypOperacie=>c_bod_cerpania.TRIG_DOKLAD_O_DARCEK_UPDATE);    \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 24,
+    "TEXT": "    end if;  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 25,
+    "TEXT": "  elsif deleting then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 26,
+    "TEXT": "    if c_session.GetSK_UplBodDarceku_Zlava = :old.kod_id then  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 27,
+    "TEXT": "      c_bod_cerpania.SpracujTrigOZlavaZBodov(psRIDDokl=>:old.rid_o, pnID_R=>:old.id_r, pnPocetOld=>:old.pocet-:old.p_del-:old.p_del_dod, pnPocetNew=>0, \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 28,
+    "TEXT": "        pnKodID=>:old.kod_id, pnTypOperacie=>c_bod_cerpania.TRIG_DOKLAD_O_DARCEK_DELETE);    \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 29,
+    "TEXT": "    end if;  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 30,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 31,
+    "TEXT": "end;\n"
+  }
+]

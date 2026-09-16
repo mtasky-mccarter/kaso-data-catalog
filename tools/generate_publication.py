@@ -20,6 +20,18 @@ LAYOUT_VERSION = "1.0"
 VERSION_RE = re.compile(r"^(\d+)\.(\d+)$")
 
 PUBLICATIONS = {
+    "obchodne-pripady": {
+        "subject_sk": "obchodné prípady",
+        "generator": "tools/generate_odb_publication.py",
+        "legacy_basename": "obchodne-pripady-v1.2",
+        "revisions": "catalog/sales/obchodne-pripady/revisions.yaml",
+    },
+    "nakupne-objednavky": {
+        "subject_sk": "nákupné objednávky",
+        "generator": "tools/generate_pur_publication.py",
+        "legacy_basename": "nakupne-objednavky-v1.0",
+        "revisions": "catalog/purchasing/revisions.yaml",
+    },
     "cestovne-prikazy": {
         "subject_sk": "cestovné príkazy",
         "generator": "tools/generate_cp_publication.py",

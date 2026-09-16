@@ -28,7 +28,10 @@ def read_scaffold(root=ROOT):
 def publication_blockers(root=ROOT):
     documents = read_scaffold(root)
     reasons = [r['question_sk'] for r in documents['backlog.yaml']['records'] if r['blocking']]
-    # This phase implements a scaffold only. Removing backlog entries cannot
-    # silently turn it into an approved production generator.
-    reasons.append('HANDOFF BLOCKED: publication remains explicitly blocked for Phase A')
+    for name in ('contract.yaml', 'object-obj_odb_l.yaml', 'object-obj_odb_o.yaml'):
+        if documents[name]['maturity'] != 'AGENT-READY':
+            reasons.append(f'{name}: maturity must be AGENT-READY')
+    if not any(r['revision_id'] == 'odb.revision.final_closure_2026_09_15'
+               for r in documents['revisions.yaml']['records']):
+        reasons.append('Final closure revision missing')
     return reasons

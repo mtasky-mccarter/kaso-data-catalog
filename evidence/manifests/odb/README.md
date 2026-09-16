@@ -1,11 +1,16 @@
 # ODB evidence
 
-`approved-contract.yaml` je accepted D manifest používateľom schváleného human
-semantic contractu v1.2. Nenahrádza raw Oracle A/B/B2 evidence. Pôvodný DOCX bol
-pri intake overený voči SHA256SUMS; retained JSON je odvodená textová extrakcia,
-nie pôvodný DOCX. Kontrola 41 vstupov je zachovaná v
-`evidence/source-extracts/odb/intake-integrity.json`.
+Accepted D semantic contract v1.2 remains traceable through its checksum-pinned
+DOCX text extraction. Final closure manifests add nine verified raw XLSX inputs
+(snapshot 2026-09-15, MC). These are external TRANSIENT inputs with original
+hashes; retained JSON source projections have separate SNAPSHOT_CRITICAL B2
+manifests and their own SHA-256 values. Projections preserve exact ALL_SOURCE
+cells, package spec/body identities and line ordering.
 
-Pri materializácii 15. 9. 2026 už pôvodný source bundle nebol na zadanej ceste.
-Raw XLSX manifests/claims sa neoznačujú ako skontrolované na základe checksumu
-samotného. Chýbajúce claims sú v domain backlogu. Publication zostáva blocked.
+Two retained negative job audits prove only no direct visible name matches in
+the specified dictionary predicates. They do not exclude indirect jobs.
+Historical Phase A blockers are retained separately; final closure supersedes
+their missing-input claims. Nine nonblocking business/future-domain gaps remain.
+
+Raw Oracle comments, lexical API references, dependency edges and access grants
+retain distinct interpretation limits. No new Oracle export was executed.

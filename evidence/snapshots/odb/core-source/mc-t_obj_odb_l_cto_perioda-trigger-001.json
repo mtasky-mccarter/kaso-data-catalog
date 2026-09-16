@@ -1,0 +1,170 @@
+[
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_CTO_PERIODA",
+    "TYPE": "TRIGGER",
+    "LINE": 1,
+    "TEXT": "TRIGGER T_OBJ_ODB_L_CTO_PERIODA\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_CTO_PERIODA",
+    "TYPE": "TRIGGER",
+    "LINE": 2,
+    "TEXT": " AFTER\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_CTO_PERIODA",
+    "TYPE": "TRIGGER",
+    "LINE": 3,
+    "TEXT": "   UPDATE OF POCET, P_DEL, P_DEL_DOD\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_CTO_PERIODA",
+    "TYPE": "TRIGGER",
+    "LINE": 4,
+    "TEXT": " ON OBJ_ODB_O\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_CTO_PERIODA",
+    "TYPE": "TRIGGER",
+    "LINE": 5,
+    "TEXT": "REFERENCING NEW AS NEW OLD AS OLD\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_CTO_PERIODA",
+    "TYPE": "TRIGGER",
+    "LINE": 6,
+    "TEXT": " FOR EACH ROW\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_CTO_PERIODA",
+    "TYPE": "TRIGGER",
+    "LINE": 7,
+    "TEXT": "declare\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_CTO_PERIODA",
+    "TYPE": "TRIGGER",
+    "LINE": 8,
+    "TEXT": "  sRidPravidla varchar2(16);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_CTO_PERIODA",
+    "TYPE": "TRIGGER",
+    "LINE": 9,
+    "TEXT": "  nRozdiel number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_CTO_PERIODA",
+    "TYPE": "TRIGGER",
+    "LINE": 10,
+    "TEXT": "  dtDatum date;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_CTO_PERIODA",
+    "TYPE": "TRIGGER",
+    "LINE": 11,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_CTO_PERIODA",
+    "TYPE": "TRIGGER",
+    "LINE": 12,
+    "TEXT": "  if updating then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_CTO_PERIODA",
+    "TYPE": "TRIGGER",
+    "LINE": 13,
+    "TEXT": "    sRidPravidla := c_xml_tags.gettagvaluet(:new.xml_data, 'B28', -2019);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_CTO_PERIODA",
+    "TYPE": "TRIGGER",
+    "LINE": 14,
+    "TEXT": "    if sRidPravidla is not null then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_CTO_PERIODA",
+    "TYPE": "TRIGGER",
+    "LINE": 15,
+    "TEXT": "      nRozdiel := nvl(:new.POCET-:new.P_DEL-:new.P_DEL_DOD,0) - nvl(:old.POCET-:old.P_DEL-:old.P_DEL_DOD,0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_CTO_PERIODA",
+    "TYPE": "TRIGGER",
+    "LINE": 16,
+    "TEXT": "      if nRozdiel != 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_CTO_PERIODA",
+    "TYPE": "TRIGGER",
+    "LINE": 17,
+    "TEXT": "        select datum into dtDatum from obj_odb_l where rid=:new.RID_O;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_CTO_PERIODA",
+    "TYPE": "TRIGGER",
+    "LINE": 18,
+    "TEXT": "        cenotvorba.ZmenPouziteMnozstvoPeriody(psRidCTO=>sRidPravidla, psRID_V=>c_rid.zlozrid_r(:new.RID_O, :new.ID_R), \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_CTO_PERIODA",
+    "TYPE": "TRIGGER",
+    "LINE": 19,
+    "TEXT": "          pnPocet=>nRozdiel, pdtDatum=>dtDatum, pnKodID=>:new.kod_id);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_CTO_PERIODA",
+    "TYPE": "TRIGGER",
+    "LINE": 20,
+    "TEXT": "      end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_CTO_PERIODA",
+    "TYPE": "TRIGGER",
+    "LINE": 21,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_CTO_PERIODA",
+    "TYPE": "TRIGGER",
+    "LINE": 22,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_CTO_PERIODA",
+    "TYPE": "TRIGGER",
+    "LINE": 23,
+    "TEXT": "end;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_CTO_PERIODA",
+    "TYPE": "TRIGGER",
+    "LINE": 24,
+    "TEXT": "\n"
+  }
+]

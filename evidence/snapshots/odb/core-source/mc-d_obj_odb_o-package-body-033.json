@@ -1,0 +1,3131 @@
+[
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14939,
+    "TEXT": "end SetFB_VyrabaSaMontazou;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14940,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14941,
+    "TEXT": "procedure ChangeP_VYKR(psRID_O varchar2, pnID_R number, pnOldPocet number, pnNewPocet number, psRID_V varchar2, pnTypZmeny number) is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14942,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14943,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14944,
+    "TEXT": "\tif pnTypZmeny = c_const.TriggerInserting then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14945,
+    "TEXT": "    update obj_odb_o set p_vykr = p_vykr + least(pnNewPocet, pocet-p_rez-p_del-p_del_dod-p_fak-p_vyd-p_obj-p_rez_pl-p_rez_is-p_obj_d-p_dispo-p_vykr)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14946,
+    "TEXT": "    where rid_o = psRID_O and id_r = pnID_R;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14947,
+    "TEXT": "\telsif pnTypZmeny = c_const.TriggerDeleting then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14948,
+    "TEXT": "  \tupdate obj_odb_o set p_vykr = p_vykr - least(pnOldPocet, p_vykr) where rid_o = psRID_O and id_r = pnID_R;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14949,
+    "TEXT": "\telsif pnTypZmeny = c_const.TriggerUpdating then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14950,
+    "TEXT": "    update obj_odb_o set p_vykr = p_vykr - least(pnOldPocet - pnNewPocet, pocet-p_rez-p_del-p_del_dod-p_fak-p_vyd-p_obj-p_rez_pl-p_rez_is-p_obj_d-p_dispo)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14951,
+    "TEXT": "    where rid_o = psRID_O and id_r = pnID_R;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14952,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14953,
+    "TEXT": "\tdebugpck(psT0=>'ChangeP_VYKR(psRID_O=>'''||psRID_O||''', pnID_R=>'||pnID_R||', pnOldPocet=>'||pnOldPocet||', pnNewPocet=>'||pnNewPocet||', psRID_V=>'''||psRID_V||''', pnTypZmeny=>'||pnTypZmeny||')');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14954,
+    "TEXT": "end ChangeP_VYKR;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14955,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14956,
+    "TEXT": "function GetMPL(psRID_O varchar2, pnID_R number, pnKOD_ID number default null, pnSKLAD number default null, pdtDATUM_P date default null) return varchar2 is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14957,
+    "TEXT": "\tnKodID number(8,0) := pnKOD_ID;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14958,
+    "TEXT": "\tnSklad number(3,0) := pnSKLAD;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14959,
+    "TEXT": "\tdtDatumP date := pdtDATUM_P;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14960,
+    "TEXT": "\tnSkladVyr number(3,0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14961,
+    "TEXT": "\tsRID_Objekt varchar2(16);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14962,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14963,
+    "TEXT": "\tif nSklad is null or dtDatumP is null or nKodID is null then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14964,
+    "TEXT": "\t\tif c_rid.getbackcis(psRID_O) = c_cis_def.dokl_t_dokl_l then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14965,
+    "TEXT": "\t\t\tselect o.kod_id, l.sklad, l.datum_p, o.rid_objekt into nKodID, nSklad, dtDatumP, sRID_Objekt\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14966,
+    "TEXT": "\t\t\tfrom t_dokl_l l, t_dokl_o o where l.rid = o.rid_o and l.rid = psRID_O and o.id_r = pnID_R;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14967,
+    "TEXT": "\t\telse\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14968,
+    "TEXT": "\t\t\tselect o.kod_id, l.sklad, l.datum_p, o.rid_objekt into nKodID, nSklad, dtDatumP, sRID_Objekt\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14969,
+    "TEXT": "\t\t\tfrom obj_odb_l l, obj_odb_o o where l.rid = o.rid_o and l.rid = psRID_O and o.id_r = pnID_R;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14970,
+    "TEXT": "\t\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14971,
+    "TEXT": "\t\tif sRID_Objekt is not null then -- objekt prebija hl.dokladu\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14972,
+    "TEXT": "\t\t\tselect o.sklad_pre, o.termin into nSklad, dtDatumP from dokl_objekty o where o.rid = sRID_Objekt;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14973,
+    "TEXT": "\t\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14974,
+    "TEXT": "\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14975,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14976,
+    "TEXT": "\tselect p.sklad_m into nSkladVyr from bartex_pobocky p where p.id = nSklad;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14977,
+    "TEXT": "\treturn c_mpl_l.GetMPL(pnKod_id=>nKodID, pnSklad_vyr=>nSkladVyr, pdtDatum_p=>dtDatumP, psTyp_cis=>c_typy_cis.TC_MP_MontaznyPlan);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14978,
+    "TEXT": "end GetMPL;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14979,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14980,
+    "TEXT": "function JePlatnyMPL(psRID_O varchar2, pnID_R number, psRID_MPL varchar2, pnKOD_ID number, pnSKLAD_M number default null, pdtDATUM_P date default null, psRID_OBJEKT varchar2 default null) return varchar2 is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14981,
+    "TEXT": "\tnSkladM number(3,0) :=pnSKLAD_M;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14982,
+    "TEXT": "\tdtDatumP date := pdtDATUM_P;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14983,
+    "TEXT": "\tnKodID number(8,0) := pnKOD_ID;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14984,
+    "TEXT": "\tsRID_Objekt varchar2(16):= psRID_OBJEKT;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14985,
+    "TEXT": "\tnSklad number(3,0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14986,
+    "TEXT": "\tnPlatny number(1,0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14987,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14988,
+    "TEXT": "\tif dtDatumP is null or nSkladM is null then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14989,
+    "TEXT": "\t\tif sRID_Objekt is null then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14990,
+    "TEXT": "\t\t\tif c_rid.getbackcis(psRID_O) = c_cis_def.dokl_t_dokl_l then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14991,
+    "TEXT": "\t\t\t\tselect o.kod_id, l.sklad, l.datum_p, o.rid_objekt\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14992,
+    "TEXT": "\t\t\t\tinto nKodID, nSklad, dtDatumP, sRID_Objekt\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14993,
+    "TEXT": "\t\t\t\tfrom t_dokl_l l, t_dokl_o o where l.rid = o.rid_o and l.rid = psRID_O and o.id_r = pnID_R;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14994,
+    "TEXT": "\t\t\telse\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14995,
+    "TEXT": "\t\t\t\tselect o.kod_id, l.sklad, l.datum_p, o.rid_objekt into nKodID, nSklad, dtDatumP, sRID_Objekt\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14996,
+    "TEXT": "\t\t\t\tfrom obj_odb_l l, obj_odb_o o where l.rid = o.rid_o and l.rid = psRID_O and o.id_r = pnID_R;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14997,
+    "TEXT": "\t\t\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14998,
+    "TEXT": "\t\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 14999,
+    "TEXT": "\t\tif sRID_Objekt is not null then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15000,
+    "TEXT": "\t\t\tselect do.sklad_pre, nvl(dtDatumP, do.termin) into nSklad, dtDatumP from dokl_objekty do where do.rid = sRID_Objekt;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15001,
+    "TEXT": "\t\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15002,
+    "TEXT": "\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15003,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15004,
+    "TEXT": "\tif nSkladM is null then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15005,
+    "TEXT": "\t\tselect p.sklad_m into nSkladM from bartex_pobocky p where p.id = nSklad;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15006,
+    "TEXT": "\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15007,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15008,
+    "TEXT": "\tif c_mpl_l.Get_FB_AktualnyZaSkladVyroby = 1 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15009,
+    "TEXT": "    select 1 into nPlatny from mpl_l l where l.kod_id = nKodID and l.sklad_vyr = nSkladM and l.s_stamp= '0' and l.typ_cis = c_typy_cis.TC_MP_MontaznyPlan and l.rid = psRID_MPL;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15010,
+    "TEXT": "  else\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15011,
+    "TEXT": "    select 1 into nPlatny from mpl_l l where l.kod_id = nKodID and l.s_stamp= '0' and l.typ_cis = c_typy_cis.TC_MP_MontaznyPlan and l.rid = psRID_MPL;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15012,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15013,
+    "TEXT": "  return nPlatny;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15014,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15015,
+    "TEXT": "  exception when no_data_found then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15016,
+    "TEXT": "    return 0;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15017,
+    "TEXT": "end JePlatnyMPL;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15018,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15019,
+    "TEXT": "procedure ZmenMontaznyPlan(psPK varchar2, psRID_MPL varchar2) is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15020,
+    "TEXT": "\tsRID_MPL varchar2(16);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15021,
+    "TEXT": "\tsRID_ML varchar2(22);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15022,
+    "TEXT": "\tnP_VYKR number := 0;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15023,
+    "TEXT": "\tsRID_O varchar2(16);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15024,
+    "TEXT": "\tnID_R number(5,0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15025,
+    "TEXT": "\tnID_CIS number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15026,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15027,
+    "TEXT": "\tif psPK is null then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15028,
+    "TEXT": "\t\tc_exc.raiseerrormsgid(4161); -- Nie je zadaný identifikátor položky dokladu ! \\\\43016\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15029,
+    "TEXT": "\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15030,
+    "TEXT": "\tsRID_O := c_rid.getbackrid(psPK);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15031,
+    "TEXT": "\tnID_R := c_rid.getbackid_r(psPK);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15032,
+    "TEXT": "\tnID_CIS := c_rid.getbackcis(psPK);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15033,
+    "TEXT": "\tif nID_CIS = c_cis_def.dokl_t_dokl_l then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15034,
+    "TEXT": "\t\tselect XMLCast(XMLQuery('/B/B544/text()' PASSING o.cis_xml_data RETURNING CONTENT) AS varchar2(16) ) as RID_MPL into sRID_MPL from t_dokl_o o where o.rid_o = sRID_O and o.id_r = nID_R;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15035,
+    "TEXT": "\telse\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15036,
+    "TEXT": "\t\tselect XMLCast(XMLQuery('/B/B544/text()' PASSING o.xml_data RETURNING CONTENT) AS varchar2(16) ) as RID_MPL, o.p_vykr into sRID_MPL, nP_VYKR from obj_odb_o o where o.rid_o = sRID_O and o.id_r = nID_R;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15037,
+    "TEXT": "\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15038,
+    "TEXT": "\tif nP_VYKR > 0 then -- len spracovana objednavka\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15039,
+    "TEXT": "\t\tsRID_ML := c_dokl_vykryte.GetRID_V(psRID_O=>sRID_O, pnID_R=>nID_R, pnTYP=>c_dokl_vykryte.TYP_NaMontazList);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15040,
+    "TEXT": "\t\tif sRID_ML is not null then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15041,
+    "TEXT": "\t\t\tc_exc.raiseerrormsg('Už nemôžeš meniť montážny plán lebo je už vygenerovaný montážny list '||c_rid.getcis_link(c_rid.getbackrid(sRID_ML))||' !');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15042,
+    "TEXT": "\t\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15043,
+    "TEXT": "\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15044,
+    "TEXT": "\tif nvl(sRID_MPL,'X') != nvl(psRID_MPL, 'X') then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15045,
+    "TEXT": "\t\tif nID_CIS = c_cis_def.dokl_t_dokl_l then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15046,
+    "TEXT": "\t\t\tupdate t_dokl_o o set o.cis_xml_data =  c_xml_tags.SetTagValue(o.cis_xml_data, '/B/B544/text()', psRID_MPL) where o.rid_o = sRID_O and o.id_r = nID_R;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15047,
+    "TEXT": "\t\telse\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15048,
+    "TEXT": "\t\t\tupdate obj_odb_o o set o.xml_data =  c_xml_tags.SetTagValue(o.xml_data, '/B/B544/text()', psRID_MPL) where o.rid_o = sRID_O and o.id_r = nID_R;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15049,
+    "TEXT": "\t\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15050,
+    "TEXT": "\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15051,
+    "TEXT": "end ZmenMontaznyPlan;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15052,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15053,
+    "TEXT": "function FORM_ZmenMontaznyPlan_Init(psPK varchar2) return varchar2 is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15054,
+    "TEXT": "\tsRID_OBJEKT varchar2(16);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15055,
+    "TEXT": "\tsRID_O varchar2(16);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15056,
+    "TEXT": "\tsRID_MPL varchar2(16);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15057,
+    "TEXT": "\tnID_R number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15058,
+    "TEXT": "\tnSkladM number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15059,
+    "TEXT": "\tsHDR varchar2(254);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15060,
+    "TEXT": "\tnSklad number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15061,
+    "TEXT": "\tnKodID number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15062,
+    "TEXT": "\tsResult varchar2(4000);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15063,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15064,
+    "TEXT": "\tif psPK is null then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15065,
+    "TEXT": "\t\treturn null;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15066,
+    "TEXT": "\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15067,
+    "TEXT": "\tif c_rid.getbackcis(psPK) = c_cis_def.dokl_t_dokl_l then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15068,
+    "TEXT": "\t\tselect 'Zmena montážneho plánu' as HDR,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15069,
+    "TEXT": "\t\tXMLCast(XMLQuery('/B/B544/text()' PASSING o.cis_xml_data RETURNING CONTENT) AS varchar2(16) ) as RID_MPL,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15070,
+    "TEXT": "\t\to.kod_id as KOD_ID, o.rid_objekt as RID_OBJEKT, l.sklad,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15071,
+    "TEXT": "\t\t/*TO_CHAR(nvl(do.termin, l.datum_p) , 'dd.mm.yyyy') as DATUM_P,*/  O.RID_O, O.ID_R\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15072,
+    "TEXT": "\t\tinto sHDR, sRID_MPL, nKodID, sRID_OBJEKT, nSklad, sRID_O, nID_R\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15073,
+    "TEXT": "\t\tfrom t_dokl_l l, t_dokl_o o where l.rid = o.rid_o and o.rid_o = c_rid.GetBackRID(psPK) and o.id_r = c_rid.GetBackID_R(psPK);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15074,
+    "TEXT": "\telse\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15075,
+    "TEXT": "\t\tselect 'Zmena montážneho plánu' as HDR,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15076,
+    "TEXT": "\t\tXMLCast(XMLQuery('/B/B544/text()' PASSING o.xml_data RETURNING CONTENT) AS varchar2(16) ) as RID_MPL,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15077,
+    "TEXT": "\t\to.kod_id as KOD_ID, o.rid_objekt as RID_OBJEKT, l.sklad,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15078,
+    "TEXT": "\t\t/*TO_CHAR(nvl(do.termin, l.datum_p) , 'dd.mm.yyyy') as DATUM_P,*/  O.RID_O, O.ID_R\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15079,
+    "TEXT": "\t\tinto sHDR, sRID_MPL, nKodID, sRID_OBJEKT, nSklad, sRID_O, nID_R\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15080,
+    "TEXT": "\t\tfrom obj_odb_l l, obj_odb_o o where l.rid = o.rid_o and o.rid_o = c_rid.GetBackRID(psPK) and o.id_r = c_rid.GetBackID_R(psPK);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15081,
+    "TEXT": "\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15082,
+    "TEXT": "\tif sRID_OBJEKT is not null then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15083,
+    "TEXT": "\t\tselect do.sklad_pre into nSklad from dokl_objekty do where do.rid = sRID_OBJEKT;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15084,
+    "TEXT": "\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15085,
+    "TEXT": "\tselect p.sklad_m into nSkladM from bartex_pobocky p where p.id = nSklad;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15086,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15087,
+    "TEXT": "\tc_cis.SetValidTValue(psValues=>sResult, psFieldName=>'HDR', psFieldValue=>sHDR, pnNoValid=>0, pnSetup=>0, psToken=>c_const.T);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15088,
+    "TEXT": "\tc_cis.SetValidTValue(psValues=>sResult, psFieldName=>'RID_MPL', psFieldValue=>sRID_MPL, pnNoValid=>0, pnSetup=>0, psToken=>c_const.T);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15089,
+    "TEXT": "\tc_cis.SetValidTValue(psValues=>sResult, psFieldName=>'KOD_ID', psFieldValue=>nKodID, pnNoValid=>0, pnSetup=>0, psToken=>c_const.T);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15090,
+    "TEXT": "\tc_cis.SetValidTValue(psValues=>sResult, psFieldName=>'RID_OBJEKT', psFieldValue=>sRID_OBJEKT, pnNoValid=>0, pnSetup=>0, psToken=>c_const.T);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15091,
+    "TEXT": "\tc_cis.SetValidTValue(psValues=>sResult, psFieldName=>'RID_O', psFieldValue=>sRID_O, pnNoValid=>0, pnSetup=>0, psToken=>c_const.T);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15092,
+    "TEXT": "\tc_cis.SetValidTValue(psValues=>sResult, psFieldName=>'ID_R', psFieldValue=>nID_R, pnNoValid=>0, pnSetup=>0, psToken=>c_const.T);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15093,
+    "TEXT": "\tc_cis.SetValidTValue(psValues=>sResult, psFieldName=>'SKLAD_M', psFieldValue=>nSkladM, pnNoValid=>0, pnSetup=>0, psToken=>c_const.T);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15094,
+    "TEXT": "\treturn sResult;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15095,
+    "TEXT": "end FORM_ZmenMontaznyPlan_Init;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15096,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15097,
+    "TEXT": "procedure VytvorMontaznyList(psPK varchar2, pnPOCET number default null, pdtDATUM_P date default null, psCDL varchar2 default null, pnNEEXPORTUJ number default 0,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15098,
+    "TEXT": "\tpsRID_ML out varchar2, pnAJ_BEZ_MPL number default null, pnVYRABA_JEDNOTLIVO number default 0, pnSKLAD_MONTAZ number default null, psRID_MPL varchar2 default 'Z_DOKLADU',\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15099,
+    "TEXT": "\tpnNekontrolujVM number default 0) is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15100,
+    "TEXT": "\tsRID_O varchar2(16);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15101,
+    "TEXT": "\tnID_R number(5,0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15102,
+    "TEXT": "\tsRID_MPL varchar2(16) :=psRID_MPL;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15103,
+    "TEXT": "\tsRID_ML varchar2(16);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15104,
+    "TEXT": "\tsRID_OBJEKT varchar2(16);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15105,
+    "TEXT": "\tdtDATUM_P date :=pdtDATUM_P;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15106,
+    "TEXT": "\tnSkladMontaz number := pnSKLAD_MONTAZ;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15107,
+    "TEXT": "\tnPocet number :=pnPOCET;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15108,
+    "TEXT": "\tnPocetNevykryty number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15109,
+    "TEXT": "\tnKodID number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15110,
+    "TEXT": "\tnFB_VyrabaSaMontazou number(1,0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15111,
+    "TEXT": "\tnP_VYKR number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15112,
+    "TEXT": "\tsTypCis varchar2(16); sStavUzavretia varchar2(254);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15113,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15114,
+    "TEXT": "\tif psPK is null then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15115,
+    "TEXT": "\t\tc_exc.raiseerrormsgid(4161); -- Nie je zadaný identifikátor položky dokladu ! \\\\43016\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15116,
+    "TEXT": "\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15117,
+    "TEXT": "\tdebugpck(psT0=>'d_obj_odb_o.VytvorMontaznyList(psPK=>'''||psPK||''', pnPOCET=>'||pnPOCET||', pdtDATUM_P=>'||to_char(pdtDATUM_P,'dd.mm.yyyy')||',\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15118,
+    "TEXT": "\tpsCDL=>'''||psCDL||''', pnNEEXPORTUJ=>'||pnNEEXPORTUJ||',\tpsRID_ML=>'''||psRID_ML||''', pnAJ_BEZ_MPL=>'||pnAJ_BEZ_MPL||', pnVYRABA_JEDNOTLIVO=>'||pnVYRABA_JEDNOTLIVO||')', psPK=>psPK);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15119,
+    "TEXT": "\tsRID_O := c_rid.getbackrid(psPK);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15120,
+    "TEXT": "\tnID_R := c_rid.getbackid_r(psPK);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15121,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15122,
+    "TEXT": "\tselect decode(sRID_MPL, 'Z_DOKLADU', XMLCast(XMLQuery('/B/B544/text()' PASSING o.xml_data RETURNING CONTENT) AS varchar2(16) ), sRID_MPL ) as RID_MPL,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15123,
+    "TEXT": "\t o.pocet-o.p_del-o.p_del_dod-o.p_rez-o.p_vyd-o.p_fak-o.p_obj-o.p_obj_d-o.p_rez_is-o.p_rez_pl-o.p_dispo-o.p_vykr, o.p_vykr,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15124,
+    "TEXT": "\tcoalesce(pnSKLAD_MONTAZ, (select p.sklad_m from bartex_pobocky p where p.id = l.sklad)), o.rid_objekt, o.kod_id, GetFB_VyrabaSaMontazou(psFlagsB=>o.flags_b), l.typ_cis, l.stav_uzavretia\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15125,
+    "TEXT": "\tinto sRID_MPL, nPocetNevykryty, nP_VYKR, nSkladMontaz, sRID_OBJEKT, nKodID, nFB_VyrabaSaMontazou, sTypCis, sStavUzavretia\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15126,
+    "TEXT": "\tfrom obj_odb_o o, obj_odb_l l where o.rid_o = l.rid and o.id_r = nID_R and o.rid_o = sRID_O;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15127,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15128,
+    "TEXT": "\tif sTypCis = c_typy_cis.TC_ObjO_LogistickaObj then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15129,
+    "TEXT": "  \tc_exc.raiseerrormsgid(4502); -- Pre logistickú objednávku nie je operácia povolená ! \\\\45888\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15130,
+    "TEXT": "\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15131,
+    "TEXT": "\td_obj_odb_l_b.Kontrola_DoklObjektStavVyb(psRID=>sRID_O, pnID_R=>nID_R, psTypCis=>sTypCis, psRID_OBJEKT=>sRID_OBJEKT);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15132,
+    "TEXT": "\td_obj_odb_l_b.KontrolaBlok_StavUzavretia(psRID=>sRID_O, psTypCis=>sTypCis, psStavUzavretia=>sStavUzavretia);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15133,
+    "TEXT": "\td_obj_odb_l_b.KontrolaOP_StavUzavretia(psRID=>sRID_O, psTypCis=>sTypCis, psStavUzavretia=>sStavUzavretia);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15134,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15135,
+    "TEXT": "\tif nP_VYKR > 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15136,
+    "TEXT": "\t\tsRID_ML := c_dokl_vykryte.GetRID_V(psRID_O=>sRID_O, pnID_R=>nID_R, pnTyp=>c_dokl_vykryte.TYP_NaMontazList);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15137,
+    "TEXT": "\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15138,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15139,
+    "TEXT": "\tif nPocetNevykryty = 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15140,
+    "TEXT": "\t\tc_exc.raiseerrormsgid(4440); -- Nemáš žiadne voľné množstvo pre generovanie montážneho listu ! \\\\45223\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15141,
+    "TEXT": "\telsif nPocet = 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15142,
+    "TEXT": "\t\tc_exc.raiseerrormsgid(3663); -- Počet musí byť väčší ako nula ! \\\\39431\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15143,
+    "TEXT": "\telsif nFB_VyrabaSaMontazou = 0 and pnNekontrolujVM = 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15144,
+    "TEXT": "\t\tc_exc.raiseerrormsgid(4447); -- Položka nemá nastavené, že sa vyrába montážou ! \\\\45255\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15145,
+    "TEXT": "\telsif sRID_ML is not null then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15146,
+    "TEXT": "\t\tc_exc.raiseerrormsgidp(4441, c_rid.getcis_link(sRID_ML)); -- K aktuálnej položke už existuje montážny list %s ! \\\\45224\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15147,
+    "TEXT": "\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15148,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15149,
+    "TEXT": "\tif sRID_OBJEKT is not null then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15150,
+    "TEXT": "\t\tif pnSKLAD_MONTAZ is null then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15151,
+    "TEXT": "\t\t\tselect (select p.sklad_m from bartex_pobocky p where p.id = do.sklad_pre) into nSkladMontaz from dokl_objekty do where do.rid = sRID_OBJEKT;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15152,
+    "TEXT": "\t\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15153,
+    "TEXT": "\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15154,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15155,
+    "TEXT": "\tdebugpck(psT0=>'d_obj_odb_o.VytvorMontaznyList', psT1=>'sRID_MPL=>'||sRID_MPL||', nPocet=>'||nPocet||', nSkladMontaz=>'||nSkladMontaz, psPK=>psPK);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15156,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15157,
+    "TEXT": "\tif sRID_MPL is null then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15158,
+    "TEXT": "\t\tif pnAJ_BEZ_MPL is null then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15159,
+    "TEXT": "\t\t\t-- Na položke dokladu nemáš nastavený montážny plán ! Chceš pokračovať v generovaní montážneho listu bez montážneho plánu? \\\\45248\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15160,
+    "TEXT": "\t\t\tc_exc.raiseactionmsg(pnidmsg=>4446, psactionyes=>'R:pnAJ_BEZ_MPL;1;AJ_BEZ_MPL;1', psactionno=>null, psMsgParams=>null, psTextYes=>'Pokračuj', psTextNo=>'Koniec');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15161,
+    "TEXT": "\t\telse\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15162,
+    "TEXT": "\t\t\tsRID_MPL := null;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15163,
+    "TEXT": "\t\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15164,
+    "TEXT": "\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15165,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15166,
+    "TEXT": "\tnPocet := least(nvl(nPocet, nPocetNevykryty), nPocetNevykryty);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15167,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15168,
+    "TEXT": "\tc_mpl_l.VytvorMontaznyList(psRID=>sRID_MPL, pnPOCET=>nPocet, pdtDATUM_P=>dtDATUM_P, psCDL=>psCDL, pnNeexportuj=>pnNEEXPORTUJ, psRID_ML=>psRID_ML,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15169,
+    "TEXT": "\t\tpsRID_R_D=>psPK, pnVyrabaJednotlivo=>pnVYRABA_JEDNOTLIVO, pnKodID=>nKodID, pnSklad=>nSkladMontaz);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15170,
+    "TEXT": "\tdebugpck(psT0=>'d_obj_odb_o.VytvorMontaznyList', psT1=>'psRID_ML=>'||psRID_ML, psPK=>psPK);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15171,
+    "TEXT": "end VytvorMontaznyList;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15172,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15173,
+    "TEXT": "procedure Valid_VytvorMontaznyList(pnState out number, psMessage out varchar2, psFieldName varchar2, psFieldValue varchar2, psPK varchar2 , psFieldParams varchar2, psFieldsSetup out varchar2) is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15174,
+    "TEXT": "\tsRID_R varchar2(16);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15175,
+    "TEXT": "\tnExist number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15176,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15177,
+    "TEXT": "\tc_cis.GetFieldValue(psfieldname=>'PK', psvalues=>psFieldParams ,pnexist=>nExist, psValue=>sRID_R);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15178,
+    "TEXT": "\tc_mpl_l.Valid_VytvorMontaznyList(pnState=>pnState, psMessage=>psMessage, psFieldName=>psFieldName, psFieldValue=>psFieldValue, psPK=>sRID_R, psFieldParams=>psFieldParams, psFieldsSetup=>psFieldsSetup);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15179,
+    "TEXT": "end Valid_VytvorMontaznyList;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15180,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15181,
+    "TEXT": "function FORM_VytvorMontaznyList_Init(psPK varchar2, pnNPARAMS number default 0, psRID_MPL varchar2 default null, psRID_OBJEKT varchar2 default null) return varchar2 is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15182,
+    "TEXT": "\tsRID_MPL varchar2(16);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15183,
+    "TEXT": "\tsRID_OBJEKT varchar2(16) := psRID_OBJEKT;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15184,
+    "TEXT": "\tnPocet number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15185,
+    "TEXT": "\tsAccess varchar2(254);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15186,
+    "TEXT": "\tsTitle varchar2(254);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15187,
+    "TEXT": "\tnFB_VyrabaJednotlivo number(1,0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15188,
+    "TEXT": "\tnKodID number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15189,
+    "TEXT": "\tnPOCET_ODB_K number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15190,
+    "TEXT": "\tnPOCET_DOD_K number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15191,
+    "TEXT": "\tnOBJEM_J number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15192,
+    "TEXT": "\tnHMOTNOST_J number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15193,
+    "TEXT": "\tdtDatumP date; dtDatumD date; dtTermin date;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15194,
+    "TEXT": "\tnSkladMontaz number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15195,
+    "TEXT": "\tnSklad number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15196,
+    "TEXT": "\tsRID_O varchar2(16); nID_R number; sRID_V varchar2(22);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15197,
+    "TEXT": " \tsResult varchar2(4000);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15198,
+    "TEXT": "\tnTypSN number(1,0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15199,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15200,
+    "TEXT": "\tif psPK is null then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15201,
+    "TEXT": "\t\treturn null;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15202,
+    "TEXT": "\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15203,
+    "TEXT": "\tif pnNPARAMS = 1 then -- @NPARAMS\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15204,
+    "TEXT": "\t\tselect XMLCast(XMLQuery('/B/B544/text()' PASSING o.xml_data returning content) AS varchar2(16) ) as RID_MPL,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15205,
+    "TEXT": "\t\to.rid_objekt as RID_OBJEKT,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15206,
+    "TEXT": "\t\tdecode(o.pocet-o.p_del-o.p_del_dod-o.p_rez-o.p_vyd-o.p_fak-o.p_obj-o.p_obj_d-o.p_rez_is-o.p_rez_pl-o.p_dispo-o.p_vykr, 0,'Nemáš žiadne volné množstvo pre montáž !', null)  as \"@ACCESS\",\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15207,
+    "TEXT": "\t\tdecode((select l.typ_cis from mpl_l l where l.rid = XMLCast(XMLQuery('/B/B544/text()' PASSING o.xml_data RETURNING CONTENT) AS varchar2(16) ) ),\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15208,
+    "TEXT": "\t\t\tc_typy_cis.TC_MP_MontaznyPlan, 'Montážny', c_typy_cis.TC_MP_DemontaznyPlan, 'Demontážny', 'Montážny') as MPL_TITLE,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15209,
+    "TEXT": "\t\to.pocet-o.p_del-o.p_del_dod-o.p_rez-o.p_vyd-o.p_fak-o.p_obj-o.p_obj_d-o.p_rez_is-o.p_rez_pl-o.p_dispo-o.p_vykr as POCET,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15210,
+    "TEXT": "\t\tGetFB_VyrabaSaMontazou(psFlagsB=>o.flags_b)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15211,
+    "TEXT": "\t\tinto sRID_MPL, sRID_OBJEKT, sAccess, sTitle, nPocet, nFB_VyrabaJednotlivo\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15212,
+    "TEXT": "\t\tfrom obj_odb_o o where o.rid_o = c_rid.getbackrid(psPK) and o.id_r = c_rid.getbackid_r(psPK);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15213,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15214,
+    "TEXT": "\t\tif sAccess is null then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15215,
+    "TEXT": "\t\t\tif nFB_VyrabaJednotlivo = 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15216,
+    "TEXT": "\t\t\t\tsAccess := GetResPar2(psKeyword=>'45255', psDefaultText=>'Položka nemá nastavené, že sa vyrába montážou !', psParams=>null);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15217,
+    "TEXT": "\t\t\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15218,
+    "TEXT": "\t\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15219,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15220,
+    "TEXT": "\t\tc_cis.SetValidTValue(psValues=>sResult, psFieldName=>'RID_MPL', psFieldValue=>sRID_MPL, pnNoValid=>0, pnSetup=>0, psToken=>c_const.T);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15221,
+    "TEXT": "\t\tc_cis.SetValidTValue(psValues=>sResult, psFieldName=>'POCET', psFieldValue=>nPocet, pnNoValid=>0, pnSetup=>0, psToken=>c_const.T);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15222,
+    "TEXT": "\t\tc_cis.SetValidTValue(psValues=>sResult, psFieldName=>'@ACCESS', psFieldValue=>sAccess, pnNoValid=>0, pnSetup=>0, psToken=>c_const.T);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15223,
+    "TEXT": "\t\tc_cis.SetValidTValue(psValues=>sResult, psFieldName=>'MPL_TITLE', psFieldValue=>sTitle, pnNoValid=>0, pnSetup=>0, psToken=>c_const.T);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15224,
+    "TEXT": "\telse -- INIT\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15225,
+    "TEXT": "\t\tif psRID_MPL is not null then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15226,
+    "TEXT": "\t\t\tselect decode(L.TYP_CIS, c_typy_cis.TC_MP_MontaznyPlan, 'Vytvor montážny list (y)...', c_typy_cis.TC_MP_DemontaznyPlan, 'Vytvor demontážny list (y)...') as HDR,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15227,
+    "TEXT": "\t\t\tc_mpl_l.GetFB_VyrabaSaJednotlivo(psFlagsB=>l.flags_b), l.kod_id into sTitle, nFB_VyrabaJednotlivo, nKodID from mpl_l l where l.rid = psRID_MPL;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15228,
+    "TEXT": "\t\telse\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15229,
+    "TEXT": "\t\t\tsTitle := 'Vytvor montážny list (y)...';\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15230,
+    "TEXT": "\t\t\tselect o.kod_id, sk.typ_sn into nKodID, nTypSN from obj_odb_o o, sklad_karta sk where o.kod_id = sk.id and o.rid_o = c_rid.getbackrid(psPK) and o.id_r = c_rid.getbackid_r(psPK);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15231,
+    "TEXT": "\t\t\tif nTypSN = c_sklad_karta.TYP_SN_SN then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15232,
+    "TEXT": "\t\t\t\tnFB_VyrabaJednotlivo := 1;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15233,
+    "TEXT": "\t\t\telse\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15234,
+    "TEXT": "\t\t\t\tnFB_VyrabaJednotlivo := 0;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15235,
+    "TEXT": "\t\t\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15236,
+    "TEXT": "\t\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15237,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15238,
+    "TEXT": "\t\tselect velke_bal as pocet_odb_k, dod_bal as pocet_dod_k, objem as objem_j, hmotnost as hmotnost_j\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15239,
+    "TEXT": "\t\tinto nPOCET_ODB_K, nPOCET_DOD_K, nOBJEM_J, nHMOTNOST_J from sklad_karta sk where sk.id = nKodID;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15240,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15241,
+    "TEXT": "\t\tselect o.rid_o, o.id_r, o.datum_d, nvl(sRID_OBJEKT, o.rid_objekt), l.datum_p, l.sklad, o.rid_v\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15242,
+    "TEXT": "\t\tinto sRID_O, nID_R, dtDatumD, sRID_OBJEKT, dtDatumP, nSklad, sRID_V\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15243,
+    "TEXT": "\t\tfrom obj_odb_l l, obj_odb_o o where l.rid = o.rid_o and o.rid_o = c_rid.getbackrid(psPK) and o.id_r = c_rid.getbackid_r(psPK);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15244,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15245,
+    "TEXT": "\t\tif sRID_OBJEKT is not null then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15246,
+    "TEXT": "\t\t\tselect do.termin, do.sklad_pre into dtTermin, nSklad from dokl_objekty do where do.rid = sRID_OBJEKT;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15247,
+    "TEXT": "\t\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15248,
+    "TEXT": "\t\tdtDatumP := GetDatumDod(psRID_O=>sRID_O, pnID_R=>nID_R, pdtO_DatumD=>dtDatumD, pdtL_DatumP=>dtDatumP, pdtDO_Termin=>dtTermin, psRID_V=>sRID_V);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15249,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15250,
+    "TEXT": "\t\tselect p.sklad_m into nSkladMontaz from bartex_pobocky p where p.id = nSklad;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15251,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15252,
+    "TEXT": "\t\tc_cis.SetValidTValue(psValues=>sResult, psFieldName=>'HDR', psFieldValue=>sTitle, pnNoValid=>0, pnSetup=>0, psToken=>c_const.T);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15253,
+    "TEXT": "\t\tc_cis.SetValidTValue(psValues=>sResult, psFieldName=>'KOD_ID', psFieldValue=>nKodID, pnNoValid=>0, pnSetup=>0, psToken=>c_const.T);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15254,
+    "TEXT": "\t\tc_cis.SetValidTValue(psValues=>sResult, psFieldName=>'POCET_ODB_K', psFieldValue=>nPOCET_ODB_K, pnNoValid=>0, pnSetup=>0, psToken=>c_const.T);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15255,
+    "TEXT": "\t\tc_cis.SetValidTValue(psValues=>sResult, psFieldName=>'POCET_DOD_K', psFieldValue=>nPOCET_DOD_K, pnNoValid=>0, pnSetup=>0, psToken=>c_const.T);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15256,
+    "TEXT": "\t\tc_cis.SetValidTValue(psValues=>sResult, psFieldName=>'OBJEM_J', psFieldValue=>nOBJEM_J, pnNoValid=>0, pnSetup=>0, psToken=>c_const.T);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15257,
+    "TEXT": "\t\tc_cis.SetValidTValue(psValues=>sResult, psFieldName=>'HMOTNOST_J', psFieldValue=>nHMOTNOST_J, pnNoValid=>0, pnSetup=>0, psToken=>c_const.T);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15258,
+    "TEXT": "\t\tc_cis.SetValidTValue(psValues=>sResult, psFieldName=>'DATUM_P', psFieldValue=>to_char(dtDatumP,'dd.mm.yyyy'), pnNoValid=>0, pnSetup=>0, psToken=>c_const.T);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15259,
+    "TEXT": "\t\tc_cis.SetValidTValue(psValues=>sResult, psFieldName=>'VYRABA_JEDNOTLIVO', psFieldValue=>nFB_VyrabaJednotlivo, pnNoValid=>0, pnSetup=>0, psToken=>c_const.T);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15260,
+    "TEXT": "\t\tc_cis.SetValidTValue(psValues=>sResult, psFieldName=>'SKLAD_MONTAZ', psFieldValue=>nSkladMontaz, pnNoValid=>0, pnSetup=>0, psToken=>c_const.T);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15261,
+    "TEXT": "\t\tc_cis.SetValidTValue(psValues=>sResult, psFieldName=>'RID_O', psFieldValue=>sRID_O, pnNoValid=>0, pnSetup=>0, psToken=>c_const.T);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15262,
+    "TEXT": "\t\tc_cis.SetValidTValue(psValues=>sResult, psFieldName=>'ID_R', psFieldValue=>nID_R, pnNoValid=>0, pnSetup=>0, psToken=>c_const.T);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15263,
+    "TEXT": "\t\tc_cis.SetValidTValue(psValues=>sResult, psFieldName=>'RID_OBJEKT', psFieldValue=>sRID_OBJEKT, pnNoValid=>0, pnSetup=>0, psToken=>c_const.T);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15264,
+    "TEXT": "\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15265,
+    "TEXT": "\treturn sResult;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15266,
+    "TEXT": "end FORM_VytvorMontaznyList_Init;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15267,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15268,
+    "TEXT": "procedure ZrusPolozkuZMontaze(psPK varchar2) is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15269,
+    "TEXT": "\tsRID_O varchar2(16);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15270,
+    "TEXT": "\tnID_R number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15271,
+    "TEXT": "\tnP_Vykr number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15272,
+    "TEXT": "\tsRID_ML varchar2(16);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15273,
+    "TEXT": "\tsStavMont varchar2(254);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15274,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15275,
+    "TEXT": "\tif psPK is null then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15276,
+    "TEXT": "\t\tc_exc.raiseerrormsgid(4161); -- Nie je zadaný identifikátor položky dokladu ! \\\\43016\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15277,
+    "TEXT": "\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15278,
+    "TEXT": "\tdebugpck(psT0=>'d_obj_odb_o.ZrusPolozkuZMontaze(psPK=>'''||psPK||''')', psPK=>psPK);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15279,
+    "TEXT": "\tsRID_O := c_rid.getbackrid(psPK);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15280,
+    "TEXT": "\tnID_R := c_rid.getbackid_r(psPK);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15281,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15282,
+    "TEXT": "\td_obj_odb_l_b.KontrolaBlok_UserPreSegment(psRID=>sRID_O);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15283,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15284,
+    "TEXT": "\tselect o.p_vykr into nP_Vykr from obj_odb_o o where o.rid_o = sRID_O and o.id_r = nID_R;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15285,
+    "TEXT": "\tif nP_Vykr > 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15286,
+    "TEXT": "\t\tsRID_ML := c_dokl_vykryte.GetRID_V(psRID_O=>sRID_O, pnID_R=>nID_R, pnTYP=>c_dokl_vykryte.TYP_NaMontazList);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15287,
+    "TEXT": "\t\tif sRID_ML is null or c_rid.getbackcis(sRID_ML) !=c_cis_def.cis_ml_l then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15288,
+    "TEXT": "\t\t\tc_exc.raiseerrormsg('Položka nie je daná na montáž !');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15289,
+    "TEXT": "\t\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15290,
+    "TEXT": "\t\tselect l.stav_montaze into sStavMont from ml_l l where l.rid = sRID_ML and l.s_stamp = '0';\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15291,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15292,
+    "TEXT": "\t\tdebugpck(psT0=>'d_obj_odb_o.ZrusPolozkuZMontaze', psT1=>'sRID_ML=>'||sRID_ML||', sStavMont=>'||sStavMont, psPK=>psPK);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15293,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15294,
+    "TEXT": "\t\tif sStavMont = d_ml_l.STAV_MONTAZE_VPriprave then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15295,
+    "TEXT": "\t\t\td_ml_l.StornujML(psRID=>sRID_ML);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15296,
+    "TEXT": "\t\telse\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15297,
+    "TEXT": "\t\t\t-- zhodim p_vykr za ML na 0\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15298,
+    "TEXT": "\t\t\tc_dokl_vykryte.SetPocet(psRID_O=>sRID_O, pnID_R=>nID_R, pnPocet=>0, psRID_V=>sRID_ML, pnTYP=>c_dokl_vykryte.TYP_NaMontazList);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15299,
+    "TEXT": "\t\t\t-- zrusim vazbu na hlavicke ML\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15300,
+    "TEXT": "\t\t\tupdate ml_l l set l.rid_r_d = null where l.rid = sRID_ML;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15301,
+    "TEXT": "\t\t\t-- zrusim vazbu na polozke vyrobku\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15302,
+    "TEXT": "\t\t\tupdate ml_o o set o.rid_v = '0' where o.rid_o = sRID_ML and o.rid_v = psPK;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15303,
+    "TEXT": "\t\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15304,
+    "TEXT": "\telse\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15305,
+    "TEXT": "\t\tc_exc.raiseerrormsg('Položka nie je daná na montáž !');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15306,
+    "TEXT": "\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15307,
+    "TEXT": "\tc_session.setlastmessage('Položka bola zrušená z montáže.');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15308,
+    "TEXT": "end ZrusPolozkuZMontaze;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15309,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15310,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15311,
+    "TEXT": "function GetFB_SposobStiahnutia(psFlagsB varchar2 default null, psRID_O varchar2 default null,pnID_R number default null) return number is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15312,
+    "TEXT": "  sFlags_b varchar2(254);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15313,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15314,
+    "TEXT": "  if psFlagsB is null then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15315,
+    "TEXT": "    if psRID_O is null OR pnID_R is null  then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15316,
+    "TEXT": "      c_exc.raiseerrormsg('Nezadané parametre !');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15317,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15318,
+    "TEXT": "    select flags_b into sFlags_b from obj_odb_o where rid_o = psRID_o and id_r=pnID_r;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15319,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15320,
+    "TEXT": "  return substr( nvl(psFlagsB, sFlags_b), FLAGS_B_SposobStiahnutia, 1 );\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15321,
+    "TEXT": "end GetFB_SposobStiahnutia;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15322,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15323,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15324,
+    "TEXT": "function SetFB_SposobStiahnutia (psFlagsB varchar2, pnSposobStiahnutia number /* X-1788 */) return varchar2\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15325,
+    "TEXT": "is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15326,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15327,
+    "TEXT": "\treturn C_Flags.fSetFlagsState (psFlags=>psFlagsB, nIndex=>FLAGS_B_SposobStiahnutia , psState=>pnSposobStiahnutia);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15328,
+    "TEXT": "end SetFB_SposobStiahnutia;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15329,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15330,
+    "TEXT": "function GetDatumDod(psRID_O varchar2, pnID_R number,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15331,
+    "TEXT": "\tpdtO_DatumD date default c_const.DefaultDateTime,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15332,
+    "TEXT": "\tpdtL_DatumP date default c_const.DefaultDateTime,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15333,
+    "TEXT": "\tpdtDO_Termin date default c_const.DefaultDateTime,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15334,
+    "TEXT": "\tpdtCP_DodDatumD date default c_const.DefaultDateTime,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15335,
+    "TEXT": "\tpsRID_V varchar2 default null) return date is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15336,
+    "TEXT": "\tdtL_DatumP date;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15337,
+    "TEXT": "\tdtO_DatumD date;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15338,
+    "TEXT": "\tdtDO_Termin date;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15339,
+    "TEXT": "\tdtCP_DodDatumD date;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15340,
+    "TEXT": "\tsRID_V varchar2(22) := psRID_V;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15341,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15342,
+    "TEXT": "\tif pdtL_DatumP = c_const.DefaultDateTime then -- dotiahnem data cez PK\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15343,
+    "TEXT": "\t\tif psRID_O is null OR pnID_R is null then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15344,
+    "TEXT": "  \t  c_exc.raiseerrormsgid(4161); -- Nie je zadaný identifikátor položky dokladu ! \\\\43016\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15345,
+    "TEXT": "\t  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15346,
+    "TEXT": "\t\tif c_rid.getbackcis(psRID_O) = c_cis_def.dokl_t_dokl_l then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15347,
+    "TEXT": "\t\t\tselect o.termin_dod, l.datum_p, decode(o.rid_objekt, null, null, (select do.termin from dokl_objekty do where do.rid = o.rid_objekt)), o.rid_v\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15348,
+    "TEXT": "\t\t\tinto dtO_DatumD, dtL_DatumP, dtDO_Termin, sRID_V\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15349,
+    "TEXT": "\t\t\tfrom t_dokl_l l, t_dokl_o o where l.rid = o.rid_o and o.rid_o = psRID_O and o.id_r = pnID_R;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15350,
+    "TEXT": "\t\telse\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15351,
+    "TEXT": "\t\t\tselect o.datum_d, l.datum_p, decode(o.rid_objekt, null, null, (select do.termin from dokl_objekty do where do.rid = o.rid_objekt)), o.rid_v\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15352,
+    "TEXT": "\t\t\tinto dtO_DatumD, dtL_DatumP, dtDO_Termin, sRID_V\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15353,
+    "TEXT": "\t\t\tfrom obj_odb_l l, obj_odb_o o where l.rid = o.rid_o and o.rid_o = psRID_O and o.id_r = pnID_R;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15354,
+    "TEXT": "\t\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15355,
+    "TEXT": "\telse\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15356,
+    "TEXT": "\t\tdtL_DatumP := pdtL_DatumP;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15357,
+    "TEXT": "\t\tdtO_DatumD := pdtO_DatumD;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15358,
+    "TEXT": "\t\tdtDO_Termin := pdtDO_Termin;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15359,
+    "TEXT": "\t\tdtCP_DodDatumD := pdtCP_DodDatumD;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15360,
+    "TEXT": "\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15361,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15362,
+    "TEXT": "\t-- najprv beriem z polozky,  potom z objektu a nakoniec z hlavicky\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15363,
+    "TEXT": "\tdtL_DatumP := coalesce(dtO_DatumD, dtDO_Termin, dtL_DatumP);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15364,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15365,
+    "TEXT": "\tif pdtCP_DodDatumD is not null and pdtCP_DodDatumD = c_const.DefaultDateTime then -- defaultna hodnota\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15366,
+    "TEXT": "\t\tdbms_output.put_line('CP mam default selectujem z cp');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15367,
+    "TEXT": "\t\tif c_rid.getbackcis(nvl(sRID_V,'0')) = d_cen_ponuka_l.CIS_CEN_PONUKY_L then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15368,
+    "TEXT": "\t\t\tselect o.dod_datum_dodania into dtCP_DodDatumD from cen_ponuky_o o where o.rid_o = c_rid.getbackrid(sRID_V) and o.id_r = c_rid.getbackid_r(sRID_V);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15369,
+    "TEXT": "\t\t\tif dtCP_DodDatumD is not null then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15370,
+    "TEXT": "\t\t\t\treturn least(dtCP_DodDatumD, dtL_DatumP); -- pre istotu beriem mensi ale mensi by mal byt vzdy dtCP_DodDatumD\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15371,
+    "TEXT": "\t\t\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15372,
+    "TEXT": "\t\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15373,
+    "TEXT": "\telsif pdtCP_DodDatumD is not null then -- konkretna hodnota zvonka\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15374,
+    "TEXT": "\t\tdbms_output.put_line('CP mam kontretny datum not null');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15375,
+    "TEXT": "\t\treturn least(dtCP_DodDatumD, dtL_DatumP); -- pre istotu beriem mensi ale mensi by mal byt vzdy dtCP_DodDatumD\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15376,
+    "TEXT": "\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15377,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15378,
+    "TEXT": "\treturn dtL_DatumP;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15379,
+    "TEXT": "end GetDatumDod;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15380,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15381,
+    "TEXT": "function GetFRMSetupMulti_Blok(psRID_O varchar2, pnID_R number, psTypCis varchar2, psStavUzavretia varchar2, psRID_V varchar2) return varchar2 is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15382,
+    "TEXT": "  sResult varchar2(4000);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15383,
+    "TEXT": "  sSetup varchar2(10);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15384,
+    "TEXT": "\tsToken char(1):=chr(59);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_O",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 15385,
+    "TEXT": "begin\n"
+  }
+]

@@ -1,0 +1,240 @@
+[
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_TYP_UHRADY",
+    "TYPE": "TRIGGER",
+    "LINE": 1,
+    "TEXT": "TRIGGER T_MC_TYP_UHRADY\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_TYP_UHRADY",
+    "TYPE": "TRIGGER",
+    "LINE": 2,
+    "TEXT": " BEFORE \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_TYP_UHRADY",
+    "TYPE": "TRIGGER",
+    "LINE": 3,
+    "TEXT": " INSERT OR UPDATE\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_TYP_UHRADY",
+    "TYPE": "TRIGGER",
+    "LINE": 4,
+    "TEXT": " ON OBJ_ODB_L\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_TYP_UHRADY",
+    "TYPE": "TRIGGER",
+    "LINE": 5,
+    "TEXT": " REFERENCING OLD AS OLD NEW AS NEW\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_TYP_UHRADY",
+    "TYPE": "TRIGGER",
+    "LINE": 6,
+    "TEXT": " FOR EACH ROW \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_TYP_UHRADY",
+    "TYPE": "TRIGGER",
+    "LINE": 7,
+    "TEXT": "declare\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_TYP_UHRADY",
+    "TYPE": "TRIGGER",
+    "LINE": 8,
+    "TEXT": "  sTU varchar2(16);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_TYP_UHRADY",
+    "TYPE": "TRIGGER",
+    "LINE": 9,
+    "TEXT": "  nSplatnost number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_TYP_UHRADY",
+    "TYPE": "TRIGGER",
+    "LINE": 10,
+    "TEXT": "  bZmena boolean := false;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_TYP_UHRADY",
+    "TYPE": "TRIGGER",
+    "LINE": 11,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_TYP_UHRADY",
+    "TYPE": "TRIGGER",
+    "LINE": 12,
+    "TEXT": "  if inserting  then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_TYP_UHRADY",
+    "TYPE": "TRIGGER",
+    "LINE": 13,
+    "TEXT": "    --------------  Dealer.NET --------------------------------------------\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_TYP_UHRADY",
+    "TYPE": "TRIGGER",
+    "LINE": 14,
+    "TEXT": "    IF :new.SPOSOB_OBJ = '08400000-7' THEN\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_TYP_UHRADY",
+    "TYPE": "TRIGGER",
+    "LINE": 15,
+    "TEXT": "      -- zmen typ uhrady na doklade\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_TYP_UHRADY",
+    "TYPE": "TRIGGER",
+    "LINE": 16,
+    "TEXT": "      select typ_uhrady into sTU from obch_partneri where id = :new.partner;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_TYP_UHRADY",
+    "TYPE": "TRIGGER",
+    "LINE": 17,
+    "TEXT": "      if sTU = '000101' then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_TYP_UHRADY",
+    "TYPE": "TRIGGER",
+    "LINE": 18,
+    "TEXT": "        :new.TYP_UHRADY := '000101';\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_TYP_UHRADY",
+    "TYPE": "TRIGGER",
+    "LINE": 19,
+    "TEXT": "        bZmena := true;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_TYP_UHRADY",
+    "TYPE": "TRIGGER",
+    "LINE": 20,
+    "TEXT": "      elsif sTU = '0001' then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_TYP_UHRADY",
+    "TYPE": "TRIGGER",
+    "LINE": 21,
+    "TEXT": "        :new.TYP_UHRADY := '0001';\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_TYP_UHRADY",
+    "TYPE": "TRIGGER",
+    "LINE": 22,
+    "TEXT": "        bZmena := true;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_TYP_UHRADY",
+    "TYPE": "TRIGGER",
+    "LINE": 23,
+    "TEXT": "      end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_TYP_UHRADY",
+    "TYPE": "TRIGGER",
+    "LINE": 24,
+    "TEXT": "      -- preklapania zmenia typ uhrady na hotovost ak zafunguje kontrola po splatnosti, musim zmenit splatnost na kladny pocet\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_TYP_UHRADY",
+    "TYPE": "TRIGGER",
+    "LINE": 25,
+    "TEXT": "      if bZmena then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_TYP_UHRADY",
+    "TYPE": "TRIGGER",
+    "LINE": 26,
+    "TEXT": "        if :new.splatnost = -1 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_TYP_UHRADY",
+    "TYPE": "TRIGGER",
+    "LINE": 27,
+    "TEXT": "          :new.splatnost := C_partner.GetSplatnostC(:new.partner, :new.miesto_dod );\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_TYP_UHRADY",
+    "TYPE": "TRIGGER",
+    "LINE": 28,
+    "TEXT": "        end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_TYP_UHRADY",
+    "TYPE": "TRIGGER",
+    "LINE": 29,
+    "TEXT": "      end if;    \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_TYP_UHRADY",
+    "TYPE": "TRIGGER",
+    "LINE": 30,
+    "TEXT": "    END IF;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_TYP_UHRADY",
+    "TYPE": "TRIGGER",
+    "LINE": 31,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_TYP_UHRADY",
+    "TYPE": "TRIGGER",
+    "LINE": 32,
+    "TEXT": "  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_TYP_UHRADY",
+    "TYPE": "TRIGGER",
+    "LINE": 33,
+    "TEXT": "  exception when no_data_found then null;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_TYP_UHRADY",
+    "TYPE": "TRIGGER",
+    "LINE": 34,
+    "TEXT": "end;\n"
+  }
+]

@@ -1,0 +1,420 @@
+READY FOR CODEX HANDOFF — FINAL
+EXHAUSTIVE DEPENDENCY-GRADE / AGENT-READY
+
+Repository:
+mtasky-mccarter/kaso-data-catalog
+
+Existing branch:
+feat/sales-obchodne-pripady-v1.2
+
+Phase A base commit:
+f0737962666243de40c8bf211fc877f567f713dd
+
+Do NOT reset or recreate the branch.
+Continue from the existing Phase A canonical materialization.
+
+INPUT
+KASO_ODB_Final_Closure_Bundle.zip
+
+Verify SHA256SUMS.txt before materialization.
+
+DOMAIN
+sales / obchodne-pripady
+
+AUTHORITATIVE ENVIRONMENT
+MC
+
+MCCZ, TEST and TESTCZ are separate environments.
+Do not promote their source/code/data into MC facts without MC evidence.
+
+TARGET MATURITY
+EXHAUSTIVE DEPENDENCY-GRADE / AGENT-READY
+
+DOCUMENTATION VERSION
+1.2
+
+Do NOT invent v1.3 or another publication version.
+
+BREAKING CHANGE
+false
+
+SEMANTIC CLOSURE
+ChatGPT semantic closure is complete.
+Blocking semantic backlog = 0.
+No further Oracle digging is required.
+
+The supplied closure bundle supersedes Phase A DATA GAP blockers for:
+- raw column defaults/nullability/comments,
+- exact FK names,
+- full CHECK expressions,
+- raw trigger/package source,
+- dependency graph,
+- API/source member references,
+- access surface,
+- job audits.
+
+IMPORTANT ADDITIVE DELTA
+D_OBJ_ODB_L_B is now confirmed by raw MC B2 source.
+
+It is a source-visible supporting package and DIRECT WRITER of
+OBJ_ODB_L and OBJ_ODB_O.
+
+Do not omit it.
+
+Materialize it as a supporting order-domain writer/package,
+with evidence from OBJ_CLOSURE_05_CORE_SOURCE.xlsx.
+
+This is an additive technical discovery, not a breaking change.
+
+PHYSICAL ACCEPTANCE BASELINE
+
+OBJ_ODB_L
+- 79 columns
+- 26 FK
+- 2 UNIQUE constraints
+- 1 PK
+- 21 indexes
+
+OBJ_ODB_O
+- 44 columns
+- 8 FK
+- 1 PK
+- 13 indexes
+
+Preserve exact Oracle:
+- names
+- datatype
+- precision/scale
+- NULLABLE
+- DATA_DEFAULT
+- comments
+- constraint status
+- validation status
+- delete rule
+- CHECK expression
+
+Oracle comment is technical metadata, not business truth.
+
+OBJ_ODB_O named CHECK constraints include:
+- XCE_OBJ_ODB_O_POCET_MR_POCET_V
+- XCE_OBJ_ODB_O_POCTY
+- XCE_OBJ_ODB_O_P_REZ_0
+
+Do not replace raw expressions with prose.
+
+SOURCE / MUTATION SURFACE
+
+Raw core source contains:
+- 50 triggers
+- D_OBJ_ODB_L
+- D_OBJ_ODB_L_B
+- D_OBJ_ODB_O
+
+Preserve package spec/body distinction.
+
+Materialize source-visible mutation facts only where source proves them.
+
+A source object that only references the tables/packages is NOT automatically
+a writer or reader.
+
+DEPENDENCY CONTRACT
+
+OBJ_CLOSURE_06 and 07 are flat ALL_DEPENDENCIES exports.
+
+Do NOT rerun recursive Oracle SQL.
+
+Compute closure offline/reproducibly from the flat graph.
+
+Approved closure method:
+BFS over exact Oracle dependency nodes
+(owner, name, type).
+
+Seed logical objects:
+- MC.OBJ_ODB_L
+- MC.OBJ_ODB_O
+- MC.D_OBJ_ODB_L
+- MC.D_OBJ_ODB_L_B
+- MC.D_OBJ_ODB_O
+- all 50 mapped triggers
+
+Expected closure audit:
+- seed logical objects: 55
+- seed graph nodes: 58
+
+Inbound closure:
+- nodes including seeds: 285
+- edges: 673
+- max observed depth: 3
+- direct depth-1 edges: 581
+
+Outbound closure:
+- nodes including seeds: 477
+- edges: 2515
+- max observed depth: 4
+- direct depth-1 edges: 889
+
+ALL_DEPENDENCIES edge = DEPENDENCY ONLY.
+
+Do not infer:
+WRITER
+READER
+CALLER
+runtime frequency
+business responsibility
+
+from a dependency edge alone.
+
+API / SOURCE-MEMBER SURFACE
+
+For authoritative MC source:
+- 145 source objects with package-member references
+- 595 unique target members
+- 4515 parsed member references
+
+Unique members:
+- D_OBJ_ODB_L: 300
+- D_OBJ_ODB_L_B: 59
+- D_OBJ_ODB_O: 236
+
+Parsed references:
+- D_OBJ_ODB_L: 2629
+- D_OBJ_ODB_L_B: 185
+- D_OBJ_ODB_O: 1701
+
+Important:
+A member reference is not automatically an API writer call.
+Constants, getters, helpers and procedures may all appear.
+
+Preserve caller/source identity and raw member reference.
+Assign runtime role only where raw source proves it.
+
+MCCZ/TEST/TESTCZ source rows present in the broad export are auxiliary only.
+Do not use them to prove MC semantics.
+
+ACCESS SURFACE
+
+Materialize:
+- 71 grants
+- 9 synonyms
+
+Semantics:
+GRANT/SYNONYM = ACCESS CAPABILITY only.
+
+Do not convert access capability into runtime dependency or writer role.
+
+Keep schema/principal identity explicit, including MC_WWW, MC_ST
+and other principals visible in the export.
+
+BACKGROUND JOB AUDIT
+
+DBMS_JOB direct-name audit:
+row_count = 0
+
+Scheduler direct-name audit:
+row_count = 0
+
+Materialize these as negative completeness evidence.
+
+They prove only:
+no visible job directly matched OBJ_ODB / D_OBJ_ODB in the audited text.
+
+They do NOT prove absence of:
+- wrapper-driven jobs
+- Scheduler programs/chains whose action text hides the target
+- dynamic SQL
+- runtime outside visible Oracle source/dictionary.
+
+BOUNDARIES
+
+Keep explicit system boundaries:
+- dynamic SQL not visible in static Oracle metadata
+- application/runtime SQL outside ALL_SOURCE
+- external services
+- separate MC/MCCZ/TEST/TESTCZ environments
+- unresolved future external-domain business contracts
+
+Existing nine nonblocking business/future-domain backlog items remain
+nonblocking and must not be converted into confirmed facts.
+
+EXISTING VYD IDS
+
+Do not modify or duplicate the existing VYD boundary IDs for OBJ_ODB_L/O.
+
+Reconcile references to the sales-domain canonical object IDs.
+
+REPOSITORY ACTIONS
+
+Update the existing canonical materialization under:
+
+catalog/sales/obchodne-pripady/
+
+Populate/complete:
+- fields
+- constraints
+- indexes
+- oracle entities
+- flows
+- mutations
+- dependencies
+- dependency-direct-edges
+- dependency-closure-edges
+- dependency-closure-nodes
+- API/source references
+- evidence manifests
+- backlog
+- revisions
+- contract maturity
+
+Clear Phase A blocking DATA GAP entries only when the supplied raw evidence
+actually closes them.
+
+Do not silently delete backlog history.
+Retain closure/revision trace.
+
+Set maturity to AGENT-READY only after all acceptance gates below are green.
+
+CANONICAL SQL
+
+Preserve existing approved read-only SQL and registry metadata.
+
+No DML/DDL/data-changing PL/SQL.
+
+SQL Navigator compatibility remains required.
+Oracle server version remains unconfirmed.
+
+EVIDENCE
+
+Create/extend evidence manifests for the final closure exports.
+Preserve:
+- filenames
+- snapshot date 2026-09-15
+- environment MC
+- evidence class
+- hashes
+- source-view/query purpose
+- interpretation limits
+
+Retain raw snapshots only according to repository evidence-retention rules.
+Do not invent missing raw files.
+
+REVISION
+
+Keep documentation_version = 1.2.
+
+Add a revision/closure note dated 2026-09-15:
+- exhaustive dependency hardening completed
+- raw physical/source evidence reconciled
+- D_OBJ_ODB_L_B added as confirmed supporting direct writer
+- direct/API/access/job boundaries materialized
+- maturity raised from DIAGNOSTIC-GRADE to AGENT-READY
+- no breaking change
+
+PUBLICATION
+
+After canonical validation succeeds, implement/unblock publication generation.
+
+Use the required stable slug:
+obchodne-pripady
+
+Output directory:
+generated/obchodne-pripady/
+
+Required basename:
+KASO Data Catalog - Technical & Diagnostic Reference - obchodné prípady v1.2
+
+Required files:
+generated/obchodne-pripady/
+  KASO Data Catalog - Technical & Diagnostic Reference - obchodné prípady v1.2.docx
+  KASO Data Catalog - Technical & Diagnostic Reference - obchodné prípady v1.2.pdf
+  KASO Data Catalog - Technical & Diagnostic Reference - obchodné prípady v1.2.manifest.yaml
+
+Generate through:
+python tools/generate_publication.py obchodne-pripady
+
+Canonical YAML/SQL is the source.
+Generated DOCX/PDF are derived publications.
+
+Do not use the old human-authored DOCX as the publication source after
+canonical materialization.
+
+VALIDATION / ACCEPTANCE
+
+Run at minimum:
+
+python tools/validate_catalog.py
+
+python -m unittest discover -s tools -p 'test_*.py' -v
+
+ODB domain acceptance tests
+
+ODB SQL safety tests
+
+ODB publication tests
+
+Verify:
+- unresolved refs = 0
+- duplicate global IDs = 0
+- physical counts match
+- trigger count = 50
+- all three core/supporting packages represented
+- dependency closure counts match the approved offline audit
+- API/source-reference counts match authoritative MC scope
+- blocking semantic backlog = 0
+- publication manifest provenance correct
+- artifact SHA-256 correct
+- no unrelated diff
+- full repository regression green
+
+If any value differs because of a deterministic parser/materialization issue,
+fix the engineering.
+
+If evidence itself conflicts with an existing POTVRDENÉ semantic assertion,
+do NOT silently rewrite the contract.
+Return HANDOFF BLOCKED with the exact conflict.
+
+PR / MERGE
+
+Prepare PR only after all gates are green.
+
+PR title suggestion:
+Sales / obchodné prípady v1.2 — AGENT-READY canonical contract
+
+PR summary must mention:
+- OBJ_ODB_L + OBJ_ODB_O
+- final raw physical/source hardening
+- D_OBJ_ODB_L_B additive writer discovery
+- exhaustive source-visible dependency closure
+- API/access/job boundaries
+- no breaking change
+- generated Technical & Diagnostic Reference v1.2
+
+Do not merge if CI is not green.
+
+After merge:
+1. verify main,
+2. report main commit SHA,
+3. verify generated publication paths,
+4. verify manifest hashes,
+5. confirm branch/main canonical state.
+
+FINAL REPORT REQUIRED
+
+Return:
+- final commit SHA
+- PR number
+- maturity
+- object/field/constraint/index counts
+- trigger/package counts
+- direct/closure dependency counts
+- API/source-reference counts
+- access counts
+- job audit results
+- blocking backlog count
+- unresolved refs
+- duplicate IDs
+- validation/test/CI results
+- publication paths
+- publication SHA-256
+- merged main SHA
+
+Do not request more Oracle exports unless a genuine evidence conflict is discovered.

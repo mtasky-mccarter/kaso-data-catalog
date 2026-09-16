@@ -1,0 +1,156 @@
+[
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_MNOZSTVO_OBJ_SKUP",
+    "TYPE": "TRIGGER",
+    "LINE": 1,
+    "TEXT": "TRIGGER T_OBJ_ODB_O_MNOZSTVO_OBJ_SKUP\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_MNOZSTVO_OBJ_SKUP",
+    "TYPE": "TRIGGER",
+    "LINE": 2,
+    "TEXT": " AFTER\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_MNOZSTVO_OBJ_SKUP",
+    "TYPE": "TRIGGER",
+    "LINE": 3,
+    "TEXT": "   INSERT OR UPDATE OF RID_CT_A, POCET, P_DEL, P_DEL_DOD\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_MNOZSTVO_OBJ_SKUP",
+    "TYPE": "TRIGGER",
+    "LINE": 4,
+    "TEXT": " ON OBJ_ODB_O\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_MNOZSTVO_OBJ_SKUP",
+    "TYPE": "TRIGGER",
+    "LINE": 5,
+    "TEXT": "REFERENCING NEW AS NEW OLD AS OLD\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_MNOZSTVO_OBJ_SKUP",
+    "TYPE": "TRIGGER",
+    "LINE": 6,
+    "TEXT": " FOR EACH ROW\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_MNOZSTVO_OBJ_SKUP",
+    "TYPE": "TRIGGER",
+    "LINE": 7,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_MNOZSTVO_OBJ_SKUP",
+    "TYPE": "TRIGGER",
+    "LINE": 8,
+    "TEXT": "  if instr(:new.rid_o,'-') = 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_MNOZSTVO_OBJ_SKUP",
+    "TYPE": "TRIGGER",
+    "LINE": 9,
+    "TEXT": "    if updating and nvl(:old.rid_ct_a,'xxx') != :new.rid_ct_a then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_MNOZSTVO_OBJ_SKUP",
+    "TYPE": "TRIGGER",
+    "LINE": 10,
+    "TEXT": "      -- povodny ponizim, novy navysim\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_MNOZSTVO_OBJ_SKUP",
+    "TYPE": "TRIGGER",
+    "LINE": 11,
+    "TEXT": "      pck_ct_miesta_dod_pocty.SpracujTrig(psRidObjO=>:new.rid_o, psRidCTO=>:old.rid_ct_a, \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_MNOZSTVO_OBJ_SKUP",
+    "TYPE": "TRIGGER",
+    "LINE": 12,
+    "TEXT": "        pnPocet=>-nvl((:old.pocet - :old.p_del - :old.p_del_dod),0));\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_MNOZSTVO_OBJ_SKUP",
+    "TYPE": "TRIGGER",
+    "LINE": 13,
+    "TEXT": "      pck_ct_miesta_dod_pocty.SpracujTrig(psRidObjO=>:new.rid_o, psRidCTO=>:new.rid_ct_a, \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_MNOZSTVO_OBJ_SKUP",
+    "TYPE": "TRIGGER",
+    "LINE": 14,
+    "TEXT": "        pnPocet=>(:new.pocet - :new.p_del - :new.p_del_dod));\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_MNOZSTVO_OBJ_SKUP",
+    "TYPE": "TRIGGER",
+    "LINE": 15,
+    "TEXT": "    elsif nvl((:old.pocet - :old.p_del - :old.p_del_dod),0) != (:new.pocet - :new.p_del - :new.p_del_dod) then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_MNOZSTVO_OBJ_SKUP",
+    "TYPE": "TRIGGER",
+    "LINE": 16,
+    "TEXT": "      -- pripocitam rozdiel poctu\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_MNOZSTVO_OBJ_SKUP",
+    "TYPE": "TRIGGER",
+    "LINE": 17,
+    "TEXT": "      pck_ct_miesta_dod_pocty.SpracujTrig(psRidObjO=>:new.rid_o, psRidCTO=>:new.rid_ct_a, \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_MNOZSTVO_OBJ_SKUP",
+    "TYPE": "TRIGGER",
+    "LINE": 18,
+    "TEXT": "        pnPocet=>((:new.pocet - :new.p_del - :new.p_del_dod)-nvl((:old.pocet - :old.p_del - :old.p_del_dod),0)));\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_MNOZSTVO_OBJ_SKUP",
+    "TYPE": "TRIGGER",
+    "LINE": 19,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_MNOZSTVO_OBJ_SKUP",
+    "TYPE": "TRIGGER",
+    "LINE": 20,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_MNOZSTVO_OBJ_SKUP",
+    "TYPE": "TRIGGER",
+    "LINE": 21,
+    "TEXT": "end;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_MNOZSTVO_OBJ_SKUP",
+    "TYPE": "TRIGGER",
+    "LINE": 22,
+    "TEXT": "\n"
+  }
+]

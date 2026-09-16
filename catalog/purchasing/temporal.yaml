@@ -1,0 +1,140 @@
+schema_version: '1.0'
+kind: temporal
+id: pur.temporal.001
+records:
+- temporal_rule_id: pur.temporal.current
+  scope_refs:
+  - mc.object.objd_l
+  - mc.object.objd_o
+  classification: RAW CURRENT
+  transition_or_event_sk: RAW CURRENT / STORED CURRENT document snapshot.
+  reconstructable: false
+  history_limitations_sk: RAW CURRENT / STORED CURRENT document snapshot.
+  status: POTVRDENÉ
+  evidence_refs:
+  - pur.evidence.accepted
+  - pur.evidence.mp01_f
+- temporal_rule_id: pur.temporal.flags
+  scope_refs:
+  - mc.field.objd_l.flags_s
+  classification: RAW CURRENT
+  transition_or_event_sk: Aktuálny register. Flag 11 je raw fulfilment slot.
+  reconstructable: false
+  history_limitations_sk: Aktuálny register. Flag 11 je raw fulfilment slot.
+  status: POTVRDENÉ
+  evidence_refs:
+  - pur.evidence.accepted
+  - pur.evidence.mp01_f
+- temporal_rule_id: pur.temporal.fulfilment
+  scope_refs:
+  - mc.field.objd_l.flags_s
+  classification: DERIVED CURRENT
+  transition_or_event_sk: D_OBJD_L.GetS_STAV(OBJD_L.FLAGS_S); nie OBJD_L.STAV.
+  reconstructable: false
+  history_limitations_sk: D_OBJD_L.GetS_STAV(OBJD_L.FLAGS_S); nie OBJD_L.STAV.
+  status: POTVRDENÉ
+  evidence_refs:
+  - pur.evidence.accepted
+  - pur.evidence.mp01_f
+- temporal_rule_id: pur.temporal.quantity
+  scope_refs:
+  - mc.field.objd_o.p_prij
+  - mc.field.objd_o.p_pl
+  - mc.field.objd_o.p_del
+  classification: RAW CURRENT
+  transition_or_event_sk: STORED CURRENT lifecycle buckets. remaining_qty = POCET - P_DEL - P_PRIJ - P_PL; processed_qty
+    = P_DEL + P_PRIJ + P_PL.
+  reconstructable: false
+  history_limitations_sk: STORED CURRENT lifecycle buckets. remaining_qty = POCET - P_DEL - P_PRIJ - P_PL; processed_qty
+    = P_DEL + P_PRIJ + P_PL.
+  status: POTVRDENÉ
+  evidence_refs:
+  - pur.evidence.accepted
+  - pur.evidence.mp01_f
+- temporal_rule_id: pur.temporal.receipt_lineage
+  scope_refs:
+  - pur.oracle.mc.prijemky_obsah.table
+  classification: RAW CURRENT
+  transition_or_event_sk: Current surviving lineage; nie úplná história uloženého P_PRIJ.
+  reconstructable: false
+  history_limitations_sk: Current surviving lineage; nie úplná história uloženého P_PRIJ.
+  status: POTVRDENÉ
+  evidence_refs:
+  - pur.evidence.accepted
+  - pur.evidence.mp05_b
+- temporal_rule_id: pur.temporal.receipt_history
+  scope_refs:
+  - mc.field.objd_o.p_prij
+  classification: DATA GAP
+  transition_or_event_sk: Historickú rekonštrukciu P_PRIJ zo súčasných receipt riadkov nemožno garantovať. NON-BLOCKING,
+    nie dôkaz corruption.
+  reconstructable: false
+  history_limitations_sk: Historickú rekonštrukciu P_PRIJ zo súčasných receipt riadkov nemožno garantovať. NON-BLOCKING,
+    nie dôkaz corruption.
+  status: DATA GAP
+  evidence_refs:
+  - pur.evidence.accepted
+  - pur.evidence.mp05_b
+- temporal_rule_id: pur.temporal.proposal_log
+  scope_refs:
+  - mc.object.obj_d_navrh_log
+  classification: SELECTIVE HISTORY
+  transition_or_event_sk: Selektívna/history-related štruktúra; úplný event log ani retention nie sú potvrdené.
+  reconstructable: false
+  history_limitations_sk: Selektívna/history-related štruktúra; úplný event log ani retention nie sú potvrdené.
+  status: POTVRDENÉ
+  evidence_refs:
+  - pur.evidence.accepted
+  - pur.evidence.mp01_f
+- temporal_rule_id: pur.temporal.delivery
+  scope_refs:
+  - mc.field.objd_o.termin_dod
+  - mc.field.objd_l.termin_dod
+  - mc.field.objd_l.datum_p
+  classification: DERIVED CURRENT
+  transition_or_event_sk: NVL(OBJD_O.TERMIN_DOD, NVL(OBJD_L.TERMIN_DOD, OBJD_L.DATUM_P)); posudzovať každý riadok.
+  reconstructable: false
+  history_limitations_sk: NVL(OBJD_O.TERMIN_DOD, NVL(OBJD_L.TERMIN_DOD, OBJD_L.DATUM_P)); posudzovať každý riadok.
+  status: POTVRDENÉ
+  evidence_refs:
+  - pur.evidence.accepted
+  - pur.evidence.mp01_f
+- temporal_rule_id: pur.temporal.insert
+  scope_refs:
+  - mc.field.objd_l.i_stamp
+  - mc.field.obj_d_navrh.i_stamp
+  classification: RAW CURRENT
+  transition_or_event_sk: Insert audit stamp / technická creation evidence v podporovanom rozsahu; nie kompletný
+    event timeline.
+  reconstructable: false
+  history_limitations_sk: Insert audit stamp / technická creation evidence v podporovanom rozsahu; nie kompletný
+    event timeline.
+  status: POTVRDENÉ
+  evidence_refs:
+  - pur.evidence.accepted
+  - pur.evidence.mp01_f
+- temporal_rule_id: pur.temporal.update
+  scope_refs:
+  - mc.field.objd_l.u_stamp
+  classification: LAST UPDATE
+  transition_or_event_sk: Posledný audit update v podporovanom rozsahu; neidentifikuje automaticky zmenené business
+    pole.
+  reconstructable: false
+  history_limitations_sk: Posledný audit update v podporovanom rozsahu; neidentifikuje automaticky zmenené business
+    pole.
+  status: POTVRDENÉ
+  evidence_refs:
+  - pur.evidence.accepted
+  - pur.evidence.mp01_f
+- temporal_rule_id: pur.temporal.remove
+  scope_refs:
+  - mc.field.objd_l.s_stamp
+  - mc.field.obj_d_navrh.s_stamp
+  classification: RAW CURRENT
+  transition_or_event_sk: Technický remove/storno stamp. S_STAMP='0' != business open.
+  reconstructable: false
+  history_limitations_sk: Technický remove/storno stamp. S_STAMP='0' != business open.
+  status: POTVRDENÉ
+  evidence_refs:
+  - pur.evidence.accepted
+  - pur.evidence.mp01_f

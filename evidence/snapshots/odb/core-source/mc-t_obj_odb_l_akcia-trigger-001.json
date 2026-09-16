@@ -1,0 +1,240 @@
+[
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 1,
+    "TEXT": "TRIGGER \"T_OBJ_ODB_L_AKCIA\"\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 2,
+    "TEXT": " BEFORE\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 3,
+    "TEXT": " INSERT OR UPDATE OF RID_CT_A\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 4,
+    "TEXT": " ON OBJ_ODB_L\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 5,
+    "TEXT": " REFERENCING OLD AS OLD NEW AS NEW\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 6,
+    "TEXT": " FOR EACH ROW\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 7,
+    "TEXT": "declare\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 8,
+    "TEXT": "  nKod_id number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 9,
+    "TEXT": "  sNazov varchar2(254);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 10,
+    "TEXT": "  sNazovCtL varchar2(254);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 11,
+    "TEXT": "  sIntKod varchar2(254);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 12,
+    "TEXT": "  sPomenovanie varchar2(254);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 13,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 14,
+    "TEXT": "  if inserting or updating then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 15,
+    "TEXT": "    If :new.rid_ct_a Is Not Null And ( :new.rid_ct_a != :old.rid_ct_a Or :old.rid_ct_a Is Null ) Then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 16,
+    "TEXT": "      Select nazov Into sNazovCtL From ct_l Where rid = :new.rid_ct_a;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 17,
+    "TEXT": "      Begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 18,
+    "TEXT": "      \tSelect ObjO.kod_id Into nKod_id From obj_odb_o ObjO Where ObjO.rid_o = :new.rid And Not Exists( Select 1 From ct_o CtO Where CtO.rid_o = :new.rid_ct_a And CtO.kod_id = ObjO.kod_id )\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 19,
+    "TEXT": "        And ( ObjO.pocet - ObjO.p_del - ObjO.p_del_dod - ObjO.p_rez - ObjO.p_fak - ObjO.p_vyd - ObjO.p_obj ) > 0 And Rownum = 1;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 20,
+    "TEXT": "      exception when NO_DATA_FOUND then nKod_id := Null;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 21,
+    "TEXT": "      End;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 22,
+    "TEXT": "      If nKod_id Is Not Null Then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 23,
+    "TEXT": "          c_sklad_karta.GetInfoSK( nKod_id, sIntKod, sNazov, sPomenovanie );\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 24,
+    "TEXT": "          c_exc.raiseerrormsg('Akciu nie je možné zmeniť, pretože položka  '|| sNazov ||', '|| sIntKod ||' \\\\'|| nKod_id ||' nie je v akcii  '|| sNazovCtL ||' \\\\'|| :new.rid_ct_a ||' definovaná !');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 25,
+    "TEXT": "      End If;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 26,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 27,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 28,
+    "TEXT": "end;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 29,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 30,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 31,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 32,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 33,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 34,
+    "TEXT": "\n"
+  }
+]

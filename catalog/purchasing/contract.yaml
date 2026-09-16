@@ -1,0 +1,85 @@
+schema_version: '1.0'
+kind: contract
+contract_id: pur.contract.purchasing.1_0
+domain: purchasing
+title_sk: Nákupný lifecycle od návrhu po receiving boundary
+purpose_sk: Schválený MC purchasing contract pre bezpečnú read-only diagnostiku.
+scope_includes:
+- OBJD_L
+- OBJD_O
+- OBJ_D_KOMBAJN
+- OBJ_D_NAVRH
+- OBJ_D_NAVRH_DOKL
+- OBJ_D_NAVRH_L
+- OBJ_D_NAVRH_LOG
+- OBJ_D_NAVRH_VYR
+- OBJ_D_PODKLAD
+- OBJ_D_ROZD_BLOKACII
+- D_OBJD_L
+- D_OBJD_O
+- C_OBJ_D_KOMBAJN
+- C_REZ_OBJ_DOD
+- supplier PO 00028
+- supplier PL 00029
+- PRIJEMKY_LIST / PRIJEMKY_OBSAH receiving boundary
+scope_excludes:
+- Úplná receipt doména
+- Externý runtime/dynamic SQL
+- MCCZ/TEST/TESTCZ business autorita
+authoritative_environment: MC
+authoritative_owner: MC
+maturity: AGENT-READY
+object_refs:
+- mc.object.objd_l
+- mc.object.objd_o
+- mc.object.obj_d_kombajn
+- mc.object.obj_d_navrh
+- mc.object.obj_d_navrh_dokl
+- mc.object.obj_d_navrh_l
+- mc.object.obj_d_navrh_log
+- mc.object.obj_d_navrh_vyr
+- mc.object.obj_d_podklad
+- mc.object.obj_d_rozd_blokacii
+component_refs:
+- pur.constraints.001
+- pur.fields_objd_l.001
+- pur.fields_objd_o.001
+- pur.fields_obj_d_kombajn.001
+- pur.fields_obj_d_navrh.001
+- pur.fields_obj_d_navrh_dokl.001
+- pur.fields_obj_d_navrh_l.001
+- pur.fields_obj_d_navrh_log.001
+- pur.fields_obj_d_navrh_vyr.001
+- pur.fields_obj_d_podklad.001
+- pur.fields_obj_d_rozd_blokacii.001
+- pur.indexes.001
+- pur.api_references.001
+- pur.dependencies.001
+- pur.relationships.001
+- pur.value_domains.001
+- pur.temporal.001
+- pur.do_not_assume.001
+- pur.backlog.001
+- pur.flows.001
+- pur.mutations.001
+- pur.data_quality.001
+- pur.revisions.001
+- pur.access_capabilities.001
+- pur.inbound_closure.001
+- pur.cross_schema.001
+- pur.source_mutations.001
+- pur.oracle_entities.001
+- pur.sql_registry.001
+- pur.playbooks.001
+boundary_refs:
+- pur.oracle.mc.prijemky_obsah.table
+- mc.oracle.mc_prijemky_list
+- pur.rel.pl_receipt
+evidence_refs:
+- pur.evidence.accepted
+limitations_sk:
+- AGENT-READY v deklarovanom purchase-to-receipt scope; otvorené explicitné non-blocking gaps.
+- STORED CURRENT je reprezentované ako RAW CURRENT plus explicitný authority_role a temporal popis; bez historickej
+  rekonštrukcie.
+- CHECK výrazy neboli exportované v MP01_C; zachovaný celý dostupný constraint inventory, žiadne domyslené predicates.
+- F4_A depth-2 export ostáva v retained evidence; generic transitive crawl sa neopakuje.

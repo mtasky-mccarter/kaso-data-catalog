@@ -1,0 +1,3061 @@
+[
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8319,
+    "TEXT": "  end;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8320,
+    "TEXT": "/*\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8321,
+    "TEXT": "  C_HIST_UDALOST.insc(1,sId,NULL,c_session.getLokacia,NULL,nvl(C_Session.GetUser,0),\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8322,
+    "TEXT": "  nPartner,nvl(substr(psPozn,1,4000),'Nezadal'),null,null,psRID,C_HIST_UDALOST.TYP_OBJ_ODB_ODBLOK_UZIVATEL,sysdate);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8323,
+    "TEXT": "*/\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8324,
+    "TEXT": "  C_HIST_UDALOST.InsT(pnkladne=>1,psid=>sId,pnsklad=>c_session.getLokacia,pnobsluha=>nvl(C_Session.GetUser,0),\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8325,
+    "TEXT": "   pspopis=>nvl(substr(psPozn,1,4000),'Nezadal'),pstyp=>C_HIST_UDALOST.TYP_OBJ_ODB_ODBLOK_UZIVATEL,psrid_v=>psRID,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8326,
+    "TEXT": "   pnpartner=>nPartner,pdtdatum_u=>sysdate);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8327,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8328,
+    "TEXT": "end Odblokuj;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8329,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8330,
+    "TEXT": "procedure Skontroluj (psRID in C_RID.DT_RID, pnRaise in out number)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8331,
+    "TEXT": "is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8332,
+    "TEXT": "sFlagS varchar2(254);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8333,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8334,
+    "TEXT": "  select flags_s into sFlagS from obj_odb_l where rid = psRID;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8335,
+    "TEXT": "  if C_Flags.fGetFlagsState ( sFlagS, FLAGS_S_OBJ_ODB_STAV_VYB ) != STAV_OPr_Neskontrolovany then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8336,
+    "TEXT": "    c_exc.raiseerrormsg('Nemôžem doklad skontrolovať, lebo nie je v stave neskontrolovaný !');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8337,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8338,
+    "TEXT": "  -- kontrola\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8339,
+    "TEXT": "  c_msg_acc_transaction.verify_int( c_msg_acc_transaction.C_PrechodOPrNaNevybaveny, psRID, pnRaise);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8340,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8341,
+    "TEXT": "  if pnRaise = 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8342,
+    "TEXT": "    --sFlagS := C_Flags.fSetFlagsState ( sFlagS, FLAGS_S_OBJ_ODB_STAV_VYB, STAV_OPr_Nevybaveny );\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8343,
+    "TEXT": "\t\td_obj_odb_l_b.SetSTAV_UZV_OP_Uzavreta(psRID=>psRID, pxSTAV_DATA=>null, pnNekontroluj=>1);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8344,
+    "TEXT": "  else\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8345,
+    "TEXT": "    --sFlagS := C_Flags.fSetFlagsState ( sFlagS, FLAGS_S_OBJ_ODB_STAV_VYB, STAV_OPr_Blokovany  );\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8346,
+    "TEXT": "\t\td_obj_odb_l_b.SetSTAV_UZV_OP_Blokovana(psRID=>psRID, pxSTAV_DATA=>null, pnNekontroluj=>1);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8347,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8348,
+    "TEXT": "  --update obj_odb_l set flags_s = sFlagS where rid = psRID;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8349,
+    "TEXT": "end Skontroluj;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8350,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8351,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8352,
+    "TEXT": "procedure NastavKonsiObj(psRID C_RID.DT_RID,pnSKLAD_PRE DT_SKLAD_PRE) is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8353,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8354,
+    "TEXT": "if (pnSKLAD_PRE is not null ) then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8355,
+    "TEXT": "    UPDATE OBJ_ODB_L SET SKLAD_PRE = pnSKLAD_PRE,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8356,
+    "TEXT": "                         FLAGS_S = C_FLAGS.fSetFlagsState(FLAGS_S,FLAGS_S_OBJ_ODB_FORMA_DOKL,FORMA_DOKL_PRE_SKLAD),\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8357,
+    "TEXT": "                         FLAGS_B = C_FLAGS.fSetFlagsState(FLAGS_B,FLASG_B_OBJ_ODB_KonsiObj,'1')\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8358,
+    "TEXT": "                     WHERE RID=psRID;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8359,
+    "TEXT": "end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8360,
+    "TEXT": "end;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8361,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8362,
+    "TEXT": "procedure NastavObjPreStredisko(psRID C_RID.DT_RID,pnSKLAD_PRE DT_SKLAD_PRE) is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8363,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8364,
+    "TEXT": "  if (pnSKLAD_PRE is not null ) then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8365,
+    "TEXT": "    UPDATE OBJ_ODB_L SET SKLAD_PRE = pnSKLAD_PRE,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8366,
+    "TEXT": "      FLAGS_S = C_FLAGS.fSetFlagsState(FLAGS_S,FLAGS_S_OBJ_ODB_FORMA_DOKL,FORMA_DOKL_PRE_SKLAD)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8367,
+    "TEXT": "      WHERE RID=psRID;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8368,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8369,
+    "TEXT": "end NastavObjPreStredisko;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8370,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8371,
+    "TEXT": "Procedure PrepocitajPrepravky( psRID varchar2) is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8372,
+    "TEXT": "  nID_R number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8373,
+    "TEXT": "  rCenotvorba CENOTVORBA.R_C_Cenotvorba;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8374,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8375,
+    "TEXT": "  for rO in (select o.kod_id, sum(O.pocet - o.p_del - O.p_del_dod - o.p_vyd - o.P_FAK - o.P_OBJ) pocet,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8376,
+    "TEXT": "    l.partner, l.miesto_dod, l.doprava, l.mena, l.kurz, l.sposob_obj, l.sposob_kont, l.sklad, l.datum_p, l.zakazka\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8377,
+    "TEXT": "    from obj_odb_o o, obj_odb_l l, sklad_karta sk where l.rid = o.rid_o and sk.id = o.kod_id and o.rid_o = psRID and exists\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8378,
+    "TEXT": "    --(select 1 from SKLAD_KARTA_VAZBY v where v.kod_id = o.kod_id and v.pocet > 0 and v.vazba_kod_id > 0 and v.vazba_kod_id is not null)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8379,
+    "TEXT": "    (select 1 from table(c_sklad_karta.TblPolozkyPrislusenstva(pnKOD_ID=>o.kod_id, psSPOSOB_OBJ=>null, pnVKLADAT_VZDY=>null, pnNASOBNY_POCET=>null)))\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8380,
+    "TEXT": "    and substr(sk.flags_b,14,1) = '1'\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8381,
+    "TEXT": "    group by o.kod_id, l.partner, l.miesto_dod, l.doprava, l.mena, l.kurz, l.sposob_obj, l.sposob_kont, l.sklad, l.datum_p, l.zakazka) loop\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8382,
+    "TEXT": "    for rV in (select v.pocet, v.kod_id,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8383,
+    "TEXT": "      --C_SADZBA_DPH.getsadzbudphpreurovendate(sk.UROVEN_DPH, rO.datum_p, rO.sklad) dph,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8384,
+    "TEXT": "      c_sklad_karta.getdph_datum(pnkod_id=> sk.id,pdtdatum=> rO.datum_p,pnsklad=> rO.sklad) dph,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8385,
+    "TEXT": "      sk.odpis_sk from table(c_sklad_karta.TblPolozkyPrislusenstva(pnKOD_ID=>rO.kod_id, psSPOSOB_OBJ=>null, pnVKLADAT_VZDY=>null, pnNASOBNY_POCET=>null)) v, sklad_karta sk\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8386,
+    "TEXT": "      where sk.id = v.kod_id /*and v.kod_id = rO.kod_id and v.pocet > 0 and v.vazba_kod_id > 0 and v.vazba_kod_id is not null*/) loop\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8387,
+    "TEXT": "      rCenotvorba := null;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8388,
+    "TEXT": "/*\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8389,
+    "TEXT": "      Cenotvorba.GetAll( rCenotvorba, rO.partner, rO.miesto_dod, rO.doprava, rV.vazba_kod_id,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8390,
+    "TEXT": "        null, C_Const.SZ_PRAZDNY_ZAZNAM, rO.pocet*rV.pocet, rO.mena, rO.kurz, rO.sposob_obj,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8391,
+    "TEXT": "        rO.sposob_kont, rO.Sklad, 1, rO.Datum_P, 0, C_const.FALSE, 0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8392,
+    "TEXT": "*/\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8393,
+    "TEXT": "      Cenotvorba.GetAll(prCenotvorba=>rCenotvorba, nPart=>rO.partner, snMiestoD=>rO.miesto_dod, nDruhDop=>rO.doprava, nKodID=>rV.kod_id,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8394,
+    "TEXT": "        p_sSarza=>null, p_sID_SZ=>C_Const.SZ_PRAZDNY_ZAZNAM, pnPocet=>rO.pocet*rV.pocet, nMenaIn=>rO.mena, nKurzIn=>rO.kurz, snSposobObjednania=>rO.sposob_obj,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8395,
+    "TEXT": "        snSposobKontaktu=>rO.sposob_kont, p_nSkladDokladu=>rO.Sklad, bPredplnPrefCenu=>1, dtDat=>rO.Datum_P, nCennik=>0, bPredplnCennikCenu=>C_const.FALSE,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8396,
+    "TEXT": "        p_nJeDarcek=>0, pnZakazka=>rO.zakazka, psRID_R_Dokl=>psRID);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8397,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8398,
+    "TEXT": "      nID_R := null;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8399,
+    "TEXT": "      d_obj_odb_o.insc(1/*pnkladne*/,nID_R/*pnid_r*/,psRID/*psrid_o*/,rV.kod_id/*pnkod_id*/,'0000'/*psid_sz*/,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8400,
+    "TEXT": "      C_CONST.NULA_KodBalenia/*psrid_bal*/,rO.pocet*rV.pocet/*pnpocet*/,0/*pnp_rez*/,Cenotvorba.GetCenu( rCenotvorba)*rO.kurz/*pncena*/,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8401,
+    "TEXT": "      Cenotvorba.GetCenu( rCenotvorba)/*pncena_m*/,rV.dph/*pndph*/,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8402,
+    "TEXT": "      Cenotvorba.GetZlavaStr( rCenotvorba)/*pszlavy*/,Cenotvorba.GetRIDCT_A( rCenotvorba)/*psrid_ct_a*/,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8403,
+    "TEXT": "      Cenotvorba.GetRIDCT_Z( rCenotvorba)/*psrid_ct_z*/,0/*pncena_s*/,'0'/*psrid_v*/,rV.odpis_sk/*pnodpis*/,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8404,
+    "TEXT": "      null/*pspozn*/,0/*pncena_s2*/,0/*pnid_r_v*/,0/*pnp_del*/,0/*pnp_del_dod*/,0/*pnp_fak*/,0/*pnp_vyd*/,null/*pssarza*/,0/*pnp_obj*/,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8405,
+    "TEXT": "      null/*pdtdatum_d*/,null/*psdovod_blokacie*/, 0/*p_rez_is*/);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8406,
+    "TEXT": "    end loop;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8407,
+    "TEXT": "  end loop;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8408,
+    "TEXT": "  PrepocitajObsahC(psRID);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8409,
+    "TEXT": "end;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8410,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8411,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8412,
+    "TEXT": "procedure ZmenNaProformu(psRID C_RID.DT_RID)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8413,
+    "TEXT": "is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8414,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8415,
+    "TEXT": "    UPDATE OBJ_ODB_L\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8416,
+    "TEXT": "        SET FLAGS_S = C_FLAGS.fsetflagsstate(FLAGS_S,FLAGS_S_OBJ_ODB_FORMA_DOKL,FORMA_DOKL_PROFORMA)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8417,
+    "TEXT": "            WHERE RID = psRID;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8418,
+    "TEXT": "end;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8419,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8420,
+    "TEXT": "procedure ZrusPolozkyZPrijemky ( psRID_OBJ C_RID.DT_RID, nID_R number, pnOut IN OUT Number ) is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8421,
+    "TEXT": "  -- vyberiem len konkretnu vratku, alebo vsetky\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8422,
+    "TEXT": "  Cursor cObjO Is select o.id_r, o.p_fak, o.p_vyd, o.p_obj, o.p_del, o.p_del_dod, o.pocet, o.rid_v From obj_odb_o o\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8423,
+    "TEXT": "    Where o.rid_o = psRID_OBJ And o.rid_v Is Not Null And Substr( o.rid_v, 1, 3 ) = '003'\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8424,
+    "TEXT": "    And C_RID.GetbackRIDC( o.rid_v, C_RID.Const_RID_Back_RID) In ( Select C_RID.GetbackRIDC( oo.rid_v, C_RID.Const_RID_Back_RID)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8425,
+    "TEXT": "    From obj_odb_o oo Where oo.rid_o = psRID_OBJ And oo.id_r = decode( nID_R, 0, oo.id_r, nID_R ));\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8426,
+    "TEXT": "  rO d_obj_odb_o.R_C_OBj_ODB_O;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8427,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8428,
+    "TEXT": "  pnOut := STAV_ZruseniaVratky_Ok;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8429,
+    "TEXT": "  for r in cObjO loop\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8430,
+    "TEXT": "    d_obj_odb_o.Init( rO, psRID_OBJ, r.id_r );\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8431,
+    "TEXT": "    -- ak je niektorá vratka už vybavená, poznačim to do stavu vystupu\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8432,
+    "TEXT": "    If r.p_fak = 0 And r.p_obj = 0 And r.p_vyd = 0 Then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8433,
+    "TEXT": "      Update obj_odb_o Set p_del = p_del + ( r.pocet - r.p_del - r.p_del_dod ) Where rid_o = psRID_OBJ And id_r = r.id_r;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8434,
+    "TEXT": "      Update prijemky_list Set rid_v = null Where rid = C_RID.GetbackRIDC( r.rid_v, C_RID.Const_RID_Back_RID) And rid_v = psRID_OBJ;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8435,
+    "TEXT": "    Else\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8436,
+    "TEXT": "      pnOut := STAV_ZruseniaVratky_Ciastocne;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8437,
+    "TEXT": "    End If;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8438,
+    "TEXT": "  end loop;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8439,
+    "TEXT": "  PrepocitajObsahC(psRID_OBJ);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8440,
+    "TEXT": "end ZrusPolozkyZPrijemky;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8441,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8442,
+    "TEXT": "Procedure ZarezervujBlokacneAkcie(psRID varchar2, pnOutStav in out number ) is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8443,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8444,
+    "TEXT": "\tc_rezervacia.ZarezervujBlokacneAkcie(psRID=>psRID, pnOutStav=>pnOutStav);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8445,
+    "TEXT": "end ZarezervujBlokacneAkcie;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8446,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8447,
+    "TEXT": "Procedure ZarezervujSUvolnenim( psRID varchar2, pnID_R number, pnTypSprac number, pnOutStav in out number, pnMaskaNepovolRez number, pnCezArtSkup number default 0) is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8448,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8449,
+    "TEXT": "\tc_rezervacia.ZarezervujSUvolnenim(psRID=>psRID, pnID_R=>pnID_R, pnTypSprac=>pnTypSprac, pnOutStav=>pnOutStav, pnMaskaNepovolRez=>pnMaskaNepovolRez, pnCezArtSkup=>pnCezArtSkup);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8450,
+    "TEXT": "end ZarezervujSUvolnenim;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8451,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8452,
+    "TEXT": "Procedure RezervujIS( psRID varchar2, pnID_R number, pnSklad number, pnKod_id number, psSarza varchar2, pnPocet number, pnTypRez number, pnOutStav in out number,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8453,
+    "TEXT": "  pnCezArtSkup number default 0, pnNerezAko number default 0, psRezRiadokPocet in out varchar2, pnRezAjSpecialnu number default 0, psid_sz varchar2 default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8454,
+    "TEXT": "  pnKazdyDenNovaHlavicka number default 1, psTransferPoloha varchar2 default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8455,
+    "TEXT": "  psPozn varchar2 default null, pnDoObjZaMna number default null, pdtDatumP date default null, psParams varchar2 default null, pnTYP_REZ_OBJ number default 0,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8456,
+    "TEXT": "  pnKONTROLA_POCTU number default 0) is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8457,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8458,
+    "TEXT": "  c_rezervacia.RezervujIS(psRID=>psRID, pnID_R=>pnID_R, pnSklad=>pnSklad, pnKod_id=>pnKod_id, psSarza=>psSarza, pnPocet=>pnPocet, pnTypRez=>pnTypRez,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8459,
+    "TEXT": "    pnOutStav=>pnOutStav, pnCezArtSkup=>pnCezArtSkup, pnNerezAko=>pnNerezAko, psRezRiadokPocet=>psRezRiadokPocet,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8460,
+    "TEXT": "    pnRezAjSpecialnu=>pnRezAjSpecialnu, psid_sz=> psid_sz, pnKazdyDenNovaHlavicka=> pnKazdyDenNovaHlavicka, psTransferPoloha=>psTransferPoloha,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8461,
+    "TEXT": "    psPozn=> psPozn, pnDoObjZaMna=>pnDoObjZaMna, pdtDatumP=>pdtDatumP, pnTYP_REZ_OBJ=>pnTYP_REZ_OBJ, pnKONTROLA_POCTU=>pnKONTROLA_POCTU);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8462,
+    "TEXT": "end RezervujIS;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8463,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8464,
+    "TEXT": "procedure RezervujIS_Int_L(psRID_ObjStr in out varchar2, psRID varchar2, pnSklad number, pnSkladPre number, psRID_ObjStr_New varchar2 default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8465,
+    "TEXT": "  pnKazdyDenNovaHlavicka number default 1, psTransferPoloha varchar2 default null, pnDoObjZaMna number default null, pdtDatumP date default null, pnTYP_REZ_OBJ number default 0,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8466,
+    "TEXT": "\tpnKodID number,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8467,
+    "TEXT": "\tpsSarza varchar2,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8468,
+    "TEXT": "\tpsID_SZ varchar2) is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8469,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8470,
+    "TEXT": "\tc_rezervacia.RezervujIS_Int_L(psRID_ObjStr=>psRID_ObjStr, psRID=>psRID, pnSklad=>pnSklad, pnSkladPre=>pnSkladPre, psRID_ObjStr_New=>psRID_ObjStr_New,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8471,
+    "TEXT": "\t\tpnKazdyDenNovaHlavicka=>pnKazdyDenNovaHlavicka, psTransferPoloha=>psTransferPoloha, pnDoObjZaMna=>pnDoObjZaMna, pdtDatumP=>pdtDatumP, pnTYP_REZ_OBJ=>pnTYP_REZ_OBJ,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8472,
+    "TEXT": "\t\tpnKodID=> pnKodID,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8473,
+    "TEXT": "\t\tpsSarza=> psSarza,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8474,
+    "TEXT": "\t\tpsID_SZ=> psID_SZ);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8475,
+    "TEXT": "end RezervujIS_Int_L;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8476,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8477,
+    "TEXT": "Procedure RezervujIS_Int( psRID varchar2, pnID_R number, pnSklad number, pnKod_id number, psSarza varchar2, pnPocet number, pnTypRez number, pnOutStav in out number,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8478,
+    "TEXT": "  pnCezArtSkup number default 0, pnNerezAko number default 0, psRezRiadokPocet in out varchar2, psRID_ObjStr out varchar2, pnRezAjSpecialnu number default 0,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8479,
+    "TEXT": "  psID_SZ varchar2 default null, psRID_ObjStr_New varchar2 default null, pnKazdyDenNovaHlavicka number default 1, psTransferPoloha varchar2 default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8480,
+    "TEXT": "  psPozn varchar2 default null, pnDoObjZaMna number default null, pdtDatumP date default null, psParams varchar2 default null, pnTYP_REZ_OBJ number default 0,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8481,
+    "TEXT": "  pnKONTROLA_POCTU number default 0) is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8482,
+    "TEXT": "\tnID_R_ObjStr number(5,0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8483,
+    "TEXT": "\tsID_DZ varchar2(16);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8484,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8485,
+    "TEXT": "\tc_rezervacia.RezervujIS_Int(psRID=>psRID, pnID_R=>pnID_R, pnSklad=>pnSklad, pnKod_id=>pnKod_id, psSarza=>psSarza, pnPocet=>pnPocet, pnTypRez=>pnTypRez, pnOutStav=>pnOutStav,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8486,
+    "TEXT": "\t\tpnCezArtSkup=>pnCezArtSkup, pnNerezAko=>pnNerezAko, psRezRiadokPocet=>psRezRiadokPocet, psRID_ObjStr=>psRID_ObjStr, pnRezAjSpecialnu=>pnRezAjSpecialnu, psID_SZ=>psID_SZ,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8487,
+    "TEXT": "\t\tpsRID_ObjStr_New=>psRID_ObjStr_New, pnKazdyDenNovaHlavicka=>pnKazdyDenNovaHlavicka, psTransferPoloha=>psTransferPoloha, psPozn=>psPozn, pnDoObjZaMna=>pnDoObjZaMna,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8488,
+    "TEXT": "\t\tpdtDatumP=>pdtDatumP, psParams=>psParams, pnTYP_REZ_OBJ=>pnTYP_REZ_OBJ, pnKONTROLA_POCTU=>pnKONTROLA_POCTU, pnID_R_ObjStr=>nID_R_ObjStr, psID_DZ=>sID_DZ);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8489,
+    "TEXT": "end RezervujIS_Int;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8490,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8491,
+    "TEXT": "Procedure RezervujISVsetko_Int(  psRID varchar2, pnID_R number, pnSklad number, pnKod_id number, psSarza varchar2, pnPocet number, pnTypRez number, pnOutStav in out number, psRezRiadokPocet in out varchar2 ) is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8492,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8493,
+    "TEXT": "\tc_rezervacia.RezervujISVsetko_Int(psRID=>psRID, pnID_R=>pnID_R, pnSklad=>pnSklad, pnKod_id=>pnKod_id, psSarza=>psSarza, pnPocet=>pnPocet, pnTypRez=>pnTypRez,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8494,
+    "TEXT": "\t\tpnOutStav=>pnOutStav, psRezRiadokPocet=>psRezRiadokPocet);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8495,
+    "TEXT": "end RezervujISVsetko_Int;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8496,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8497,
+    "TEXT": "Procedure RezervujISVsetko( psRID varchar2, pnID_R number, pnSklad number, pnKod_id number, psSarza varchar2,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8498,
+    "TEXT": "  pnPocet number, pnTypRez number, pnOutStav in out number ) is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8499,
+    "TEXT": "  sRezRiadokPocet varchar2(32000);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8500,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8501,
+    "TEXT": "  c_rezervacia.RezervujISVsetko(psRID=>psRID, pnID_R=>pnID_R, pnSklad=>pnSklad, pnKod_id=>pnKod_id, psSarza=>psSarza,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8502,
+    "TEXT": "  \tpnPocet=>pnPocet, pnTypRez=>pnTypRez, pnOutStav=>pnOutStav);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8503,
+    "TEXT": "end RezervujISVsetko;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8504,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8505,
+    "TEXT": "Procedure RezervujISCoSaDa_Int( psRID varchar2, pnID_R number, pnSklad number, pnKod_id number, pnTypRez number, pnOutStav in out number, pnCezArtSkup number default 0,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8506,
+    "TEXT": "  pnRezAjSpecialnu number default 0, psid_sz varchar2 default null, psTransferPoloha varchar2 default null, psRID_ObjStr out varchar2, pnTYP_REZ_OBJ number default 0 ) is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8507,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8508,
+    "TEXT": "\tc_rezervacia.RezervujISCoSaDa_Int(psRID=>psRID, pnID_R=>pnID_R, pnSklad=>pnSklad, pnKod_id=>pnKod_id, pnTypRez=>pnTypRez, pnOutStav=>pnOutStav, pnCezArtSkup=>pnCezArtSkup,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8509,
+    "TEXT": "\t\tpnRezAjSpecialnu=>pnRezAjSpecialnu, psid_sz=>psid_sz, psTransferPoloha=>psTransferPoloha, psRID_ObjStr=>psRID_ObjStr, pnTYP_REZ_OBJ=>pnTYP_REZ_OBJ);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8510,
+    "TEXT": "end RezervujISCoSaDa_Int;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8511,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8512,
+    "TEXT": "procedure RezervujISCoSaDa( psRID varchar2, pnID_R number, pnSklad number, pnKod_id number, pnTypRez number, pnOutStav in out number, pnCezArtSkup number default 0,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8513,
+    "TEXT": "  pnRezAjSpecialnu number default 0, psid_sz varchar2 default null, psTransferPoloha varchar2 default null, pnTYP_REZ_OBJ number default 0 ) is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8514,
+    "TEXT": "  sRID_ObjStr varchar2(16);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8515,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8516,
+    "TEXT": "  c_rezervacia.RezervujISCoSaDa(psRID=>psRID, pnID_R=>pnID_R, pnSklad=>pnSklad, pnKod_id=>pnKod_id, pnTypRez=>pnTypRez, pnOutStav=>pnOutStav,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8517,
+    "TEXT": "    pnCezArtSkup=>pnCezArtSkup, pnRezAjSpecialnu=>pnRezAjSpecialnu, psid_sz=>psid_sz, psTransferPoloha=>psTransferPoloha, pnTYP_REZ_OBJ=>pnTYP_REZ_OBJ);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8518,
+    "TEXT": "end RezervujISCoSaDa;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8519,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8520,
+    "TEXT": "Procedure ZrusRezervaciuIS( psRID varchar2, pnID_R number, pnOutStav in out number, pnRezSklad number default 1, pnPrepocitajHlavicku number default 1 ) is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8521,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8522,
+    "TEXT": "  c_rezervacia.ZrusRezervaciuIS(psRID=>psRID, pnID_R=>pnID_R, pnOutStav=>pnOutStav, pnRezSklad=>pnRezSklad, pnPrepocitajHlavicku=>pnPrepocitajHlavicku);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8523,
+    "TEXT": "end ZrusRezervaciuIS;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8524,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8525,
+    "TEXT": "Procedure ZrusRezervaciuISPocet( psRID varchar2, pnID_R number, pnPocet number/*nepouzite*/, pnOutStav in out number,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8526,
+    "TEXT": "  pnDavka in out number, pnRezSklad number default 1, pnPrepocitajHlavicku number default 1 ) is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8527,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8528,
+    "TEXT": "\tc_rezervacia.ZrusRezervaciuISPocet(psRID=>psRID, pnID_R=>pnID_R, pnPocet=>pnPocet, pnOutStav=>pnOutStav, pnDavka=>pnDavka, pnRezSklad=>pnRezSklad, pnPrepocitajHlavicku=>pnPrepocitajHlavicku);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8529,
+    "TEXT": "end ZrusRezervaciuISPocet;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8530,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8531,
+    "TEXT": "Procedure ZrusPreddavky( psRID varchar2, pnOutStav in out number )\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8532,
+    "TEXT": "is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8533,
+    "TEXT": "  STAV_ERROR constant number(1,0) := 0;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8534,
+    "TEXT": "  nKOD_ID_Zaloha number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8535,
+    "TEXT": "  nSumaObj number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8536,
+    "TEXT": "  nFak number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8537,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8538,
+    "TEXT": "  pnOutStav := STAV_ERROR;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8539,
+    "TEXT": "  nKOD_ID_Zaloha := c_session.getsk_zaloha;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8540,
+    "TEXT": "  IF nKOD_ID_Zaloha = 0 THEN\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8541,
+    "TEXT": "    pnOutStav := C_SZ.SZ_OUT_STAV_OK;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8542,
+    "TEXT": "    RETURN; -- nie je zaloha, neriešim jej zruenie\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8543,
+    "TEXT": "  END IF;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8544,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8545,
+    "TEXT": "  -- stary sposob\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8546,
+    "TEXT": "  -- zistim celkovu sumu zalohy na fakture, v rid_v je vazba na objednávku, použijem ju pre rýchlejšie dohladanie obj\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8547,
+    "TEXT": "  For rPreddavky In ( Select\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8548,
+    "TEXT": "    C_DOKl_L.Zaokruhly( c_xml_tags.GetTagValueNumT(XML_DATA,'S5', C_CIS_DEF.CIS_CIS_DEF, NULL) + c_xml_tags.GetTagValueNumT(XML_DATA,'S6', C_CIS_DEF.CIS_CIS_DEF, NULL ), C_Session.GetRoundDPHPolozkaPM, C_Session.GetRoundDPHPolozkaTyp ) cena,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8549,
+    "TEXT": "    c_rid.getbackridc( decode(substr(rid_v,1,3), '098', substr(pozn,instr(pozn,'RidR:')+5, instr(pozn,',',instr(pozn,'RidR:')+5) - (instr(pozn,'RidR:')+5)), rid_v), c_rid.Const_RID_Back_RID ) rid_obj\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8550,
+    "TEXT": "    From dlaf_o Where rid_o = psRID\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8551,
+    "TEXT": "    And kod_id = nKOD_ID_Zaloha And POCET = 1 And (P_REZ - P_VYSKL ) = 0 And (rid_v like '019%' or rid_v like '098%') )\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8552,
+    "TEXT": "  Loop\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8553,
+    "TEXT": "    -- zistím celkovu sumu zaloh v objednávke vložených s väzbou na fakturu, zalohy sa mohli predtým rozdeliť\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8554,
+    "TEXT": "    Select C_DOKl_L.Zaokruhly(Sum( c_xml_tags.GetTagValueNumT(XML_DATA,'S5', C_CIS_DEF.CIS_CIS_DEF, NULL) + c_xml_tags.GetTagValueNumT(XML_DATA,'S6', C_CIS_DEF.CIS_CIS_DEF, NULL )), C_Session.GetRoundDPHPolozkaPM, C_Session.GetRoundDPHPolozkaTyp ),Sum(p_fak)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8555,
+    "TEXT": "    Into nSumaObj, nFak  From obj_odb_o Where rid_o = rPreddavky.rid_obj And rid_v = psRID And kod_id = nKOD_ID_Zaloha And POCET=1  And (P_DEL + P_DEL_DOD + P_VYD + P_OBJ) = 0 And rid_v like '022%';\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8556,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8557,
+    "TEXT": "    -- ak sú niektore zalohy fakturovane, ukončím rusenie preddavkov\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8558,
+    "TEXT": "    If nFak != 0 Then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8559,
+    "TEXT": "      c_exc.raiseerrormsg('Odberateľská objednávka ('|| c_rid.getridinfo( rPreddavky.rid_obj ) ||') obsahuje už fakturovane preddavky, ich zrušenie nie je možné !');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8560,
+    "TEXT": "      return;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8561,
+    "TEXT": "    End If;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8562,
+    "TEXT": "    -- ak sa nezhoduje cena zalohy na fakture a cena zaloh(y) v objo\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8563,
+    "TEXT": "    If Abs(nSumaObj) <> Abs(rPreddavky.cena) Then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8564,
+    "TEXT": "      c_exc.raiseerrormsg('Celková cena zálohy na faktúre ('|| c_rid.getridinfo( psRID ) ||') sa nezhoduje s cenou záloh(y) na odberateľskej objednávke ('|| c_rid.getridinfo( rPreddavky.rid_obj ) ||'). Zrušenie preddavkov nie je možné !');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8565,
+    "TEXT": "      return;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8566,
+    "TEXT": "    End If;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8567,
+    "TEXT": "    -- zrušenie preddavkov\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8568,
+    "TEXT": "    For rZrusPreddavky In ( Select id_r From obj_odb_o Where rid_o = rPreddavky.rid_obj And rid_v = psRID And kod_id = nKOD_ID_Zaloha And POCET=1\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8569,
+    "TEXT": "                            And (P_DEL + P_DEL_DOD + P_FAK + P_VYD + P_OBJ) = 0 And (rid_v like '022%' or rid_v like '098%'))\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8570,
+    "TEXT": "    Loop\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8571,
+    "TEXT": "      Update obj_odb_o Set p_del = POCET Where rid_o = rPreddavky.rid_obj and id_r = rZrusPreddavky.id_r;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8572,
+    "TEXT": "    End Loop;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8573,
+    "TEXT": "  End Loop;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8574,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8575,
+    "TEXT": "  -- novy sposob\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8576,
+    "TEXT": "  For rPreddavky In ( Select\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8577,
+    "TEXT": "    --C_DOKl_L.Zaokruhly( c_xml_tags.GetTagValueNumT(XML_DATA,'S5', C_CIS_DEF.CIS_CIS_DEF, NULL) + c_xml_tags.GetTagValueNumT(XML_DATA,'S6', C_CIS_DEF.CIS_CIS_DEF, NULL ), C_Session.GetRoundDPHPolozkaPM, C_Session.GetRoundDPHPolozkaTyp ) cena,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8578,
+    "TEXT": "    c_rid.getbackrid( ppf.gettoken(pozn,2) ) rid_obj ,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8579,
+    "TEXT": "    c_rid.getbackid_r( ppf.gettoken(pozn,2) ) id_r_obj ,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8580,
+    "TEXT": "    ppf.gettoken(pozn,2) rid_r_obj,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8581,
+    "TEXT": "    rid_v, cena\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8582,
+    "TEXT": "    From dlaf_o Where rid_o = psRID\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8583,
+    "TEXT": "    And kod_id = nKOD_ID_Zaloha And POCET = 1 And rid_v like '098%' )\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8584,
+    "TEXT": "  Loop\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8585,
+    "TEXT": "    -- zistím sumu v objednávke ci sedi na fakturu na fakturu, zalohy sa mohli predtým rozdeliť\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8586,
+    "TEXT": "    Select cena, p_fak Into nSumaObj, nFak From obj_odb_o Where rid_o = rPreddavky.rid_obj And id_r = rPreddavky.id_r_obj;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8587,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8588,
+    "TEXT": "    -- ak sú niektore zalohy fakturovane, ukončím rusenie preddavkov\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8589,
+    "TEXT": "    If nFak != 0 Then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8590,
+    "TEXT": "      c_exc.raiseerrormsg('Preddavok na odberateľskej objednávke ('|| rPreddavky.rid_r_obj ||') je už fakturovaný.\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8591,
+    "TEXT": "Zrušenie preddavku na ObjO nie je možné !');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8592,
+    "TEXT": "      return;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8593,
+    "TEXT": "    End If;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8594,
+    "TEXT": "    -- ak sa nezhoduje cena zalohy na fakture a cena zaloh(y) v objo\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8595,
+    "TEXT": "    If Abs(nSumaObj) <> Abs(rPreddavky.cena) Then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8596,
+    "TEXT": "      c_exc.raiseerrormsg('Celková cena zálohy na faktúre ('|| c_rid.getridinfo( psRID ) ||') sa nezhoduje s cenou záloh(y) na odberateľskej objednávke ('|| rPreddavky.rid_r_obj ||').\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8597,
+    "TEXT": "Zrušenie preddavku na ObjO nie je možné !');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8598,
+    "TEXT": "      return;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8599,
+    "TEXT": "    End If;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8600,
+    "TEXT": "    -- zrušenie preddavkov\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8601,
+    "TEXT": "    Update obj_odb_o Set p_del = POCET Where rid_o = rPreddavky.rid_obj And id_r = rPreddavky.id_r_obj;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8602,
+    "TEXT": "    c_fin_zaloha_cerp.stornocezrid_d(psrid_d=> rPreddavky.rid_r_obj);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8603,
+    "TEXT": "  End Loop;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8604,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8605,
+    "TEXT": "  pnOutStav := C_SZ.SZ_OUT_STAV_OK;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8606,
+    "TEXT": "end ZrusPreddavky;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8607,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8608,
+    "TEXT": "Procedure Poniz_P_REZ_IS( psRID varchar2, pnID_R number, pnPocet number )\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8609,
+    "TEXT": "is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8610,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8611,
+    "TEXT": "-- logovanie zmien p_rez, p_rez_is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8612,
+    "TEXT": "c_session.setlogujzmenyimportu(1);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8613,
+    "TEXT": "-- zrusím odložený počet rezervovaných tovarov z iného skladu\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8614,
+    "TEXT": "CASE to_number(substr(psRID, 1, 3 ))\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8615,
+    "TEXT": "    WHEN C_CIS_DEF.CIS_obj_odb_l THEN\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8616,
+    "TEXT": "        Update OBJ_ODB_O set p_rez_is = Greatest( p_rez_is - pnPocet, 0 ) Where rid_o = psRID And id_r = pnID_R;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8617,
+    "TEXT": "    WHEN C_CIS_DEF.CIS_SER_OBJ THEN\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8618,
+    "TEXT": "        Update ser_zak_o set p_rez_is = Greatest( p_rez_is - pnPocet, 0 ) Where rid_o = psRID And id_r = pnID_R;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8619,
+    "TEXT": "    END CASE;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8620,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8621,
+    "TEXT": "c_session.setlogujzmenyimportu(0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8622,
+    "TEXT": "exception when OTHERS then c_session.setlogujzmenyimportu(0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8623,
+    "TEXT": "end Poniz_P_REZ_IS;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8624,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8625,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8626,
+    "TEXT": "Procedure RezervujZamenamiAS(psRID varchar2,pnOutStav in out number) is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8627,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8628,
+    "TEXT": "\tc_rezervacia.RezervujZamenamiAS(psRID=>psRID, pnOutStav=>pnOutStav);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8629,
+    "TEXT": "end RezervujZamenamiAS;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8630,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8631,
+    "TEXT": "function DajHodnotuZalohy(psRID varchar2, pnAjSumaU number default 1) return number is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8632,
+    "TEXT": "\tnCountZaloha number :=0;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8633,
+    "TEXT": "\tnZaloha number :=0;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8634,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8635,
+    "TEXT": "\tselect\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8636,
+    "TEXT": "\t\t--Round( nvl( sum(( o.pocet - o.p_del - o.p_del_dod ) * ( c_xml_tags.GetTagValueNumT(o.xml_data, 'S5', -1, null) + c_xml_tags.GetTagValueNumT(o.xml_data, 'S6', -1, null ))), 0 ), 2 ),\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8637,
+    "TEXT": "\t\tRound( nvl( sum(( o.pocet - o.p_del - o.p_del_dod ) * ( x.S5 + x.S6)), 0 ), 2 ),\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8638,
+    "TEXT": "\t\tcount(*)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8639,
+    "TEXT": "\t\tinto nZaloha, nCountZaloha\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8640,
+    "TEXT": "\t\tfrom obj_odb_o o LEFT OUTER JOIN xmltable( '/B' passing o.xml_data columns S6 number path 'S6[last()]', S5 number path 'S5[last()]') x on 1=1\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8641,
+    "TEXT": "\t\twhere o.kod_id = c_session.getsk_zaloha and o.rid_o = psRID;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8642,
+    "TEXT": "\t-- napocita este preddavky vyparovane  voci objednavka\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8643,
+    "TEXT": "\tif nCountZaloha = 0 and pnAjSumaU = 1 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8644,
+    "TEXT": "\t\tselect suma_u_m into nZaloha from obj_odb_l l where l.rid = psRID;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8645,
+    "TEXT": "\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8646,
+    "TEXT": "\t--\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8647,
+    "TEXT": "\treturn nZaloha;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8648,
+    "TEXT": "end DajHodnotuZalohy;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8649,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8650,
+    "TEXT": "function DajHodnotuZalohyMulti(psRIDs varchar2) return number is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8651,
+    "TEXT": "\tnZaloha number :=0;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8652,
+    "TEXT": "\tnKartaZaloha number := 0;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8653,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8654,
+    "TEXT": "\t/*\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8655,
+    "TEXT": "\texecute immediate 'select\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8656,
+    "TEXT": "\t\tRound( nvl( sum(( pocet - p_del - p_del_dod ) * ( c_xml_tags.GetTagValueNumT(xml_data, ''S5'', -1, null) + c_xml_tags.GetTagValueNumT(xml_data, ''S6'', -1, null ))), 0 ), 2 )\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8657,
+    "TEXT": "\t\tfrom obj_odb_o\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8658,
+    "TEXT": "\t\twhere kod_id = c_session.getsk_zaloha and rid_o in (' || psRIDs || ')' into nZaloha;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8659,
+    "TEXT": "\t*/\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8660,
+    "TEXT": "\texecute immediate 'select\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8661,
+    "TEXT": "\t\tRound( nvl( sum(( o.pocet - o.p_del - o.p_del_dod ) * ( x.S5 + x.S6)), 0 ), 2 )\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8662,
+    "TEXT": "\t\tfrom obj_odb_o o LEFT OUTER JOIN xmltable( ''/B'' passing o.xml_data columns S6 number path ''S6[last()]'', S5 number path ''S5[last()]'') x on 1=1\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8663,
+    "TEXT": "\t\twhere o.kod_id = c_session.getsk_zaloha and o.rid_o in (' || psRIDs || ')' into nZaloha;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8664,
+    "TEXT": "\t-- napocita este preddavky vyparovane  voci objednavka\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8665,
+    "TEXT": "\texecute immediate 'select\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8666,
+    "TEXT": "\t\tsum(decode((select count(*)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8667,
+    "TEXT": "\t\tfrom obj_odb_o o\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8668,
+    "TEXT": "\t\twhere o.rid_o = l.rid and o.kod_id = c_session.GetSK_Zaloha),0, SUMA_U_M, 0) ) from OBJ_ODB_L L where L.RID in (' || psRIDs || ') ' into nKartaZaloha;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8669,
+    "TEXT": "\t--\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8670,
+    "TEXT": "\treturn nZaloha + nKartaZaloha;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8671,
+    "TEXT": "end DajHodnotuZalohyMulti;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8672,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8673,
+    "TEXT": "procedure KontrolaZalohy(psRIDallV varchar2, psRID varchar2) is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8674,
+    "TEXT": "    nZalohaAkoStrop number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8675,
+    "TEXT": "    nZaloha number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8676,
+    "TEXT": "    nZalohaCelkom number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8677,
+    "TEXT": "    nSCelkom number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8678,
+    "TEXT": "    nDistTypUhrady number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8679,
+    "TEXT": "    nDruh number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8680,
+    "TEXT": "    nSplatPredaj number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8681,
+    "TEXT": "    sRids varchar2(4000) := nvl(psRIDallV, ''''||psRID||'''');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8682,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8683,
+    "TEXT": "    nZalohaAkoStrop := c_ini.GetINI(pID=>1028);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8684,
+    "TEXT": "    if nZalohaAkoStrop = 1 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8685,
+    "TEXT": "        execute immediate 'select sum(ZALOHA), sum(SUMA_0 + SUMA_1 + SUMA_2 + DPH_1 + DPH_2 + ROZDIEL + c_cis_dph_val.GetCelkom(RID)) from obj_odb_l where RID in ('|| sRids ||')'\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8686,
+    "TEXT": "\t\t\t\t\tinto nZaloha, nSCelkom;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8687,
+    "TEXT": "        if nZaloha > 0 and nSCelkom > nZaloha then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8688,
+    "TEXT": "            c_exc.RaiseErrorMsgID(pnIdMsg=>3291, psParams=>nSCelkom || ';' || nZaloha);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8689,
+    "TEXT": "        end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8690,
+    "TEXT": "    else\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8691,
+    "TEXT": "      /*\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8692,
+    "TEXT": "        execute immediate 'select sum(l.ZALOHA), count(distinct l.TYP_UHRADY) from obj_odb_l l where l.RID in (' || sRids || ')' into nZaloha, nDistTypUhrady;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8693,
+    "TEXT": "        if nZaloha > 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8694,
+    "TEXT": "            --Kontrola na typ uhrady len ak je typ uhrady na vsetkych obj rovnaky\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8695,
+    "TEXT": "            if nDistTypUhrady = 1 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8696,
+    "TEXT": "                --Ak je to dobierka, nekontrolujem zalohu\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8697,
+    "TEXT": "                select tu.hot_dob_fakt, tu.splatkovy_predaj into nDruh, nSplatPredaj from obj_odb_l l, typy_uhrady tu where l.typ_uhrady = tu.id and l.rid = psRID;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8698,
+    "TEXT": "                --Ak na type uhrady je druh = \"Dobierka\" a je zapnuty \"Splatkovy predaj\" tak sa nerobi kontrola\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8699,
+    "TEXT": "                if nDruh = c_typ_uhrady.TU_Druh_Dobierka and nSplatPredaj = 1 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8700,
+    "TEXT": "                    return;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8701,
+    "TEXT": "                end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8702,
+    "TEXT": "            end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8703,
+    "TEXT": "            nZalohaCelkom := DajHodnotuZalohyMulti(psRIDs=>sRids);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8704,
+    "TEXT": "            if nZaloha > nZalohaCelkom then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8705,
+    "TEXT": "                c_exc.RaiseErrorMsgID(pnIdMsg=>2693, psParams=>nZalohaCelkom  || ';' ||  nZaloha);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8706,
+    "TEXT": "            end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8707,
+    "TEXT": "        end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8708,
+    "TEXT": "      */\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8709,
+    "TEXT": "      --\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8710,
+    "TEXT": "      for rO in (select l.rid, l.zaloha, l.suma_m, l.suma_u_m, tu.hot_dob_fakt tu_forma,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8711,
+    "TEXT": "        d_obj_odb_l.R_GetSumaZostavaNaUhradu(psrid=> l.rid, psflags_s=> l.flags_s, pstyp_uhrady=> l.typ_uhrady, pnzaloha=> l.zaloha, pnsumaobjc=> L.SUMA_0+L.SUMA_1+L.SUMA_2+L.DPH_1+L.DPH_2+L.ROZDIEL+c_cis_dph_val.GetCelkom(L.RID), pnsuma_u=> round(l.suma_u_m*l.kurz,2), pnSuma_M => l.suma_m) suma_na_uhradu\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8712,
+    "TEXT": "        from obj_odb_l l, typy_uhrady tu where l.typ_uhrady = tu.id\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8713,
+    "TEXT": "        and l.rid in (select column_value from table( ppf.gettokenstbl(pstr=> replace(sRids,'''',''),ptoken=> ',')))\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8714,
+    "TEXT": "        and ((l.zaloha > 0 and tu.hot_dob_fakt not in (c_typ_uhrady.TU_Druh_RegPokladna) ) or tu.hot_dob_fakt = c_typ_uhrady.TU_Druh_Proforma ))\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8715,
+    "TEXT": "      loop\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8716,
+    "TEXT": "        if rO.suma_na_uhradu > 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8717,
+    "TEXT": "          if rO.tu_forma = c_typ_uhrady.TU_Druh_Proforma then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8718,
+    "TEXT": "            --c_exc.RaiseErrorMsgID(pnIdMsg=>2693, psParams=> rO.suma_m || ';' ||  (rO.suma_m - rO.suma_u_m));\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8719,
+    "TEXT": "            c_exc.raiseerrormsg('Na doklade '|| c_rid.getcis_link(psrid=> rO.rid)||' je požadovaná platba predom.\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8720,
+    "TEXT": "Je potrebné ešte uhradiť sumu: '|| (rO.suma_na_uhradu)|| ' !');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8721,
+    "TEXT": "          else\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8722,
+    "TEXT": "            --c_exc.RaiseErrorMsgID(pnIdMsg=>2693, psParams=> rO.zaloha  || ';' ||  nZaloha);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8723,
+    "TEXT": "            c_exc.raiseerrormsg('Na doklade '|| c_rid.getcis_link(psrid=> rO.rid)||' je požadovaná platba zálohy v sume: '|| rO.zaloha ||'\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8724,
+    "TEXT": "Je potrebné ešte uhradiť sumu: '|| (rO.suma_na_uhradu)|| ' !');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8725,
+    "TEXT": "          end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8726,
+    "TEXT": "        end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8727,
+    "TEXT": "      end loop;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8728,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8729,
+    "TEXT": "end KontrolaZalohy;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8730,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8731,
+    "TEXT": "procedure KontrolaNaSplatkovyPredaj(psRIDallV varchar2) is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8732,
+    "TEXT": "    sSelect varchar2(4000);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8733,
+    "TEXT": "    sCisloZmluvy varchar2(254);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8734,
+    "TEXT": "    nStavZmluvy number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8735,
+    "TEXT": "    nExist number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8736,
+    "TEXT": "    nSplatkovyPredaj number := 0;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8737,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8738,
+    "TEXT": "    sSelect := 'SELECT DECODE( SP.SKRATKA, SP.RID, NULL, SP.SKRATKA ),\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8739,
+    "TEXT": "           TO_NUMBER( NVL( C_FLAGS.fGetFlagsState ( SP.FLAGS_S, 2 /*SS_ZMLUVY_SP_StavZmluvySP*/), ''0'' ))\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8740,
+    "TEXT": "        FROM OBJ_ODB_L L, TYPY_UHRADY TU, ZMLUVY_SP SP WHERE TU.ID = L.TYP_UHRADY AND TU.SPLATKOVY_PREDAJ = 1\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8741,
+    "TEXT": "       AND SP.RID_OBJ = L.RID AND L.RID IN (' || psRIDallV || ')\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8742,
+    "TEXT": "           AND DECODE( SP.SKRATKA, SP.RID, NULL, SP.SKRATKA ) IS NOT NULL\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8743,
+    "TEXT": "           AND TO_NUMBER( NVL( C_FLAGS.fGetFlagsState ( SP.FLAGS_S, 2), ''0'' )) = ''2'' /*STAV_ZmluvySP_Schvalena*/\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8744,
+    "TEXT": "           AND SP.S_STAMP = ''0'' and rownum = 1';\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8745,
+    "TEXT": "     begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8746,
+    "TEXT": "        execute immediate sSelect into sCisloZmluvy, nStavZmluvy;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8747,
+    "TEXT": "        nSplatkovyPredaj := 1;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8748,
+    "TEXT": "        sCisloZmluvy := substr(sCisloZmluvy, 1, 10);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8749,
+    "TEXT": "        exception when no_data_found then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8750,
+    "TEXT": "            null;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8751,
+    "TEXT": "     end;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8752,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8753,
+    "TEXT": "     --Kontrola na cislo zmluvy\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8754,
+    "TEXT": "     sSelect := 'SELECT TO_NUMBER( NVL( C_FLAGS.fGetFlagsState ( SP.FLAGS_S, 2 /*SS_ZMLUVY_SP_StavZmluvySP*/), ''0'' ))\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 8755,
+    "TEXT": "           FROM OBJ_ODB_L L, TYPY_UHRADY TU, ZMLUVY_SP SP WHERE TU.ID = L.TYP_UHRADY AND TU.SPLATKOVY_PREDAJ = 1\n"
+  }
+]

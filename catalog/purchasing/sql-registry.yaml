@@ -1,0 +1,191 @@
+schema_version: '1.0'
+kind: sql-registry
+id: pur.sql_registry.001
+records:
+- sql_id: pur.sql.proposal_po
+  title_sk: Návrh -> supplier PO line
+  sql_file: sql/diagnostic/purchasing/proposal_po.sql
+  result_grain_sk: One proposal and its current matching PO line
+  proves_sk: Current forward line reference
+  does_not_prove_sk: Complete historical proposal retention or header RID equivalence
+  fanout_warning_sk: Unique target line PK; do not infer global reverse 1:1.
+  input_parameters:
+  - name: p_proposal_rid
+    required: true
+    description_sk: Presný RID návrhu ako text.
+  evidence_refs:
+  - pur.evidence.accepted
+  - pur.evidence.mp01_f
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+    notes_sk: Statically checked conservative SELECT. Nebolo spustené proti MC.
+- sql_id: pur.sql.po_pl
+  title_sk: Supplier PO -> PL lines
+  sql_file: sql/diagnostic/purchasing/po_pl.sql
+  result_grain_sk: One PO line and each linked PL line
+  proves_sk: Current PO to all linked PL lines
+  does_not_prove_sk: P_PL as physical receipt or historical completeness
+  fanout_warning_sk: 1:N; PO quantities repeat on each PL match, never sum repeated PO quantities.
+  input_parameters:
+  - name: p_po_rid
+    required: true
+    description_sk: Presný supplier PO RID ako text.
+  evidence_refs:
+  - pur.evidence.accepted
+  - pur.evidence.mp01_f
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+    notes_sk: Statically checked conservative SELECT. Nebolo spustené proti MC.
+- sql_id: pur.sql.pl_receipt
+  title_sk: PL -> current receipt lineage
+  sql_file: sql/diagnostic/purchasing/pl_receipt.sql
+  result_grain_sk: One PL line
+  proves_sk: Count and net source quantities of surviving linked receipt rows
+  does_not_prove_sk: Physical receipt completion; current net source sum is not historical P_PRIJ authority
+  fanout_warning_sk: Receipt rows aggregated by RID_V before joining PL.
+  input_parameters:
+  - name: p_pl_rid
+    required: true
+    description_sk: Presný PL RID ako text.
+  evidence_refs:
+  - pur.evidence.accepted
+  - pur.evidence.mp01_f
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+    notes_sk: Statically checked conservative SELECT. Nebolo spustené proti MC.
+- sql_id: pur.sql.header_lines
+  title_sk: Dodávateľský doklad a riadky
+  sql_file: sql/diagnostic/purchasing/header_lines.sql
+  result_grain_sk: One document line
+  proves_sk: Raw document state and canonical current fulfilment interpretation
+  does_not_prove_sk: Physical receipt from final header state
+  fanout_warning_sk: Header values repeat across lines.
+  input_parameters:
+  - name: p_document_rid
+    required: true
+    description_sk: Presný RID generickej OBJD rodiny ako text.
+  evidence_refs:
+  - pur.evidence.accepted
+  - pur.evidence.mp01_f
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+    notes_sk: Statically checked conservative SELECT. Nebolo spustené proti MC.
+- sql_id: pur.sql.quantity
+  title_sk: Množstevný contract riadka
+  sql_file: sql/diagnostic/purchasing/quantity.sql
+  result_grain_sk: One document line
+  proves_sk: Stored current buckets, remaining_qty and processed_qty
+  does_not_prove_sk: P_PL as receipt or P_DEL as supplier failure reason
+  fanout_warning_sk: Single header-to-lines join.
+  input_parameters:
+  - name: p_document_rid
+    required: true
+    description_sk: Presný RID dokladu ako text.
+  evidence_refs:
+  - pur.evidence.accepted
+  - pur.evidence.mp01_f
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+    notes_sk: Statically checked conservative SELECT. Nebolo spustené proti MC.
+- sql_id: pur.sql.overdue
+  title_sk: Riadkové overdue supplier PO
+  sql_file: sql/diagnostic/purchasing/overdue.sql
+  result_grain_sk: One supplier PO line with positive remainder and deadline before cutoff
+  proves_sk: Line-aware overdue at a caller-supplied DATE cutoff
+  does_not_prove_sk: Historical status or UI creator binding; S_STAMP is only technical removal filter
+  fanout_warning_sk: No downstream detail joins.
+  input_parameters:
+  - name: p_as_of_date
+    required: true
+    description_sk: Oracle DATE cutoff; caller volí časovú hranicu, bez implicitnej interpretácie dátumu.
+  evidence_refs:
+  - pur.evidence.accepted
+  - pur.evidence.mp01_f
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+    notes_sk: Statically checked conservative SELECT. Nebolo spustené proti MC.
+- sql_id: pur.sql.p_prij_lineage
+  title_sk: Uložené P_PRIJ vs current surviving lineage
+  sql_file: sql/diagnostic/purchasing/p_prij_lineage.sql
+  result_grain_sk: One PL line
+  proves_sk: Stored P_PRIJ alongside surviving row count and net source quantity
+  does_not_prove_sk: Full event reconstruction or corruption; no link remains NULL, not a fabricated zero
+  fanout_warning_sk: Receipt rows aggregated before join.
+  input_parameters:
+  - name: p_pl_rid
+    required: true
+    description_sk: Presný PL RID ako text.
+  evidence_refs:
+  - pur.evidence.accepted
+  - pur.evidence.mp01_f
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+    notes_sk: Statically checked conservative SELECT. Nebolo spustené proti MC.
+- sql_id: pur.sql.open_pl
+  title_sk: PL s otvoreným množstvom
+  sql_file: sql/diagnostic/purchasing/open_pl.sql
+  result_grain_sk: One PL line with positive remainder
+  proves_sk: Positive line remainder plus current canonical fulfilment state
+  does_not_prove_sk: S_STAMP as business status, physical receipt from header state, all runtime finalisation branches
+  fanout_warning_sk: No receipt fan-out.
+  input_parameters: []
+  evidence_refs:
+  - pur.evidence.accepted
+  - pur.evidence.mp01_f
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+    notes_sk: Statically checked conservative SELECT. Nebolo spustené proti MC.
+- sql_id: pur.sql.source_trace
+  title_sk: MC dependency/source trace
+  sql_file: sql/diagnostic/purchasing/source_trace.sql
+  result_grain_sk: One dictionary dependency or source line
+  proves_sk: Oracle-visible compile dependency or source text
+  does_not_prove_sk: Writer/reader role from dependency alone; external jobs or dynamic runtime absence
+  fanout_warning_sk: Independent result sets; no business quantity aggregation.
+  input_parameters:
+  - name: p_source_name
+    required: true
+    description_sk: Presný Oracle source objekt, napr. D_OBJD_L; bez runtime execution.
+  evidence_refs:
+  - pur.evidence.accepted
+  - pur.evidence.mp01_f
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+    notes_sk: Statically checked conservative SELECT. Nebolo spustené proti MC.
+- sql_id: pur.sql.reverse_proposal
+  title_sk: Reverse proposal retention trace
+  sql_file: sql/diagnostic/purchasing/reverse_proposal.sql
+  result_grain_sk: One OBJD line
+  proves_sk: Current RID_N matches and missing current proposal
+  does_not_prove_sk: Universal historical 1:1 relationship or corruption
+  fanout_warning_sk: Proposal PK lookup; multiple lines may repeat proposal.
+  input_parameters:
+  - name: p_document_rid
+    required: true
+    description_sk: Presný RID dokladu ako text.
+  evidence_refs:
+  - pur.evidence.accepted
+  - pur.evidence.mp01_f
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+    notes_sk: Statically checked conservative SELECT. Nebolo spustené proti MC.

@@ -1,0 +1,2711 @@
+[
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 447,
+    "TEXT": "Procedure ZarezervujTokenC(psRID varchar2, pnTypSprac number, pbPrepocet boolean default TRUE, pnCommit number default 0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 448,
+    "TEXT": "/*rekurzívne volá rezerváciu nad dokladom alebo konkrétnou položkou (''rid','rid_o!id_r',...')*/\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 449,
+    "TEXT": "Procedure ZarezervujBlokacneAkcie(psRID varchar2, pnOutStav in out number );\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 450,
+    "TEXT": "Procedure OdrezervujC(psRID varchar2, pnBlokujPrepocet number default null, pnKontrolaRusRez number default 1,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 451,
+    "TEXT": "  pnPocet number default 0, pnRusRezAjSpecialnu number default 0, pnPovolBlokacie number default 0, pnIgnorujProformu number default 0, pnAjViazanyObal number default 0,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 452,
+    "TEXT": "\tpnKontrolaVyskl number default 1);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 453,
+    "TEXT": "/*rekurzívne volá odrezervovanie nad dokladom alebo konkrétnou položkou (''rid','rid_o!id_r',...')*/\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 454,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 455,
+    "TEXT": "procedure PoznacObjVazbuC(psRID in C_RID.DT_RID, psLink varchar2, pnID_R number default null );\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 456,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 457,
+    "TEXT": "procedure SpracujInsC(psRID in C_RID.DT_RID, psRIDOut in out varchar2, pnReturnVal in out number, psActionParams varchar2 default c_const.UndefinedActionParams);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 458,
+    "TEXT": "procedure SpracujC(psRID in C_RID.DT_RID, pnReturnVal in out number);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 459,
+    "TEXT": "procedure SpracujTMP(psRID in C_RID.DT_RID, psRidOut in out varchar2, pnSpracuj number default 1, pnSklad number default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 460,
+    "TEXT": "                     pnSposobRez number default 0, pnKonsignacna number default 0, pnPrepocetCien number default 0,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 461,
+    "TEXT": "                     pnSposob_uplatneniaGZ number default null, pnReturnAllRID number default 1, pnCommit number default 0,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 462,
+    "TEXT": "                     pnUzavriObjO number default null, pnRezervPodmPar4 number default 0, pnTlac number default 0, pnAjNuloveCeny number default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 463,
+    "TEXT": "                     psActionParams varchar2 default c_const.UndefinedActionParams, pnNeuplatnujGlobalneZlavy number default 0,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 464,
+    "TEXT": "                     pnKontrolaKreditu number default 0, psTypUhrady varchar2 default null, pnPonukajDarcekyZaBody number default 0,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 465,
+    "TEXT": "                     pnPonukajZlavyZaBody number default 0, pnPonukajNavigacnuPonuku number default 0, psParams varchar2 default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 466,
+    "TEXT": "\t\t\t\t\t\t\t\t\t\t pnVybavObjPreSklNaVydPri number default 0, pnVybavenieNaInejDBS number default 0, pnAkoRiesitFiktivne number default 0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 467,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 468,
+    "TEXT": "procedure PreklopSpracujTMP(psRID in C_RID.DT_RID, psRidOut in out varchar2, pnSpracuj number default 1, pnSklad number default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 469,
+    "TEXT": "                     pnSposobRez number default 0, pnKonsignacna number default 0, pnPrepocetCien number default 0,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 470,
+    "TEXT": "                     pnSposob_uplatneniaGZ number default null, pnReturnAllRID number default 1, pnCommit number default 0,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 471,
+    "TEXT": "                     pnUzavriObjO number default null, pnRezervPodmPar4 number default 0, pnTlac number default 0, psActionParams varchar2 default c_const.UndefinedActionParams);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 472,
+    "TEXT": "procedure PreklopSpracujTMP_int(psRID in C_RID.DT_RID, psRidOut in out varchar2, pnSpracuj number default 1, pnSklad number default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 473,
+    "TEXT": "                     pnSposobRez number default 0, pnKonsignacna number default 0, pnPrepocetCien number default 0,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 474,
+    "TEXT": "                     pnSposob_uplatneniaGZ number default null, pnReturnAllRID number default 1, pnCommit number default 0,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 475,
+    "TEXT": "                     pnUzavriObjO number default null, pnRezervPodmPar4 number default 0, pnTlac number default 0, psActionParams varchar2 default c_const.UndefinedActionParams);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 476,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 477,
+    "TEXT": "--pnZrusitAko 0 = zrusit odberatelom, 1 = zrusit dodavatelom\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 478,
+    "TEXT": "procedure ZrusMnozstvoOdbDod(psPK in varchar2, pnPocet number, pnZrusitAko number default 0, psDovodZrusenia varchar2 default null, pnVinnik number default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 479,
+    "TEXT": "  psActionParams varchar2 default c_const.UndefinedActionParams);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 480,
+    "TEXT": "procedure ValidZrusMnozstvoOdbDod(pnState out number, psMessage out varchar2, psFieldName varchar2, psFieldValue varchar2, psPK varchar2, psFieldParams varchar2, psFieldsSetup out varchar2);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 481,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 482,
+    "TEXT": "--pnZrusitAko 0 = zrusit odberatelom, 1 = zrusit dodavatelom\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 483,
+    "TEXT": "procedure ZrusOdberatelomDodavatelom(psPK in varchar2, pnZrusitAko number default 0, pnZrusitCelyPocet number default null, psDovodZrusenia varchar2 default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 484,
+    "TEXT": "  pnVinnik number default null, psActionParams varchar2 default c_const.UndefinedActionParams, pnPocet number default null);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 485,
+    "TEXT": "procedure ZrusDodavatelom(psRID in varchar2, pnPocet number default null, pnBlokujPrepocet number default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 486,
+    "TEXT": "  pnZrusitP_Rez number default 0, pnZrusitNeodpisove number default 1, psDovodZrusenia varchar2 default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 487,
+    "TEXT": "  pnVinnik number default null, pnVyradZRozvozu number default 1, psActionParams varchar2 default AP_ZrusPol_Default, pnAutoKratenieDR number default 1);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 488,
+    "TEXT": "-- rekurzívne volá rušenie dodávateľom nad dokladom alebo konkrétnou položkou (''rid','rid_o!id_r',...')\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 489,
+    "TEXT": "procedure ZrusOdberatelom(psRID in varchar2, pnPocet number default null, pnBlokujPrepocet number default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 490,
+    "TEXT": "  pnZrusitP_Rez number default 0, psDovodZrusenia varchar2 default null, pnVinnik number default null, pnVyradZRozvozu number default 1,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 491,
+    "TEXT": "  psActionParams varchar2 default AP_ZrusPol_Default);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 492,
+    "TEXT": "-- rekurzívne volá rušenie odberateľom nad dokladom alebo konkrétnou položkou (''rid','rid_o!id_r',...')\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 493,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 494,
+    "TEXT": "procedure ZrusPolozkuSK(\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 495,
+    "TEXT": "  pnPocetZruseny out number,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 496,
+    "TEXT": "  psRID varchar2,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 497,
+    "TEXT": "  pnKod_id number,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 498,
+    "TEXT": "  pnPocet number,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 499,
+    "TEXT": "  psDovodRusenia varchar2,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 500,
+    "TEXT": "  pnZrusDodavatelom number default 0,   -- 0 - odberatelom  1- dodavatelom\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 501,
+    "TEXT": "  pnID_R_First number default 0,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 502,
+    "TEXT": "  pnVinnik number default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 503,
+    "TEXT": "  psActionParams varchar2 default c_const.UndefinedActionParams);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 504,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 505,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 506,
+    "TEXT": "/*\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 507,
+    "TEXT": "  pnDavka - Cislo davky\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 508,
+    "TEXT": "  pnAko 0- Co nemozem to necham tak\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 509,
+    "TEXT": "        1 -Co nemozem deletnem\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 510,
+    "TEXT": "*/\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 511,
+    "TEXT": "procedure RezervujDavku(pnDavka in number, pnAko in number, pnCommit number default 0, pnRezEkvivalentmi number default 0, pnRezPodlaPoradia number default -1,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 512,
+    "TEXT": "  pnRezNahradami number default 0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 513,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 514,
+    "TEXT": "/* funkcie vracaju jednotlive stavy podla zadenho flags_s*/\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 515,
+    "TEXT": "  function GetS_STAV_VYB (psFlag_s varchar2, psRid varchar2 default null) return varchar2;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 516,
+    "TEXT": "  function GetS_STAV_REZ (psFlag_s varchar2, psRid varchar2 default null) return varchar2;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 517,
+    "TEXT": "  function GetS_STAV_VYD (psFlag_s varchar2, psRid varchar2 default null) return varchar2;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 518,
+    "TEXT": "  function GetS_STAV_ZRUS (psFlag_s varchar2, psRid varchar2 default null) return varchar2;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 519,
+    "TEXT": "  function GetS_STAV_ZRUS_D (psFlag_s varchar2, psRid varchar2 default null) return varchar2;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 520,
+    "TEXT": "  function GetS_STAV_NAK (psFlag_s varchar2, psRid varchar2 default null) return varchar2;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 521,
+    "TEXT": "  function GetS_STAV_ODOSL (psFlag_s varchar2, psRid varchar2 default null) return varchar2;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 522,
+    "TEXT": "  function GetS_STAV_FAK (psFlag_s varchar2, psRid varchar2 default null) return varchar2;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 523,
+    "TEXT": "  function GetS_ZakazMenitPolozky (psFlag_s varchar2, psRid varchar2 default null) return varchar2;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 524,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 525,
+    "TEXT": "function GetS_FormaDokladu (psFlag_s varchar2, psRid varchar2 default null) return varchar2;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 526,
+    "TEXT": "function GetS_MOC_FAK (psFlag_s varchar2, psRid varchar2 default null) return varchar2;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 527,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 528,
+    "TEXT": "procedure OdosliObjC( psRidObj C_RID.DT_RID, psRidOut in out C_RID.DT_RID );\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 529,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 530,
+    "TEXT": "procedure LogujRezervacie (psRID_R varchar2, pnOld_Pocet number, pnNew_Pocet number);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 531,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 532,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 533,
+    "TEXT": "procedure VlozPolozkuZBlokacie (psRID varchar2, pnKOD_ID number, psSarza varchar2, pnPocet number, pnReturnPocet IN OUT number, psReturnPolozky IN OUT varchar2);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 534,
+    "TEXT": "procedure InsOBJ_SPRAC_REZ (psRID_O varchar2, pnID_R number, psRID_V varchar2, psID_SZ varchar2, pnPocet number);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 535,
+    "TEXT": "procedure RezervujZBlokacie (psRID varchar2, pnCommit number default 0, pnID_R number default null, pnPocet number default null);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 536,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 537,
+    "TEXT": "procedure ClearOBJ_SPRAC_REZ (psRID_O varchar2);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 538,
+    "TEXT": "procedure ClearOBJ_SPRAC_REZ_Job;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 539,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 540,
+    "TEXT": "procedure LinkPredajSpracujObjednavky (psPodmienka varchar2);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 541,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 542,
+    "TEXT": "procedure VymenTovar_Int (pnKod_id_new number, pnKod_id_old number, psPodmObj varchar2, pnLenCeleNevyb number, pnRezervovat number,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 543,
+    "TEXT": "  pnLenDoVyskySkladu number, pnPonechajCeny number, pnSposobRound number, pnRusitPolozky number, pnError IN OUT number,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 544,
+    "TEXT": "  pnMnozstvo number, psID_SZ varchar2, psSarza varchar2, psRezRiadokPocet out varchar2, psRID_R varchar2 default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 545,
+    "TEXT": "  pnPrepocitajHlavicku number default 1);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 546,
+    "TEXT": "procedure VymenTovar (pnKod_id_new number, pnKod_id_old number, psPodmObj varchar2, pnLenCeleNevyb number, pnRezervovat number, pnLenDoVyskySkladu number, pnPonechajCeny number, pnSposobRound number, pnRusitPolozky number, pnError IN OUT number,pnMnozstvo number default 0,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 547,
+    "TEXT": "                      psID_SZ varchar2 default C_Const.SZ_PRAZDNY_ZAZNAM, psSarza varchar2 default NULL, psRID_R varchar2 default null);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 548,
+    "TEXT": "procedure PridajTovar (pnKod_id_new number, psPodmObj varchar2, pnRezervovat number, pnLenDoVyskySkladu number, pnPocetDoObj number,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 549,
+    "TEXT": "  pnVytvorHlavicku number default 0, psRid_r_PreHlavicku varchar2 default '0');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 550,
+    "TEXT": "procedure PridajPolozku (pnID_R IN OUT number, psRID varchar2, pnKod_id number, pnPocet number);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 551,
+    "TEXT": "procedure PridajAleboVymenTovar (pnKod_id_new number, pnKod_id_old number, pnPridat_Polozku number, pnLen_Cele_Nevyb number, pnRezervovat number,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 552,
+    "TEXT": "                                 pnLen_Do_Vysky_Skladu number, pnNOVE_CENY number, pnSposob_Round number, pnRusit_Polozky number, psRID varchar2 default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 553,
+    "TEXT": "                                 psPodmObj varchar2 default null, pnMnozstvo number default 0,psID_SZ varchar2 default C_Const.SZ_PRAZDNY_ZAZNAM, psSarza varchar2 default NULL,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 554,
+    "TEXT": "                                 pnIBA_NAHRADY number default null, pnIBA_SKLADOM number default null, pnULOZIT_NASTAVENIE number default 0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 555,
+    "TEXT": "procedure VymenTovarZaEkvivalent(pnKod_id_new number, pnKod_id_old number, pnRezervovat number, pnLen_Do_Vysky_Skladu number, pnNOVE_CENY number,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 556,
+    "TEXT": "                                 pnSposob_Round number, psRID varchar2 default null, psPodmObj varchar2 default null, pnPocet number default 0,psID_SZ varchar2 default C_Const.SZ_PRAZDNY_ZAZNAM,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 557,
+    "TEXT": "                                 psSarza varchar2 default NULL, pnULOZIT_NASTAVENIE number default 0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 558,
+    "TEXT": "procedure VymenTovarZaNahradu(pnKod_id_new number, pnKod_id_old number, pnRezervovat number, pnLen_Do_Vysky_Skladu number, pnNOVE_CENY number,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 559,
+    "TEXT": "                              pnSposob_Round number, psRID varchar2 default null, psPodmObj varchar2 default null, pnPocet number default 0,psID_SZ varchar2 default C_Const.SZ_PRAZDNY_ZAZNAM,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 560,
+    "TEXT": "                              psSarza varchar2 default NULL, pnULOZIT_NASTAVENIE number default 0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 561,
+    "TEXT": "procedure ValidPridajAleboVymenTovar(pnState out number, psMessage out varchar2, psFieldName varchar2, psFieldValue varchar2, psPK varchar2, psFieldParams varchar2, psFieldsSetup out varchar2);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 562,
+    "TEXT": "function GetParamPridajAleboVymenTovar return varchar2;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 563,
+    "TEXT": "function GetParamVymenTovar return varchar2;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 564,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 565,
+    "TEXT": "procedure OdrezervujPodm (psPodmienka varchar2, pnRusitPolozky number);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 566,
+    "TEXT": "procedure VlozPolozkyZPrijemky (psRID_OBJ C_RID.DT_RID, psRID_PRIJ C_RID.DT_RID, pnOdpisuj number, pnTypRezervacie number);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 567,
+    "TEXT": "procedure KontrolaPolozkyZPrijemky (psRID_OBJ C_RID.DT_RID, psRID_PRIJ C_RID.DT_RID, pnOut IN OUT Number );\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 568,
+    "TEXT": "procedure ZrusPolozkyZPrijemky (psRID_OBJ C_RID.DT_RID, nID_R number, pnOut IN OUT Number );\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 569,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 570,
+    "TEXT": "procedure NastavMOC_CenyPolozkam(psRID varchar2, pnKasa number default c_session.getkasa);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 571,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 572,
+    "TEXT": "function JeDokladMOC(psRid varchar2 default null, psFlags_s varchar2 default null, psTyp_Uhrady varchar2 default null, pnMena number default null) return boolean;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 573,
+    "TEXT": "function GetSumaMOC (psRID varchar2, pnKasa number default c_session.getkasa, pnNastavCenyPolozkam number default 0) return number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 574,
+    "TEXT": "function GetSumaMOC_Rez(psRID varchar2, pnKasa number default c_session.getkasa, pnNastavCenyPolozkam number default 0) return number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 575,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 576,
+    "TEXT": "Procedure PrepocetDopravy( psRID varchar2, pnDoprava number, pnSumaC number, pnPrepocetHlavicky number );\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 577,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 578,
+    "TEXT": "function GetRID_DLaF(psRID varchar2) return varchar2;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 579,
+    "TEXT": "procedure SetFakturacnyPartner (psRID_D varchar2, psID_PARTNER_FAKT varchar2, pnSposobPrepCien number default cenotvorba.PREPOCET_CIEN_PrepocitajVsetky);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 580,
+    "TEXT": "function GetFakturacnyPartner(psRID_D varchar2) return number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 581,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 582,
+    "TEXT": "procedure VlozDoDokladuPreddavokZObj(psRID_DLAF varchar2, pnTypParamFZ number, psParam varchar2, pnSumaVysporZalohy in out number);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 583,
+    "TEXT": "procedure VlozDoDokladuPreddavokZObjOlD(psRID_DLAF varchar2, pnTypParamFZ number, psParam varchar2, pnSumaVysporZalohy in out number);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 584,
+    "TEXT": "function Exists_PolozkaViazanaNaZalohu(psRID_DLAF varchar2, pnDph_Param number default null) return number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 585,
+    "TEXT": "function SumaPreddavkuViazana(psRID_DLAF varchar2, pnDPH number default null) return number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 586,
+    "TEXT": "function SumaPreddavkuPomerna(psRID_DLAF varchar2, pnDPH number default null) return number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 587,
+    "TEXT": "procedure ValidPresunZalohy(pnState out number, psMessage out varchar2, psFieldName varchar2, psFieldValue varchar2, psPK varchar2 , psFieldParams varchar2, psFieldsSetup out varchar2);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 588,
+    "TEXT": "procedure PresunZalohy (psRID varchar2, pnID_R number, psRID_TO varchar2, pnSumaOddel number default null);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 589,
+    "TEXT": "procedure PresunPreddavku (psRID varchar2, pnID_R number, psRID_TO varchar2, pnOutStav in out number);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 590,
+    "TEXT": "procedure RozdelPreddavok(psRID varchar2, pnID_R number, pnSumaOddel number, pnID_R_New out number, pnZakladOddel number default null);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 591,
+    "TEXT": "procedure DobropisujPreddavok (psRID varchar2, psRIDREK in out varchar2, pnOutStav in out number, psKod_O varchar2 default null);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 592,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 593,
+    "TEXT": "procedure PrepocitajObsahVydajkam( psRID in C_RID.DT_RID );\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 594,
+    "TEXT": "procedure OdrezervujMnozstvo(psRID_R varchar2, pnMnozstvo number, pnPrepocitajHlavicku number default 1);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 595,
+    "TEXT": "Procedure OdrezervujMnozstvoNR(psRID_R varchar2, pnMnozstvo number );\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 596,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 597,
+    "TEXT": "-- vrati hodnotu dátumu ceny podľa RID, resp. podľa prepínača 847(ak parameter nie je nulový, tak podľa prepínača ho vráti)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 598,
+    "TEXT": "function GetDATUM_C_Def( psRID varchar2, pdtDatumVyst DT_DATUM_C, pdtDatumPln DT_DATUM_C ) return DT_DATUM_C;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 599,
+    "TEXT": "-- vrati min alebo max hodnotu dátumu ceny podľa prepínača 851\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 600,
+    "TEXT": "function GetDATUM_C_MinMax( psRIDallV varchar2, psCondition varchar2 ) return DT_DATUM_C;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 601,
+    "TEXT": "-- nastavenie stavu vybavenia vo FLAGS_S podľa parametra konkrétnemu RIDčku\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 602,
+    "TEXT": "procedure SetFlagsS_STAV_VYB (psRID in C_RID.DT_RID, pnStav_OPr number);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 603,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 604,
+    "TEXT": "procedure Odblokuj (psRID in C_RID.DT_RID, psPozn varchar2, pnNekontroluj number default 0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 605,
+    "TEXT": "procedure Skontroluj (psRID in C_RID.DT_RID, pnRaise in out number);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 606,
+    "TEXT": "procedure NastavKonsiObj(psRID C_RID.DT_RID,pnSKLAD_PRE DT_SKLAD_PRE);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 607,
+    "TEXT": "procedure NastavObjPreStredisko(psRID C_RID.DT_RID,pnSKLAD_PRE DT_SKLAD_PRE);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 608,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 609,
+    "TEXT": "Procedure PrepocitajPrepravky( psRID varchar2);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 610,
+    "TEXT": "procedure ZmenNaProformu(psRID C_RID.DT_RID);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 611,
+    "TEXT": "Procedure RezervujIS( psRID varchar2, pnID_R number, pnSklad number, pnKod_id number, psSarza varchar2, pnPocet number, pnTypRez number, pnOutStav in out number,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 612,
+    "TEXT": "  pnCezArtSkup number default 0, pnNerezAko number default 0, psRezRiadokPocet in out varchar2, pnRezAjSpecialnu number default 0, psid_sz varchar2 default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 613,
+    "TEXT": "  pnKazdyDenNovaHlavicka number default 1, psTransferPoloha varchar2 default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 614,
+    "TEXT": "  psPozn varchar2 default null, pnDoObjZaMna number default null, pdtDatumP date default null, psParams varchar2 default null, pnTYP_REZ_OBJ number default 0,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 615,
+    "TEXT": "  pnKONTROLA_POCTU number default 0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 616,
+    "TEXT": "procedure RezervujIS_Int_L(psRID_ObjStr in out varchar2, psRID varchar2, pnSklad number, pnSkladPre number, psRID_ObjStr_New varchar2 default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 617,
+    "TEXT": "  pnKazdyDenNovaHlavicka number default 1, psTransferPoloha varchar2 default null, pnDoObjZaMna number default null, pdtDatumP date default null, pnTYP_REZ_OBJ number default 0,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 618,
+    "TEXT": "\tpnKodID number,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 619,
+    "TEXT": "\tpsSarza varchar2,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 620,
+    "TEXT": "\tpsID_SZ varchar2);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 621,
+    "TEXT": "Procedure RezervujIS_Int( psRID varchar2, pnID_R number, pnSklad number, pnKod_id number, psSarza varchar2, pnPocet number, pnTypRez number, pnOutStav in out number,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 622,
+    "TEXT": "  pnCezArtSkup number default 0, pnNerezAko number default 0, psRezRiadokPocet in out varchar2, psRID_ObjStr out varchar2, pnRezAjSpecialnu number default 0,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 623,
+    "TEXT": "  psid_sz varchar2 default null, psRID_ObjStr_New varchar2 default null, pnKazdyDenNovaHlavicka number default 1, psTransferPoloha varchar2 default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 624,
+    "TEXT": "  psPozn varchar2 default null, pnDoObjZaMna number default null, pdtDatumP date default null, psParams varchar2 default null, pnTYP_REZ_OBJ number default 0,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 625,
+    "TEXT": "  pnKONTROLA_POCTU number default 0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 626,
+    "TEXT": "Procedure RezervujISVsetko_Int( psRID varchar2, pnID_R number, pnSklad number, pnKod_id number, psSarza varchar2, pnPocet number, pnTypRez number, pnOutStav in out number, psRezRiadokPocet in out varchar2 );\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 627,
+    "TEXT": "Procedure RezervujISVsetko( psRID varchar2, pnID_R number, pnSklad number, pnKod_id number, psSarza varchar2, pnPocet number, pnTypRez number, pnOutStav in out number );\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 628,
+    "TEXT": "Procedure RezervujISCoSaDa_Int( psRID varchar2, pnID_R number, pnSklad number, pnKod_id number, pnTypRez number, pnOutStav in out number, pnCezArtSkup number default 0,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 629,
+    "TEXT": "  pnRezAjSpecialnu number default 0, psid_sz varchar2 default null, psTransferPoloha varchar2 default null, psRID_ObjStr out varchar2, pnTYP_REZ_OBJ number default 0 );\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 630,
+    "TEXT": "Procedure RezervujISCoSaDa( psRID varchar2, pnID_R number, pnSklad number, pnKod_id number, pnTypRez number, pnOutStav in out number, pnCezArtSkup number default 0,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 631,
+    "TEXT": "  pnRezAjSpecialnu number default 0, psid_sz varchar2 default null, psTransferPoloha varchar2 default null, pnTYP_REZ_OBJ number default 0 );\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 632,
+    "TEXT": "Procedure ZrusRezervaciuIS( psRID varchar2, pnID_R number, pnOutStav in out number, pnRezSklad number default 1, pnPrepocitajHlavicku number default 1 );\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 633,
+    "TEXT": "Procedure ZrusRezervaciuISPocet( psRID varchar2, pnID_R number, pnPocet number/*nepouzite*/, pnOutStav in out number,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 634,
+    "TEXT": "  pnDavka in out number, pnRezSklad number default 1, pnPrepocitajHlavicku number default 1 );\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 635,
+    "TEXT": "Procedure Poniz_P_REZ_IS( psRID varchar2, pnID_R number, pnPocet number );\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 636,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 637,
+    "TEXT": "Procedure ZrusPreddavky( psRID varchar2, pnOutStav in out number );\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 638,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 639,
+    "TEXT": "Procedure RezervujZamenamiAS(psRID varchar2,pnOutStav in out number);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 640,
+    "TEXT": "procedure KontrolaZalohy(psRIDallV varchar2, psRID varchar2);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 641,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 642,
+    "TEXT": "procedure VybavNaVydajku(psRIDallV varchar2, psRIDO varchar2, psRID in out varchar2, psPodm varchar2 default null, psTypCis varchar2 default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 643,
+    "TEXT": "\tpnOK number default 0, pnNedelDoklad number default 0, pnCommit number default 1,  psActionParams varchar2 default c_const.UndefinedActionParams,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 644,
+    "TEXT": "\tpsRidQuery varchar2 default null, pnTlac number default 0, pnPouziSkladZObj number default 0, pnNaFakturu number default 0, pnSkladKam number default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 645,
+    "TEXT": "\tpnNekontrolujTU number default 0, psTypUhrady varchar2 default null, pnPrenesDavku number default 0, pnKontrolaNaDatumDodania number default 1);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 646,
+    "TEXT": "procedure VybavNaFakturu(psRIDallV varchar2, psRIDO varchar2, psRID in out varchar2, psPodm varchar2 default null, psPlatidla varchar2 default null, psActionParams varchar2 default c_const.UndefinedActionParams, pnRaiseActionMsg number default 0, pnOK number default 0, psRidQuery varchar2 default null, pnTlac number default 0, psTypUhrady varchar2 default null);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 647,
+    "TEXT": "procedure VybavPodlaNastaveniaPartnera(psRIDO varchar2, psRID in out varchar2, psTypCis varchar2 default null, pnOK number default 0, pnNedelDoklad number default 0, pnCommit number default 1, psActionParams varchar2 default c_const.UndefinedActionParams, pnTlac number default 0, psPlatidla varchar2 default null, pnRaiseActionMsg number default 0, psTypUhrady varchar2 default null);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 648,
+    "TEXT": "procedure VybavNaVydFakt(psRIDallV varchar2, psRIDO varchar2, psRID in out varchar2, psPodm varchar2 default null, psTypCis varchar2 default null, psPlatidla varchar2 default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 649,
+    "TEXT": "\tpsActionParams varchar2 default c_const.UndefinedActionParams, pnRaiseActionMsg number default 0, pnOK number default 0, psRidQuery varchar2 default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 650,
+    "TEXT": "\tpnTlacVyd number default 0, pnTlacFak number default 0, psTypUhrady varchar2 default null, pnVsetko number default 0, pnRezCezArtSkup number default 1);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 651,
+    "TEXT": "procedure VybavNaVydajkuTMP(psRIDallV varchar2, psRIDO varchar2, psRID in out varchar2, psPodm varchar2 default null, psTypCis varchar2 default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 652,
+    "TEXT": "  pnOK number default 0, psActionParams varchar2 default c_const.UndefinedActionParams, psRidQuery varchar2 default null, pnSkladKam number default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 653,
+    "TEXT": "  pnNekontrolujTU number default 0, psTypUhrady varchar2 default null, pnSklad number default null, pnUctStr number default null, pnAddPrefixParam number default 1,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 654,
+    "TEXT": "  pnZrusRez number default 0, pnDarcekyPriFakt number default 0, pnKotrolujKrediSplatnost number default 1, pnPonukajSkladyAkJeViac number default 1);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 655,
+    "TEXT": "procedure VybavNaFakturuTMP(psRIDallV varchar2, psRIDO varchar2, psRID in out varchar2, psPodm varchar2 default null, psActionParams varchar2 default null, pnRaiseActionMsg number default 0, pnOK number default 0, psRidQuery varchar2 default null, psTypUhrady varchar2 default null, psPodmID_R varchar2 default null);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 656,
+    "TEXT": "procedure VybavNaVydFaktTMP(psRIDallV varchar2, psRIDO varchar2, psRID in out varchar2, psPodm varchar2 default null, psTypCis varchar2 default null, pnOK number default 0, psRidQuery varchar2 default null, pnTlacVyd number default 0, psActionParams varchar2 default c_const.UndefinedActionParams, psTypUhrady varchar2 default null);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 657,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 658,
+    "TEXT": "procedure RezervujVsetko(psRID varchar2, pnCezArtSkup number default 1 );\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 659,
+    "TEXT": "procedure PrepocitajCeny(psRID varchar2, pnVsetky number default 0, pnSposobPrepCien number default cenotvorba.PREPOCET_CIEN_PrepocitajVsetky, pnIbaNulove number default 0, pnKtoraCenaZachovaj number default 1);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 660,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 661,
+    "TEXT": "procedure RozbiRiadok(prDD doklad_darceky%rowtype, pnID_R number, pnPocet number, pnSuma number, pnCezDoklad number,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 662,
+    "TEXT": "  pnID_R_New out number, pnPocetZruseny out number, pnSumaZrusena out number);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 663,
+    "TEXT": "procedure UplatniDarcek(psRID_CT varchar2, psRID_Dokl varchar2, pnPocetDarcekov number, pnPocetBodov number, pnRezervovat number, pnUplatniCelyNarok number default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 664,
+    "TEXT": "  psKupon varchar2 default null, \tpnKontrolaNaUplatnenie number default 1);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 665,
+    "TEXT": "procedure UplatniDarcekCezDoklad(psRID_CT varchar2, psRID_Dokl varchar2, pnPocetDarcekov number,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 666,
+    "TEXT": "  pnPocetBodov number, pnRezervovat number, pnCezDoklad number default null, pnUplatneny out number,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 667,
+    "TEXT": "  pnDarcekNiejeVDokl out number, pnUplatniCelyNarok in number default null);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 668,
+    "TEXT": "procedure VlozDarcek(prDD doklad_darceky%rowtype, psID_Z varchar2, pnPocetDarcekov number, pnRezervovat number, pnCezObsahDokladu number default 0, pnID_R out number,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 669,
+    "TEXT": "  pnPrepocetH number default 0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 670,
+    "TEXT": "procedure ZrusDarcek(psID_DoklZlavy varchar2, pnPrepocitajHlavicku number default 1, pnUplatniAjNaVybavene number default 0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 671,
+    "TEXT": "procedure UplatniGZ_DarcekyAut(psRID_Dokl varchar2, pnPP number, pnRezervovat number, pnUplatniCelyNarok number default null, pnRekurzia number default 0,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 672,
+    "TEXT": "  pnKontrolujCiJeUzUplatnena number default 1);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 673,
+    "TEXT": "procedure UplatniGlobalneZlavyAut(psRID_Dokl varchar2, pnPP number, pnRezervovat number, pnUplatniCelyNarok number default null, pnRekurzia number default 0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 674,
+    "TEXT": "procedure UplatniGlobalneZlavyCezDoklAut(psRID_Dokl varchar2, pnUplatniCelyNarok number default null);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 675,
+    "TEXT": "procedure DoplnPolozkyDarceka(psRID_Dokl varchar2, psRID_CT varchar2, pnPocet number, pnVlozCeluSadu number default 0 /*0-Vlozi vzdy celu sadu, 1-Doplni chybajuce*/ ,pnUplatniCelyNarok number default null);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 676,
+    "TEXT": "procedure UplatniGZ(psRID_Dokl varchar2);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 677,
+    "TEXT": "procedure UplatniGZT(psRID_Dokl varchar2);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 678,
+    "TEXT": "procedure UplatniGZ_a_GZT(psRID_Dokl varchar2);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 679,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 680,
+    "TEXT": "procedure GenerujKomisneDoklady(psRID varchar2, psRidVyd out varchar2);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 681,
+    "TEXT": "procedure RezervujZKomisPresunu(psRID varchar2);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 682,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 683,
+    "TEXT": "procedure UpravDarcekyPodlaVazDokl(psRID varchar2);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 684,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 685,
+    "TEXT": "function GetFB_vDavkeSoloVyd(psFlagsB varchar2 default null, psRID varchar2 default null) return number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 686,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 687,
+    "TEXT": "Procedure RezervujIS_ZvydajaNaPresun( psRidObj varchar2, pnID_R_Obj number, pnPocet number,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 688,
+    "TEXT": "  psRidVyd varchar2, psID_SZ varchar2);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 689,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 690,
+    "TEXT": "procedure PrerobNaInySklad(psRID varchar2, pnSklad number, pnZrusExistRezervacie number, psRIDNew out varchar2, psActionParams varchar2 default c_const.UndefinedActionParams, pnIbaRezervovatelneMnozstvo number default 0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 691,
+    "TEXT": "procedure PrerobNaInySkladD(psRID varchar2, pnSklad number, pnZrusExistRezervacie number, psRIDNew out varchar2, pnTypRez number, pnCezArtSkup number default 0, pnNieObjednaneNaDodTAG number default 0, pnPrepocitajGZ number default 0, psActionParams varchar2 default c_const.UndefinedActionParams, pnIbaRezervovatelneMnozstvo number default 0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 692,
+    "TEXT": "procedure ValidPrerobNaInySkladD(pnState out number, psMessage out varchar2, psFieldName varchar2, psFieldValue varchar2, psPK varchar2, psFieldParams varchar2, psFieldsSetup out varchar2);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 693,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 694,
+    "TEXT": "procedure SetS_STAV_NAK (psRID in C_RID.DT_RID, pnStav number);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 695,
+    "TEXT": "procedure UzavriNakup(psRID varchar2, pnNotRaise number default 0, pnID_R number default null, psRID_OBJEKT varchar2 default null, pnRezZoSkladu number default 1);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 696,
+    "TEXT": "procedure SpracujNavrhObj(psRID varchar2);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 697,
+    "TEXT": "function JeOhrozenePlnenie(psRID varchar2, pdtDatumP date default null, pnStavRez number default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 698,
+    "TEXT": "pnStavVykrytia number default null) return number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 699,
+    "TEXT": "function GetMaxTerminDod(psRID varchar2, pnKtory number) return date;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 700,
+    "TEXT": "function GetMaxDatumVykrytia(psRID varchar2) return date;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 701,
+    "TEXT": "procedure NastavSpecialObjednavku(psRID C_RID.DT_RID);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 702,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 703,
+    "TEXT": "function CP_GetStav(psRID C_RID.DT_RID) return varchar2;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 704,
+    "TEXT": "-- procedury pre zmenu stavu cenovej ponuky\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 705,
+    "TEXT": "procedure CP_Nacenit(psRID C_RID.DT_RID, pnZmenStav number default 0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 706,
+    "TEXT": "procedure CP_Nacenena(psRID C_RID.DT_RID, pnZmenStav number default 0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 707,
+    "TEXT": "procedure CP_PoslatZakaznikovi(psRID C_RID.DT_RID, pnZmenStav number default 0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 708,
+    "TEXT": "procedure CP_Prepracovat(psRID C_RID.DT_RID, pnZmenStav number default 0, psActionParams varchar2 default c_const.UndefinedActionParams);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 709,
+    "TEXT": "procedure CP_Akceptovat(psRID C_RID.DT_RID, pnZmenStav number default 0, psActionParams varchar2 default c_const.UndefinedActionParams);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 710,
+    "TEXT": "procedure CP_Zrusit(psRID C_RID.DT_RID, pnZmenStav number default 0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 711,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 712,
+    "TEXT": "procedure PrehodPasivneKusy(psRID C_RID.DT_RID, pnFormaOld number, pnFormaNew number default null);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 713,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 714,
+    "TEXT": "procedure Makra_KontrolaZrusenych(psRID varchar2);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 715,
+    "TEXT": "procedure Makra_KontrolaVydanych(psRID varchar2);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 716,
+    "TEXT": "procedure Makra_OddelRezervovaneMakro(psRID varchar2, pnID_R_P number, pnID_R_P_NEW out number);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 717,
+    "TEXT": "procedure Makra_OddelRezervovaneMakra(psRID varchar2);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 718,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 719,
+    "TEXT": "procedure ZrusRezervaciuIS_W(psRID_R varchar2) ;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 720,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 721,
+    "TEXT": "function GetFB_SpecialnaObj(psFlagsB varchar2 default null, psRID varchar2 default null) return number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 722,
+    "TEXT": "function GetFB_SpecialnaCena(psFlagsB varchar2 default null, psRID varchar2 default null) return number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 723,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 724,
+    "TEXT": "procedure UzavriObj(psRID varchar2);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 725,
+    "TEXT": "procedure Uzavri_a_rezervuj(psRID varchar2, pnTypSprac number, psAction in out varchar2, pnCezArtSkup number default 0, pnCommit number default 0, pnNieObjednaneNaDodTAG number default 0, pnPrepocitajGZ number default 0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 726,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 727,
+    "TEXT": "procedure RezervujIS_BezRez( psRID_O varchar2, pnID_R number, pnSklad number, pnPocet number, pnOutStav in out number, pnTYP_REZ_OBJ number default 0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 728,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 729,
+    "TEXT": "procedure ZrusRezervaciuObjD(psRID C_RID.DT_RID, pnRezSklad number default 1);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 730,
+    "TEXT": "procedure ZrusRezervaciuPL(psRID C_RID.DT_RID, pnRezSklad number default 1);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 731,
+    "TEXT": "procedure ZrusRezervaciuNavrhu(psRID C_RID.DT_RID, pnRezSklad number default 1);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 732,
+    "TEXT": "procedure ZrusRezervaciuIS_All(psRID C_RID.DT_RID, pnRezSklad number default 1);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 733,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 734,
+    "TEXT": "procedure NastavSpecialnaObj(psRID C_RID.DT_RID);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 735,
+    "TEXT": "procedure NastavSpecialnaCena(psRID C_RID.DT_RID);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 736,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 737,
+    "TEXT": "procedure ZaradDoValcaAutomat_Int(psRID C_RID.DT_RID, pnID_R number, pnSklad number, pnKodID number, psSarza varchar2,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 738,
+    "TEXT": "  pnPocet number, pnObjDod number, pnObjVO number, pnZasSklad number, pdtTerminDod date, pnSkladStart number,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 739,
+    "TEXT": "  pbPolozkovite boolean, pnZdrojNavrhu number, pnUrgent number default 0, pnCena number default null);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 740,
+    "TEXT": "procedure ZaradDoValcaAutomat(psRID C_RID.DT_RID, pnSpecObj number default null, pnSpecCena number default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 741,
+    "TEXT": "  pdtTermin date default null, pnID_R number default null, psRID_OBJEKT varchar2 default null, pnRezZoSkladu number default 1);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 742,
+    "TEXT": "procedure SetNekontrolujPoctyObjPreStr(psRID C_RID.DT_RID);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 743,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 744,
+    "TEXT": "procedure ObjOdb2TempObjOdb(psRIDallV varchar2, psRIDV varchar2, psRidOut in out varchar2, psTypCis varchar2 default null, pnSklad number default null);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 745,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 746,
+    "TEXT": "procedure PredplnNedochystavkyTMP(psRID varchar2);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 747,
+    "TEXT": "procedure CP_PredplnNaObjOdb(psRID varchar2, psRID_New in out varchar2, pdtDatumP date default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 748,
+    "TEXT": "  pnHlavicka number default 0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 749,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 750,
+    "TEXT": "procedure ZarezervujZRezObjPreStr(pnKodID number, pnPocet number, pnZoSkladu number, pnRezervovane out number);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 751,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 752,
+    "TEXT": "function CP_GetPrvaVerzia(psSkratkaAkt varchar2) return varchar2;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 753,
+    "TEXT": "function CP_GetDalsiaVerzia(psSkratkaAkt varchar2, psSkratkaLast varchar2) return varchar2;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 754,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 755,
+    "TEXT": "procedure KontrolaNaMinCenu(psRID C_RID.DT_RID);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 756,
+    "TEXT": "procedure PrerobNaObjednavku(psRID C_RID.DT_RID, pnHlasit number default 1);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 757,
+    "TEXT": "procedure PrerobNaProformu(psRID C_RID.DT_RID, pnZALOHA number default null);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 758,
+    "TEXT": "procedure RezervujEkvivalentmi(psRID varchar2, pnZvysokZrusTyp number, pnOutStav in out number);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 759,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 760,
+    "TEXT": "function GetZdrojNavrhuSpecObj(pnSpecObj number, pnZdrojNotSpecObj number default null) return number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 761,
+    "TEXT": "function GetSKPovolenaDoValca(pnKodID number) return number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 762,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 763,
+    "TEXT": "function GetNevybPocetNaObj(pnKod_id number, psMiesto_dod varchar2, pdtDatumOd date default null, pdtDatumDo date default null) return number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 764,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 765,
+    "TEXT": "procedure ZrusRezervaciuVRezimeObjValca(psRID varchar2);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 766,
+    "TEXT": "procedure ZrusOdberatelomVRezimeObjValca(psRID varchar2, psDovodZrusenia varchar2 default null, pnVinnik number default null);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 767,
+    "TEXT": "procedure ZrusDodavatelomVRezimeObjValca(psRID varchar2, psDovodZrusenia varchar2 default null, pnVinnik number default null);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 768,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 769,
+    "TEXT": "function JeSpecialna(psRID varchar2, pnID_R number, psFlags_b_o varchar2 default null) return number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 770,
+    "TEXT": "procedure KontrolaMaxPocetObj(psRID varchar);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 771,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 772,
+    "TEXT": "procedure CP_PrepracovatAko(psRIDOut out C_RID.DT_RID,psRID C_RID.DT_RID, pnOutIdCis number default C_CIS_DEF.CIS_obj_odb_l , pnZmenStav number default 0,pnLenKopia number default 0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 773,
+    "TEXT": "procedure CP_PrepracovatAkoTD(psRidOut out C_RID.DT_RID,psRID C_RID.DT_RID, pnZmenStav number default 0,pnLenKopia number default 0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 774,
+    "TEXT": "procedure CP_NastavPrepracovanie(psRidNew varchar2,psRidPrev varchar2,pnZmenStav number);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 775,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 776,
+    "TEXT": "function GetFB_PrijemPreLogistiku(psFLAGS_B varchar2 default null, psRID varchar2 default null) return number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 777,
+    "TEXT": "function GetFB_PrijemZLogistiky(psFLAGS_B varchar2 default null, psRID varchar2 default null) return number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 778,
+    "TEXT": "function CanDoAction(psRID varchar2, pnAction number, psStav varchar2 default null, psFlags_s varchar2 default null, psS_STAMP varchar2 default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 779,
+    "TEXT": "  pnRaise number default 0, pnKod_id number default null, pnID_R number default null, psZlavy varchar2 default null) return number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 780,
+    "TEXT": "procedure ValidTMP(pnState out number, psMessage out varchar2, psFieldName varchar2, psFieldValue varchar2, psPK varchar2 , psFieldParams varchar2, psFieldsSetup out varchar2);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 781,
+    "TEXT": "procedure ValidT(pnState out number, psMessage out varchar2, psFieldName varchar2, psFieldValue varchar2, psPK varchar2 , psFieldParams varchar2, psFieldsSetup out varchar2);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 782,
+    "TEXT": "procedure PridajPolozkuTMP(pnID_R in out number, prParams in out OPRIDAJPOLOZKU_PARAMS);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 783,
+    "TEXT": "procedure NastavFakturacnehoPartnera(psRID varchar2, psMiestoDod varchar2, pdtDatumP date);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 784,
+    "TEXT": "procedure CreateDokladTMP(psRID IN OUT varchar2, prParams OCREATEDOKLAD_PARAMS);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 785,
+    "TEXT": "procedure BeforeDeleteTMP(psRID varchar2);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 786,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 787,
+    "TEXT": "procedure PridajPolozkuObj(pnID_R in out number, prParams in out OPRIDAJPOLOZKU_PARAMS );\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 788,
+    "TEXT": "procedure PridajPolozkuR_Int(\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 789,
+    "TEXT": "    pnID_R in out number,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 790,
+    "TEXT": "    psRid varchar2,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 791,
+    "TEXT": "    pnKodId number,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 792,
+    "TEXT": "    pnPocet number,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 793,
+    "TEXT": "    pnCenaM number default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 794,
+    "TEXT": "    psSarza varchar2 default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 795,
+    "TEXT": "    psRidV varchar2 default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 796,
+    "TEXT": "    psPozn varchar2 default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 797,
+    "TEXT": "    psCtO varchar2 default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 798,
+    "TEXT": "    psFlags varchar2 default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 799,
+    "TEXT": "    pnPrepocitajHlavicku number default 1,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 800,
+    "TEXT": "    pnCenaV number default 0,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 801,
+    "TEXT": "    pdtDatumExp date default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 802,
+    "TEXT": "    psID_SZ varchar2 default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 803,
+    "TEXT": "    pnPridajPrislusenstvo number default 1,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 804,
+    "TEXT": "    pnIDRV number default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 805,
+    "TEXT": "    psTyp number default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 806,
+    "TEXT": "    pnCenaJeSDPH number default 0,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 807,
+    "TEXT": "    pnPrislusenstvo number default 0,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 808,
+    "TEXT": "    pnFiktivna number default 0,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 809,
+    "TEXT": "    psMiestoDod varchar2 default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 810,
+    "TEXT": "    psTypVazobnejPol varchar2 default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 811,
+    "TEXT": "    pnP_rez number default 0,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 812,
+    "TEXT": "    pnFixnaCena number default 1,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 813,
+    "TEXT": "    pnCenaS number default 0,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 814,
+    "TEXT": "    pnRaiseActionMsg number default 0,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 815,
+    "TEXT": "    psActionParams varchar2 default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 816,
+    "TEXT": "    psRid_ct_a varchar2 default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 817,
+    "TEXT": "    psRid_ct_z varchar2 default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 818,
+    "TEXT": "    psDovodBlokacie varchar2 default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 819,
+    "TEXT": "    psRID_BAL varchar2 default c_const.NULA_KodBalenia,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 820,
+    "TEXT": "    pnAkoZaokruhliPocet number default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 821,
+    "TEXT": "    pnRezervuj number default 0,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 822,
+    "TEXT": "    pnID_R_P number default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 823,
+    "TEXT": "    pnVariantMakra number default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 824,
+    "TEXT": "    psPKVazobnejPol varchar2 default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 825,
+    "TEXT": "\t\tpnSarzaBolaZadana number default null,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 826,
+    "TEXT": "\t\tpsRID_OBJEKT varchar2 default null);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 827,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 828,
+    "TEXT": "procedure UplatniGZ_TMP(psRID varchar2, pnSposob_uplatnenia number);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 829,
+    "TEXT": "function GetStp_PrepocitajCenuNedochyst(pnIdCis number default null, psPodCis varchar2 default null, psPK varchar2 default null) return number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 830,
+    "TEXT": "function GetStp_PoSpracovaniUzavri(pnIdCis number default null, psPodCis varchar2 default null, psPK varchar2 default null) return number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 831,
+    "TEXT": "function GetStp_KontrolujMaxObjMnPer(pnIdCis number default null, psPodCis varchar2 default null, psPK varchar2 default null) return number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 832,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE",
+    "LINE": 833,
+    "TEXT": "procedure KontrolaSpracovaniaGZ(psRID varchar2, pnSposob_UplatneniaGZ number default null, psActionParams varchar2 default null);\n"
+  }
+]

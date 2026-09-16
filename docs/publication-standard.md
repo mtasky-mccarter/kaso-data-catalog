@@ -14,6 +14,7 @@ generated/<publication-slug>/
 
 - `generated/cestovne-prikazy/`
 - `generated/vydajky/`
+- `generated/nakupne-objednavky/`
 
 Do not place generated DOCX, PDF or publication manifest files directly in the root `generated/` directory.
 

@@ -1,0 +1,184 @@
+[
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ_BLOKACIE",
+    "TYPE": "TRIGGER",
+    "LINE": 1,
+    "TEXT": "TRIGGER t_obj_odb_o_rez_blokacie\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ_BLOKACIE",
+    "TYPE": "TRIGGER",
+    "LINE": 2,
+    "TEXT": " AFTER\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ_BLOKACIE",
+    "TYPE": "TRIGGER",
+    "LINE": 3,
+    "TEXT": "   INSERT OR DELETE OR UPDATE OF p_del_dod, p_del, p_rez\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ_BLOKACIE",
+    "TYPE": "TRIGGER",
+    "LINE": 4,
+    "TEXT": " ON obj_odb_o\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ_BLOKACIE",
+    "TYPE": "TRIGGER",
+    "LINE": 5,
+    "TEXT": "REFERENCING NEW AS NEW OLD AS OLD\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ_BLOKACIE",
+    "TYPE": "TRIGGER",
+    "LINE": 6,
+    "TEXT": " FOR EACH ROW\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ_BLOKACIE",
+    "TYPE": "TRIGGER",
+    "LINE": 7,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ_BLOKACIE",
+    "TYPE": "TRIGGER",
+    "LINE": 8,
+    "TEXT": "  if instr(:new.rid_o, '-') > 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ_BLOKACIE",
+    "TYPE": "TRIGGER",
+    "LINE": 9,
+    "TEXT": "    return;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ_BLOKACIE",
+    "TYPE": "TRIGGER",
+    "LINE": 10,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ_BLOKACIE",
+    "TYPE": "TRIGGER",
+    "LINE": 11,
+    "TEXT": "  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ_BLOKACIE",
+    "TYPE": "TRIGGER",
+    "LINE": 12,
+    "TEXT": "  if inserting or updating then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ_BLOKACIE",
+    "TYPE": "TRIGGER",
+    "LINE": 13,
+    "TEXT": "    if :new.p_rez <> nvl(:old.p_rez, -100) then -- obaly aj makro polozky\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ_BLOKACIE",
+    "TYPE": "TRIGGER",
+    "LINE": 14,
+    "TEXT": "      c_rezervacia.Blokacia_SetRezPol(psRID_O=>:new.rid_o, pnID_R=>:new.id_r, pnKodID=>:new.kod_id, psID_SZ=>:new.id_sz, pnP_REZ=>:new.p_rez, pnID_R_V=>:new.id_r_v);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ_BLOKACIE",
+    "TYPE": "TRIGGER",
+    "LINE": 15,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ_BLOKACIE",
+    "TYPE": "TRIGGER",
+    "LINE": 16,
+    "TEXT": "    /* Zatial nedovolujeme vkladat sety kvoli ich rezervacii\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ_BLOKACIE",
+    "TYPE": "TRIGGER",
+    "LINE": 17,
+    "TEXT": "    if :new.pocet <> nvl(:old.pocet, -100) and :new.id_r_p = :new.id_r then -- hlavna makro karta\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ_BLOKACIE",
+    "TYPE": "TRIGGER",
+    "LINE": 18,
+    "TEXT": "      c_rez_blokacia.SetREZ(psRID_O=>:new.rid_o, pnID_R=>:new.id_r, pnKodID=>:new.kod_id, psID_SZ=>c_const.NULA_SkladZasob, pnP_REZ=>:new.pocet);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ_BLOKACIE",
+    "TYPE": "TRIGGER",
+    "LINE": 19,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ_BLOKACIE",
+    "TYPE": "TRIGGER",
+    "LINE": 20,
+    "TEXT": "    */\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ_BLOKACIE",
+    "TYPE": "TRIGGER",
+    "LINE": 21,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ_BLOKACIE",
+    "TYPE": "TRIGGER",
+    "LINE": 22,
+    "TEXT": "  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ_BLOKACIE",
+    "TYPE": "TRIGGER",
+    "LINE": 23,
+    "TEXT": "  if deleting then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ_BLOKACIE",
+    "TYPE": "TRIGGER",
+    "LINE": 24,
+    "TEXT": "    c_rezervacia.Blokacia_DelRezPol(psRID_O=>:old.rid_o, pnID_R=>:old.id_r);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ_BLOKACIE",
+    "TYPE": "TRIGGER",
+    "LINE": 25,
+    "TEXT": "  end if;    \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ_BLOKACIE",
+    "TYPE": "TRIGGER",
+    "LINE": 26,
+    "TEXT": "end;"
+  }
+]
