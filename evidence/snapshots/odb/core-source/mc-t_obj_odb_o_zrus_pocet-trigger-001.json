@@ -1,0 +1,632 @@
+[
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 1,
+    "TEXT": "TRIGGER t_obj_odb_o_zrus_pocet\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 2,
+    "TEXT": " BEFORE\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 3,
+    "TEXT": "   UPDATE OF p_dispo, p_rez_is, p_rez, p_obj, pocet, p_del, p_del_dod, p_fak, p_obj_d, p_rez_pl\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 4,
+    "TEXT": " ON obj_odb_o\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 5,
+    "TEXT": "REFERENCING NEW AS NEW OLD AS OLD\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 6,
+    "TEXT": " FOR EACH ROW\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 7,
+    "TEXT": "declare\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 8,
+    "TEXT": "  sTypCis varchar2(16);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 9,
+    "TEXT": "  nFormaObj number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 10,
+    "TEXT": "  nPom number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 11,
+    "TEXT": "  sFlagsB varchar2(254);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 12,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 13,
+    "TEXT": "  -- zakazanie menit pocet na uz spracovenej obj.pre str. ak ma vazbu na objednavku\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 14,
+    "TEXT": "  if :new.pocet != :old.pocet and c_session.GetBeziRezervacia = 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 15,
+    "TEXT": "    select typ_cis, flags_b into sTypCis, sFlagsB from obj_odb_l where rid = :new.rid_o;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 16,
+    "TEXT": "    if sTypCis = c_typy_cis.TC_ObjO_Pre_Stredisko then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 17,
+    "TEXT": "      if c_rid.getbackcis(:new.rid_v) = c_cis_def.cis_obj_odb_l and instr(:new.rid_o,'-')=0 then \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 18,
+    "TEXT": "        if c_session.GetNekontrolujPoctyObjPreStr = 0 then -- upravene kvoli rezervacii IS, ak je sposob rez = zvysok zrus a rusime pocet (d_obj_odb_o.RezervujD, nenastavujeme p_del/p_del_dod)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 19,
+    "TEXT": "          c_exc.raiseerrormsgid(3868);  -- Na spracovanej objednávke pre sklad s väzbou na objednávku už nieje možné meniť počet ! \\\\40204\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 20,
+    "TEXT": "        end if; \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 21,
+    "TEXT": "      end if;  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 22,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 23,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 24,
+    "TEXT": "  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 25,
+    "TEXT": "  if c_session.GetRezimObjednavaciehoValca = 1 then   \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 26,
+    "TEXT": "    select typ_cis, d_obj_odb_l.gets_formadokladu(flags_s) into sTypCis, nFormaObj from obj_odb_l where rid = :new.rid_o; \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 27,
+    "TEXT": "    -- Na obj.pre stredisko pri rezime obj.valca=1 nieje mozne znizovat rusit rez.\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 28,
+    "TEXT": "    if sTypCis = c_typy_cis.TC_ObjO_Pre_Stredisko then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 29,
+    "TEXT": "      if c_session.GetNekontrolujPoctyObjPreStr = 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 30,
+    "TEXT": "        if :new.p_rez < :old.p_rez or :new.p_rez_pl < :old.p_rez_pl or :new.p_rez_is < :old.p_rez_is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 31,
+    "TEXT": "          or :new.p_obj_d < :old.p_obj_d or :new.p_fak < :old.p_fak or :new.p_obj < :old.p_obj or :new.p_dispo < :old.p_dispo then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 32,
+    "TEXT": "          c_exc.raiseerrormsg('Nemôžeš rušiť rezervovaný počet ! Môžeš zrušiť iba celý riadok !');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 33,
+    "TEXT": "        end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 34,
+    "TEXT": "      end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 35,
+    "TEXT": "    -- ak je objednavka v rezime obj.valca=1 a je uzavreta nieje mozne editovat pocet,p_rez,p_del,p_del_dod\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 36,
+    "TEXT": "    elsif nFormaObj = d_obj_odb_l.FORMA_DOKL_OBJ_UZAVRETA then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 37,
+    "TEXT": "      if c_session.GetNekontrolujPoctyObj = 0 then      \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 38,
+    "TEXT": "        if :new.p_rez != :old.p_rez or :new.pocet != :old.pocet or :new.p_del != :old.p_del or :new.p_del_dod != :old.p_del_dod then      \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 39,
+    "TEXT": "          c_exc.raiseerrormsg('Nemôžeš meniť/rušiť počet ani rezerváciu ! Môžeš zrušiť iba celý riadok !');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 40,
+    "TEXT": "        end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 41,
+    "TEXT": "      end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 42,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 43,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 44,
+    "TEXT": "  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 45,
+    "TEXT": "  -- menim pocet a mam vazbu na cenovu ponuku => kontrolujem pocet voci CP\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 46,
+    "TEXT": "  if d_obj_odb_o.g_nNekontrolujUrcenieMnozCP = 0 then        \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 47,
+    "TEXT": "    if :new.pocet-:new.p_del-:new.p_del_dod != :old.pocet-:old.p_del-:old.p_del_dod then    \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 48,
+    "TEXT": "      if c_rid.getbackcis(:new.rid_v) = d_cen_ponuka_l.CIS_CEN_PONUKY_L then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 49,
+    "TEXT": "        if sTypCis is null or sFlagsB is null then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 50,
+    "TEXT": "          select typ_cis, flags_b into sTypCis, sFlagsB from obj_odb_l where rid = :new.rid_o; \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 51,
+    "TEXT": "        end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 52,
+    "TEXT": "        if sTypCis in (c_typy_cis.TC_ObjO, c_typy_cis.TC_ObjO_MO) then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 53,
+    "TEXT": "          d_obj_odb_o.KontrolaNaPocet_PodlaCP(psRID_O=>:new.rid_o, pnID_R=>:new.id_r, psRID_V=>:new.rid_v, pnPocet=>(:new.pocet-:new.p_del-:new.p_del_dod), pnPocetOLD=>:old.pocet-:old.p_del-:old.p_del_dod);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 54,
+    "TEXT": "          if d_obj_odb_l.GetFB_SYS_OpatovneObjZCP(psFlagsB=>sFlagsB, psRID=>:new.rid_o) = 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 55,
+    "TEXT": "            update cen_ponuky_o o set o.p_obj = o.p_obj - least((:old.pocet-:old.p_del-:old.p_del_dod) - (:new.pocet-:new.p_del-:new.p_del_dod), o.p_obj)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 56,
+    "TEXT": "            where o.rid_o = c_rid.GetBackRID(:new.rid_v) and o.id_r = c_rid.GetBackID_R(:new.rid_v);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 57,
+    "TEXT": "          end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 58,
+    "TEXT": "        end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 59,
+    "TEXT": "      end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 60,
+    "TEXT": "    end if;  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 61,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 62,
+    "TEXT": "  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 63,
+    "TEXT": "  -- seriove cisla\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 64,
+    "TEXT": "  if :old.pocet <> :new.pocet or :old.p_del <> :new.p_del or :old.p_del_dod <> :new.p_del_dod then    \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 65,
+    "TEXT": "    if c_sklad_karta.GetTypSN(pnKodID=>:new.kod_id) = c_sklad_karta.TYP_SN_SN then        \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 66,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 67,
+    "TEXT": "      select count(*) into nPom from ser_cisla sc where sc.rid_v = c_rid.zlozrid_r(:old.rid_o,:old.id_r) and sc.s_stamp='0';\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 68,
+    "TEXT": "      if nPom > 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 69,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 70,
+    "TEXT": "        if :old.pocet <> :new.pocet and :new.id_sz != '0000' then -- p_rez osetri, ze ked sa znizuje pocet a uz je dana     \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 71,
+    "TEXT": "          c_exc.raiseerrormsg('Nie je možné meniť množstvo na položke s evidenciou sériových čísel, ak sú už sériové čísla nahraté !\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 72,
+    "TEXT": "Je možné ju len zrušiť !');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 73,
+    "TEXT": "        end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 74,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 75,
+    "TEXT": "        if :old.p_del <> :new.p_del or :old.p_del_dod <> :new.p_del_dod then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 76,
+    "TEXT": "          if :new.pocet-:new.p_del-:new.p_del_dod <> 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 77,
+    "TEXT": "            c_exc.raiseerrormsg('Nie je možné meniť množstvo na položke s evidenciou sériových čísel, ak sú už sériové čísla nahraté !\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 78,
+    "TEXT": "Je možné ju len zrušiť !');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 79,
+    "TEXT": "          else\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 80,
+    "TEXT": "            for rSN in (select sc.id, sc.sn from ser_cisla sc where sc.rid_v = c_rid.zlozrid_r(:old.rid_o,:old.id_r) and sc.s_stamp='0') loop\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 81,
+    "TEXT": "              c_ser_cislo.StornoRIDC(rSN.id);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 82,
+    "TEXT": "              c_kupon.DeaktivujKuponSN(psSN_Kuponu=>rSN.sn, pnKontrolujExists=> 0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 83,
+    "TEXT": "            end loop;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 84,
+    "TEXT": "          end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 85,
+    "TEXT": "        end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 86,
+    "TEXT": "      end if;       \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 87,
+    "TEXT": "    end if;    \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 88,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 89,
+    "TEXT": "    \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ZRUS_POCET",
+    "TYPE": "TRIGGER",
+    "LINE": 90,
+    "TEXT": "end;"
+  }
+]

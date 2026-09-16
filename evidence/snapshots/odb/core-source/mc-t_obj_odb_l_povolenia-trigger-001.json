@@ -1,0 +1,128 @@
+[
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_POVOLENIA",
+    "TYPE": "TRIGGER",
+    "LINE": 1,
+    "TEXT": "TRIGGER t_obj_odb_l_povolenia\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_POVOLENIA",
+    "TYPE": "TRIGGER",
+    "LINE": 2,
+    "TEXT": " BEFORE\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_POVOLENIA",
+    "TYPE": "TRIGGER",
+    "LINE": 3,
+    "TEXT": "   INSERT OR UPDATE OF partner, datum_p, miesto_dod\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_POVOLENIA",
+    "TYPE": "TRIGGER",
+    "LINE": 4,
+    "TEXT": " ON obj_odb_l\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_POVOLENIA",
+    "TYPE": "TRIGGER",
+    "LINE": 5,
+    "TEXT": "REFERENCING NEW AS NEW OLD AS OLD\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_POVOLENIA",
+    "TYPE": "TRIGGER",
+    "LINE": 6,
+    "TEXT": " FOR EACH ROW\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_POVOLENIA",
+    "TYPE": "TRIGGER",
+    "LINE": 7,
+    "TEXT": "declare\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_POVOLENIA",
+    "TYPE": "TRIGGER",
+    "LINE": 8,
+    "TEXT": " cursor cKartyPovoleni is Select kod_id from sklad_karta sk, obj_odb_o o where sk.id = o.kod_id and o.rid_o = :new.rid\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_POVOLENIA",
+    "TYPE": "TRIGGER",
+    "LINE": 9,
+    "TEXT": "                          and --o.pocet\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_POVOLENIA",
+    "TYPE": "TRIGGER",
+    "LINE": 10,
+    "TEXT": "                          o.pocet - o.p_del - o.p_del_dod - o.p_fak - o.p_vyd - o.p_obj > 0 and flags_povol like '%1%';\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_POVOLENIA",
+    "TYPE": "TRIGGER",
+    "LINE": 11,
+    "TEXT": "  nStavPovolenia number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_POVOLENIA",
+    "TYPE": "TRIGGER",
+    "LINE": 12,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_POVOLENIA",
+    "TYPE": "TRIGGER",
+    "LINE": 13,
+    "TEXT": "  if c_session.getreplikacia = 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_POVOLENIA",
+    "TYPE": "TRIGGER",
+    "LINE": 14,
+    "TEXT": "    for r in cKartyPovoleni loop     \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_POVOLENIA",
+    "TYPE": "TRIGGER",
+    "LINE": 15,
+    "TEXT": "      c_partner.ZobrazHlaseniaPovoleni(psMiestoDod=>:new.miesto_dod, pnPartner=>:new.partner, pdtDatum=>:new.datum_p, pnKod_ID=>r.kod_id, pnStavPovolenia=>nStavPovolenia, pnSklad=>:new.sklad);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_POVOLENIA",
+    "TYPE": "TRIGGER",
+    "LINE": 16,
+    "TEXT": "    end loop;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_POVOLENIA",
+    "TYPE": "TRIGGER",
+    "LINE": 17,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_POVOLENIA",
+    "TYPE": "TRIGGER",
+    "LINE": 18,
+    "TEXT": "end;\n"
+  }
+]

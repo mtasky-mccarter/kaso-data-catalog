@@ -1,0 +1,324 @@
+[
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 1,
+    "TEXT": "TRIGGER t_obj_odb_o_cena\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 2,
+    "TEXT": "-- EXP 28.03.2023 15:37 CHG 28.03.2023 15:35_x000D_\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 3,
+    "TEXT": " BEFORE\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 4,
+    "TEXT": "   UPDATE OF cena\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 5,
+    "TEXT": " ON obj_odb_o\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 6,
+    "TEXT": "REFERENCING NEW AS NEW OLD AS OLD\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 7,
+    "TEXT": " FOR EACH ROW\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 8,
+    "TEXT": "declare\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 9,
+    "TEXT": " nMinCena number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 10,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 11,
+    "TEXT": "  if updating then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 12,
+    "TEXT": "    if :old.cena != :new.cena and ((:new.odpis != 0 and :new.id_r_p = 0 ) or ( :new.odpis = 0 and :new.id_r = :new.id_r_p ))\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 13,
+    "TEXT": "      and C_DOKL_O.GetJeDarcek( :new.ZLAVY ) = 0 then \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 14,
+    "TEXT": "      -- kontrola na minimalnu cenu\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 15,
+    "TEXT": "      if c_session.GetObjO_NekontrolujMinCenu = 1 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 16,
+    "TEXT": "        return;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 17,
+    "TEXT": "      end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 18,
+    "TEXT": "      if c_session.getcheckmincena != 0 and d_obj_odb_o.GetFB_NeuzavretaPredajCena(psFlagsB=>:new.flags_b) != 2 \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 19,
+    "TEXT": "        and not (:new.p_rez = 0 and :new.p_vyd = 0 and c_session.GetOP_UserKontrolyMinCenyRez != 0) then \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 20,
+    "TEXT": "        -- iba zmenene\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 21,
+    "TEXT": "        if c_session.GetCheckMinCenaIbaZmenene = 0 or c_dokl_o.getzlavai(:new.zlavy) != 0 then \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 22,
+    "TEXT": "          begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 23,
+    "TEXT": "            -- Ak mam na polozke definovanu akciu, beriem ako min.cenu mensiu cenu z akcie a z cennika na uzivatelovi\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 24,
+    "TEXT": "            select decode(:new.rid_ct_a, '0',\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 25,
+    "TEXT": "              c_cennik_popis.getcenucennika_c(pnidcennik=> c_session.getmincenacennik,p_nkodid=> :new.kod_id, p_sid_sz=> :new.id_sz,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 26,
+    "TEXT": "              p_dtdatceny=> l.datum_c, pr_nmenain=> l.mena, p_nkurzin=> l.kurz, p_bpodlacennikaround=> 1, p_bpodlacennikasdph=> 0,pndodavatel=> 0,pnsklad=> l.sklad),\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 27,
+    "TEXT": "              least(c_cennik_popis.getcenucennika_c(pnidcennik=> c_session.getmincenacennik,p_nkodid=> :new.kod_id, p_sid_sz=> :new.id_sz,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 28,
+    "TEXT": "                p_dtdatceny=> l.datum_c, pr_nmenain=> l.mena, p_nkurzin=> l.kurz, p_bpodlacennikaround=> 1, p_bpodlacennikasdph=> 0,pndodavatel=> 0,pnsklad=> l.sklad),\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 29,
+    "TEXT": "                c_dokl_o.GetCenaZ(:new.zlavy))\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 30,
+    "TEXT": "              ) - d_obj_odb_o.GetNakupnyRabatHod(psRID_O=>:new.rid_o, pnID_R=>:new.id_r, pxXML_DATA=>:new.xml_data, pnParVstup=>1, pnCenaS=>:new.cena_s, pnCenaVZT=>c_dokl_o.GetCenaVZT(:new.zlavy)) \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 31,
+    "TEXT": "              into nMinCena from obj_odb_l l where l.rid = :new.rid_o\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 32,
+    "TEXT": "              and d_obj_odb_l.GetS_FormaDokladu(l.flags_s) in (d_obj_odb_l.FORMA_DOKL_PROFORMA, d_obj_odb_l.FORMA_DOKL_OBJ_OTVORENA, d_obj_odb_l.FORMA_DOKL_OBJ_UZAVRETA);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 33,
+    "TEXT": "            if nMincena > :new.cena then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 34,
+    "TEXT": "              --c_exc.raiseerrormsg('Položku tovaru '|| :new.kod_id || ' v cene '|| :new.cena ||', predávate pod minimálnu cenu :'|| nMinCena||'. Zmena nebude uložená !' );\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 35,
+    "TEXT": "              c_exc.raiseerrormsg(psmsgtxt=> 'Položku tovaru %s v cene '|| :new.cena ||', predávate pod minimálnu cenu :'|| nMinCena||'. Zmena nebude uložená !', \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 36,
+    "TEXT": "                psp1=> c_rid.GETCIS_LINK(pspk=> :new.kod_id, pscisid=> c_cis_def.CIS_SKLAD_KARTA));\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 37,
+    "TEXT": "            end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 38,
+    "TEXT": "            exception\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 39,
+    "TEXT": "              when no_data_found then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 40,
+    "TEXT": "                null;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 41,
+    "TEXT": "          end;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 42,
+    "TEXT": "        end if;  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 43,
+    "TEXT": "      end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 44,
+    "TEXT": "    end if;  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 45,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_CENA",
+    "TYPE": "TRIGGER",
+    "LINE": 46,
+    "TEXT": "end;"
+  }
+]

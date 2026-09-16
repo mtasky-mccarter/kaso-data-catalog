@@ -1,0 +1,352 @@
+[
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 1,
+    "TEXT": "TRIGGER t_obj_odb_o_vaz_pol\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 2,
+    "TEXT": "-- EXP 09.02.2023 09:54 CHG 09.02.2023 09:47_x000D_\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 3,
+    "TEXT": " BEFORE\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 4,
+    "TEXT": "   DELETE OR UPDATE OF pocet, id_r_p, p_del, p_del_dod, cena\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 5,
+    "TEXT": " ON obj_odb_o\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 6,
+    "TEXT": "REFERENCING NEW AS NEW OLD AS OLD\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 7,
+    "TEXT": " FOR EACH ROW\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 8,
+    "TEXT": "declare\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 9,
+    "TEXT": " sInt_kod varchar2(254);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 10,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 11,
+    "TEXT": "  if deleting and nvl(c_session.GetSwap,0) = 1 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 12,
+    "TEXT": "    return;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 13,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 14,
+    "TEXT": "  /*kontroluje zmenu a vymazanie poloziek makra/inej skupiny previazanej cez ID_R_P*/\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 15,
+    "TEXT": "  if updating and :old.id_r_p != 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 16,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 17,
+    "TEXT": "    -- zmena poctu_del a del_dod je dovolena na hlavnej karte \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 18,
+    "TEXT": "    if (:old.p_del != :new.p_del or :old.p_del_dod != :new.p_del_dod) \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 19,
+    "TEXT": "         and :old.id_r != :old.id_r_p and c_session.GetDokladVymazanieVazPol not in (-1, :old.id_r_p) then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 20,
+    "TEXT": "      select int_kod into sInt_kod from sklad_karta where id = :old.kod_id;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 21,
+    "TEXT": "      c_exc.raiseerrormsg('Položke makra '||sInt_kod||' nie je možné meniť počet zrušený (riadok č.: '||to_char(:old.id_r, 'FM9999990' )||')!');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 22,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 23,
+    "TEXT": "    \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 24,
+    "TEXT": "    -- zmena poctu je dovolena len ak je to poovlene v c_session  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 25,
+    "TEXT": "    if (:old.pocet != :new.pocet) and c_session.GetDokladVymazanieVazPol not in (-1, :old.id_r_p) then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 26,
+    "TEXT": "      select int_kod into sInt_kod from sklad_karta where id = :old.kod_id;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 27,
+    "TEXT": "      c_exc.raiseerrormsg('Položke makra '||sInt_kod||' nie je možné meniť počet (riadok č.: '||to_char(:old.id_r, 'FM9999990' )||')!');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 28,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 29,
+    "TEXT": "    \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 30,
+    "TEXT": "    -- zmena ceny nie je povolena\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 31,
+    "TEXT": "    if :old.cena != :new.cena and :new.id_r != :new.id_r_p then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 32,
+    "TEXT": "      if c_dokl_o.MakroBalicek_JePolozka(psRID_O=>:new.rid_o, pnID_R=>:new.id_r, pnID_R_P=>:new.id_r_p, pxXML_DATA=>:new.xml_data, psTabulka=>'obj_odb_o')=0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 33,
+    "TEXT": "        select int_kod into sInt_kod from sklad_karta where id = :old.kod_id;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 34,
+    "TEXT": "        c_exc.raiseerrormsg('Položke makra '||sInt_kod||' nie je možné meniť počet a cenu (riadok č.: '||to_char(:old.id_r, 'FM9999990' )||')!');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 35,
+    "TEXT": "      end if;  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 36,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 37,
+    "TEXT": "    \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 38,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 39,
+    "TEXT": "  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 40,
+    "TEXT": "  if deleting and :old.id_r_p != 0 then  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 41,
+    "TEXT": "    -- vymazanie je povolene, len ak je to povolene v c_session \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 42,
+    "TEXT": "    if c_session.GetDokladVymazanieVazPol not in (-1, :old.id_r_p) then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 43,
+    "TEXT": "      select int_kod into sInt_kod from sklad_karta where id = :old.kod_id;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 44,
+    "TEXT": "      c_exc.raiseerrormsg(\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 45,
+    "TEXT": "      'Položku makra '||sInt_kod||' na riadku č. '||to_char(:old.id_r, 'FM9999990')||' nie je možné samostatne vymazať!'||chr(13)||chr(10)||\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 46,
+    "TEXT": "      'Vymažte hlavnú kartu makra na riadku č.: '||to_char(:old.id_r_p, 'FM9999990')||'.');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 47,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 48,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 49,
+    "TEXT": "  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_VAZ_POL",
+    "TYPE": "TRIGGER",
+    "LINE": 50,
+    "TEXT": "end;"
+  }
+]

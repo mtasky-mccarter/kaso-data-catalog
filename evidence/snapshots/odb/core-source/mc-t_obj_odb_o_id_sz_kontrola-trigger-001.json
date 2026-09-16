@@ -1,0 +1,513 @@
+[
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 1,
+    "TEXT": "TRIGGER t_obj_odb_o_id_sz_kontrola\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 2,
+    "TEXT": "-- EXP 07.12.2021 13:41 CHG 07.12.2021 13:40\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 3,
+    "TEXT": " BEFORE\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 4,
+    "TEXT": "   INSERT OR UPDATE OF p_dispo, p_rez_pl, p_rez_is, id_sz, p_obj_d\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 5,
+    "TEXT": " ON obj_odb_o\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 6,
+    "TEXT": "REFERENCING NEW AS NEW OLD AS OLD\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 7,
+    "TEXT": " FOR EACH ROW\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 8,
+    "TEXT": "declare   \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 9,
+    "TEXT": "  nPartnerL number; nOK number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 10,
+    "TEXT": "  sTypCis varchar2(16);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 11,
+    "TEXT": "  nSklad number;  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 12,
+    "TEXT": "  nSkladVyd number;  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 13,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 14,
+    "TEXT": "  if :new.id_sz = c_const.NULA_SkladZasob and :new.p_obj_d = 0 and :new.p_rez_pl = 0 and :new.p_rez_is = 0 and :new.p_dispo = 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 15,
+    "TEXT": "    return; -- vsetko je ok v tejto kontrole\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 16,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 17,
+    "TEXT": "  -------------------------------------------------------------------------------------------------------------\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 18,
+    "TEXT": "  select typ_cis, partner_l, sklad into sTypCis, nPartnerL, nSklad from obj_odb_l where rid = :new.rid_o; -- partner_l sa nastavuje len na logistickej objednavke\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 19,
+    "TEXT": "  -- kontrola na platnu skladovu zasobu za logistickeho partnera alebo klasicku objednavku\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 20,
+    "TEXT": "  begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 21,
+    "TEXT": "    if :new.id_sz != c_const.NULA_SkladZasob and (inserting or (updating and :new.id_sz != :old.id_sz)) then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 22,
+    "TEXT": "      if sTypCis = C_TYPY_CIS.TC_ObjO_LogistickaObj then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 23,
+    "TEXT": "        select 1 into nOK from sklad_zasob sz where nvl(c_sklad_zasob.GetFB_LogistickaZasoba(psFLAGS_B=>sz.flags_b),0) = 1 and \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 24,
+    "TEXT": "          sz.id = :new.id_sz and sz.miesto_dod in (select md.rid from miesta_dodania md where md.id_partner = nPartnerL);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 25,
+    "TEXT": "      else    \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 26,
+    "TEXT": "        select 1 into nOK from sklad_zasob sz where nvl(c_sklad_zasob.GetFB_LogistickaZasoba(psFLAGS_B=>sz.flags_b),0) = 0 and \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 27,
+    "TEXT": "          sz.id = :new.id_sz;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 28,
+    "TEXT": "      end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 29,
+    "TEXT": "    end if;  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 30,
+    "TEXT": "  exception when no_data_found then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 31,
+    "TEXT": "    if sTypCis = C_TYPY_CIS.TC_ObjO_LogistickaObj then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 32,
+    "TEXT": "      c_exc.raiseerrormsgid(pnIdMsg=>3583 ,psParams=>:new.id_sz||';'||nPartnerL); -- Neplatná skladová zásoba '%s' pre logistickú objednávku za logistického partnera %s !\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 33,
+    "TEXT": "    else  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 34,
+    "TEXT": "      c_exc.raiseerrormsgid(pnIdMsg=>3584 ,psParams=>:new.id_sz); -- Neplatná skladová zásoba '%s' pre objednávku odberateľa ! \\\\38970\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 35,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 36,
+    "TEXT": "  end;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 37,
+    "TEXT": "  -- kontrola na zakazane rezervacie\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 38,
+    "TEXT": "  if sTypCis = C_TYPY_CIS.TC_ObjO_LogistickaObj then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 39,
+    "TEXT": "    if :new.p_obj_d > 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 40,
+    "TEXT": "      c_exc.raiseerrormsgid(pnIdMsg=>3580); -- Pre logistickú objednávku nieje dovolená rezervácia na objednávke na dodávateľa !\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 41,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 42,
+    "TEXT": "    if :new.p_rez_pl > 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 43,
+    "TEXT": "      c_exc.raiseerrormsgid(pnIdMsg=>3581); -- Pre logistickú objednávku nieje dovolená rezervácia na prepravných listoch !\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 44,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 45,
+    "TEXT": "    if :new.p_rez_is > 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 46,
+    "TEXT": "      c_exc.raiseerrormsgid(pnIdMsg=>3582); -- Pre logistickú objednávku nieje dovolená rezervácia z iných skladov !\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 47,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 48,
+    "TEXT": "    if :new.p_dispo > 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 49,
+    "TEXT": "      c_exc.raiseerrormsgid(pnIdMsg=>4114); -- Pre logistickú objednávku nieje dovolená rezervácia z disponibilných zásob !\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 50,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 51,
+    "TEXT": "  end if; \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 52,
+    "TEXT": " \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 53,
+    "TEXT": "  if updating then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 54,
+    "TEXT": "    -- kontrola na iny sklad rezervacie ako sklad dokladu\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 55,
+    "TEXT": "    if :new.p_obj_d > 0 or :new.p_rez_pl > 0 or :new.p_rez_is > 0 or :new.p_dispo > 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 56,
+    "TEXT": "      nSkladVyd := nvl(d_obj_odb_o.GetSkladRezDarceka(psRID_O=>:new.rid_o, pnID_R=>:new.id_r, pxXML_DATA=>:new.xml_data, psZlavy=>:new.zlavy, pnTrigger=>1), nSklad);     \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 57,
+    "TEXT": "      if nSkladVyd <> nSklad then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 58,
+    "TEXT": "        if :new.p_obj_d > 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 59,
+    "TEXT": "          c_exc.raiseerrormsgidp(pnIdMsg=>4185, psP1=>nSkladVyd, psP2=>nSklad); -- Pri rezervácií darčeka z iného skladu \"%s\" ako je sklad dokladu \"%s\", nie je dovolená rezervácia na objednávke na dodávateľa ! \\\\43126\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 60,
+    "TEXT": "        end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 61,
+    "TEXT": "        if :new.p_rez_pl > 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 62,
+    "TEXT": "          c_exc.raiseerrormsgidp(pnIdMsg=>4186, psP1=>nSkladVyd, psP2=>nSklad); -- Pri rezervácií darčeka z iného skladu \"%s\" ako je sklad dokladu \"%s\", nie je dovolená rezervácia na prepravných listoch ! \\\\43127\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 63,
+    "TEXT": "        end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 64,
+    "TEXT": "        if :new.p_rez_is > 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 65,
+    "TEXT": "          c_exc.raiseerrormsgidp(pnIdMsg=>4187, psP1=>nSkladVyd, psP2=>nSklad); -- Pri rezervácií darčeka z iného skladu \"%s\" ako je sklad dokladu \"%s\", nie je dovolená rezervácia z iných skladov ! \\\\43128\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 66,
+    "TEXT": "        end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 67,
+    "TEXT": "        if :new.p_dispo > 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 68,
+    "TEXT": "          c_exc.raiseerrormsgidp(pnIdMsg=>4188, psP1=>nSkladVyd, psP2=>nSklad); -- Pri rezervácií darčeka z iného skladu \"%s\" ako je sklad dokladu \"%s\", nie je dovolená rezervácia z disponibilných zásob ! \\\\43129\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 69,
+    "TEXT": "        end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 70,
+    "TEXT": "      end if;    \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 71,
+    "TEXT": "    end if;  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 72,
+    "TEXT": "  end if;  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+    "TYPE": "TRIGGER",
+    "LINE": 73,
+    "TEXT": "end;"
+  }
+]

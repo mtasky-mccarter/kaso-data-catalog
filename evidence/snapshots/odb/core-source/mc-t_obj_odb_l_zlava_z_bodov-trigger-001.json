@@ -1,0 +1,205 @@
+[
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 1,
+    "TEXT": "TRIGGER t_obj_odb_l_zlava_z_bodov\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 2,
+    "TEXT": "-- EXP 16.06.2020 11:03 CHG 16.06.2020 10:42\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 3,
+    "TEXT": " BEFORE\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 4,
+    "TEXT": "   UPDATE OF partner, klub_karta, miesto_dod\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 5,
+    "TEXT": " ON obj_odb_l\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 6,
+    "TEXT": "REFERENCING NEW AS NEW OLD AS OLD\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 7,
+    "TEXT": " FOR EACH ROW\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 8,
+    "TEXT": "declare\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 9,
+    "TEXT": "  nExist number(1,0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 10,
+    "TEXT": "begin \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 11,
+    "TEXT": "  if updating then \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 12,
+    "TEXT": "    if :new.klub_karta != :old.klub_karta or :new.partner != :old.partner or :new.miesto_dod != :old.miesto_dod then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 13,
+    "TEXT": "      begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 14,
+    "TEXT": "        select 1 into nExist from obj_odb_o o where o.rid_o = :new.rid and o.kod_id = c_session.GetSK_UplBodDarceku_Zlava and o.pocet-o.p_del-o.p_del_dod > 0 and rownum=1;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 15,
+    "TEXT": "      exception when no_data_found then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 16,
+    "TEXT": "        return;   \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 17,
+    "TEXT": "      end;  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 18,
+    "TEXT": "      if :new.klub_karta != :old.klub_karta then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 19,
+    "TEXT": "        c_exc.raiseerrormsg('Už nie je možné meniť zakaznícku kartu lebo objednávka obsahuje zľavovú položku \"'||c_session.GetSK_UplBodDarceku_Zlava||'\" definovanú v prepínačí č. 1068 (2. token) !');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 20,
+    "TEXT": "      end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 21,
+    "TEXT": "      if :new.partner != :old.partner then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 22,
+    "TEXT": "        c_exc.raiseerrormsg('Už nie je možné meniť partnera lebo objednávka obsahuje zľavovú položku \"'||c_session.GetSK_UplBodDarceku_Zlava||'\" definovanú v prepínačí č. 1068 (2. token) !');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 23,
+    "TEXT": "      end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 24,
+    "TEXT": "      if :new.miesto_dod != :old.miesto_dod then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 25,
+    "TEXT": "        c_exc.raiseerrormsg('Už nie je možné meniť prevádzku lebo objednávka obsahuje zľavovú položku \"'||c_session.GetSK_UplBodDarceku_Zlava||'\" definovanú v prepínačí č. 1068 (2. token) !');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 26,
+    "TEXT": "      end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 27,
+    "TEXT": "    end if;    \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 28,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_ZLAVA_Z_BODOV",
+    "TYPE": "TRIGGER",
+    "LINE": 29,
+    "TEXT": "end;\n"
+  }
+]

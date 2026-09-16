@@ -1,0 +1,702 @@
+[
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 1,
+    "TEXT": "TRIGGER T_OBJ_ODB_O_REZ\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 2,
+    "TEXT": "-- EXP 31.08.2023 16:26 CHG 31.08.2023 16:22_x000D_\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 3,
+    "TEXT": "-- EXP 31.08.2023 16:22 CHG 31.08.2023 16:21_x000D_\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 4,
+    "TEXT": " BEFORE \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 5,
+    "TEXT": " INSERT OR DELETE OR UPDATE OF P_REZ, ODPIS, P_REZ_PL, P_OBJ_D, ID_SZ, P_REZ_IS\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 6,
+    "TEXT": " ON OBJ_ODB_O\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 7,
+    "TEXT": " REFERENCING OLD AS OLD NEW AS NEW\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 8,
+    "TEXT": " FOR EACH ROW \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 9,
+    "TEXT": "declare\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 10,
+    "TEXT": "  nPom number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 11,
+    "TEXT": "  sTypCis varchar2(16);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 12,
+    "TEXT": "begin \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 13,
+    "TEXT": "  if deleting and nvl(c_session.GetSwap,0) = 1 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 14,
+    "TEXT": "    return;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 15,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 16,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 17,
+    "TEXT": "  if inserting or updating then  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 18,
+    "TEXT": "    select typ_cis into sTypCis from obj_odb_l where rid = :new.rid_o;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 19,
+    "TEXT": "    if sTypCis = C_TYPY_CIS.TC_ObjO_Cenova_Ponuka then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 20,
+    "TEXT": "      if :new.p_rez > 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 21,
+    "TEXT": "        :new.p_rez := 0;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 22,
+    "TEXT": "      end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 23,
+    "TEXT": "      if (:new.p_rez_is > 0 or :new.p_rez_pl > 0 or :new.p_obj_d > 0 or :new.p_dispo > 0) then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 24,
+    "TEXT": "        if :new.p_obj_d > 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 25,
+    "TEXT": "          c_exc.raiseerrormsg('Na cenovej ponuke '||c_rid.getridinfo(:new.rid_o)||' nie je možné spraviť zaradenie na objednanie na dodávateľa tovaru sk:'||:new.kod_id||'!');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 26,
+    "TEXT": "        elsif :new.p_rez_is > 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 27,
+    "TEXT": "          c_exc.raiseerrormsg('Na cenovej ponuke '||c_rid.getridinfo(:new.rid_o)||' nie je možné spraviť rezerváciu z iného skladu tovaru sk:'||:new.kod_id||'!');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 28,
+    "TEXT": "        elsif :new.p_rez_pl > 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 29,
+    "TEXT": "          c_exc.raiseerrormsg('Na cenovej ponuke '||c_rid.getridinfo(:new.rid_o)||' nie je možné spraviť rezerváciu z prepravného listu tovaru sk:'||:new.kod_id||'!');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 30,
+    "TEXT": "        else\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 31,
+    "TEXT": "          c_exc.raiseerrormsg('Na cenovej ponuke '||c_rid.getridinfo(:new.rid_o)||' nie je možné spraviť rezerváciu tovaru sk:'||:new.kod_id||'!');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 32,
+    "TEXT": "        end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 33,
+    "TEXT": "      end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 34,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 35,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 36,
+    "TEXT": "  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 37,
+    "TEXT": "  if inserting then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 38,
+    "TEXT": "    :new.i_stamp := c_stamp.getsessionstamptrigg(:new.i_stamp);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 39,
+    "TEXT": "    if :new.odpis = 0 then :new.p_rez := 0; end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 40,
+    "TEXT": "    -- obmedzenie poctu polozky na pocet na objednavacej skupine za MD a RID_CT_A\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 41,
+    "TEXT": "    D_OBJ_ODB_O.NastavPocetPodlaObjSkup(:new.rid_o,:new.id_r,:new.rid_ct_a,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 42,
+    "TEXT": "      (:new.pocet-:new.p_del-:new.p_del_dod-:new.p_vyd-:new.p_fak-:new.p_obj),:new.p_rez,:new.p_del_dod);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 43,
+    "TEXT": "    --\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 44,
+    "TEXT": "    if :new.p_rez != 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 45,
+    "TEXT": "      C_SZ.RezervujTrig(C_Const.SZ_PRAZDNY_ZAZNAM, :new.ID_SZ, 0, :new.p_REZ, :new.RID_O);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 46,
+    "TEXT": "      select c_p into :new.cena_s from sklad_zasob where id = :new.id_sz;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 47,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 48,
+    "TEXT": "  elsif updating then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 49,
+    "TEXT": "    if :new.odpis = 0 then :new.p_rez := 0; end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 50,
+    "TEXT": "    if :new.p_rez > :old.p_rez then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 51,
+    "TEXT": "        -- obmedzenie poctu polozky na pocet na objednavacej skupine za MD a RID_CT_A\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 52,
+    "TEXT": "      D_OBJ_ODB_O.NastavPocetPodlaObjSkup(:new.rid_o,:new.id_r,:new.rid_ct_a,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 53,
+    "TEXT": "        (:new.pocet-:new.p_del-:new.p_del_dod-:new.p_vyd-:new.p_fak-:new.p_obj),:new.p_rez,:new.p_del_dod);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 54,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 55,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 56,
+    "TEXT": "    C_SZ.RezervujTrig(:old.ID_SZ, :new.ID_SZ, :old.p_REZ, :new.p_REZ, :new.RID_O);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 57,
+    "TEXT": "    -- vrátim naspať odblokované pocty do blokácie ak ponizujem rezervovany pocet ( plati pre vydajku a fakturu - okrem procesu preklapania a ponižovania rez.počtu )\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 58,
+    "TEXT": "    If :new.p_REZ < :old.p_REZ And C_SESSION.GetNelogujRezervacie () = 0 Then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 59,
+    "TEXT": "      c_sz.ZrusRezervaciuBlokacieNaRiadku( :new.RID_O, :new.ID_R, (:old.p_REZ - :new.p_REZ), :old.id_sz, c_const.true );  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 60,
+    "TEXT": "    End If;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 61,
+    "TEXT": "    if :new.P_rez < :old.P_rez And to_number(substr(:old.RID_V, 1, 3 )) In ( C_CIS_DEF.CIS_obj_odb_l, C_CIS_DEF.CIS_SER_OBJ ) Then -- rušenie rezervovaných kusov na blokáciach a rezervácií z iných skladov\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 62,
+    "TEXT": "    --if substr(:old.RID_V,1,3)='019' and :new.P_rez < :old.P_rez then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 63,
+    "TEXT": "      --select typ_cis into sTypCis from obj_odb_l where rid = :new.rid_o;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 64,
+    "TEXT": "      if sTypCis not in (C_TYPY_CIS.TC_ObjO_Pre_Stredisko, C_TYPY_CIS.TC_ObjO_PreSklad_Ind) then \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 65,
+    "TEXT": "        D_OBJ_ODB_L.InsOBJ_SPRAC_REZ (:new.RID_O, :new.ID_R, :old.RID_V, :old.ID_SZ, :old.P_rez-:new.P_rez);        \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 66,
+    "TEXT": "      end if; \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 67,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 68,
+    "TEXT": "    if :new.p_rez != 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 69,
+    "TEXT": "      select c_p into :new.cena_s from sklad_zasob where id = :new.id_sz;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 70,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 71,
+    "TEXT": "  elsif deleting then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 72,
+    "TEXT": "    if instr(:old.RID_o,'-') = 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 73,
+    "TEXT": "      IF nvl(c_session.getswap,0) != 1 THEN \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 74,
+    "TEXT": "        -- ak swapujem tak mozem mazat\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 75,
+    "TEXT": "        raise C_Exc.c_DOKL_NEMNOZNO_MAZAT;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 76,
+    "TEXT": "\t\t\t\tnull;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 77,
+    "TEXT": "      END IF;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 78,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 79,
+    "TEXT": "    C_SZ.RezervujTrig(:old.ID_SZ, C_Const.SZ_PRAZDNY_ZAZNAM, :old.p_REZ, 0, :old.RID_O);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 80,
+    "TEXT": "    delete from SERVIS_NADST_SLA where RID_R_DOKL=:old.RID_O||'!'||:old.ID_R;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 81,
+    "TEXT": "    If to_number(substr(:old.RID_V, 1, 3 )) In ( C_CIS_DEF.CIS_obj_odb_l, C_CIS_DEF.CIS_SER_OBJ ) Then -- rušenie rezervovaných kusov na blokáciach a rezervácií z iných skladov\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 82,
+    "TEXT": "      D_OBJ_ODB_L.InsOBJ_SPRAC_REZ (:old.RID_O, :old.ID_R, :old.RID_V, :old.ID_SZ, :old.P_rez);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 83,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 84,
+    "TEXT": "    -- vrátim naspat odblokované pocty a zruším záznamy o rezervovani\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 85,
+    "TEXT": "    c_sz.ZrusRezervaciuBlokacieNaRiadku( :old.RID_O, :old.ID_R, :old.p_REZ, :old.id_sz , c_const.true );\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 86,
+    "TEXT": "    Delete dokl_rez_cez_bt Where rid_d = :old.RID_O And id_r_d = :old.ID_R And id_sz = :old.ID_SZ;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 87,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 88,
+    "TEXT": "  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 89,
+    "TEXT": "exception\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 90,
+    "TEXT": "  when others then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 91,
+    "TEXT": "    if deleting then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 92,
+    "TEXT": "      debugpckerror('T_OBJ_ODB_O_REZ','del SZ:'||:old.id_sz||' p: '||:old.pocet||' prez '||:old.p_rez||' pdel '||:old.p_del||' pdeld '||:old.p_del_dod||' pvyd '||:old.p_vyd);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 93,
+    "TEXT": "    elsif inserting then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 94,
+    "TEXT": "      debugpckerror('T_OBJ_ODB_O_REZ', 'ins SZ:'||:new.id_sz||' p: '||:new.pocet||' prez '||:new.p_rez||' pdel '||:new.p_del||' pdeld '||:new.p_del_dod||' pvyd '||:new.p_vyd);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 95,
+    "TEXT": "    elsif updating then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 96,
+    "TEXT": "      debugpckerror('T_OBJ_ODB_O_REZ', 'upd old: SZ:'||:old.id_sz||' p: '||:old.pocet||' prez '||:old.p_rez||' pdel '||:old.p_del||' pdeld '||:old.p_del_dod||' pvyd '||:old.p_vyd,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 97,
+    "TEXT": "                                  'new: SZ:'||:new.id_sz||' p: '||:new.pocet||' prez '||:new.p_rez||' pdel '||:new.p_del||' pdeld '||:new.p_del_dod||' pvyd '||:new.p_vyd);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 98,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 99,
+    "TEXT": "    raise;  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 100,
+    "TEXT": "end;"
+  }
+]

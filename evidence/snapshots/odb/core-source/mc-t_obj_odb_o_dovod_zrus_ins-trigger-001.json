@@ -1,0 +1,541 @@
+[
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 1,
+    "TEXT": "TRIGGER t_obj_odb_o_dovod_zrus_ins\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 2,
+    "TEXT": " AFTER\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 3,
+    "TEXT": "   UPDATE OF p_del_dod, p_del\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 4,
+    "TEXT": " ON obj_odb_o\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 5,
+    "TEXT": "REFERENCING NEW AS NEW OLD AS OLD\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 6,
+    "TEXT": " FOR EACH ROW\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 7,
+    "TEXT": "declare\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 8,
+    "TEXT": "  sDovod varchar2(16);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 9,
+    "TEXT": "  nVinnik number(8,0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 10,
+    "TEXT": "  nPocetZrus number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 11,
+    "TEXT": "  nJeBlokacia number(1,0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 12,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 13,
+    "TEXT": "  if instr(:new.rid_o, '-') > 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 14,
+    "TEXT": "    return;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 15,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 16,
+    "TEXT": "  if :new.p_del <> :old.p_del or :new.p_del_dod <> :old.p_del_dod then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 17,
+    "TEXT": "    select d_obj_odb_l_b.JeBlokaciaD(psRID=>l.rid, psTypCis=>l.typ_cis) into nJeBlokacia from obj_odb_l l where l.rid = :new.rid_o;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 18,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 19,
+    "TEXT": "  -- Rusenie zakaznikom\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 20,
+    "TEXT": "  if :new.p_del != :old.p_del then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 21,
+    "TEXT": "    if :new.p_del > :old.p_del then -- rusim pocet na doklade --> vkladam zaznam do logu      \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 22,
+    "TEXT": "      nPocetZrus := :new.p_del - :old.p_del;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 23,
+    "TEXT": "      sDovod := nvl(ppf.gettoken(pSTR=>c_session.GetDovodZrusPolParam, pPOS=>1),c_dovod_zrus_pol.DZ_Nezadany);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 24,
+    "TEXT": "      nVinnik := ppf.gettokenNum(pSTR=>c_session.GetDovodZrusPolParam, pPOS=>2);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 25,
+    "TEXT": "      --\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 26,
+    "TEXT": "      c_dovod_zrus_pol_dokl.InsT(psRID_O=>:new.rid_o, pnID_R=>:new.id_r, psDovod=>sDovod, \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 27,
+    "TEXT": "        pnTyp=>c_dovod_zrus_pol.TYP_DOVODU_ZruseneZak, pnPocet=>nPocetZrus, pnSuma=>nPocetZrus*:new.cena, \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 28,
+    "TEXT": "        pnZisk=>((nPocetZrus*:new.cena)-(nPocetZrus*(:new.cena_s+:new.cena_s2))),\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 29,
+    "TEXT": "        pnVinnik=>nVinnik, pnSklad=>c_rid.getbacksklad(:new.rid_o), pnKodID=>:new.kod_id, psSarza=>:new.sarza);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 30,
+    "TEXT": "      --  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 31,
+    "TEXT": "      c_session.SetDovodZrusPolParam(psDovodZrusPolParam=>null); \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 32,
+    "TEXT": "      if nJeBlokacia = 1 and :new.odpis = 0 and :new.id_sz = c_const.NULA_SkladZasob and :new.id_r = :new.id_r_p then -- hlavna polozka makra =>umelo vkladam kvoli spatnemu ruseniu p_obj\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 33,
+    "TEXT": "        D_OBJ_ODB_L.InsOBJ_SPRAC_REZ(psRID_O=>:new.rid_o, pnID_R=>:new.id_r, psRID_V=>:old.rid_v, psID_SZ=>c_const.NULA_SkladZasob, pnPocet=>nPocetZrus);     \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 34,
+    "TEXT": "      end if; \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 35,
+    "TEXT": "    else  -- ponizujem ruseny pocet --> updatujem/ponizujem pocet v logu      \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 36,
+    "TEXT": "      if nJeBlokacia = 1 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 37,
+    "TEXT": "        c_exc.raiseerrormsgid(4478); -- Na doklade typu \"Blokácia\" nie je dovolené rušiť už zrušené množstvo ! \\\\45458\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 38,
+    "TEXT": "      end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 39,
+    "TEXT": "      nPocetZrus := :old.p_del - :new.p_del;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 40,
+    "TEXT": "      c_dovod_zrus_pol_dokl.ZrusPocet(psRID_O=>:new.rid_o, pnID_R=>:new.id_r, pnTyp=>c_dovod_zrus_pol.TYP_DOVODU_ZruseneZak, \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 41,
+    "TEXT": "        pnPocet=>nPocetZrus, pnCena=>:new.cena, pnCenaS=>(:new.cena_s+:new.cena_s2)); \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 42,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 43,
+    "TEXT": "  -- Rusenie dodavatelom  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 44,
+    "TEXT": "  elsif :new.p_del_dod != :old.p_del_dod then  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 45,
+    "TEXT": "    if :new.p_del_dod > :old.p_del_dod then -- rusim pocet na doklade --> vkladam zaznam do logu\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 46,
+    "TEXT": "      nPocetZrus := :new.p_del_dod - :old.p_del_dod;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 47,
+    "TEXT": "      sDovod := ppf.gettoken(pSTR=>c_session.GetDovodZrusPolParam, pPOS=>1);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 48,
+    "TEXT": "      nVinnik := ppf.gettokenNum(pSTR=>c_session.GetDovodZrusPolParam, pPOS=>2);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 49,
+    "TEXT": "      -- Automat\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 50,
+    "TEXT": "      if sDovod is null then \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 51,
+    "TEXT": "        sDovod := D_OBJ_ODB_O.GetDovodZrusPolozkyDodAutomat(psRID_O=>:new.rid_o, pnID_R=>:new.id_r, pnSklad=>c_rid.getbacksklad(:new.rid_o), \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 52,
+    "TEXT": "          pnKodID=>:new.kod_id, psSarza=>:new.sarza);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 53,
+    "TEXT": "      end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 54,
+    "TEXT": "      --\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 55,
+    "TEXT": "      c_dovod_zrus_pol_dokl.InsT(psRID_O=>:new.rid_o, pnID_R=>:new.id_r, psDovod=>sDovod, \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 56,
+    "TEXT": "        pnTyp=>c_dovod_zrus_pol.TYP_DOVODU_ZruseneDod, pnPocet=>nPocetZrus, pnSuma=>nPocetZrus*:new.cena, \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 57,
+    "TEXT": "        pnZisk=>((nPocetZrus*:new.cena)-(nPocetZrus*(:new.cena_s+:new.cena_s2))),\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 58,
+    "TEXT": "        pnVinnik=>nVinnik, pnSklad=>c_rid.getbacksklad(:new.rid_o), pnKodID=>:new.kod_id, psSarza=>:new.sarza);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 59,
+    "TEXT": "      --  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 60,
+    "TEXT": "      c_session.SetDovodZrusPolParam(psDovodZrusPolParam=>null);   \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 61,
+    "TEXT": "      if nJeBlokacia = 1 and :new.odpis = 0 and :new.id_sz = c_const.NULA_SkladZasob and :new.id_r = :new.id_r_p then -- hlavna polozka makra =>umelo vkladam kvoli spatnemu ruseniu p_obj\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 62,
+    "TEXT": "        D_OBJ_ODB_L.InsOBJ_SPRAC_REZ(psRID_O=>:new.rid_o, pnID_R=>:new.id_r, psRID_V=>:old.rid_v, psID_SZ=>c_const.NULA_SkladZasob, pnPocet=>nPocetZrus);    \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 63,
+    "TEXT": "      end if; \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 64,
+    "TEXT": "    else -- ponizujem ruseny pocet --> updatujem/ponizujem pocet v logu\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 65,
+    "TEXT": "      select d_obj_odb_l_b.JeBlokaciaD(psRID=>l.rid, psTypCis=>l.typ_cis) into nJeBlokacia from obj_odb_l l where l.rid = :new.rid_o;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 66,
+    "TEXT": "      if nJeBlokacia = 1 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 67,
+    "TEXT": "        c_exc.raiseerrormsgid(4478); -- Na doklade typu \"Blokácia\" nie je dovolené rušiť už zrušené množstvo ! \\\\45458\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 68,
+    "TEXT": "      end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 69,
+    "TEXT": "      nPocetZrus := :old.p_del_dod - :new.p_del_dod;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 70,
+    "TEXT": "      c_dovod_zrus_pol_dokl.ZrusPocet(psRID_O=>:new.rid_o, pnID_R=>:new.id_r, pnTyp=>c_dovod_zrus_pol.TYP_DOVODU_ZruseneDod, \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 71,
+    "TEXT": "        pnPocet=>nPocetZrus, pnCena=>:new.cena, pnCenaS=>(:new.cena_s+:new.cena_s2)); \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 72,
+    "TEXT": "    end if;    \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 73,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 74,
+    "TEXT": "exception when others then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 75,
+    "TEXT": "  c_session.SetDovodZrusPolParam(psDovodZrusPolParam=>null);  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 76,
+    "TEXT": "  raise;    \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 77,
+    "TEXT": "end;"
+  }
+]

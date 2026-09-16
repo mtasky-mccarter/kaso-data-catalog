@@ -1,0 +1,471 @@
+[
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 1,
+    "TEXT": "TRIGGER t_obj_odb_l_limit\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 2,
+    "TEXT": " AFTER\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 3,
+    "TEXT": "   INSERT OR DELETE OR UPDATE OF miesto_dod, s_stamp, suma_m, mena, typ_cis\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 4,
+    "TEXT": " ON obj_odb_l\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 5,
+    "TEXT": "REFERENCING NEW AS NEW OLD AS OLD\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 6,
+    "TEXT": " FOR EACH ROW\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 7,
+    "TEXT": "declare\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 8,
+    "TEXT": "  nSuma number := 0;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 9,
+    "TEXT": "  sMiesto_dod varchar2(16);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 10,
+    "TEXT": "  sTyp_cis varchar2(16);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 11,
+    "TEXT": "  nMena number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 12,
+    "TEXT": "  nSuma2 number := 0; -- pri zmene miesta dodania alebo typ_cis\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 13,
+    "TEXT": "  sMiesto_dod2 varchar2(16); -- pri zmene miesta dodania alebo typ_cis\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 14,
+    "TEXT": "  sTyp_cis2 varchar2(16); -- pri zmene miesta dodania alebo typ_cis\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 15,
+    "TEXT": "  nMena2 number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 16,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 17,
+    "TEXT": "  /*LIMIT - cerpa alebo ponizuje cerpanie limitu Obrat za miesto dodania za obdobie, ak ej taky limit definovany\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 18,
+    "TEXT": "    vykona sa pri zmene sumy_m, iba na kladnych dokladoch, ak je limit obratu prekroceny - raisne exception\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 19,
+    "TEXT": "    iba na typ_cis objednavka*/\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 20,
+    "TEXT": "    \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 21,
+    "TEXT": "  if inserting and :new.id > 0 and :new.s_stamp = '0' then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 22,
+    "TEXT": "    nSuma := :new.suma_m;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 23,
+    "TEXT": "    nMena := :new.mena;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 24,
+    "TEXT": "    sMiesto_dod := :new.miesto_dod;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 25,
+    "TEXT": "    sTyp_cis := :new.typ_cis;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 26,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 27,
+    "TEXT": "  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 28,
+    "TEXT": "  if updating and :old.id > 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 29,
+    "TEXT": "    -- storno\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 30,
+    "TEXT": "    if :new.s_stamp != '0' and :old.s_stamp = '0' then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 31,
+    "TEXT": "      nSuma := -1 * :old.suma_m;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 32,
+    "TEXT": "      nMena := :old.mena;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 33,
+    "TEXT": "      sMiesto_dod := :old.miesto_dod;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 34,
+    "TEXT": "      sTyp_cis := :old.typ_cis;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 35,
+    "TEXT": "    -- zmena miesta dodania alebo typ_cis\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 36,
+    "TEXT": "    elsif :old.miesto_dod != :new.miesto_dod or :old.typ_cis != :new.typ_cis or :old.mena != :new.mena then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 37,
+    "TEXT": "      -- old - minusom\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 38,
+    "TEXT": "      nSuma := -1 * :old.suma_m;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 39,
+    "TEXT": "      nMena := :old.mena;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 40,
+    "TEXT": "      sMiesto_dod := :old.miesto_dod;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 41,
+    "TEXT": "      sTyp_cis := :old.typ_cis;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 42,
+    "TEXT": "      -- new - plusom\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 43,
+    "TEXT": "      nSuma2 := :new.suma_m;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 44,
+    "TEXT": "      nMena2 := :new.mena;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 45,
+    "TEXT": "      sMiesto_dod2 := :new.miesto_dod;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 46,
+    "TEXT": "      sTyp_cis2 := :new.typ_cis;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 47,
+    "TEXT": "    elsif :old.suma_m != :new.suma_m then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 48,
+    "TEXT": "      -- zmena sumy_m -- rozdiel\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 49,
+    "TEXT": "      nSuma := -1 * (:old.suma_m) + (:new.suma_m);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 50,
+    "TEXT": "      nMena := :old.mena;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 51,
+    "TEXT": "      sMiesto_dod := :old.miesto_dod;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 52,
+    "TEXT": "      sTyp_cis := :old.typ_cis;      \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 53,
+    "TEXT": "    end if;      \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 54,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 55,
+    "TEXT": "  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 56,
+    "TEXT": "  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 57,
+    "TEXT": "  if nSuma != 0 and sMiesto_dod != '062000000' and sTyp_cis = c_typy_cis.TC_ObjO  then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 58,
+    "TEXT": "    c_cis_limit_vazba.cerpanie(PSID_LIM=>c_cis_limit.LMT_ObratZaPerioduMD, PSRID_O=>sMiesto_dod, PDTDATUM=>:new.datum, PNSUMA=>nSuma, pnMena=>nMena); \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 59,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 60,
+    "TEXT": "  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 61,
+    "TEXT": "  if nSuma2 != 0 and sMiesto_dod2 != '062000000' and sTyp_cis2 = c_typy_cis.TC_ObjO  then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 62,
+    "TEXT": "    c_cis_limit_vazba.cerpanie(PSID_LIM=>c_cis_limit.LMT_ObratZaPerioduMD, PSRID_O=>sMiesto_dod2, PDTDATUM=>:new.datum, PNSUMA=>nSuma2, pnMena=>nMena2); \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 63,
+    "TEXT": "  end if;  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 64,
+    "TEXT": "  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 65,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 66,
+    "TEXT": "end;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_L_LIMIT",
+    "TYPE": "TRIGGER",
+    "LINE": 67,
+    "TEXT": "\n"
+  }
+]

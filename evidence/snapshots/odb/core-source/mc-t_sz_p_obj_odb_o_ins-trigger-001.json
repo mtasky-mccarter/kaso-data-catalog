@@ -1,0 +1,345 @@
+[
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 1,
+    "TEXT": "trigger t_sz_p_obj_odb_o_ins\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 2,
+    "TEXT": "-- EXP 28.10.2021 11:21 CHG 28.10.2021 11:20\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 3,
+    "TEXT": " after\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 4,
+    "TEXT": "  insert\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 5,
+    "TEXT": " on obj_odb_o\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 6,
+    "TEXT": "referencing new as new old as old\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 7,
+    "TEXT": " for each row\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 8,
+    "TEXT": "declare\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 9,
+    "TEXT": "  nFormaDokl number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 10,
+    "TEXT": "  sObjTyp varchar2(16);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 11,
+    "TEXT": "  sRezTyp varchar2(16);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 12,
+    "TEXT": "  sNeRezTyp varchar2(16);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 13,
+    "TEXT": "  nSkladUrcenia number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 14,
+    "TEXT": "  nSkladUrceniaRez number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 15,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 16,
+    "TEXT": "  SELECT substr(FLAGS_S,D_OBJ_ODB_L.FLAGS_S_OBJ_ODB_FORMA_DOKL,1) into nFormaDokl FROM OBJ_ODB_L WHERE RID=:new.RID_O;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 17,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 18,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 19,
+    "TEXT": "  nSkladUrcenia := C_RID.GetBackRIDC( :new.RID_O, C_RID.Const_RID_Back_SKLAD);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 20,
+    "TEXT": "  nSkladUrceniaRez:=nSkladUrcenia;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 21,
+    "TEXT": "    if nFormaDokl = D_OBJ_ODB_L.FORMA_DOKL_OBJ_STR then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 22,
+    "TEXT": "      select l.sklad_kam,l.sklad into nSkladUrcenia, nSkladUrceniaRez from obj_odb_l l where l.rid = :new.rid_o;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 23,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 24,
+    "TEXT": "    if nFormaDokl = D_OBJ_ODB_L.FORMA_DOKL_PRE_SKLAD then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 25,
+    "TEXT": "      select l.sklad_pre,l.sklad into nSkladUrcenia, nSkladUrceniaRez  from obj_odb_l l where l.rid = :new.rid_o;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 26,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 27,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 28,
+    "TEXT": "  -- nastavim typy poctov podla formy dokladu  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 29,
+    "TEXT": "  d_obj_odb_l.SetTP(nFormaDokl,sObjTyp,sRezTyp,sNeRezTyp);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 30,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 31,
+    "TEXT": "  c_sz.OznacStavVyrobku( :new.ID_SZ, :new.SARZA, C_RID.getbackridc(:new.RID_O, c_rid.Const_RID_Back_SKLAD), :new.POCET - :new.P_DEL - :new.P_DEL_DOD );\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 32,
+    "TEXT": "  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 33,
+    "TEXT": "  C_Sklad_Zasob_p.Insc(:new.kod_id, :new.ID_SZ, sObjTyp, (:new.POCET - :new.P_DEL - :new.P_DEL_DOD - :new.P_FAK - :new.P_VYD - :new.P_OBJ),\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 34,
+    "TEXT": "                           nSkladUrcenia, :new.SARZA, :new.RID_O, :new.ID_R);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 35,
+    "TEXT": "                           \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 36,
+    "TEXT": "  C_Sklad_Zasob_p.Insc(:new.kod_id, :new.ID_SZ, sRezTyp, (:new.P_REZ),\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 37,
+    "TEXT": "                           nSkladUrceniaRez, :new.SARZA, :new.RID_O, :new.ID_R);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 38,
+    "TEXT": "  --pridany typ\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 39,
+    "TEXT": "  C_Sklad_Zasob_p.Insc(:new.kod_id, :new.ID_SZ, sNeRezTyp, (:new.POCET - :new.P_DEL - :new.P_DEL_DOD - :new.P_FAK - :new.P_VYD - :new.P_OBJ - :new.P_REZ - :new.p_dispo - :new.p_rez_pl - :new.p_obj_d - :new.p_rez_is),\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 40,
+    "TEXT": "                           nSkladUrceniaRez, :new.SARZA, :new.RID_O, :new.ID_R);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 41,
+    "TEXT": "  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 42,
+    "TEXT": "  -- Obchodne pripady\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 43,
+    "TEXT": "  C_Sklad_Zasob_p.Insc(:new.kod_id, :new.ID_SZ, C_CONST.ID_PS_ObchodnePripady, (:new.POCET - :new.P_DEL - :new.P_DEL_DOD - :new.P_FAK - :new.P_VYD - :new.P_OBJ),\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 44,
+    "TEXT": "                           nSkladUrcenia, :new.SARZA, :new.RID_O, :new.ID_R);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 45,
+    "TEXT": "                           \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 46,
+    "TEXT": "  C_Sklad_Zasob_p.Insc(:new.kod_id, :new.ID_SZ, C_CONST.ID_PS_RezObchodnePripady, (:new.P_REZ),\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 47,
+    "TEXT": "                           nSkladUrcenia, :new.SARZA, :new.RID_O, :new.ID_R);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 48,
+    "TEXT": "  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_SZ_P_OBJ_ODB_O_INS",
+    "TYPE": "TRIGGER",
+    "LINE": 49,
+    "TEXT": "end;"
+  }
+]

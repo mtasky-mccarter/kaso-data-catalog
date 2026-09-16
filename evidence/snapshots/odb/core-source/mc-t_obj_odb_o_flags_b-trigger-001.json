@@ -1,0 +1,359 @@
+[
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 1,
+    "TEXT": "TRIGGER t_obj_odb_o_flags_b\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 2,
+    "TEXT": "-- EXP 28.07.2022 09:27 CHG 28.07.2022 09:20\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 3,
+    "TEXT": " BEFORE\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 4,
+    "TEXT": "   UPDATE OF flags_b\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 5,
+    "TEXT": " ON obj_odb_o\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 6,
+    "TEXT": "REFERENCING NEW AS NEW OLD AS OLD\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 7,
+    "TEXT": " FOR EACH ROW\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 8,
+    "TEXT": "declare\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 9,
+    "TEXT": "  nFormaObj number(1,0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 10,
+    "TEXT": "  nSpecCenaN number(1,0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 11,
+    "TEXT": "  nSpecCenaO number(1,0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 12,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 13,
+    "TEXT": "  if updating then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 14,
+    "TEXT": "    /*\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 15,
+    "TEXT": "    if c_session.GetNekontrolujZmenObjOSpecCena = 1 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 16,
+    "TEXT": "      return;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 17,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 18,
+    "TEXT": "    */\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 19,
+    "TEXT": "    if :old.flags_b != :new.flags_b then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 20,
+    "TEXT": "      nSpecCenaO := d_obj_odb_o.getfb_specialnacena(:old.flags_b);  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 21,
+    "TEXT": "      nSpecCenaN := d_obj_odb_o.getfb_specialnacena(:new.flags_b);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 22,
+    "TEXT": "      if nSpecCenaO <> nSpecCenaN then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 23,
+    "TEXT": "        if c_session.GetNekontrolujZmenObjOSpecCena = 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 24,
+    "TEXT": "          select d_obj_odb_l.gets_formadokladu(flags_s) into nFormaObj from obj_odb_l where rid = :new.rid_o;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 25,
+    "TEXT": "          if c_rid.getbackid(:new.rid_o) > 0 and nFormaObj = d_obj_odb_l.FORMA_DOKL_OBJ_UZAVRETA then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 26,
+    "TEXT": "            if nSpecCenaO = 1 and nSpecCenaN = 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 27,
+    "TEXT": "              c_exc.raiseerrormsg('Na položke uzavretej objednávky nie je možné zrušiť nastavenie \"Špecialna cena\" !');            \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 28,
+    "TEXT": "            elsif nSpecCenaO = 0 and nSpecCenaN = 1 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 29,
+    "TEXT": "              if c_session.GetZmenaObjOSpecialnaCena = 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 30,
+    "TEXT": "                c_exc.raiseerrormsg('Na položke uzavretej objednávky nie je možné zapnúť nastavenie \"Špecialna cena\" týmto spôsobom !'||chr(13)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 31,
+    "TEXT": "                ||'Na zapnutie použite stĺpec \"Špeciálna cena\" vo formulári pre objednávku odberateľa v aplikácii Dreamer !');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 32,
+    "TEXT": "              end if;            \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 33,
+    "TEXT": "            end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 34,
+    "TEXT": "          end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 35,
+    "TEXT": "        end if;  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 36,
+    "TEXT": "        -- ak mam zarezervovane a zapinam specialnu cenu => odrezervujem + ak neni nic vybavene zrusim aj id_sz \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 37,
+    "TEXT": "        -- !!! nevratilo do sklad_zasob => riesenie v d_obj_odb_o.NastavSpecialnaCena update p_rez\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 38,
+    "TEXT": "        /*\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 39,
+    "TEXT": "        if nSpecCenaO = 0 and nSpecCenaN = 1 then  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 40,
+    "TEXT": "          if :new.p_rez > 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 41,
+    "TEXT": "            :new.p_rez := 0; \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 42,
+    "TEXT": "            if :new.p_vyd + :new.p_fak + :new.p_obj = 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 43,
+    "TEXT": "              :new.id_sz := '0000';\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 44,
+    "TEXT": "            end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 45,
+    "TEXT": "          end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 46,
+    "TEXT": "        end if; \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 47,
+    "TEXT": "        */             \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 48,
+    "TEXT": "      end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 49,
+    "TEXT": "    end if; \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 50,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_FLAGS_B",
+    "TYPE": "TRIGGER",
+    "LINE": 51,
+    "TEXT": "end;"
+  }
+]

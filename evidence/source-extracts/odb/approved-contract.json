@@ -1,0 +1,6482 @@
+[
+  {
+    "type": "p",
+    "text": "McCarter KASO DATA CATALOG"
+  },
+  {
+    "type": "p",
+    "text": "OBJ_ODB_L + OBJ_ODB_O - objednávkový objekt / Diagnostic Grade"
+  },
+  {
+    "type": "p",
+    "text": "Detailná technická, business a diagnostická dokumentacia Oracle objektu BarIS / Dreamer / KASO."
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Verzia",
+        "1.2"
+      ],
+      [
+        "Dátum",
+        "9. 9. 2026"
+      ],
+      [
+        "Vlastník dokumentácie",
+        "Martin Tašký"
+      ],
+      [
+        "Aktuálny scope",
+        "OBJ_ODB_L (hlavička objednávkového dokladu) + OBJ_ODB_O (položky). Dokument pokrýva fyzickú schému, vzťahy, constraints, indexy, 50 triggerov, relevantné package flow, quantity/coverage model, pricing, rezervácie, externých writerov, diagnostické playbooky, canonical SQL toolkit a v1.2 hardening temporal/identity/JOIN kontraktov podľa pripomienok memoranda."
+      ],
+      [
+        "Status dokumentu",
+        "DIAGNOSTIC-GRADE MAPPED / READY FOR USE. V1.2 dopĺňa históriu a temporal coverage, rozsah identity kľúčov, časovú hranicu master dát, formálny relationship contract a ochranu pred násobením riadkov pri JOINoch. Dokument zámerne nedefinuje cieľový DWH model."
+      ],
+      [
+        "Povinný spôsob mapovania",
+        "SQL Navigator (read-only Oracle metadata / SELECT / JOIN / ALL_SOURCE vrátane PACKAGE a PACKAGE BODY) + BarIS/Dreamer (UI a business validácia). Autoritatívne prostredie pre slovenskú produkciu je MC; MCCZ, TEST a TESTCZ sú samostatné databázy."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "0. ZÁVÄZNÝ PRACOVNÝ KONTRAKT PRE MAPOVANIE DÁT"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "POVINNÉ PRE KAŽDÝ ĎALŠÍ CHAT / PROJEKT  Táto kapitola je nadradeným pracovným pravidlom celého katalógu. Každý chat, projekt alebo analytik, ktorý používa tento dokument alebo doň dopĺňa nové mapovanie, sa musí riadiť pravidlami nižšie. Existujúce potvrdené mapovania sa opakovane nezisťujú bez dôvodu; nové poznatky sa zapisujú tak, aby boli použiteľné aj mimo projektu, v ktorom vznikli."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": "0.1 Úloha katalógu a pravidlo prednosti"
+  },
+  {
+    "type": "p",
+    "text": "Katalóg je centrálny zdroj univerzálnej znalosti BarIS / Dreamer / KASO. Popisuje fyzické tabuľky, polia, väzby, granularitu, business význam, autoritu dát, odvodené logiky, obmedzenia a otvorené body."
+  },
+  {
+    "type": "p",
+    "text": "Pred začatím nového mapovania sa musí najprv vyhľadať, či už daná tabuľka, pole, číselník alebo väzba v tomto dokumente nie je zmapovaná. Potvrdený záznam sa znovu nemapuje iba preto, že vznikol nový projekt."
+  },
+  {
+    "type": "p",
+    "text": "Projektová dokumentácia môže používať a rozširovať údaje z katalógu, ale projektovo špecifické KPI, filtre, priority, dashboard logika alebo dočasné pracovné pravidlá nesmú meniť univerzálny význam zdrojových dát."
+  },
+  {
+    "type": "p",
+    "text": "Ak je projektové zistenie všeobecne platné pre zdrojový systém, po potvrdení sa prenesie do katalógu. Ak platí iba pre konkrétny projekt, zostáva v projektovej dokumentácii."
+  },
+  {
+    "type": "p",
+    "text": "0.2 Povinný spôsob mapovania a dôkazná hierarchia"
+  },
+  {
+    "type": "p",
+    "text": "Oracle package a package body sú súčasťou povinného technického prieskumu, ak UI zobrazuje odvodený stav, ikonu, text alebo správanie, ktoré nie je vysvetlené fyzickým poľom. Cez ALL_SOURCE možno dohľadať konštanty, mapovania a SQL logiku; pri produkčnom slovenskom mapovaní filtrovať OWNER=MC. MCCZ, TEST a TESTCZ sú samostatné databázy a slúžia nanajvýš ako pomocná stopa, nie ako autoritatívny dôkaz pre MC."
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Úroveň",
+        "Zdroj dôkazu",
+        "Čo môže potvrdiť",
+        "Záväzné pravidlo"
+      ],
+      [
+        "A",
+        "SQL Navigator – Oracle metadata",
+        "Skutočný názov tabuľky/view, názov stĺpca, datatype, nullable a technická existencia.",
+        "Technickú existenciu overovať priamo v SQL Navigatore. Názov poľa ešte nepotvrdzuje business význam."
+      ],
+      [
+        "B",
+        "SQL Navigator – read-only SELECT / JOIN",
+        "Reálne hodnoty, technický kľúč, JOIN, kardinalitu, NULL, duplicity a edge cases.",
+        "Používať iba read-only dotazy. JOIN alebo vzťah sa zapisuje ako potvrdený až po teste na konkrétnych živých dátach."
+      ],
+      [
+        "C",
+        "BarIS / Dreamer – UI, konkrétny doklad alebo export",
+        "Business label, používateľský stav, zobrazenie konkrétneho dokladu a porovnanie s hodnotami zo SQL.",
+        "BarIS/Dreamer slúži na business validáciu. UI názov sa nesmie vydávať za fyzický Oracle názov bez overenia v SQL Navigatore."
+      ],
+      [
+        "D",
+        "Používateľ / business potvrdenie",
+        "Skutočný procesný význam, moment vzniku údaja, autorita dát, výnimky a používanie v praxi.",
+        "Ak význam nie je jednoznačný zo SQL a BarIS/Dreamer, chat sa musí používateľa opýtať a nechať si fakt overiť."
+      ],
+      [
+        "E",
+        "Nejasnosť / pracovná hypotéza",
+        "Možný význam, možný JOIN alebo predpoklad, ktorý ešte nebol overený.",
+        "NEZAPISOVAŤ do hlavného mapovania ako fakt. Zapísať iba do mapping backlogu ako otázku: čo presne overiť v SQL Navigatore alebo BarIS/Dreamer."
+      ],
+      [
+        "B2",
+        "Oracle source code - ALL_SOURCE / PACKAGE / PACKAGE BODY",
+        "Stavové konštanty, CASE/DECODE mapovania, vložené SQL, názvy volaných tabuliek/funkcií a aplikačnú logiku; podľa konkrétneho package aj technický spôsob získania údajov.",
+        "Package source je platný technický dôkaz a má sa cielene prehľadávať pri mapovaní Dreamer/KASO logiky. Neznamená automaticky potvrdený business význam; ten sa podľa potreby validuje cez živé dáta, UI alebo používateľa. Pre slovenskú main verziu používať OWNER=MC."
+      ]
+    ]
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "POVINNÁ ZÁSADA – NEDOMÝŠĽAŤ, NEVYMÝŠĽAŤ, NAJPRV OVERIŤChat ani analytik nesmie vytvoriť alebo doplniť názov fyzickej tabuľky, stĺpca, číselníka, JOIN kľúča, väzby, business významu alebo výpočtu, ktorý nebol overený. Ak je čokoľvek nejasné, musí sa používateľa opýtať a presne uviesť, čo má overiť – cez SQL Navigator alebo v BarIS/Dreamer. Až po spätnom potvrdení sa fakt zapíše do hlavného katalógu. Neoverené možnosti patria výhradne do časti Otvorené otázky / mapping backlog a nesmú byť formulované tak, aby vyzerali ako existujúce polia alebo platné väzby."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": "0.3 Povinná štruktúra záznamu novej tabuľky alebo view"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Prvok",
+        "Čo sa musí zapísať",
+        "Pravidlo"
+      ],
+      [
+        "Doména",
+        "Sales / Warehouse / WMS / Transport / Purchasing / Master / Lookup / iná potvrdená doména.",
+        "Doména opisuje business oblasť, nie projekt."
+      ],
+      [
+        "Business objekt",
+        "Čo tabuľka reprezentuje v procese.",
+        "Napr. obchodný prípad, výdajka, cestovný príkaz, skladová karta."
+      ],
+      [
+        "Fyzický zdroj",
+        "Presný Oracle názov tabuľky alebo view.",
+        "Bez skracovania a bez prepisu podľa UI názvu."
+      ],
+      [
+        "Granularita",
+        "Čo reprezentuje jeden riadok.",
+        "Povinné pred návrhom KPI, JOINov alebo exportného datasetu."
+      ],
+      [
+        "Identita / kľúč",
+        "PK, technická identita alebo kombinácia polí.",
+        "Ak nie je globálne unikátna, explicitne uviesť rozsah uniqueness."
+      ],
+      [
+        "Väzby",
+        "Zdrojové a cieľové polia JOINu + kardinalita.",
+        "Uviesť 1:1 / 1:N / N:M / podmienenú väzbu a stav validácie."
+      ],
+      [
+        "Polia",
+        "Fyzické pole, datatype, canonical alias, business význam a status.",
+        "Raw pole a odvodené pole nesmú byť zlúčené do jedného záznamu."
+      ],
+      [
+        "Autorita dát",
+        "Či je objekt/pole source of truth alebo iba pomocný snapshot.",
+        "Ak autorita patrí inej tabuľke, uviesť ju explicitne."
+      ],
+      [
+        "Odvodená logika",
+        "Presná formula, mapovanie číselníka alebo transformačné pravidlo.",
+        "Formula musí byť reprodukovateľná; nevysvetľovať iba slovne, ak poznáme zdrojový výpočet."
+      ],
+      [
+        "Data quality",
+        "Nespoľahlivé polia, známe výnimky, technické riadky, historizačné medzery.",
+        "Nespoľahlivé údaje označiť NEPOUŽÍVAŤ alebo DATA GAP podľa významu."
+      ],
+      [
+        "Otvorené body",
+        "Čo treba ešte technický alebo businessovo potvrdiť.",
+        "Uvádzať iba v samostatnom mapping backlogu ako konkrétnu otázku na overenie; nie ako súčasť potvrdeného field/JOIN mapovania."
+      ],
+      [
+        "Dôkaz / validácia",
+        "Na čom bolo mapovanie potvrdené: SQL, vzorka, UI, business pravidlo.",
+        "Uviesť, či bolo potvrdené cez SQL Navigator, BarIS/Dreamer alebo explicitným business potvrdením používateľa. Bez potvrdenia nevstupuje do hlavného mapovania."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": "0.4 Povinné pravidlá zapisovania polí"
+  },
+  {
+    "type": "p",
+    "text": "Fyzický názov zapisovať presne podľa Oracle metadát. Neprekladať ho a nevytvárať alternatívny názov namiesto skutočného stĺpca."
+  },
+  {
+    "type": "p",
+    "text": "Canonical alias zapisovať stabilne v angličtine, ASCII a snake_case (napr. requested_delivery_date, picked_qty). Alias má vyjadrovať význam a má byť znovupoužiteľný naprieč projektmi."
+  },
+  {
+    "type": "p",
+    "text": "Business definíciu zapisovať po slovensky a vysvetliť, čo údaj reálne znamená v procese – nie iba preložiť názov stĺpca."
+  },
+  {
+    "type": "p",
+    "text": "Raw pole, odvodené pole a analytická klasifikácia sú tri rozdielne vrstvy. V dokumente musia zostať rozlíšené."
+  },
+  {
+    "type": "p",
+    "text": "ID/kód a názov číselníka evidovať samostatne. Neuchovávať iba UI reťazec typu „Názov \\ RID“ ako jediný údaj."
+  },
+  {
+    "type": "p",
+    "text": "RID, kódy a identifikátory s možnou úvodnou nulou považovať pri integrácii za text, ak nie je potvrdené inak."
+  },
+  {
+    "type": "p",
+    "text": "NULL zachovať ako NULL. Text „Nezadaný“ sa nesmie vyrábať tam, kde zdroj obsahuje skutočný NULL; rozlíšiť technický NULL od číselníkovej hodnoty „Nezadaný“."
+  },
+  {
+    "type": "p",
+    "text": "Dátum alebo timestamp musí mať potvrdený business okamih. Ak nevieme, čo dátum reprezentuje, business význam sa do hlavného mapovania nezapíše; vytvorí sa konkrétna otázka v mapping backlogu a používateľ ho overí cez SQL Navigator alebo BarIS/Dreamer."
+  },
+  {
+    "type": "p",
+    "text": "Master-data atribúty (napr. EAN, balenie, jednotková hmotnosť, paletizácia) patria primárne k master objektu. V transakčnej tabuľke ich duplikovať iba ak ide o potvrdený historický snapshot alebo nevyhnutný zdrojový fakt."
+  },
+  {
+    "type": "p",
+    "text": "Aktuálne hodnoty číselníka sa nesmú hardcodovať ako úplný zoznam, pokiaľ systém umožňuje ďalšie hodnoty. Exportovať/storedovať kód + názov a dokumentovať známe hodnoty ako vzorku."
+  },
+  {
+    "type": "p",
+    "text": "UI filtre alebo WHERE podmienky z konkrétneho okna sa nesmú automaticky preniesť do univerzálneho dátového kontraktu. Najprv potvrdiť, či ide o business pravidlo alebo iba používateľský filter obrazovky."
+  },
+  {
+    "type": "p",
+    "text": "Ak pole nemá reálny use case alebo je preukázateľne nespoľahlivé, nevyhadzovať ho zo znalosti systému bez stopy; označiť NEPOUŽÍVAŤ a vysvetliť dôvod."
+  },
+  {
+    "type": "p",
+    "text": "0.5 Povinný workflow mapovania novej tabuľky"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Krok",
+        "Povinný výstup",
+        "Minimálne pravidlo"
+      ],
+      [
+        "1. Identifikácia objektu",
+        "Business objekt + fyzická tabuľka/view overená v SQL Navigatore.",
+        "Nepracovať iba s názvom UI okna. Ak tabuľka nie je potvrdená, chat si vyžiada jej overenie."
+      ],
+      [
+        "2. Metadata",
+        "Zoznam stĺpcov, datatype, nullable; podľa potreby PK/index informácia.",
+        "Iba read-only prezeranie metadát."
+      ],
+      [
+        "3. Základná vzorka",
+        "Malý SELECT, typicky 20–100 riadkov.",
+        "Najprv pochopiť reálne hodnoty; žiadne INSERT/UPDATE/DELETE/DDL."
+      ],
+      [
+        "4. Cielené edge cases",
+        "Konkrétne doklady/stavy nájdené v BarIS/Dreamer a dohľadané v SQL.",
+        "Porovnávať rovnaký RID/ID alebo iný potvrdený identifikátor v oboch vrstvách."
+      ],
+      [
+        "5. Granularita a identita",
+        "Definícia jedného riadku + technický kľúč.",
+        "Nesmie sa predpokladať unikátnosť podľa jedného SKU/ID bez testu."
+      ],
+      [
+        "6. Väzby",
+        "JOIN + potvrdené polia JOINu + výsledok testu.",
+        "Ak join kľúč alebo kardinalita nie sú potvrdené, nevkladať ich do mapy vzťahov; presunúť otázku do backlogu."
+      ],
+      [
+        "7. Business validácia",
+        "Význam kľúčových polí potvrdený porovnaním SQL ↔ BarIS/Dreamer alebo používateľom.",
+        "Ak ostáva nejasnosť, chat sa musí opýtať. Bez odpovede sa business význam nepovažuje za potvrdený."
+      ],
+      [
+        "8. Otvorené polia",
+        "Zoznam nezodpovedaných otázok – bez navrhnutých fiktívnych polí alebo väzieb.",
+        "Formulovať presne: čo má používateľ nájsť/porovnať v SQL Navigatore alebo BarIS/Dreamer. Nejasnosť ostáva iba v backlogu."
+      ],
+      [
+        "9. Zápis do katalógu",
+        "Do hlavného katalógu preniesť iba overené technické alebo business fakty.",
+        "Neoverené hypotézy sa nesmú stať canonical aliasom, business definíciou ani JOINom."
+      ],
+      [
+        "10. Revízia",
+        "Nová verzia dokumentu + záznam v revíznej histórii.",
+        "Každá potvrdená zmena musí byť dohľadateľná; neprepisovať potichu existujúci fakt."
+      ]
+    ]
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "READ-ONLY BEZPEČNOSTNÉ PRAVIDLO  Pri databázovom mapovaní používať iba SELECT a prezeranie metadát. Nespúšťať INSERT, UPDATE, DELETE, MERGE, ALTER, DROP, TRUNCATE ani iné príkazy meniace dáta alebo databázovú štruktúru."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": "0.6 Pravidlá zmeny už potvrdeného mapovania"
+  },
+  {
+    "type": "p",
+    "text": "Potvrdený záznam sa nesmie meniť iba preto, že nový projekt používa inú terminológiu. Projekt si môže vytvoriť vlastný prezentačný názov, ale canonical význam v katalógu zostáva stabilný."
+  },
+  {
+    "type": "p",
+    "text": "Ak nový dôkaz odporuje existujúcemu POTVRDENÉ mapovaniu, pôvodný fakt sa neprepíše potichu. Dotknutý bod sa dočasne označí TREBA OVERIŤ, v revíznej histórii sa zaznamená konflikt a až po revalidácii sa zapíše nový potvrdený stav."
+  },
+  {
+    "type": "p",
+    "text": "Zmena canonical aliasu, granularitnej definície, join kľúča alebo business významu je breaking change znalostného kontraktu a musí byť explicitne uvedená v revíznej histórii."
+  },
+  {
+    "type": "p",
+    "text": "Doplnenie nového potvrdeného poľa alebo nového JOINu je kompatibilné rozšírenie, ale aj ono zvyšuje verziu dokumentu."
+  },
+  {
+    "type": "p",
+    "text": "Ak sa pole prestane používať, nemaže sa bez stopy. Označí sa NEPOUŽÍVAŤ alebo sa v poznámke uvedie, že bolo nahradené, vrátane nového autoritatívneho zdroja."
+  },
+  {
+    "type": "p",
+    "text": "0.7 Čo do centrálneho katalógu nepatrí"
+  },
+  {
+    "type": "p",
+    "text": "Konkrétne Power BI vizualizácie, layout dashboardu alebo farebná logika reportu."
+  },
+  {
+    "type": "p",
+    "text": "Projektovo špecifické KPI, ktoré nie sú univerzálnou definíciou zdrojového systému."
+  },
+  {
+    "type": "p",
+    "text": "Dočasné filtre typu „iba dnešné záznamy“, „iba stav GO“ alebo „iba zákazník X“, ak nejde o skutočné source/business pravidlo."
+  },
+  {
+    "type": "p",
+    "text": "Nevysvetlené hypotézy prezentované ako fakt."
+  },
+  {
+    "type": "p",
+    "text": "SQL optimalizácie, staging architektúra alebo transportný formát konkrétneho projektu, pokiaľ nejde o dlhodobo prijatý spoločný integračný štandard."
+  },
+  {
+    "type": "p",
+    "text": "Osobné pracovné poznámky bez všeobecnej hodnoty pre budúce použitie."
+  },
+  {
+    "type": "p",
+    "text": "0.8 Povinná handover inštrukcia pre ďalší chat"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "INŠTRUKCIA PRE AI / ĎALŠÍ CHATPred mapovaním najprv prečítaj túto kapitolu a existujúcu kapitolu objektu. Mapovanie vykonávaj cez tri technicko-business vrstvy podľa potreby: (1) SQL Navigator - read-only Oracle metadata, SELECT a JOIN testy; (2) Oracle source code - ALL_SOURCE, PACKAGE a PACKAGE BODY, najmä pri odvodených stavoch, ikonách a aplikačnej logike; (3) BarIS/Dreamer - konkrétne doklady, UI názvy, stavy a business správanie. Pre slovenskú produkciu je autoritatívny OWNER/DB kontext MC. Nikdy si nevymýšľaj názov tabuľky, poľa, číselníka, JOINu, väzby, business významu ani formulu. Neoverené body eviduj iba v mapping backlogu. Existujúce POTVRDENÉ fakty neprepisuj bez nového dôkazu a každú potvrdenú zmenu zapíš do revíznej histórie."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": "0.9 Definition of Done – kedy je tabuľka zmapovaná"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Kontrola",
+        "Minimum pre stav „zmapované“"
+      ],
+      [
+        "Fyzický zdroj",
+        "Tabuľka/view a relevantné fyzické polia sú identifikované z Oracle metadát."
+      ],
+      [
+        "Granularita",
+        "Je jasné, čo reprezentuje jeden riadok."
+      ],
+      [
+        "Identita",
+        "Je známy PK alebo technická kombinácia identifikujúca riadok v potrebnom rozsahu."
+      ],
+      [
+        "Väzby",
+        "Kľúčové JOINy sú otestované a majú popísanú kardinalitu/podmienky."
+      ],
+      [
+        "Business semantika",
+        "Kľúčové polia potrebné pre použitie majú potvrdený význam; nezodpovedané polia sú explicitne v backlogu."
+      ],
+      [
+        "Autorita",
+        "Je určené, ktoré polia sú source of truth a ktoré iba snapshot/pomocný stav."
+      ],
+      [
+        "Derived logika",
+        "Známe výpočty a číselníkové mapy sú reprodukovateľne zapísané."
+      ],
+      [
+        "Data quality",
+        "Technické výnimky, nespoľahlivé polia a historizačné medzery sú zdokumentované."
+      ],
+      [
+        "Revízia",
+        "Zmena je zapísaná v revíznej histórii a dokument má zvýšenú verziu."
+      ],
+      [
+        "Trigger / package spravanie",
+        "Relevantne triggery a volane procedury maju popisany event, podmienky, side effecty, bypass/session vetvy a diagnostický význam."
+      ],
+      [
+        "Mutation surface",
+        "Pre kriticke polia je zdokumentovane, ktore procesy a objekty ich mozu menit priamo alebo nepriamo."
+      ],
+      [
+        "Diagnostic playbooky",
+        "Pre hlavne symptomy existuje bezpečný postup diagnostiky, ktory rozlisuje dôkaz od interpretacie."
+      ],
+      [
+        "SQL toolkit",
+        "Dokument obsahuje reprodukovatelne read-only SQL vzory s uvedenim, co výsledok dokazuje a co nie."
+      ],
+      [
+        "Domain boundaries",
+        "Pri prechode do skladu, vydaja, fakturacie, purchasingu alebo pricingu je explicitne uvedene, kde končí scope tohto dokumentu."
+      ],
+      [
+        "History / temporal coverage",
+        "Pri kľúčových stavoch je rozlíšené CURRENT snapshot, selektívna história, procesný log a DATA GAP; dokument uvádza, čo sa spätne rekonštruovať nedá."
+      ],
+      [
+        "Identity scope",
+        "Kľúče majú uvedený rozsah uniqueness a pravidlo pre environment context; globálna unikátnosť medzi MC/MCCZ/TEST/TESTCZ sa nepredpokladá bez dôkazu."
+      ],
+      [
+        "JOIN fan-out safety",
+        "1:N a polymorfné väzby majú popísané riziko násobenia riadkov a bezpečný spôsob JOINu/agregácie pre diagnostiku a analytiku."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": "1. ÚČEL A RIADENIE DOKUMENTÁCIE"
+  },
+  {
+    "type": "p",
+    "text": "Tento dokument oddeľuje univerzálnu znalosť BarIS / Dreamer / KASO od konkrétnych projektov. Cieľom je, aby analytické, AI, integračné, reportingové a procesné projekty nemuseli znovu zisťovať fyzické tabuľky, význam polí, číselníky, JOINy, množstevné logiky a známe dátové obmedzenia. Projekty majú tento katalóg používať ako zdrojový dátový slovník a vo vlastnej dokumentácii popisovať už iba projektovo špecifické použitie."
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "KĽÚČOVÝ PRINCÍP\nKatalóg popisuje, čo v zdrojových systémoch existuje a čo to znamená. Projektový blueprint popisuje, ktoré časti katalógu daný projekt používa, ako ich transformuje a aké KPI alebo rozhodnutia nad nimi vytvára."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "1.1 Statusy a dôkazná úroveň"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Status",
+        "Význam"
+      ],
+      [
+        "POTVRDENÉ",
+        "Business význam a/alebo technické mapovanie je potvrdené živými dátami, SQL alebo používateľskou validáciou."
+      ],
+      [
+        "TECHNICKY ZNÁME",
+        "Fyzická tabuľka/pole alebo väzba je identifikovaná; business interpretácia môže ešte vyžadovať validáciu."
+      ],
+      [
+        "ODVODENÉ",
+        "Pole vzniká výpočtom alebo mapou nad zdrojovými dátami; nie je samostatným raw stĺpcom."
+      ],
+      [
+        "TREBA OVERIŤ",
+        "Otvorená otázka evidovaná iba v mapping backlogu. Nesmie byť prezentovaná ako potvrdené pole, význam, formula alebo JOIN."
+      ],
+      [
+        "DATA GAP",
+        "Zdrojový systém údaj neposkytuje alebo dnes nie je známy spoľahlivý zdroj."
+      ],
+      [
+        "NEPOUŽÍVAŤ",
+        "Pole môže existovať, ale pre analytické rozhodovanie je aktuálne nespoľahlivé alebo metodicky nevhodné."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "1.2 Pravidlo aktualizácie"
+  },
+  {
+    "type": "p",
+    "text": "Po každom potvrdenom mapovaní aktualizovať tento katalóg a zvýšiť revíziu dokumentu."
+  },
+  {
+    "type": "p",
+    "text": "Fyzické názvy tabuliek a polí meniť iba podľa overeného SQL/metadátového zdroja; business význam nepovažovať za potvrdený iba podľa názvu stĺpca."
+  },
+  {
+    "type": "p",
+    "text": "Pri každom novom objekte zachytiť granularitu, identitu, väzby, raw polia, odvodené polia, číselníky, data-quality obmedzenia a otvorené body."
+  },
+  {
+    "type": "p",
+    "text": "Projektové aliasy používať stabilne v ASCII snake_case; UI názvy BarIS/Dreamer sú validačná pomôcka, nie integračný kontrakt."
+  },
+  {
+    "type": "p",
+    "text": "Raw údaje, business interpretáciu a analytické odvodenia držať od seba oddelené."
+  },
+  {
+    "type": "p",
+    "text": "2. SCOPE, BUSINESS OBJEKT A GRANULARITA"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "LOGICKÝ OBJEKTOBJ_ODB_L a OBJ_ODB_O sa v tejto dokumentácii považujú za jeden objednávkový objekt: hlavička + položky. Fyzicky ide o dve Oracle tabuľky, ale ich primárna business väzba je 1:N cez OBJ_ODB_L.RID = OBJ_ODB_O.RID_O."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Vrstva",
+        "Oracle objekt",
+        "Granularita",
+        "Primárna identita",
+        "CORE status"
+      ],
+      [
+        "Hlavička",
+        "MC.OBJ_ODB_L",
+        "1 riadok = 1 objednávkový doklad",
+        "RID",
+        "CLOSED / CORE MAPPED"
+      ],
+      [
+        "Položka",
+        "MC.OBJ_ODB_O",
+        "1 riadok = 1 položka objednávkového dokladu",
+        "RID_O + ID_R",
+        "CLOSED / CORE MAPPED"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "OBJ_ODB_O je množstevná autorita objednávky. Hlavičkové stavové polia OBJ_ODB_L sú kontrolné a procesné snapshoty; fulfilment a otvorené množstvo sa majú počítať z raw množstevných polí položiek."
+  },
+  {
+    "type": "p",
+    "text": "2.1 Kľúčové vzťahy objednávkového objektu"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Zdroj",
+        "Kľúč / join",
+        "Cieľ",
+        "Význam",
+        "Stav"
+      ],
+      [
+        "OBJ_ODB_L",
+        "RID",
+        "OBJ_ODB_O.RID_O",
+        "Hlavička -> položky, 1:N",
+        "POTVRDENÉ"
+      ],
+      [
+        "OBJ_ODB_O",
+        "KOD_ID",
+        "SKLAD_KARTA.ID",
+        "Položka -> produkt/SKU",
+        "POTVRDENÉ FK"
+      ],
+      [
+        "OBJ_ODB_O",
+        "ID_SZ",
+        "SKLAD_ZASOB.ID",
+        "Položka -> skladová zásoba",
+        "POTVRDENÉ FK"
+      ],
+      [
+        "OBJ_ODB_O",
+        "RID_BAL",
+        "B_KOD_U.RID",
+        "Položka -> balenie/kód balenia",
+        "POTVRDENÉ FK"
+      ],
+      [
+        "OBJ_ODB_O",
+        "RID_CT_Z",
+        "CT_O.RID_OBJ",
+        "Zmluvná cenotvorba",
+        "FK DISABLED / NOT VALIDATED"
+      ],
+      [
+        "OBJ_ODB_O",
+        "RID_CT_A",
+        "CT_O.RID_OBJ",
+        "Akciová cenotvorba",
+        "FK DISABLED / NOT VALIDATED"
+      ],
+      [
+        "OBJ_ODB_O",
+        "RID_OBJEKT",
+        "DOKL_OBJEKTY.RID",
+        "Položkový document object / override",
+        "POTVRDENÉ FK"
+      ],
+      [
+        "OBJ_ODB_O",
+        "DOVOD_BLOKACIE",
+        "DOVODY_BLOK_TOVAR.ID",
+        "Dôvod blokácie zásoby",
+        "POTVRDENÉ FK"
+      ],
+      [
+        "OBJ_ODB_O",
+        "RID_O + ID_R",
+        "DOVOD_ZRUS_POL_DOKLAD.RID_O + ID_R",
+        "História dôvodov zrušenia položky",
+        "1:N historický / 1 current"
+      ],
+      [
+        "OBJ_ODB_O",
+        "RID_N",
+        "OBJ_D_NAVRH.RID",
+        "Návrh nákupu / purchasing proposal",
+        "SOURCE CONFIRMED; current zero"
+      ],
+      [
+        "OBJ_ODB_O",
+        "RID_V",
+        "polymorfná referencia",
+        "Naviazaný zdroj/cieľ podľa workflow",
+        "SOURCE CONFIRMED"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "3. OBJEDNÁVKY – OBJ_ODB_L"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "GRANULARITA1 riadok OBJ_ODB_L = 1 objednávkový doklad / hlavička objednávky. Primárna identita je RID. Hlavička nesie kontext partnera, miesta dodania, termínu, typu, auditných údajov a kontrolných stavov; množstevná autorita je na OBJ_ODB_O."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "3.1 Známe fyzické a mapované polia"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Fyzické pole",
+        "Canonical / business",
+        "Typ",
+        "Význam / join",
+        "Status"
+      ],
+      [
+        "RID",
+        "order_id",
+        "VARCHAR",
+        "Jedinečný interný RID objednávkového dokladu; pri exporte vždy text, aby sa zachovala úvodná nula.",
+        "POTVRDENÉ"
+      ],
+      [
+        "ID",
+        "order_number",
+        "NUMBER / display",
+        "Interné číslo objednávky. C.ID je zdroj; C.SKRATKA je zobrazovací formát.",
+        "POTVRDENÉ"
+      ],
+      [
+        "EXT_DOKUMENT",
+        "customer_order_number",
+        "VARCHAR",
+        "Číslo objednávky zákazníka používané v praxi.",
+        "POTVRDENÉ"
+      ],
+      [
+        "TYP_CIS",
+        "order_type_code",
+        "NUMBER/VARCHAR",
+        "Autoritatívny typ objednávky; join na TYPY_CIS.ID, názov cez NVL(NAZOV_NOVY, NAZOV_ZOZNAM).",
+        "POTVRDENÉ"
+      ],
+      [
+        "PARTNER",
+        "customer_id",
+        "NUMBER",
+        "ID partnera; join na OBCH_PARTNERI.ID.",
+        "POTVRDENÉ"
+      ],
+      [
+        "MIESTO_DOD",
+        "delivery_point_id",
+        "VARCHAR",
+        "RID miesta dodania; join na MIESTA_DODANIA.RID.",
+        "POTVRDENÉ"
+      ],
+      [
+        "SKLAD",
+        "warehouse_id",
+        "NUMBER",
+        "Sklad/pobočka objednávky; join na BARTEX_POBOCKY.ID.",
+        "POTVRDENÉ"
+      ],
+      [
+        "DATUM_P",
+        "requested_delivery_date",
+        "DATE",
+        "Požadovaný dátum plnenia/dodania; hlavný operačný dátum objednávky.",
+        "POTVRDENÉ"
+      ],
+      [
+        "DATUM",
+        "order_creation_date",
+        "DATE",
+        "Kalendárny dátum vloženia/vzniku objednávkového záznamu. Živá vzorka potvrdila zhodu dňa s presným creation timestampom dekódovaným z I_STAMP.",
+        "POTVRDENÉ"
+      ],
+      [
+        "DATUM_OK",
+        "system_processing_date",
+        "DATE",
+        "Technický dátum spracovania dokladu systémom. V produkcii veľmi silno koreluje s vybaveným stavom, ale nie je s FLAGS_S[12]=2 totožný; presný lifecycle okamih nie je jednoznačne definovaný v analyzovanom source.",
+        "POTVRDENÉ TECHNICKY / BUSINESS HRANICA ZDOKUMENTOVANÁ"
+      ],
+      [
+        "I_STAMP",
+        "order_created_datetime / created_by",
+        "VARCHAR",
+        "Kódovaný audit vytvorenia; dátum cez c_stamp.getdatumc(), používateľ z prvých 8 znakov na BARTEX_USERS.",
+        "POTVRDENÉ"
+      ],
+      [
+        "U_STAMP",
+        "order_modified_datetime / modified_by",
+        "VARCHAR",
+        "Kódovaný audit poslednej zmeny; používateľ a timestamp sú v U_STAMP.",
+        "POTVRDENÉ"
+      ],
+      [
+        "SPOSOB_OBJ",
+        "order_source_code",
+        "NUMBER/VARCHAR",
+        "Zdroj vzniku dokladu; join na SPOSOB_OBJEDNANIA.RID/NAZOV (napr. EDI, Dealer.NET).",
+        "POTVRDENÉ"
+      ],
+      [
+        "DOPRAVA",
+        "transport_code",
+        "NUMBER",
+        "Doprava na hlavičke; pomocný údaj, nie autorita reálnej expedície.",
+        "TECHNICKY ZNÁME"
+      ],
+      [
+        "DAVKA",
+        "batch_id",
+        "NUMBER",
+        "Dávka spracovania objednávok.",
+        "TECHNICKY ZNÁME"
+      ],
+      [
+        "POCET_POL",
+        "line_count",
+        "NUMBER",
+        "Počet položiek/riadkov objednávky.",
+        "POTVRDENÉ"
+      ],
+      [
+        "MENA",
+        "currency_code",
+        "NUMBER",
+        "Mena; join na MENY.ID/SKRATKA.",
+        "POTVRDENÉ"
+      ],
+      [
+        "STAV_VYKRYTIA",
+        "coverage_status_code",
+        "NUMBER",
+        "Stav vykrytia; join na CIS_X, ID_CIS=-1654: Nevykrytá / Čiastočne vykrytá / Vykrytá.",
+        "POTVRDENÉ"
+      ],
+      [
+        "FLAGS_S [12]",
+        "order_status_code",
+        "bit/char",
+        "SUBSTR(FLAGS_S,12,1) -> CIS_X, ID_CIS=-1230; Nevybavený / Vybavený z časti / Vybavený.",
+        "POTVRDENÉ / ODVODENÉ"
+      ],
+      [
+        "FLAGS_S [13]",
+        "reservation_status_code",
+        "bit/char",
+        "SUBSTR(FLAGS_S,13,1) -> CIS_X, ID_CIS=-1165; Nie je / Z časti / Úplne.",
+        "POTVRDENÉ / ODVODENÉ"
+      ],
+      [
+        "FLAGS_S [15]",
+        "issue_status_code",
+        "bit/char",
+        "SUBSTR(FLAGS_S,15,1) -> CIS_X, ID_CIS=-1006; kontrolný stav vydania súvisiacich výdajok.",
+        "POTVRDENÉ / ODVODENÉ"
+      ],
+      [
+        "FLAGS [1]",
+        "do_not_allocate_flag",
+        "bit/char",
+        "TO_NUMBER(SUBSTR(FLAGS,1,1)); príznak „Neprideľuj na vyskladnenie“.",
+        "TECHNICKY ZNÁME / ODVODENÉ"
+      ],
+      [
+        "SUMA_0 + SUMA_1 + SUMA_2",
+        "order_value_net",
+        "NUMBER",
+        "Súčasť výpočtu netto hodnoty; dopĺňa sa C_CIS_DPH_VAL.GetSuma_C(RID).",
+        "TECHNICKY ZNÁME / ODVODENÉ"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "3.2 Odvodené a agregované polia nad objednávkou"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Canonical pole",
+        "Zdroj / formula",
+        "Business význam",
+        "Status"
+      ],
+      [
+        "total_pieces",
+        "SUM(POCET-P_DEL-P_DEL_DOD) z OBJ_ODB_O",
+        "Aktuálne nezrušené kusové množstvo na objednávke.",
+        "POTVRDENÉ / ODVODENÉ"
+      ],
+      [
+        "total_cartons",
+        "SUM((POCET-P_DEL-P_DEL_DOD)/SKLAD_KARTA.VELKE_BAL)",
+        "Aktuálny počet kartónov; nulové veľké balenie ošetriť.",
+        "POTVRDENÉ / ODVODENÉ"
+      ],
+      [
+        "total_weight_kg",
+        "SUM((POCET-P_DEL-P_DEL_DOD)*SKLAD_KARTA.HMOTNOST)",
+        "Aktuálna hmotnosť nezrušeného množstva.",
+        "POTVRDENÉ / ODVODENÉ"
+      ],
+      [
+        "order_value_net",
+        "SUMA_0 + SUMA_1 + SUMA_2 + C_CIS_DPH_VAL.GetSuma_C(RID)",
+        "Netto hodnota objednávky podľa BarIS logiky.",
+        "TECHNICKY ZNÁME / ODVODENÉ"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "3.3 Dôležité pravidlá"
+  },
+  {
+    "type": "p",
+    "text": "Typ objednávky je autoritatívne C.TYP_CIS -> TYPY_CIS. FLAGS_S[20] je samostatná forma dokladu. T_S_OBJ_ODB_L obsahuje štandardnú synchronizačnú mapu, ale produkčné dáta MC potvrdili, že vzťah nie je globálne 1:1: napr. TYP_CIS 000323 sa vyskytuje pri formách 0, 1 a 3 a TYP_CIS 000612 pri forme 9. TYP_CIS a FLAGS_S[20] sa preto nesmú zamieňať."
+  },
+  {
+    "type": "p",
+    "text": "RID exportovať ako text; nesmie sa stratiť úvodná nula."
+  },
+  {
+    "type": "p",
+    "text": "Stav vykrytia, stav objednávky, rezervácia a stav vydania sú kontrolné hlavičkové stavy. Finálne fulfilment KPI sa majú počítať z množstiev OBJ_ODB_O a z väzieb na výdajky."
+  },
+  {
+    "type": "p",
+    "text": "Doprava na objednávke nie je autoritatívnym obrazom reálnej expedície; tú preberá cestovný príkaz."
+  },
+  {
+    "type": "p",
+    "text": "UI export môže obsahovať desiatky pomocných polí. Do integračného kontraktu sa majú vyberať iba polia so známym business významom a use case."
+  },
+  {
+    "type": "p",
+    "text": "3.4 Technická identita, constraints a deklarované väzby"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "TECHNICKÝ DEEP-DIVE OBJ_ODB_LOracle metadata potvrdili 79 fyzických stĺpcov. RID je databázový PRIMARY KEY; úplný fyzický inventár stĺpcov je v Prílohe C. Business význam fyzického poľa sa nepovažuje za potvrdený iba podľa Oracle commentu."
+      ]
+    ]
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Constraint",
+        "Stĺpce",
+        "Stav",
+        "Význam"
+      ],
+      [
+        "XPK_OBJ_ODB_L",
+        "RID",
+        "ENABLED / VALIDATED",
+        "PRIMARY KEY"
+      ],
+      [
+        "XUK_OBJ_ODB_L_ID_DATUM_SKLAD",
+        "ID + SKLAD + DATUM",
+        "ENABLED / VALIDATED",
+        "UNIQUE"
+      ],
+      [
+        "XUK_OBJ_ODB_L_SKRATKA",
+        "SKRATKA + SKLAD",
+        "ENABLED / VALIDATED",
+        "UNIQUE"
+      ]
+    ]
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Pole",
+        "Cieľ",
+        "Constraint",
+        "Stav"
+      ],
+      [
+        "FOREIGN",
+        "KLUB_KARTY.RID",
+        "SYS_C00383042",
+        "ENABLED / VALIDATED"
+      ],
+      [
+        "ADRESA",
+        "MIESTA_ZAUJMU.ID",
+        "XFK_OBJ_ODB_L_ADRESA",
+        "ENABLED / VALIDATED"
+      ],
+      [
+        "BANKA",
+        "BANKY_POPIS.ID",
+        "XFK_OBJ_ODB_L_BANKA",
+        "ENABLED / VALIDATED"
+      ],
+      [
+        "DOPRAVA",
+        "DRUHY_DOPRAVY.ID",
+        "XFK_OBJ_ODB_L_DOPRAVA",
+        "ENABLED / VALIDATED"
+      ],
+      [
+        "ID_TREE",
+        "CIS_TREE.ID",
+        "XFK_OBJ_ODB_L_ID_TREE",
+        "DISABLED / NOT VALIDATED"
+      ],
+      [
+        "KONTAKT",
+        "KONTAKTY.RID",
+        "XFK_OBJ_ODB_L_KONTAKT",
+        "ENABLED / VALIDATED"
+      ],
+      [
+        "MENA",
+        "MENY.ID",
+        "XFK_OBJ_ODB_L_MENA",
+        "ENABLED / VALIDATED"
+      ],
+      [
+        "MIESTO_DOD",
+        "MIESTA_DODANIA.RID",
+        "XFK_OBJ_ODB_L_MIESTO_DOD",
+        "ENABLED / VALIDATED"
+      ],
+      [
+        "OBSLUHA",
+        "B_USERS.ID",
+        "XFK_OBJ_ODB_L_OBSLUHA",
+        "ENABLED / VALIDATED"
+      ],
+      [
+        "PARTNER",
+        "OBCH_PARTNERI.ID",
+        "XFK_OBJ_ODB_L_PARTNER",
+        "ENABLED / VALIDATED"
+      ],
+      [
+        "PARTNER_L",
+        "OBCH_PARTNERI.ID",
+        "XFK_OBJ_ODB_L_PARTNER_L",
+        "ENABLED / VALIDATED"
+      ],
+      [
+        "REZ_POLOHA",
+        "SKLAD_POLOHY.RID",
+        "XFK_OBJ_ODB_L_REZ_POLOHA",
+        "ENABLED / VALIDATED"
+      ],
+      [
+        "RID_CT_A",
+        "CT_L.RID",
+        "XFK_OBJ_ODB_L_RID_CT_A",
+        "ENABLED / VALIDATED"
+      ],
+      [
+        "RID_OP",
+        "OBCH_PRIPADY_L.RID",
+        "XFK_OBJ_ODB_L_RID_OP",
+        "ENABLED / VALIDATED"
+      ],
+      [
+        "SEGMENT",
+        "SEGMENTY.RID",
+        "XFK_OBJ_ODB_L_SEGMENT",
+        "ENABLED / VALIDATED"
+      ],
+      [
+        "SKLAD",
+        "BARTEX_POBOCKY.ID",
+        "XFK_OBJ_ODB_L_SKLAD",
+        "ENABLED / VALIDATED"
+      ],
+      [
+        "SKLAD_KAM",
+        "BARTEX_POBOCKY.ID",
+        "XFK_OBJ_ODB_L_SKLAD_KAM",
+        "ENABLED / VALIDATED"
+      ],
+      [
+        "SKLAD_PRE",
+        "BARTEX_POBOCKY.ID",
+        "XFK_OBJ_ODB_L_SKLAD_PRE",
+        "ENABLED / VALIDATED"
+      ],
+      [
+        "SPOSOB_KONT",
+        "SPOSOB_KONTAKTU.RID",
+        "XFK_OBJ_ODB_L_SPOSOB_KONT",
+        "ENABLED / VALIDATED"
+      ],
+      [
+        "SPOSOB_OBJ",
+        "SPOSOB_OBJEDNANIA.RID",
+        "XFK_OBJ_ODB_L_SPOSOB_OBJ",
+        "ENABLED / VALIDATED"
+      ],
+      [
+        "STAV_UZAVRETIA",
+        "CIS_STAVY_TYPY.SKRATKA",
+        "XFK_OBJ_ODB_L_STAV_UZAVRETIA",
+        "ENABLED / VALIDATED"
+      ],
+      [
+        "STAV_ZAPOZICANIA",
+        "CIS_STAVY_TYPY.SKRATKA",
+        "XFK_OBJ_ODB_L_STAV_ZAPOZICANIA",
+        "ENABLED / VALIDATED"
+      ],
+      [
+        "TYP_UHRADY",
+        "TYPY_UHRADY.ID",
+        "XFK_OBJ_ODB_L_TYP_UHRADY",
+        "ENABLED / VALIDATED"
+      ],
+      [
+        "UCET_DOKLAD",
+        "UCTY.ID",
+        "XFK_OBJ_ODB_L_UCET_DOKLAD",
+        "ENABLED / VALIDATED"
+      ],
+      [
+        "UCT_STR",
+        "UCT_STR.ID",
+        "XFK_OBJ_ODB_L_UCT_STR",
+        "ENABLED / VALIDATED"
+      ],
+      [
+        "ZAKAZKA",
+        "ZAKAZKY.ID",
+        "XFK_OBJ_ODB_L_ZAKAZKA",
+        "ENABLED / VALIDATED"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": "Poznámka: XFK_OBJ_ODB_L_ID_TREE je jediný deklarovaný FK v tomto exporte so stavom DISABLED / NOT VALIDATED. Ostatné uvedené FK sú ENABLED / VALIDATED."
+  },
+  {
+    "type": "p",
+    "text": "3.5 Indexy a aplikačné access paths"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Index",
+        "Typ",
+        "Definícia / stĺpce",
+        "Stav"
+      ],
+      [
+        "IR_I_OBJ_ODB_L",
+        "NONUNIQUE / NORMAL",
+        "MODIF_I",
+        "VALID / VISIBLE"
+      ],
+      [
+        "IR_U_OBJ_ODB_L",
+        "NONUNIQUE / NORMAL",
+        "MODIF_U",
+        "VALID / VISIBLE"
+      ],
+      [
+        "XFK_OBJ_ODB_L_PARTNER",
+        "NONUNIQUE / NORMAL",
+        "PARTNER",
+        "VALID / VISIBLE"
+      ],
+      [
+        "XFK_OBJ_ODB_L_SKLAD",
+        "NONUNIQUE / NORMAL",
+        "SKLAD",
+        "VALID / VISIBLE"
+      ],
+      [
+        "XOBJ_ODB_L_DAVKA",
+        "NONUNIQUE / NORMAL",
+        "DAVKA",
+        "VALID / VISIBLE"
+      ],
+      [
+        "XPK_OBJ_ODB_L",
+        "UNIQUE / NORMAL",
+        "RID",
+        "VALID / VISIBLE"
+      ],
+      [
+        "XUK_OBJ_ODB_L_ID_DATUM_SKLAD",
+        "UNIQUE / NORMAL",
+        "ID + SKLAD + DATUM",
+        "VALID / VISIBLE"
+      ],
+      [
+        "XUK_OBJ_ODB_L_SKRATKA",
+        "UNIQUE / NORMAL",
+        "SKRATKA + SKLAD",
+        "VALID / VISIBLE"
+      ],
+      [
+        "X_OBJ_ODB_L_BLOKACIA",
+        "NONUNIQUE / FUNCTION-BASED NORMAL",
+        "PARTNER + SKLAD + SUBSTR(FLAGS_S,20,1) + S_STAMP + DATUM_P",
+        "VALID / VISIBLE"
+      ],
+      [
+        "X_OBJ_ODB_L_DATUM",
+        "NONUNIQUE / NORMAL",
+        "DATUM",
+        "VALID / VISIBLE"
+      ],
+      [
+        "X_OBJ_ODB_L_DATUM_P",
+        "NONUNIQUE / NORMAL",
+        "DATUM_P",
+        "VALID / VISIBLE"
+      ],
+      [
+        "X_OBJ_ODB_L_FLAGS_S",
+        "NONUNIQUE / NORMAL",
+        "FLAGS_S",
+        "VALID / VISIBLE"
+      ],
+      [
+        "X_OBJ_ODB_L_MIESTO_DOD",
+        "NONUNIQUE / NORMAL",
+        "MIESTO_DOD",
+        "VALID / VISIBLE"
+      ],
+      [
+        "X_OBJ_ODB_L_RID_MASTER",
+        "NONUNIQUE / NORMAL",
+        "RID_MASTER",
+        "VALID / VISIBLE"
+      ],
+      [
+        "X_OBJ_ODB_L_RID_V",
+        "NONUNIQUE / NORMAL",
+        "RID_V",
+        "VALID / VISIBLE"
+      ],
+      [
+        "X_OBJ_ODB_L_S1",
+        "NONUNIQUE / FUNCTION-BASED NORMAL",
+        "TYP_CIS + SKLAD_PRE + SUBSTR(FLAGS_S,12,1)",
+        "VALID / VISIBLE"
+      ],
+      [
+        "X_OBJ_ODB_L_S2",
+        "NONUNIQUE / NORMAL",
+        "MIESTO_DOD + V_SYMBOL",
+        "VALID / VISIBLE"
+      ],
+      [
+        "X_OBJ_ODB_L_S3",
+        "NONUNIQUE / NORMAL",
+        "MIESTO_DOD + RID_CT_A",
+        "VALID / VISIBLE"
+      ],
+      [
+        "X_OBJ_ODB_L_SKL_PRE",
+        "NONUNIQUE / NORMAL",
+        "SKLAD_PRE + S_STAMP + DATUM",
+        "VALID / VISIBLE"
+      ],
+      [
+        "X_OBJ_ODB_L_V_SYMBOL",
+        "NONUNIQUE / NORMAL",
+        "V_SYMBOL",
+        "VALID / VISIBLE"
+      ],
+      [
+        "X_OBJ_ODB_L_V_ZAKAZKA",
+        "NONUNIQUE / NORMAL",
+        "ZAKAZKA",
+        "VALID / VISIBLE"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": "Function-based index X_OBJ_ODB_L_BLOKACIA nepovoľuje interpretovať FLAGS_S[20] ako boolean blokáciu. Package D_OBJ_ODB_L potvrdzuje, že FLAGS_S[20] je forma dokladu; blokovacie formy sú iba časťou jej hodnotového slovníka."
+  },
+  {
+    "type": "p",
+    "text": "3.6 FLAGS_S, FLAGS_B a forma dokladu"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "FLAGS_S[20]",
+        "Business / package názov",
+        "Package konštanta",
+        "Status"
+      ],
+      [
+        "0",
+        "Otvorená objednávka",
+        "FORMA_DOKL_OBJ_OTVORENA",
+        "POTVRDENÉ - PACKAGE SOURCE"
+      ],
+      [
+        "1",
+        "Uzavretá objednávka",
+        "FORMA_DOKL_OBJ_UZAVRETA",
+        "POTVRDENÉ - PACKAGE SOURCE"
+      ],
+      [
+        "2",
+        "Proforma",
+        "FORMA_DOKL_PROFORMA",
+        "POTVRDENÉ - PACKAGE SOURCE"
+      ],
+      [
+        "3",
+        "Blok segment",
+        "FORMA_DOKL_BLOK_SEGMENT",
+        "POTVRDENÉ - PACKAGE SOURCE"
+      ],
+      [
+        "4",
+        "Blok partner",
+        "FORMA_DOKL_BLOK_PARTNER",
+        "POTVRDENÉ - PACKAGE SOURCE"
+      ],
+      [
+        "5",
+        "Objednávka STR",
+        "FORMA_DOKL_OBJ_STR",
+        "POTVRDENÉ - PACKAGE SOURCE"
+      ],
+      [
+        "6",
+        "Cenová ponuka",
+        "FORMA_DOKL_CENOVA_PONUKA",
+        "POTVRDENÉ - PACKAGE SOURCE"
+      ],
+      [
+        "7",
+        "Zápožička",
+        "FORMA_DOKL_ZAPOZICKA",
+        "POTVRDENÉ - PACKAGE SOURCE"
+      ],
+      [
+        "8",
+        "Blok miesto dodania",
+        "FORMA_DOKL_BLOK_MIESTO_DOD",
+        "POTVRDENÉ - PACKAGE SOURCE"
+      ],
+      [
+        "9",
+        "Pre sklad",
+        "FORMA_DOKL_PRE_SKLAD",
+        "POTVRDENÉ - PACKAGE SOURCE"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": "D_OBJ_ODB_L.GetS_FormaDokladu načíta FLAGS_S z OBJ_ODB_L podľa RID (ak nebolo dodané priamo) a hodnotu číta cez C_FLAGS.GetFlagsState(..., FLAGS_S_OBJ_ODB_FORMA_DOKL). T_S_OBJ_ODB_L obsahuje štandardnú mapu medzi TYP_CIS a FLAGS_S[20], ale produkčná validácia MC potvrdila špeciálne TYP_CIS kombinácie; nejde o univerzálnu 1:1 ekvivalenciu."
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Pozícia",
+        "Package konštanta",
+        "Interpretácia",
+        "Status"
+      ],
+      [
+        "12",
+        "FLAGS_S_OBJ_ODB_STAV_VYB",
+        "stav vybavenia objednávky",
+        "POTVRDENÉ"
+      ],
+      [
+        "13",
+        "FLAGS_S_OBJ_ODB_STAV_REZ",
+        "stav rezervácie",
+        "POTVRDENÉ"
+      ],
+      [
+        "14",
+        "FLAGS_S_OBJ_ODB_STAV_FAKT",
+        "stav fakturácie - presná mapa hodnôt ešte neuzavretá",
+        "TECHNICKY ODVODENÉ"
+      ],
+      [
+        "15",
+        "FLAGS_S_OBJ_ODB_STAV_VYD",
+        "stav vydania",
+        "POTVRDENÉ"
+      ],
+      [
+        "16",
+        "FLAGS_S_OBJ_ODB_STAV_ZRUS",
+        "stav zrušenia - mapa hodnôt neuzavretá",
+        "TECHNICKY ODVODENÉ"
+      ],
+      [
+        "17",
+        "FLAGS_S_OBJ_ODB_STAV_ZRUS_D",
+        "stav zrušenia D - presný business význam neuzavretý",
+        "TECHNICKY ODVODENÉ"
+      ],
+      [
+        "18",
+        "FLAGS_S_OBJ_ODB_ZAK_MENIT_POL",
+        "zákaz meniť položky",
+        "TECHNICKY ODVODENÉ"
+      ],
+      [
+        "19",
+        "FLAGS_S_OBJ_ODB_ZAK_ZRUS_REZ",
+        "zákaz zrušiť rezerváciu",
+        "TECHNICKY ODVODENÉ"
+      ],
+      [
+        "20",
+        "FLAGS_S_OBJ_ODB_FORMA_DOKL",
+        "forma dokladu",
+        "POTVRDENÉ"
+      ],
+      [
+        "21",
+        "FLAGS_S_OBJ_ODB_STAV_ODOSLANIA",
+        "stav odoslania - mapa hodnôt neuzavretá",
+        "TECHNICKY ODVODENÉ"
+      ],
+      [
+        "22",
+        "FLAGS_S_OBJ_ODB_STAV_NAKUPU",
+        "stav nákupu - mapa hodnôt neuzavretá",
+        "TECHNICKY ODVODENÉ"
+      ],
+      [
+        "23",
+        "FLAGS_S_OBJ_ODB_MOC_FAK",
+        "MOC_FAK - business význam neuzavretý",
+        "TECHNICKY ODVODENÉ"
+      ]
+    ]
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "FLAGS_B pozícia",
+        "Package konštanta / význam",
+        "Poznámka",
+        "Status"
+      ],
+      [
+        "1",
+        "KonsiObj",
+        "",
+        "POTVRDENÉ - PACKAGE SOURCE"
+      ],
+      [
+        "2",
+        "vDavkeSoloVyd",
+        "",
+        "POTVRDENÉ - PACKAGE SOURCE"
+      ],
+      [
+        "3",
+        "FaktSamostatne",
+        "",
+        "POTVRDENÉ - PACKAGE SOURCE"
+      ],
+      [
+        "5",
+        "VybSamostatne",
+        "",
+        "POTVRDENÉ - PACKAGE SOURCE"
+      ],
+      [
+        "6",
+        "SpecialnaObj",
+        "",
+        "POTVRDENÉ - PACKAGE SOURCE"
+      ],
+      [
+        "7",
+        "SpecialnaCena",
+        "",
+        "POTVRDENÉ - PACKAGE SOURCE"
+      ],
+      [
+        "8",
+        "NetlacitCenyNaDL",
+        "T_S_OBJ_ODB_L kopíruje nastavenie z MIESTA_DODANIA pri insert/zmenách miesta dodania.",
+        "POTVRDENÉ - PACKAGE SOURCE"
+      ],
+      [
+        "9",
+        "PrijemPreLog",
+        "",
+        "POTVRDENÉ - PACKAGE SOURCE"
+      ],
+      [
+        "10",
+        "PrijemZLog",
+        "",
+        "POTVRDENÉ - PACKAGE SOURCE"
+      ],
+      [
+        "11",
+        "UplatneneBody",
+        "",
+        "POTVRDENÉ - PACKAGE SOURCE"
+      ],
+      [
+        "13",
+        "UzamknutaPreObsl",
+        "0 = odomknutá; 1 = uzamknutá na obsluhu. Pri uzamknutí sa OBSLUHA nastaví na aktuálneho používateľa; iný používateľ je pri editácii blokovaný. Odomknúť môže vlastník zámku; bypass cez C_SESSION.GetObjO_NekontrolZamokZObsluhy. V aktuálnej produkčnej populácii MC nebol zaznamenaný žiadny aktívny flag=1.",
+        "POTVRDENÉ - PACKAGE BODY / AKTUÁLNE BEZ VÝSKYTU V MC"
+      ],
+      [
+        "14",
+        "Montaz",
+        "",
+        "POTVRDENÉ - PACKAGE SOURCE"
+      ],
+      [
+        "15",
+        "StavPripravy",
+        "0 Nebalená / 1 Balí sa / 2 Zabalená; mapované na CIS_STAVY_TYPY 000-403 / 000-401 / 000-402.",
+        "POTVRDENÉ - PACKAGE SOURCE"
+      ],
+      [
+        "16",
+        "OpatovneObjZCP",
+        "",
+        "POTVRDENÉ - PACKAGE SOURCE"
+      ],
+      [
+        "17",
+        "KontrolaDoklPoSpl",
+        "",
+        "POTVRDENÉ - PACKAGE SOURCE"
+      ],
+      [
+        "18",
+        "ObjNaDodPoZaplZal",
+        "",
+        "POTVRDENÉ - PACKAGE SOURCE"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": "3.7 Triggerová a package logika OBJ_ODB_L"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Trigger",
+        "Event",
+        "Potvrdená logika",
+        "Status"
+      ],
+      [
+        "T_HZ_OBJ_ODB_L",
+        "UPDATE",
+        "Pri zmene DATUM_P zapisuje historizačný záznam cez C_DEF_HIST_ZMENA.HIST_ZMIEN_Ins (ID definície 0001010).",
+        "POTVRDENÉ - SOURCE"
+      ],
+      [
+        "T_MC_BLOK",
+        "INSERT OR UPDATE",
+        "Pri INSERT číta MIESTA_DODANIA.STAV_OP_BARIS; pri hodnote 4 nastaví FLAGS_S[12] na 4.",
+        "POTVRDENÉ - SOURCE"
+      ],
+      [
+        "T_MC_MAIL",
+        "INSERT OR UPDATE",
+        "Pri vybraných zmenách formy dokladu (FLAGS_S[20]) a členstve obsluhy v CIS_GROUPS_O volá MCCARTER.EMailODBObjed.",
+        "POTVRDENÉ - SOURCE"
+      ],
+      [
+        "T_MC_NAGEL",
+        "UPDATE",
+        "Pri zmene FLAGS_S[13] na hodnotu >0 a SKLAD=25 nastaví PRIORITA = SQ_MC_NAGEL.NEXTVAL.",
+        "POTVRDENÉ - SOURCE"
+      ],
+      [
+        "T_MC_TYP_UHRADY",
+        "INSERT OR UPDATE",
+        "Pri Dealer.NET (SPOSOB_OBJ=08400000-7) preberá TYP_UHRADY z OBCH_PARTNERI; ak SPLATNOST=-1, dopočíta ju cez C_PARTNER.GetSplatnostC.",
+        "POTVRDENÉ - SOURCE"
+      ],
+      [
+        "T_OBJ_ODB_L_AFTER",
+        "UPDATE",
+        "Pri zmene dopravy/úhrady/partnera/miesta dodania/adresy synchronizuje ROZVOZ_QUE podľa RID_V = OBJ_ODB_L.RID (mimo replikačného režimu).",
+        "POTVRDENÉ - SOURCE"
+      ],
+      [
+        "T_OBJ_ODB_L_AFTER_MC",
+        "INSERT",
+        "Pri INSERT za podmienok TYP_CIS=00093, SKLAD in (21,22,23), SKLAD_PRE=21 volá MC_OBJ_PRE_SKLAD_EMAIL.",
+        "POTVRDENÉ - SOURCE"
+      ],
+      [
+        "T_OBJ_ODB_L_AKCIA",
+        "INSERT OR UPDATE",
+        "Pri zmene RID_CT_A kontroluje, či otvorené položky OBJ_ODB_O existujú v CT_O pre novú akciu; inak zmenu zablokuje.",
+        "POTVRDENÉ - SOURCE"
+      ],
+      [
+        "T_OBJ_ODB_L_DARCEK",
+        "UPDATE",
+        "Pri zmene MIESTO_DOD alebo KLUB_KARTA volá C_BOD_CERPANIA.SpracujTrigLdarcekZaBod, ak nebeží spracovanie dokladu.",
+        "POTVRDENÉ - SOURCE"
+      ],
+      [
+        "T_OBJ_ODB_L_LIMIT",
+        "INSERT OR DELETE OR UPDATE",
+        "Udržiava čerpanie limitu obratu za miesto dodania za obdobie cez C_CIS_LIMIT_VAZBA.cerpanie pri insert/storne/zmenách SUMA_M, MENA, MIESTO_DOD, TYP_CIS.",
+        "POTVRDENÉ - SOURCE"
+      ],
+      [
+        "T_OBJ_ODB_L_POVOLENIA",
+        "INSERT OR UPDATE",
+        "Pri zmene PARTNER/DATUM_P/MIESTO_DOD kontroluje relevantné položky OBJ_ODB_O+SKLAD_KARTA a volá C_PARTNER.ZobrazHlaseniaPovoleni.",
+        "POTVRDENÉ - SOURCE"
+      ],
+      [
+        "T_OBJ_ODB_L_ST_PUMP",
+        "INSERT OR DELETE OR UPDATE",
+        "Pri INSERT/UPDATE/DELETE volá ST_PUMP_KONTROLA/ST_PUMP_ZMENA; sleduje dátum, sumu, S_STAMP, ID a FLAGS_S[12]. Business účel subsystemu zatiaľ neuzavretý.",
+        "POTVRDENÉ - SOURCE"
+      ],
+      [
+        "T_OBJ_ODB_L_TYP_UHRADY",
+        "UPDATE",
+        "Pri UPDATE TYP_UHRADY volá C_DOKL_L.KontrolaNaPredajNaHotovostTrig.",
+        "POTVRDENÉ - SOURCE"
+      ],
+      [
+        "T_OBJ_ODB_L_ZAMOK_Z_OBSLUHY",
+        "INSERT OR DELETE OR UPDATE",
+        "Pri INSERT/UPDATE/DELETE deleguje kontrolu zámku na D_OBJ_ODB_L.KontrolaNaZamokZObsluhy. Ak FLAGS_B[13]=1 a OBSLUHA nie je aktuálny používateľ, operácia je blokovaná; bypass cez C_SESSION.GetObjO_NekontrolZamokZObsluhy.",
+        "POTVRDENÉ - SOURCE"
+      ],
+      [
+        "T_OBJ_ODB_L_ZLAVA_Z_BODOV",
+        "UPDATE",
+        "Ak objednávka obsahuje špeciálnu zľavovú SKU, blokuje zmenu KLUB_KARTA, PARTNER alebo MIESTO_DOD.",
+        "POTVRDENÉ - SOURCE"
+      ],
+      [
+        "T_R_OBJ_ODB_L",
+        "INSERT OR UPDATE",
+        "Technický replikačný/change marker: INSERT nastavuje MODIF_I zo SQ_REPLIK_INS a MODIF_U=-1; UPDATE nastavuje MODIF_U zo SQ_REPLIK_UPD.",
+        "POTVRDENÉ - SOURCE"
+      ],
+      [
+        "T_S_OBJ_ODB_L",
+        "INSERT OR DELETE OR UPDATE",
+        "Hlavný lifecycle trigger: audit stampy, synchronizácia TYP_CIS <-> FLAGS_S[20], PrehodPasivneKusy pri zmene formy, validácie FLAGS_B, čistenie SKLAD_ZASOB_P pri storne a zrušenie väzieb pri delete.",
+        "POTVRDENÉ - SOURCE"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": "D_OBJ_ODB_L je potvrdený centrálny domain package OBJ_ODB_L. Package specification má 1 216 riadkov a obsahuje stavové/flagové konštanty aj lifecycle API. Cielene boli overené GetS_FormaDokladu, PrehodPasivneKusy a mechanizmus zámku na obsluhu vrátane GetFB_UzamknutaPreObsluhu, UzamkniPreObsluhu, OdomkniPreObsluhu a KontrolaNaZamokZObsluhy."
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Mechanizmus",
+        "Potvrdená implementácia / význam",
+        "Status"
+      ],
+      [
+        "D_OBJ_ODB_L.GetS_FormaDokladu",
+        "Ak FLAGS_S nie je dodané a RID je známe, načíta OBJ_ODB_L.FLAGS_S; formu číta cez C_FLAGS.GetFlagsState(..., FLAGS_S_OBJ_ODB_FORMA_DOKL).",
+        "POTVRDENÉ"
+      ],
+      [
+        "D_OBJ_ODB_L.PrehodPasivneKusy",
+        "Pri zmene formy dokladu prejde všetky OBJ_ODB_O položky, odstráni staré pasívne typy cez C_SKLAD_ZASOB_P.Delc a vytvorí nové cez C_SKLAD_ZASOB_P.Insc.",
+        "POTVRDENÉ"
+      ],
+      [
+        "open_qty",
+        "POCET-P_DEL-P_DEL_DOD-P_FAK-P_VYD-P_OBJ; v PrehodPasivneKusy je to celková otvorená vrstva.",
+        "POTVRDENÉ"
+      ],
+      [
+        "reserved_qty",
+        "P_REZ; samostatná podmnožina otvoreného množstva.",
+        "POTVRDENÉ"
+      ],
+      [
+        "unreserved_open_qty",
+        "open_qty-P_REZ; používa sa pre nerezervovanú pasívnu vrstvu.",
+        "POTVRDENÉ"
+      ],
+      [
+        "D_OBJ_ODB_L.GetFB_UzamknutaPreObsluhu / KontrolaNaZamokZObsluhy",
+        "FLAGS_B[13] je zámok objednávky na obsluhu. Ak je flag=1 a OBSLUHA <> aktuálne prihlásený používateľ, zmena dokladu je blokovaná; bypass je session-level prepínač.",
+        "POTVRDENÉ"
+      ],
+      [
+        "D_OBJ_ODB_L.UzamkniPreObsluhu / OdomkniPreObsluhu",
+        "Uzamknutie nastaví FLAGS_B[13]=1 a OBSLUHA na aktuálneho používateľa. Odomknutie nastaví flag=0 a je povolené vlastníkovi zámku; OBSLUHA sa podľa source automaticky nenuluje.",
+        "POTVRDENÉ"
+      ]
+    ]
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "MNOŽSTEVNÉ PRAVIDLO - SPRESNENIEP_REZ nie je ďalší bucket, ktorý sa mechanicky odpočíta z canonical open_qty. Package body ukazuje hierarchiu: open_qty = celkové otvorené množstvo; P_REZ = rezervovaná časť open_qty; unreserved_open_qty = open_qty - P_REZ. Jednotlivé triggery môžu používať vlastné účelové množstevné podmienky a tie sa nesmú automaticky zamieňať za canonical fulfilment formulu."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": "3.8 Nové technické polia a otvorené business body"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Pole / väzba",
+        "Technicky potvrdené",
+        "Katalógový status"
+      ],
+      [
+        "DATUM",
+        "Oracle comment: „Dátum vloženia záznamu“; živá vzorka MC potvrdila zhodu kalendárneho dňa s c_stamp.getdatumc(I_STAMP).",
+        "POTVRDENÉ - order_creation_date"
+      ],
+      [
+        "DATUM_OK",
+        "Oracle comment: „Dátum spracovania dokladu systémom“. Populačný test: pri FLAGS_S[12]=2 bolo DATUM_OK vyplnené v 265 121 riadkoch a NULL iba v 4; zároveň existujú vyplnené hodnoty aj pri stavoch 0/1. C_DOKL_L Get/Set sú iba accessors.",
+        "POTVRDENÉ TECHNICKY; NIE JE TOTOŽNÉ S completion status"
+      ],
+      [
+        "PRIORITA",
+        "Oracle comment: „Číslo určujúce prioritu spracovania“; T_MC_NAGEL ju plní zo SQ_MC_NAGEL v konkrétnej vetve.",
+        "TECHNICKY ZNÁME / ČIASTOČNE POTVRDENÉ"
+      ],
+      [
+        "RID_OP",
+        "Deklarovaný FK -> OBCH_PRIPADY_L.RID; v MC je RID_OP vyplnené v 0 z 265 965 riadkov.",
+        "POTVRDENÉ TECHNICKY / NEPOUŽÍVANÉ V AKTUÁLNOM MC SCOPE"
+      ],
+      [
+        "RID_MASTER",
+        "Samostatne indexované pole; Oracle comment: hlavné RID pri delení dokladov.",
+        "TECHNICKY ZNÁME"
+      ],
+      [
+        "MODIF_I / MODIF_U",
+        "Replikačné/change sekvenčné markery riadené T_R_OBJ_ODB_L.",
+        "POTVRDENÉ"
+      ],
+      [
+        "ROZVOZ_QUE.RID_V",
+        "T_OBJ_ODB_L_AFTER aktualizuje ROZVOZ_QUE WHERE RID_V = OBJ_ODB_L.RID.",
+        "POTVRDENÉ - TRIGGER SOURCE"
+      ],
+      [
+        "SKLAD_ZASOB_P.RID_O",
+        "T_S_OBJ_ODB_L pri storne maže záznamy WHERE RID_O = OBJ_ODB_L.RID.",
+        "POTVRDENÉ - TRIGGER SOURCE"
+      ],
+      [
+        "FLAGS_B[13]",
+        "Package body potvrdil zámok na obsluhu; aktuálna produkčná populácia MC má iba hodnotu 0.",
+        "POTVRDENÉ / AKTUÁLNE BEZ VÝSKYTU"
+      ],
+      [
+        "TYP_CIS vs FLAGS_S[20]",
+        "Produkčný GROUP BY potvrdil, že vzťah nie je univerzálne 1:1. Špeciálne typy 000323 a 000612 zdieľajú formy s inými typmi.",
+        "POTVRDENÉ - ŽIVÉ MC DÁTA"
+      ],
+      [
+        "OBJ_ODB_L closure",
+        "Technický deep-dive + živé validačné testy splnili Definition of Done pre CORE tabuľku.",
+        "CLOSED / CORE MAPPED"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": "3.9 Status uzavretia OBJ_ODB_L"
+  },
+  {
+    "type": "p",
+    "text": "OBJ_ODB_L je od verzie 0.7.1 uzavreté ako CLOSED / CORE MAPPED. Zmapované sú všetky fyzické stĺpce, identita a constraints, indexy, 17 triggerov, relevantné časti D_OBJ_ODB_L a kľúčové produkčné edge cases. Nejasné legacy alebo nízkoprioritné atribúty zostávajú transparentne evidované, ale neblokujú použitie tabuľky ako CORE zdroja pre SQL, analytiku, agentov a automatizácie."
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "OBJ_ODB_L STATUSTechnický deep-dive v pôvodnom katalógu potvrdil 79 fyzických stĺpcov, PK/UQ/FK, indexy, 17 triggerov, D_OBJ_ODB_L package/body a živú produkčnú validáciu. Detailné legacy atribúty môžu zostať otvorené bez blokovania CORE."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "4. OBJ_ODB_O – POLOŽKY OBJEDNÁVKOVÉHO DOKLADU"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "ZDROJ PRAVDY PRE MNOŽSTVÁOBJ_ODB_O je autoritatívny riadkový zdroj pre množstevný stav objednávky. Canonical open_qty sa počíta zo zdrojových polí POCET, P_DEL, P_DEL_DOD, P_FAK, P_VYD a P_OBJ. P_REZ a ostatné coverage polia sú vrstva krytia otvoreného množstva, nie ďalšie fulfilment odpočty."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "4.1 Fyzická identita a inventár"
+  },
+  {
+    "type": "p",
+    "text": "Oracle metadata potvrdili 44 fyzických stĺpcov. Primárny kľúč XPK_OBJ_ODB_O je kompozitný (RID_O, ID_R), ENABLED / VALIDATED. RID_O je zároveň FK na OBJ_ODB_L.RID."
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Oracle pole",
+        "Typ / NULL",
+        "Canonical alias",
+        "Business / technický význam",
+        "Status"
+      ],
+      [
+        "RID_O",
+        "VARCHAR2(16) / N",
+        "order_id",
+        "RID hlavičky objednávky; FK na OBJ_ODB_L.RID; súčasť PK.",
+        "CONFIRMED"
+      ],
+      [
+        "ID_R",
+        "NUMBER(5,0) / N",
+        "order_line_id",
+        "Poradie/identita položky v rámci dokladu; súčasť PK.",
+        "CONFIRMED"
+      ],
+      [
+        "KOD_ID",
+        "NUMBER(8,0) / N",
+        "product_id",
+        "Produkt/SKU; FK na SKLAD_KARTA.ID. Oracle comment uvádza legacy SK_ID, ale FK potvrdzuje ID.",
+        "CONFIRMED"
+      ],
+      [
+        "ID_SZ",
+        "VARCHAR2(16) / N",
+        "stock_item_id",
+        "Konkrétna skladová zásoba; FK SKLAD_ZASOB.ID. Technický master ID=0000 znamená bez konkrétnej zásoby.",
+        "CONFIRMED"
+      ],
+      [
+        "POCET",
+        "NUMBER(12,3) / N",
+        "ordered_qty",
+        "Zdrojové objednané množstvo položky.",
+        "CONFIRMED"
+      ],
+      [
+        "P_REZ",
+        "NUMBER(12,3) / N",
+        "reserved_qty",
+        "Aktuálne rezervované množstvo na skladovej zásobe; coverage vrstva.",
+        "CONFIRMED"
+      ],
+      [
+        "RID_BAL",
+        "VARCHAR2(16) / N",
+        "packaging_id",
+        "FK B_KOD_U.RID; dominantný technický master 064000000 = Bez kodu.",
+        "CONFIRMED"
+      ],
+      [
+        "DPH",
+        "NUMBER(2,0) / N",
+        "vat_rate_pct",
+        "Historická sadzba DPH na položke; nevalidovať iba proti dnešným sadzbám.",
+        "CONFIRMED"
+      ],
+      [
+        "CENA",
+        "NUMBER(15,4) / N",
+        "unit_price_base_currency",
+        "Jednotková predajná cena v základnom menovom vyjadrení; môže byť +, 0 aj -.",
+        "CONFIRMED"
+      ],
+      [
+        "CENA_M",
+        "NUMBER(15,4) / N",
+        "unit_price_document_currency",
+        "Tá istá predajná cena v mene dokladu; prepočet kurzom.",
+        "CONFIRMED"
+      ],
+      [
+        "CENA_S",
+        "FLOAT / N",
+        "purchase_unit_price",
+        "Štandardná nákupná/nákladová cena položky.",
+        "CONFIRMED"
+      ],
+      [
+        "CENA_S2",
+        "FLOAT / N",
+        "additional_cost_unit_price",
+        "Doplnková nákladová zložka; v niektorých logikách effective cost = CENA_S + CENA_S2.",
+        "CONFIRMED"
+      ],
+      [
+        "RID_CT_Z",
+        "VARCHAR2(16) / N",
+        "contract_pricing_ref",
+        "Referencia na zmluvnú cenotvorbu CT_O.RID_OBJ; FK disabled/not validated.",
+        "CONFIRMED"
+      ],
+      [
+        "RID_CT_A",
+        "VARCHAR2(16) / N",
+        "action_pricing_ref",
+        "Referencia na akciovú cenotvorbu; môže riadiť qty/šaržu a mať cenu 0.",
+        "CONFIRMED"
+      ],
+      [
+        "RID_V",
+        "VARCHAR2(100) / N",
+        "source_reference",
+        "Polymorfná source/reference väzba; viac technických targetov podľa workflow.",
+        "CONFIRMED POLYMORPHIC"
+      ],
+      [
+        "ODPIS",
+        "NUMBER(1,0) / N",
+        "stock_deduction_flag",
+        "1 = štandardný skladový odpis; 0 = neštandardná/službová/zľavová/zálohová položka.",
+        "CONFIRMED"
+      ],
+      [
+        "P_DEL",
+        "NUMBER / N",
+        "system_cancelled_qty",
+        "Systémovo zrušené/redukované množstvo; nie automaticky reálny nezávoz.",
+        "CONFIRMED"
+      ],
+      [
+        "P_DEL_DOD",
+        "NUMBER / N",
+        "process_cancelled_qty",
+        "Druhá cancellation/reduction vetva; veľmi častá historický.",
+        "CORE CONFIRMED"
+      ],
+      [
+        "P_FAK",
+        "NUMBER / N",
+        "invoiced_qty",
+        "Fakturované množstvo; fulfilment bucket.",
+        "CONFIRMED"
+      ],
+      [
+        "P_VYD",
+        "NUMBER / N",
+        "issued_qty",
+        "Množstvo vydané zo skladu; nie potvrdené doručenie zákazníkovi.",
+        "CONFIRMED"
+      ],
+      [
+        "ZLAVY",
+        "VARCHAR2(254) / Y",
+        "pricing_discount_payload",
+        "Serializovaný pricing payload; nie jednoduché percento.",
+        "CONFIRMED"
+      ],
+      [
+        "POZN",
+        "VARCHAR2(254) / Y",
+        "line_note",
+        "Používateľská alebo systémová poznámka; nie spoľahlivý štruktúrovaný atribút.",
+        "CONFIRMED"
+      ],
+      [
+        "ID_R_V",
+        "NUMBER(8,0) / N",
+        "linked_packaging_line_id",
+        "Same-order väzba na súvisiacu/obalovú položku.",
+        "CONFIRMED"
+      ],
+      [
+        "MODIF_U",
+        "NUMBER / N",
+        "replication_update_marker",
+        "Technický update/replikačný marker.",
+        "TECHNICAL"
+      ],
+      [
+        "MODIF_I",
+        "NUMBER / N",
+        "replication_insert_marker",
+        "Technický insert/replikačný marker.",
+        "TECHNICAL"
+      ],
+      [
+        "SARZA",
+        "VARCHAR2(254) / Y",
+        "batch_code",
+        "Požadovaná/priradená šarža pre rezerváciu; nie autorita reálne vydanej šarže.",
+        "CONFIRMED"
+      ],
+      [
+        "P_OBJ",
+        "NUMBER(12,3) / N",
+        "linked_object_covered_qty",
+        "Množstvo pokryté/vybavované naviazanou položkou/dokladom cez RID_V; fulfilment bucket.",
+        "CONFIRMED"
+      ],
+      [
+        "DATUM_D",
+        "DATE / Y",
+        "line_delivery_date",
+        "Položkový dátum vstupujúci do delivery-date logiky; current MC bez výskytu.",
+        "CONFIRMED / UNUSED"
+      ],
+      [
+        "DOVOD_BLOKACIE",
+        "VARCHAR2(16) / Y",
+        "stock_block_reason_id",
+        "FK DOVODY_BLOK_TOVAR.ID; vstup do rezervačnej logiky.",
+        "CONFIRMED / UNUSED"
+      ],
+      [
+        "XML_DATA",
+        "XMLTYPE / Y",
+        "application_xml_payload",
+        "Aktívny semi-structured aplikačný payload; obsahuje business stavy/parametre.",
+        "CONFIRMED"
+      ],
+      [
+        "P_REZ_IS",
+        "NUMBER / N",
+        "other_warehouse_reserved_qty",
+        "Coverage rezervácia z iného skladu.",
+        "CONFIRMED / CURRENT ZERO"
+      ],
+      [
+        "SPOSOB_VYBAVENIA",
+        "NUMBER(8,0) / N",
+        "fulfillment_method_code",
+        "CIS_X -1641: 0 Zo skladu, 1 Individuálne, 2 Z iného skladu, 3 Z prepravného listu.",
+        "CONFIRMED"
+      ],
+      [
+        "P_OBJ_D",
+        "NUMBER / N",
+        "purchasing_coverage_qty",
+        "Množstvo kryté purchasing vetvou; nie samotná supplier PO qty.",
+        "CONFIRMED / CURRENT ZERO"
+      ],
+      [
+        "P_REZ_PL",
+        "NUMBER / N",
+        "supplier_delivery_reserved_qty",
+        "Coverage cez dodávateľský prepravný list.",
+        "CONFIRMED / CURRENT ZERO"
+      ],
+      [
+        "RID_N",
+        "VARCHAR2(16) / Y",
+        "purchasing_proposal_ref",
+        "Referencia na OBJ_D_NAVRH.RID.",
+        "CONFIRMED / UNUSED"
+      ],
+      [
+        "CENA_OCA",
+        "NUMBER / N",
+        "cena_oca",
+        "Technicky prenášaná cenová hodnota; v profilovanom MC všade 0; business význam nepotvrdený.",
+        "DETAIL OPEN / NON-BLOCKING"
+      ],
+      [
+        "OK",
+        "NUMBER(8,0) / N",
+        "ok_flag",
+        "Aplikačné pole; v profilovanom MC konštantne -1; CORE decision logika neidentifikovaná.",
+        "DETAIL OPEN / NON-BLOCKING"
+      ],
+      [
+        "ID_R_P",
+        "NUMBER(5,0) / N",
+        "macro_parent_line_id",
+        "Self-reference makra/balíčka: =ID_R hlavná položka, iná hodnota child, 0 mimo väzby.",
+        "CONFIRMED"
+      ],
+      [
+        "I_STAMP",
+        "VARCHAR2(17) / Y",
+        "insert_session_stamp",
+        "Audit/session stamp; C_STAMP z neho vie odvodiť používateľa.",
+        "TECHNICAL"
+      ],
+      [
+        "FLAGS_B",
+        "VARCHAR2(254) / Y",
+        "line_business_flags",
+        "Multi-flag business container; bitová mapa potvrdená package konštantami.",
+        "CONFIRMED"
+      ],
+      [
+        "MIN_DAT_EXP",
+        "DATE / Y",
+        "minimum_expiry_date",
+        "Minimálny požadovaný dátum expirácie zásoby vhodnej na vybavenie.",
+        "CONFIRMED"
+      ],
+      [
+        "P_DISPO",
+        "NUMBER / N",
+        "disposition_reserved_qty",
+        "Coverage z dispo/dostupnej zásoby.",
+        "CONFIRMED / CURRENT ZERO"
+      ],
+      [
+        "P_VYKR",
+        "NUMBER / N",
+        "other_document_coverage_qty",
+        "Generic cross-document coverage cez DOKL_VYKRYTE.",
+        "SOURCE CONFIRMED / UNUSED"
+      ],
+      [
+        "RID_OBJEKT",
+        "VARCHAR2(16) / Y",
+        "document_object_ref",
+        "FK DOKL_OBJEKTY.RID; položkový override vybraných hlavičkových parametrov.",
+        "CONFIRMED / UNUSED"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "4.2 Primárny quantity a fulfilment model"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "CANONICAL OPEN QTYopen_qty = POCET - P_DEL - P_DEL_DOD - P_FAK - P_VYD - P_OBJ. P_REZ sa z open_qty neodpočítava; patrí do samostatnej coverage vrstvy."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Vrstva",
+        "Formula / polia",
+        "Význam"
+      ],
+      [
+        "Zdrojové množstvo",
+        "POCET",
+        "Objednané množstvo riadku."
+      ],
+      [
+        "Fulfilment odpočty",
+        "P_DEL + P_DEL_DOD + P_FAK + P_VYD + P_OBJ",
+        "Množstvo už systémovo zrušené, fakturované, vydané alebo vybavované naviazaným objektom."
+      ],
+      [
+        "Open qty",
+        "POCET-P_DEL-P_DEL_DOD-P_FAK-P_VYD-P_OBJ",
+        "Otvorené množstvo po fulfilment odpočtoch."
+      ],
+      [
+        "Coverage",
+        "P_REZ + P_REZ_IS + P_REZ_PL + P_OBJ_D + P_DISPO + P_VYKR",
+        "Aktuálne krytie otvoreného množstva; stavy sa môžu medzi vetvami presúvať."
+      ],
+      [
+        "Uncovered qty",
+        "open_qty - coverage",
+        "Otvorené množstvo bez aktuálneho krytia."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "CHECK XCE_OBJ_ODB_O_POCTY vynucuje, že coverage vrstvy sa pri štandardných riadkoch zmestia do open_qty. Pri P_OBJ_D sa používa DECODE(ODPIS,0,0,P_OBJ_D), takže položky bez štandardného skladového odpisu majú osobitnú vetvu. Produkčný profiling nezistil porušenie constraint logiky."
+  },
+  {
+    "type": "p",
+    "text": "4.3 Coverage, rezervácie a purchasing"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Pole",
+        "Funkčný význam",
+        "Kľúčový technický dôkaz / flow",
+        "Aktuálny MC"
+      ],
+      [
+        "P_REZ",
+        "Rezervácia na skladovej zásobe",
+        "T_OBJ_ODB_O_REZ -> C_SZ.RezervujTrig; uvoľnenia/delete spracúva ten istý rezervačný mechanizmus.",
+        "Aktívne, ale zriedkavé"
+      ],
+      [
+        "P_REZ_IS",
+        "Rezervácia z iného skladu",
+        "D_OBJ_ODB_O source explicitne rozlišuje reservation from another warehouse a presuny coverage stavov.",
+        "0 nenulových"
+      ],
+      [
+        "P_REZ_PL",
+        "Krytie cez dodávateľský prepravný list",
+        "D_OBJ_ODB_O vetva TC_ObjD_PrepravnyList; presuny medzi coverage stavmi.",
+        "0 nenulových"
+      ],
+      [
+        "P_OBJ_D",
+        "Purchasing coverage",
+        "JeZaradeneDoNakupu; OBJ_D_NAVRH / C_OBJ_D_KOMBAJN; P_OBJ_D je snapshot, nie supplier PO source of truth.",
+        "0 nenulových"
+      ],
+      [
+        "P_DISPO",
+        "Dispo rezervácia",
+        "RezervujZDispoZasoby a súvisiaca package logika.",
+        "0 nenulových"
+      ],
+      [
+        "P_VYKR",
+        "Cross-document coverage",
+        "DOKL_VYKRYTE trigger -> GetPackageName -> D_OBJ_ODB_O.ChangeP_VYKR.",
+        "0; DOKL_VYKRYTE tiež 0"
+      ],
+      [
+        "RID_N",
+        "Návrh nákupu",
+        "OBJ_D_NAVRH.RID; C_OBJ_D_KOMBAJN.ObjednatNavrh/VlozNavrhObjRID.",
+        "aktuálne NULL"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "ZMENY_VYKRYTIA_OBJ_ODB bol identifikovaný ako pravdepodobná história presunov coverage (RID_R_OBJ, RID_R_KDE, POCET, DAVKA). Detail tejto tabuľky patrí do budúceho samostatného mapovania a neblokuje snapshotový význam OBJ_ODB_O."
+  },
+  {
+    "type": "p",
+    "text": "4.4 Cenotvorba a nákladové polia"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Téma",
+        "Potvrdené pravidlo",
+        "Dôsledok pre SQL / agenta"
+      ],
+      [
+        "CENA vs CENA_M",
+        "ZmenCenuO prepočítava CENA <-> CENA_M kurzom; ide o tú istú predajnú cenu v dvoch menových vyjadreniach.",
+        "Nepovažovať ich za dve nezávislé ceny."
+      ],
+      [
+        "CENA_S",
+        "Nákupná/nákladová cena položky.",
+        "Používať pre cost/margin, nie ako revenue price."
+      ],
+      [
+        "CENA_S2",
+        "Doplnková nákladová zložka. T_OBJ_ODB_O_SK_ZALOHA pri zálohovej SKU nastavuje CENA_S2 := CENA; iné flow ju používajú pre viazané obaly/služby.",
+        "Pri aplikačnej cost logike môže byť effective cost CENA_S + CENA_S2."
+      ],
+      [
+        "RID_CT_Z + RID_CT_A",
+        "Nie sú vzájomne výlučné. Akciová cenotvorba môže rezervovať množstvo/šaržu a mať cenu 0; predajná cena sa potom čerpá zo zmluvnej cenotvorby.",
+        "Súbeh oboch referencií nie je automaticky data-quality konflikt."
+      ],
+      [
+        "ZLAVY",
+        "Serializovaný pricing payload interpretovaný C_DOKL_O/CENOTVORBA helpermi.",
+        "Neparsovať ručne ako jednoduché percento."
+      ],
+      [
+        "Negatívna CENA",
+        "Legitímny business stav; dominantne zálohy/zľavy/finančné položky, ale vyskytuje sa aj na štandardnej order vetve.",
+        "CENA < 0 neoznačovať automaticky ako chybu."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "Produkčne bolo identifikovaných 2 623 riadkov so súčasne nenulovým RID_CT_Z aj RID_CT_A. Po vylúčení interného partnera 102 zostali prípady na štandardných objednávkach (napr. 2026: forma 0 / TYP_CIS 00091, 1 871 riadkov, 379 dokladov, 231 rôznych RID_CT_A). Business validácia potvrdila legitímny režim akciovej alokácie množstva/šarže s nulovou promo cenou a zmluvnou cenou ako zdrojom predajnej ceny."
+  },
+  {
+    "type": "p",
+    "text": "Disabled/not validated FK na CT_O majú reálne historické orphan výnimky: RID_CT_Z 377 riadkov, RID_CT_A 93 riadkov v profilovanom snapshot-e. Pri analytickom zachovaní zdrojových riadkov preferovať LEFT JOIN."
+  },
+  {
+    "type": "p",
+    "text": "4.5 Šarža, zásoba a minimálna expirácia"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Pole / mechanizmus",
+        "Význam",
+        "Dôležité rozlíšenie"
+      ],
+      [
+        "ID_SZ",
+        "FK na SKLAD_ZASOB.ID; 0000 je platný technický master bez konkrétnej zásoby.",
+        "ID_SZ IS NULL nie je správny test pre „bez zásoby“."
+      ],
+      [
+        "SARZA",
+        "Požadovaná/priradená šarža používaná pri rezervácii; môže prísť z CT_A/CT_Z.",
+        "Nie je autoritou skutočne fyzicky vydanej šarže."
+      ],
+      [
+        "FLAGS_B[1]",
+        "SarzaBolaZadana",
+        "Rozlišuje explicitne zadanú šaržu od šarže doplnenej systémom."
+      ],
+      [
+        "MIN_DAT_EXP",
+        "Minimálna požadovaná expirácia pre výber zásoby.",
+        "SKLAD_ZASOB.DATUM_EXP je reálny dátum konkrétnej zásoby."
+      ],
+      [
+        "T_MC_NAGELEXP",
+        "Špecifická MC/Nagel vetva nastavuje MIN_DAT_EXP podľa zásoby pre skladový prefix 025.",
+        "Aktívny špecifický proces; 381 vyplnených MIN_DAT_EXP v snapshot-e."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "4.6 FLAGS_B – business flag container"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Pozícia",
+        "Package konštanta",
+        "Význam",
+        "Aktuálny produkčný obraz"
+      ],
+      [
+        "1",
+        "FLAGS_B_SarzaBolaZadana",
+        "Šarža bola zadaná",
+        "aktívna"
+      ],
+      [
+        "2",
+        "FLAGS_B_SpecialnaCena",
+        "Špeciálna cena",
+        "v prvých 6 znakoch aktuálne bez výskytu"
+      ],
+      [
+        "3",
+        "FLAGS_B_PolozkaViazanaNaZalohu",
+        "Položka viazaná na zálohu",
+        "aktívna"
+      ],
+      [
+        "4",
+        "FLAGS_B_NeuzavretaPredajCena",
+        "Neuzavretá predajná cena",
+        "aktuálne bez výskytu"
+      ],
+      [
+        "5",
+        "FLAGS_B_VyrabaSaMontazou",
+        "Vyrába sa montážou",
+        "aktuálne bez výskytu"
+      ],
+      [
+        "6+",
+        "FLAGS_B_SposobStiahnutia",
+        "Spôsob stiahnutia; začína na pozícii 6",
+        "encoding detail mimo CORE"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "Aktuálne kombinácie prvých šiestich znakov FLAGS_B: 000000, 100000, 001000, 101000. To znamená, že v profilovanom MC sa reálne menili iba flagy pozície 1 a 3."
+  },
+  {
+    "type": "p",
+    "text": "4.7 Constraints a integritné pravidlá"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Constraint",
+        "Typ / stav",
+        "Výraz / význam"
+      ],
+      [
+        "XPK_OBJ_ODB_O",
+        "PK ENABLED / VALIDATED",
+        "(RID_O, ID_R)"
+      ],
+      [
+        "XCE_OBJ_ODB_O_POCET_MR_POCET_V",
+        "CHECK ENABLE NOVALIDATE",
+        "pocet >= p_vyd OR pocet < 0"
+      ],
+      [
+        "XCE_OBJ_ODB_O_POCTY",
+        "CHECK ENABLE / VALIDATED",
+        "Coverage sa musí zmestiť do open_qty; osobitná vetva pre negatívne POCET a zákaz ODPIS=1 pri pocet<0."
+      ],
+      [
+        "XCE_OBJ_ODB_O_P_REZ_0",
+        "CHECK ENABLE NOVALIDATE",
+        "P_REZ, P_REZ_IS, P_REZ_PL, P_OBJ_D, P_DISPO >= 0"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "Fyzicky potvrdených je 8 FK: DOVOD_BLOKACIE, ID_SZ, KOD_ID, RID_BAL, RID_CT_A, RID_CT_Z, RID_O a RID_OBJEKT. RID_CT_A a RID_CT_Z sú DISABLED / NOT VALIDATED; ostatné sú ENABLED / VALIDATED."
+  },
+  {
+    "type": "p",
+    "text": "4.8 Indexy"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Index",
+        "Typ",
+        "Stĺpce / poznámka"
+      ],
+      [
+        "IR_I_OBJ_ODB_O",
+        "NONUNIQUE",
+        "MODIF_I"
+      ],
+      [
+        "IR_U_OBJ_ODB_O",
+        "NONUNIQUE",
+        "MODIF_U"
+      ],
+      [
+        "XFK_OBJ_ODB_O_RID_BAL",
+        "NONUNIQUE",
+        "RID_BAL"
+      ],
+      [
+        "XPK_OBJ_ODB_O",
+        "UNIQUE",
+        "RID_O, ID_R"
+      ],
+      [
+        "X_OBJODB_O_XML35",
+        "FUNCTION-BASED DOMAIN",
+        "hidden SYS_NC00044$; exact DDL detail-open"
+      ],
+      [
+        "X_OBJ_ODB_O_ID_SZ",
+        "NONUNIQUE",
+        "ID_SZ"
+      ],
+      [
+        "X_OBJ_ODB_O_KOD_ID",
+        "NONUNIQUE",
+        "KOD_ID"
+      ],
+      [
+        "X_OBJ_ODB_O_RID_CT_A",
+        "NONUNIQUE",
+        "RID_CT_A"
+      ],
+      [
+        "X_OBJ_ODB_O_RID_O",
+        "NONUNIQUE",
+        "RID_O"
+      ],
+      [
+        "X_OBJ_ODB_O_RID_O_ID_R_P",
+        "NONUNIQUE",
+        "RID_O, ID_R_P"
+      ],
+      [
+        "X_OBJ_ODB_O_RID_O_KOD_ID",
+        "NONUNIQUE",
+        "RID_O, KOD_ID"
+      ],
+      [
+        "X_OBJ_ODB_O_RID_V",
+        "NONUNIQUE",
+        "RID_V"
+      ],
+      [
+        "X_OBJ_ODB_O_SARZA",
+        "NONUNIQUE",
+        "SARZA, KOD_ID"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "Všetkých 13 indexov bolo v metadátovom snapshot-e VALID / VISIBLE. Samostatný index na RID_CT_Z nebol v inventári viditeľný."
+  },
+  {
+    "type": "p",
+    "text": "4.9 Triggery OBJ_ODB_O"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Trigger",
+        "Event",
+        "Potvrdený účel / stručný flow"
+      ],
+      [
+        "T_HZ_OBJ_ODB_O",
+        "UPDATE AFTER",
+        "Historizuje zmeny POCET, P_DEL, P_DEL_DOD, RID_CT_A cez history definition 0001006."
+      ],
+      [
+        "T_MC_NAGELEXP",
+        "INSERT/UPDATE BEFORE",
+        "MC/Nagel vetva minimálnej expirácie."
+      ],
+      [
+        "T_MC_ZRUS",
+        "INSERT/UPDATE BEFORE",
+        "MC cancellation branch; source present."
+      ],
+      [
+        "T_OBJ_ODB_L_CTO_PERIODA",
+        "UPDATE AFTER",
+        "Cross-object aktualizácia periodickej cenotvorby; source present."
+      ],
+      [
+        "T_OBJ_ODB_O_AFTER_INS",
+        "INSERT AFTER",
+        "Post-insert aplikačný flow."
+      ],
+      [
+        "T_OBJ_ODB_O_AKCIA",
+        "INSERT/UPDATE BEFORE",
+        "Akciová cenotvorba / promo logika."
+      ],
+      [
+        "T_OBJ_ODB_O_CENA",
+        "UPDATE BEFORE",
+        "Kontrola / prepočet cenových polí."
+      ],
+      [
+        "T_OBJ_ODB_O_CT_LIMIT_OBJ",
+        "I/U/D BEFORE",
+        "Limity cenotvorby / objednávky."
+      ],
+      [
+        "T_OBJ_ODB_O_DARCEK",
+        "I/U/D BEFORE",
+        "Darčekový subsystem; mimo aktuálneho MC business scope."
+      ],
+      [
+        "T_OBJ_ODB_O_DISPO_ZASOBY",
+        "I/U BEFORE",
+        "Dispo zásoba / P_DISPO."
+      ],
+      [
+        "T_OBJ_ODB_O_DOKL_ZMENA",
+        "UPDATE AFTER",
+        "Dokladová zmena / downstream reakcie."
+      ],
+      [
+        "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+        "UPDATE AFTER",
+        "Logovanie dôvodu zrušenia; používa náklad CENA_S + CENA_S2."
+      ],
+      [
+        "T_OBJ_ODB_O_FIN_ZALOHY",
+        "DELETE AFTER",
+        "Finančné zálohy."
+      ],
+      [
+        "T_OBJ_ODB_O_FLAGS_B",
+        "UPDATE BEFORE",
+        "Správa business flagov."
+      ],
+      [
+        "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+        "I/U BEFORE",
+        "Validuje ID_SZ / skladovú zásobu."
+      ],
+      [
+        "T_OBJ_ODB_O_MNOZSTVO_OBJ_SKUP",
+        "I/U AFTER",
+        "Množstevné limity objednávkovej skupiny."
+      ],
+      [
+        "T_OBJ_ODB_O_MODIF_I",
+        "UPDATE BEFORE",
+        "Technický modification marker."
+      ],
+      [
+        "T_OBJ_ODB_O_NAKLADY_OP_REZ",
+        "UPDATE BEFORE",
+        "Nákladová logika pri OP/rezervácii."
+      ],
+      [
+        "T_OBJ_ODB_O_POVOLENIA",
+        "I/U BEFORE",
+        "Aplikačné oprávnenia/kontroly."
+      ],
+      [
+        "T_OBJ_ODB_O_REZ",
+        "I/U/D BEFORE",
+        "Hlavný rezervačný trigger -> C_SZ.RezervujTrig; release/delete handling."
+      ],
+      [
+        "T_OBJ_ODB_O_REZ_BLOKACIE",
+        "I/U/D AFTER",
+        "Rezervácie vo väzbe na blokácie."
+      ],
+      [
+        "T_OBJ_ODB_O_REZ_LOG",
+        "UPDATE AFTER",
+        "Logovanie zmien rezervácie."
+      ],
+      [
+        "T_OBJ_ODB_O_SK_ZALOHA",
+        "I/U BEFORE",
+        "Zálohová SKU: CENA_S2 := CENA."
+      ],
+      [
+        "T_OBJ_ODB_O_VAZ_POL",
+        "UPDATE/DELETE BEFORE",
+        "Ochrana viazaných/makro položiek; ID_R_P/ID_R_V logika."
+      ],
+      [
+        "T_OBJ_ODB_O_VAZ_POL_OV",
+        "UPDATE/DELETE BEFORE",
+        "Doplnková ochrana viazaných položiek."
+      ],
+      [
+        "T_OBJ_ODB_O_ZAMOK_Z_OBSLUHY",
+        "I/U/D BEFORE",
+        "Zámok položky podľa aplikačnej obsluhy."
+      ],
+      [
+        "T_OBJ_ODB_O_ZLAVA_ZA_BODY",
+        "I/U/D AFTER",
+        "Body/zľavy subsystem; mimo aktuálneho MC business scope."
+      ],
+      [
+        "T_OBJ_ODB_O_ZLAVA_Z_BODOV",
+        "I/U/D BEFORE",
+        "Body/zľavy subsystem; mimo aktuálneho MC business scope."
+      ],
+      [
+        "T_OBJ_ODB_O_ZLAVY",
+        "UPDATE AFTER",
+        "Kontrola nemeniteľnej ceny a zákazu ručne poskytnutej zľavy cez C_DOKL_O."
+      ],
+      [
+        "T_OBJ_ODB_O_ZRUS_POCET",
+        "UPDATE BEFORE",
+        "Kontrola/redukcia rušeného množstva."
+      ],
+      [
+        "T_R_OBJ_ODB_O",
+        "INSERT/UPDATE BEFORE",
+        "Replikačné markery MODIF_I/MODIF_U."
+      ],
+      [
+        "T_SZ_P_OBJ_ODB_O",
+        "UPDATE/DELETE AFTER",
+        "Synchronizácia quantity/stock coverage; potvrdzuje open_qty logiku."
+      ],
+      [
+        "T_SZ_P_OBJ_ODB_O_INS",
+        "INSERT AFTER",
+        "Insert vetva quantity/stock synchronizácie."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "Inventár obsahuje presne 33 triggerov a kompletný source export mal 1 267 riadkov. Všetky boli ENABLED. Pri periférnych subsystemoch, ktoré McCarter podľa business validácie aktuálne nepoužíva (darčeky/body/rabat), dokument zachováva technickú existenciu bez rozširovania CORE scope."
+  },
+  {
+    "type": "p",
+    "text": "4.10 D_OBJ_ODB_O a súvisiace package flow"
+  },
+  {
+    "type": "p",
+    "text": "D_OBJ_ODB_O je centrálny domain package položiek objednávky. PACKAGE specification má 761 riadkov; PACKAGE BODY má 15 801 riadkov. CORE mapping bol vykonaný cielenými source range exportmi, nie slepým prepisom celého body."
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Procedúra / funkcia",
+        "Objekt",
+        "Úloha / flow"
+      ],
+      [
+        "GetNevykrytyPocet",
+        "D_OBJ_ODB_O",
+        "Počíta uncovered_qty = open_qty - coverage; canonical quantity dôkaz."
+      ],
+      [
+        "NastavPocetPodlaObjSkup",
+        "D_OBJ_ODB_O",
+        "Limity objednávkovej skupiny; pri prekročení môže zvýšiť P_DEL a znížiť P_REZ."
+      ],
+      [
+        "JeZaradeneDoNakupu",
+        "D_OBJ_ODB_O",
+        "P_OBJ_D>0 alebo XML_DATA/B/B40=1; purchasing coverage state."
+      ],
+      [
+        "OdrezervujPolozku",
+        "D_OBJ_ODB_O",
+        "Uvoľňuje rezerváciu a viazané obalové položky cez ID_R_V."
+      ],
+      [
+        "ChangeP_VYKR",
+        "D_OBJ_ODB_O",
+        "Synchronizácia generic cross-document coverage z DOKL_VYKRYTE."
+      ],
+      [
+        "GetFB_* / SetFB_*",
+        "D_OBJ_ODB_O",
+        "Čítanie/zápis FLAGS_B cez pomenované package konštanty."
+      ],
+      [
+        "RezervujTrig",
+        "C_SZ",
+        "Volané z T_OBJ_ODB_O_REZ; hlavný skladový rezervačný mechanizmus."
+      ],
+      [
+        "ObjednatNavrh / VlozNavrhObjRID",
+        "C_OBJ_D_KOMBAJN",
+        "Purchasing proposal / OBJ_D_NAVRH flow."
+      ],
+      [
+        "GetZlavaI / GetJePevnaCena / GetCenaZ ...",
+        "C_DOKL_O",
+        "Interpretácia serializovaného ZLAVY payloadu."
+      ],
+      [
+        "GetZlavyStringC",
+        "CENOTVORBA",
+        "Skladanie pricing/discount payloadu."
+      ],
+      [
+        "GetPackageName -> ChangeP_VYKR",
+        "C_DOKL_VYKRYTE -> D_OBJ_ODB_O",
+        "DOKL_VYKRYTE trigger dynamicky smeruje zmenu coverage do domain package cieľového dokladu."
+      ],
+      [
+        "NastavPocetAkcieObjOdb",
+        "C_CENOTVORBA_O",
+        "Udrziava CT_O.POCET_BL_OK proti limitu POCET_BL_PLAN-Pocet_BL_ST; prekročenie limitu blokuje, pri naplnení/stiahnuti meni storno stav akcie."
+      ],
+      [
+        "InsOBJ_SPRAC_REZ",
+        "D_OBJ_ODB_L",
+        "Pomocna processing vrstva pre vybrané rezervačné scenare; zapisuje OBJ_SPRAC_REZ, nie univerzalnu históriu rezervácií."
+      ],
+      [
+        "RezervujC / Rezervuj",
+        "C_SZ",
+        "Fyzicka skladova rezervacna vetva pod RezervujTrig; pri rovnakom ID_SZ pracuje s deltou, pri zmene ID_SZ odrezervuje starý a rezervuje nový stock record."
+      ],
+      [
+        "ZrusRezervaciuBlokacieNaRiadku",
+        "C_SZ",
+        "Release rezervácie viazanej na blokacny riadok; volane z order reservation flow pri znizeni rezervácie."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "4.11 Produkčný profiling a edge cases"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Test",
+        "Výsledok",
+        "Interpretácia"
+      ],
+      [
+        "Snapshot riadkov",
+        "2 510 634",
+        "Živá produkcia; počet počas mapovania narástol, preto nejde o konštantu."
+      ],
+      [
+        "POCET < 0",
+        "0",
+        "Technická vetva existuje v constraints, v snapshot-e bez negatívnych ordered qty."
+      ],
+      [
+        "P_REZ <> 0",
+        "155",
+        "Aktívna, ale zriedkavá rezervácia."
+      ],
+      [
+        "P_REZ_IS / P_REZ_PL / P_OBJ_D / P_DISPO / P_VYKR <> 0",
+        "0",
+        "Implementované coverage vetvy aktuálne bez live nenulových snapshotov."
+      ],
+      [
+        "P_DEL <> 0",
+        "9 807",
+        "Systémová cancellation/reduction."
+      ],
+      [
+        "P_DEL_DOD <> 0",
+        "253 166",
+        "Veľmi častá cancellation/reduction vetva."
+      ],
+      [
+        "P_FAK <> 0",
+        "444",
+        "Fakturované quantity snapshoty."
+      ],
+      [
+        "P_VYD <> 0",
+        "2 227 053",
+        "Dominantný fulfilment bucket."
+      ],
+      [
+        "P_OBJ <> 0",
+        "488",
+        "Linked-object coverage fulfilment bucket."
+      ],
+      [
+        "open_qty <> 0",
+        "1 349",
+        "Historická tabuľka je prevažne uzavretá."
+      ],
+      [
+        "uncovered_qty <> 0",
+        "1 194",
+        "Otvorené množstvo bez coverage."
+      ],
+      [
+        "coverage constraint violations",
+        "0",
+        "Produkčné dáta rešpektovali canonical constraint logiku."
+      ],
+      [
+        "P_VYD > POCET pri POCET>=0",
+        "0",
+        "Integritná kontrola bez porušení."
+      ],
+      [
+        "CENA < 0",
+        "1 244",
+        "Legitímny business stav; 1 200 riadkov na forma 0 / TYP_CIS 00091."
+      ],
+      [
+        "CENA_S2 <> 0",
+        "782",
+        "Profilované ako ZALOHA; CENA_S=0 a CENA_S2=CENA."
+      ],
+      [
+        "DOKL_VYKRYTE rows",
+        "0",
+        "Mechanizmus source-confirmed, aktuálne nepoužívaný."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "4.12 Data-quality a bezpečné SQL pravidlá"
+  },
+  {
+    "type": "p",
+    "text": "RID a kódy s úvodnou nulou exportovať ako text."
+  },
+  {
+    "type": "p",
+    "text": "Na zachovanie všetkých order lines používať pri CT_O radšej LEFT JOIN; disabled/not validated FK majú historické orphan výnimky."
+  },
+  {
+    "type": "p",
+    "text": "P_VYD znamená výdaj zo skladu, nie potvrdené doručenie zákazníkovi."
+  },
+  {
+    "type": "p",
+    "text": "P_DEL + P_DEL_DOD nie je automaticky reálny nezávoz. Dôvod a analytická klasifikácia sa musia vyhodnocovať osobitne."
+  },
+  {
+    "type": "p",
+    "text": "ID_SZ = 0000 je platný technický master; nepoužívať ID_SZ IS NULL ako univerzálne „bez zásoby“."
+  },
+  {
+    "type": "p",
+    "text": "SARZA na objednávke nie je source of truth reálne vyskladnenej šarže."
+  },
+  {
+    "type": "p",
+    "text": "RID_CT_Z a RID_CT_A môžu byť súčasne vyplnené legitímne."
+  },
+  {
+    "type": "p",
+    "text": "CENA < 0 je povolený business stav."
+  },
+  {
+    "type": "p",
+    "text": "ZLAVY neparsovať ako jednoduché percento; používať existujúce helper funkcie."
+  },
+  {
+    "type": "p",
+    "text": "XML_DATA je aktívny aplikačný payload, nie legacy blob."
+  },
+  {
+    "type": "p",
+    "text": "5. DIAGNOSTIC EXECUTION MODEL"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "DIAGNOSTIC-GRADE PRINCIP\nOBJ_ODB_L + OBJ_ODB_O sa nesmú citat iba ako staticky snapshot. Objednavkovy riadok je aktivny stavovy uzol, ktory mozu počas lifecycle menit rezervačné, skladove, vydajove, fakturacne, purchasing, pricing a integracne procesy. Diagnostika preto musí kombinovat aktuálny stav, mutation surface, históriu a hranice na ďalšie domény."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "5.1 Základný execution obraz"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "OBJ_ODB_L (header / process context)        |        +--> OBJ_ODB_O (line / quantity authority)                 |                 +--> reservation: C_SZ / C_REZERVACIA / SKLAD_ZASOB                 +--> pricing: CT_O / C_CENOTVORBA_O / C_DOKL_O                 +--> cancellation: DOVOD_ZRUS_POL_DOKLAD                 +--> purchasing: OBJ_D_NAVRH / OBJD_* / C_REZ_OBJ_DOD                 +--> issue boundary: VYD_L / VYD_O / D_VYDAJ_*                 +--> invoice boundary: D_DLAF_* / C_FD / EKASA                 +--> generic coverage: DOKL_VYKRYTE -> ChangeP_VYKR"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "Množstevná autorita zostava na OBJ_ODB_O. Header state, DATUM_OK ani UI ikona nesmú nahradit line-level quantity diagnostiku."
+  },
+  {
+    "type": "p",
+    "text": "5.2 Canonical quantity vrstvy"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Vrstva",
+        "Formula / polia",
+        "Interpretacia",
+        "Zakazane zjednodusenie"
+      ],
+      [
+        "open_qty",
+        "POCET-P_DEL-P_DEL_DOD-P_FAK-P_VYD-P_OBJ",
+        "Aktuálne otvorené množstvo po odratani ukoncenych/odklonenych lifecycle bucketov.",
+        "Neodcitavat P_REZ."
+      ],
+      [
+        "coverage_qty",
+        "P_REZ+P_REZ_IS+P_REZ_PL+P_OBJ_D+P_DISPO+P_VYKR",
+        "Aktuálne pokrytie otvoreneho množstva roznymi mechanizmami.",
+        "P_REZ=0 neznamena bez coverage."
+      ],
+      [
+        "uncovered_qty",
+        "open_qty-coverage_qty",
+        "Otvorene a zaroven nekryté množstvo.",
+        "Nezamienat s open_qty."
+      ],
+      [
+        "issued_qty",
+        "P_VYD",
+        "Vydane zo skladu.",
+        "Nie potvrdené doručenie zákazníkovi."
+      ],
+      [
+        "invoiced_qty",
+        "P_FAK",
+        "Order-side fakturované množstvo.",
+        "Nie uplny invoice lifecycle/source of truth faktury."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "5.3 Rezervacny execution flow"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "T_OBJ_ODB_O_REZ   -> D_OBJ_ODB_O.NastavPocetPodlaObjSkup(...)   -> C_SZ.RezervujTrig(old_ID_SZ,new_ID_SZ,old_P_REZ,new_P_REZ,RID)         |- C_SESSION.GetReplikacia=1        -> RETURN         |- C_SESSION.GetPrenosRezervacie=1 -> RETURN         |- same ID_SZ                       -> RezervujC(ID_SZ, delta_qty)         `- changed ID_SZ                    -> RezervujC(old,-old_qty)                                                RezervujC(new,+new_qty)   -> pri relevantnom release flow:      C_SZ.ZrusRezervaciuBlokacieNaRiadku(...)      D_OBJ_ODB_L.InsOBJ_SPRAC_REZ(...)"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "DÔKAZNÝ DOSLEDOK\nZmena P_REZ alebo ID_SZ nemusí byt iba zmenou stlpca v OBJ_ODB_O. Pri standardnom flow ma side effect na fyzicku rezerváciu SKLAD_ZASOB. Naopak pri replikacii alebo prenose rezervácie sa fyzicka operacia v RezervujTrig zamerne preskoci."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "5.4 Action pricing allocation"
+  },
+  {
+    "type": "p",
+    "text": "C_CENOTVORBA_O.NastavPocetAkcieObjOdb udrziava množstevné cerpanie akcie v CT_O. Z dostupneho source je potvrdena logika nad POCET_BL_PLAN, POCET_BL_ST a POCET_BL_OK; prekročenie limitu je blokované. Pri presnom naplnení a opatovnom uvoľnení môže procedura menit storno stav pricing objektu."
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "DO NOT ASSUME\nSúhlasne vyplnene RID_CT_A a RID_CT_Z nie su automaticky konflikt. RID_CT_A môže reprezentovat action/promo allocation, zatial co predajna cena môže byt odvodena aj z contract pricing vetvy."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "5.5 Header lifecycle a forma dokladu"
+  },
+  {
+    "type": "p",
+    "text": "TYP_CIS je autoritativny typ dokladu. FLAGS_S[20] je samostatna forma dokladu. T_S_OBJ_ODB_L obsahuje synchronizacnu logiku, ale produkcne MC data potvrdili, ze vztah nie je univerzalne 1:1. DATUM_OK je technický datum spracovania a nie synonymum completion statusu."
+  },
+  {
+    "type": "p",
+    "text": "6. MUTATION MATRIX A REVERSE DEPENDENCIES"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "PRECO JE TATO KAPITOLA KRITICKA\nPri diagnostike sa najprv pyta: kto mohol hodnotu zmeniť? Az potom sa interpretuje aktuálna hodnota. ODB_DIAG_01 identifikoval širokú mutation surface napriec domain packages a integraciami; tabulka nizsie uvadza hlavne potvrdené writery kritickych poli. Kompletny source-object inventory je v Prilohe C."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Pole",
+        "Hlavni potvrdení writeri / mechanizmy",
+        "Diagnosticky význam"
+      ],
+      [
+        "POCET",
+        "D_OBJ_ODB_L/O; C_REZERVACIA; D_DLAF_*; D_VYDAJ_*; BSHOP/HANDYGO a ďalšie flow",
+        "Aktuálne objednane množstvo môže byt po procesných transformaciach; nie vzdy povodny user input."
+      ],
+      [
+        "P_REZ",
+        "D_OBJ_ODB_L/O; C_REZERVACIA; D_VYDAJ_*; D_DLAF_*",
+        "Aktuálny reservation state; môže sa presuvat/releasovat."
+      ],
+      [
+        "P_REZ_IS",
+        "C_REZERVACIA; D_OBJ_ODB_*; D_VYDAJ_*; C_REZ_OBJ_*",
+        "Coverage z ineho skladu."
+      ],
+      [
+        "P_REZ_PL",
+        "C_REZ_OBJ_DOD; T_OBJD_O_P_OBJ_D; D_OBJD_O; D_OBJ_ODB_O",
+        "Coverage cez dodávateľský prepravný list/purchasing flow."
+      ],
+      [
+        "P_OBJ_D",
+        "T_S_OBJ_D_NAVRH*; T_OBJD_O_P_OBJ_D; D_OBJD_O; D_OBJ_ODB_O",
+        "Purchasing coverage snapshot, nie supplier PO source of truth."
+      ],
+      [
+        "P_DISPO",
+        "T_S_DISPO_ROZDELENIA*; D_OBJ_ODB_O",
+        "Dispo coverage."
+      ],
+      [
+        "P_VYKR",
+        "DOKL_VYKRYTE -> dynamic package -> D_OBJ_ODB_O.ChangeP_VYKR",
+        "Generic cross-document coverage."
+      ],
+      [
+        "P_DEL",
+        "D_OBJ_ODB_*; C_REZERVACIA; vybrané issue/invoice/integration flow",
+        "System/order-side cancellation/reduction branch."
+      ],
+      [
+        "P_DEL_DOD",
+        "C_REZERVACIA; D_VYDAJ_*; BARIS_SKLAD; vybrané invoice/integration flow",
+        "Druha process cancellation/reduction branch; príčinu dokazovat cez flow/history."
+      ],
+      [
+        "P_FAK",
+        "D_DLAF_L/O; C_FD; EKASA; D_KASA_UHRADA_L; D_OBJ_ODB_*",
+        "Order-side invoiced quantity snapshot."
+      ],
+      [
+        "P_VYD",
+        "D_VYDAJ_L/O/O2; T_PRAC_LIST_O_P_VYD; C_ML_GEN; ďalšie logisticke flow",
+        "Warehouse issue quantity, nie customer delivery."
+      ],
+      [
+        "P_OBJ",
+        "C_REZERVACIA; D_OBJ_ODB_*; D_VYDAJ_*; ďalšie linked-object flow",
+        "Mnozstvo pokryté/obsluzene cez linked object a odpocitavane z open_qty."
+      ],
+      [
+        "ID_SZ",
+        "C_REZERVACIA; D_OBJ_ODB_O; warehouse/reservation flow",
+        "Zmena pri P_REZ môže realne odrezervovat starý a rezervovat nový stock record."
+      ],
+      [
+        "CENA/CENA_M",
+        "D_OBJ_ODB_O/L; pricing/import flow",
+        "Sales price snapshot s validacnymi guardmi."
+      ],
+      [
+        "CENA_S",
+        "D_OBJ_ODB_*; reservation/stock flow",
+        "Purchase/cost snapshot; T_OBJ_ODB_O_REZ môže nacitat zo SKLAD_ZASOB.C_P."
+      ],
+      [
+        "CENA_S2",
+        "T_OBJ_ODB_O_SK_ZALOHA; D_OBJ_ODB_O; ďalšie special-cost flow",
+        "Dodatocna cost zlozka; pri zalohovej SKU môže byt nastavena na CENA."
+      ],
+      [
+        "RID_CT_A / RID_CT_Z",
+        "D_OBJ_ODB_*; pricing/import flow",
+        "Action a contract pricing references; nie su mutual-exclusive."
+      ],
+      [
+        "SARZA",
+        "D_OBJ_ODB_*; reservation/batch flow",
+        "Order-side batch hint/state; nie finalna issued batch autorita."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "6.1 Trigger klasifikacia A/B/C"
+  },
+  {
+    "type": "p",
+    "text": "A = diagnostic critical (môže menit klucovy stav/množstvo/cenu alebo blokovať operaciu). B = business relevant. C = technický/periferny alebo mimo aktualneho MC scope. Klasifikacia neurcuje, ci trigger existuje - všetky nizsie su zdokumentovane; urcuje hlbku diagnostickeho popisu."
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Objekt",
+        "Trieda",
+        "Trigger",
+        "Event",
+        "Diagnosticky ucel / flow"
+      ],
+      [
+        "OBJ_ODB_L",
+        "A",
+        "T_OBJ_ODB_L_AKCIA",
+        "INSERT OR UPDATE",
+        "Pri zmene RID_CT_A kontroluje, či otvorené položky OBJ_ODB_O existujú v CT_O pre novú akciu; inak zmenu zablokuje."
+      ],
+      [
+        "OBJ_ODB_L",
+        "A",
+        "T_OBJ_ODB_L_LIMIT",
+        "INSERT OR DELETE OR UPDATE",
+        "Udržiava čerpanie limitu obratu za miesto dodania za obdobie cez C_CIS_LIMIT_VAZBA.cerpanie pri insert/storne/zmenách SUMA_M, MENA, MIESTO_DOD, TYP_CIS."
+      ],
+      [
+        "OBJ_ODB_L",
+        "A",
+        "T_OBJ_ODB_L_POVOLENIA",
+        "INSERT OR UPDATE",
+        "Pri zmene PARTNER/DATUM_P/MIESTO_DOD kontroluje relevantné položky OBJ_ODB_O+SKLAD_KARTA a volá C_PARTNER.ZobrazHlaseniaPovoleni."
+      ],
+      [
+        "OBJ_ODB_L",
+        "A",
+        "T_OBJ_ODB_L_TYP_UHRADY",
+        "UPDATE",
+        "Pri UPDATE TYP_UHRADY volá C_DOKL_L.KontrolaNaPredajNaHotovostTrig."
+      ],
+      [
+        "OBJ_ODB_L",
+        "A",
+        "T_OBJ_ODB_L_ZAMOK_Z_OBSLUHY",
+        "INSERT OR DELETE OR UPDATE",
+        "Pri INSERT/UPDATE/DELETE deleguje kontrolu zámku na D_OBJ_ODB_L.KontrolaNaZamokZObsluhy. Ak FLAGS_B[13]=1 a OBSLUHA nie je aktuálny používateľ, operácia je blokovaná; bypass cez C_SESSION.GetObjO_NekontrolZamokZObsluhy."
+      ],
+      [
+        "OBJ_ODB_L",
+        "A",
+        "T_S_OBJ_ODB_L",
+        "INSERT OR DELETE OR UPDATE",
+        "Hlavný lifecycle trigger: audit stampy, synchronizácia TYP_CIS <-> FLAGS_S[20], PrehodPasivneKusy pri zmene formy, validácie FLAGS_B, čistenie SKLAD_ZASOB_P pri storne a zrušenie väzieb pri delete."
+      ],
+      [
+        "OBJ_ODB_L",
+        "B",
+        "T_HZ_OBJ_ODB_L",
+        "UPDATE",
+        "Pri zmene DATUM_P zapisuje historizačný záznam cez C_DEF_HIST_ZMENA.HIST_ZMIEN_Ins (ID definície 0001010)."
+      ],
+      [
+        "OBJ_ODB_L",
+        "B",
+        "T_MC_BLOK",
+        "INSERT OR UPDATE",
+        "Pri INSERT číta MIESTA_DODANIA.STAV_OP_BARIS; pri hodnote 4 nastaví FLAGS_S[12] na 4."
+      ],
+      [
+        "OBJ_ODB_L",
+        "B",
+        "T_MC_TYP_UHRADY",
+        "INSERT OR UPDATE",
+        "Pri Dealer.NET (SPOSOB_OBJ=08400000-7) preberá TYP_UHRADY z OBCH_PARTNERI; ak SPLATNOST=-1, dopočíta ju cez C_PARTNER.GetSplatnostC."
+      ],
+      [
+        "OBJ_ODB_L",
+        "B",
+        "T_OBJ_ODB_L_AFTER",
+        "UPDATE",
+        "Pri zmene dopravy/úhrady/partnera/miesta dodania/adresy synchronizuje ROZVOZ_QUE podľa RID_V = OBJ_ODB_L.RID (mimo replikačného režimu)."
+      ],
+      [
+        "OBJ_ODB_L",
+        "B",
+        "T_OBJ_ODB_L_AFTER_MC",
+        "INSERT",
+        "Pri INSERT za podmienok TYP_CIS=00093, SKLAD in (21,22,23), SKLAD_PRE=21 volá MC_OBJ_PRE_SKLAD_EMAIL."
+      ],
+      [
+        "OBJ_ODB_L",
+        "B",
+        "T_OBJ_ODB_L_ST_PUMP",
+        "INSERT OR DELETE OR UPDATE",
+        "Pri INSERT/UPDATE/DELETE volá ST_PUMP_KONTROLA/ST_PUMP_ZMENA; sleduje dátum, sumu, S_STAMP, ID a FLAGS_S[12]. Business účel subsystemu zatiaľ neuzavretý."
+      ],
+      [
+        "OBJ_ODB_L",
+        "C",
+        "T_MC_MAIL",
+        "INSERT OR UPDATE",
+        "Pri vybraných zmenách formy dokladu (FLAGS_S[20]) a členstve obsluhy v CIS_GROUPS_O volá MCCARTER.EMailODBObjed."
+      ],
+      [
+        "OBJ_ODB_L",
+        "C",
+        "T_MC_NAGEL",
+        "UPDATE",
+        "Pri zmene FLAGS_S[13] na hodnotu >0 a SKLAD=25 nastaví PRIORITA = SQ_MC_NAGEL.NEXTVAL."
+      ],
+      [
+        "OBJ_ODB_L",
+        "C",
+        "T_OBJ_ODB_L_DARCEK",
+        "UPDATE",
+        "Pri zmene MIESTO_DOD alebo KLUB_KARTA volá C_BOD_CERPANIA.SpracujTrigLdarcekZaBod, ak nebeží spracovanie dokladu."
+      ],
+      [
+        "OBJ_ODB_L",
+        "C",
+        "T_OBJ_ODB_L_ZLAVA_Z_BODOV",
+        "UPDATE",
+        "Ak objednávka obsahuje špeciálnu zľavovú SKU, blokuje zmenu KLUB_KARTA, PARTNER alebo MIESTO_DOD."
+      ],
+      [
+        "OBJ_ODB_L",
+        "C",
+        "T_R_OBJ_ODB_L",
+        "INSERT OR UPDATE",
+        "Technický replikačný/change marker: INSERT nastavuje MODIF_I zo SQ_REPLIK_INS a MODIF_U=-1; UPDATE nastavuje MODIF_U zo SQ_REPLIK_UPD."
+      ],
+      [
+        "OBJ_ODB_O",
+        "A",
+        "T_OBJ_ODB_O_AKCIA",
+        "INSERT/UPDATE BEFORE",
+        "Akciová cenotvorba / promo logika."
+      ],
+      [
+        "OBJ_ODB_O",
+        "A",
+        "T_OBJ_ODB_O_CENA",
+        "UPDATE BEFORE",
+        "Kontrola / prepočet cenových polí."
+      ],
+      [
+        "OBJ_ODB_O",
+        "A",
+        "T_OBJ_ODB_O_CT_LIMIT_OBJ",
+        "I/U/D BEFORE",
+        "Limity cenotvorby / objednávky."
+      ],
+      [
+        "OBJ_ODB_O",
+        "A",
+        "T_OBJ_ODB_O_DISPO_ZASOBY",
+        "I/U BEFORE",
+        "Dispo zásoba / P_DISPO."
+      ],
+      [
+        "OBJ_ODB_O",
+        "A",
+        "T_OBJ_ODB_O_DOVOD_ZRUS_INS",
+        "UPDATE AFTER",
+        "Logovanie dôvodu zrušenia; používa náklad CENA_S + CENA_S2."
+      ],
+      [
+        "OBJ_ODB_O",
+        "A",
+        "T_OBJ_ODB_O_FLAGS_B",
+        "UPDATE BEFORE",
+        "Správa business flagov."
+      ],
+      [
+        "OBJ_ODB_O",
+        "A",
+        "T_OBJ_ODB_O_ID_SZ_KONTROLA",
+        "I/U BEFORE",
+        "Validuje ID_SZ / skladovú zásobu."
+      ],
+      [
+        "OBJ_ODB_O",
+        "A",
+        "T_OBJ_ODB_O_MNOZSTVO_OBJ_SKUP",
+        "I/U AFTER",
+        "Množstevné limity objednávkovej skupiny."
+      ],
+      [
+        "OBJ_ODB_O",
+        "A",
+        "T_OBJ_ODB_O_NAKLADY_OP_REZ",
+        "UPDATE BEFORE",
+        "Nákladová logika pri OP/rezervácii."
+      ],
+      [
+        "OBJ_ODB_O",
+        "A",
+        "T_OBJ_ODB_O_POVOLENIA",
+        "I/U BEFORE",
+        "Aplikačné oprávnenia/kontroly."
+      ],
+      [
+        "OBJ_ODB_O",
+        "A",
+        "T_OBJ_ODB_O_REZ",
+        "I/U/D BEFORE",
+        "Hlavný rezervačný trigger -> C_SZ.RezervujTrig; release/delete handling."
+      ],
+      [
+        "OBJ_ODB_O",
+        "A",
+        "T_OBJ_ODB_O_REZ_BLOKACIE",
+        "I/U/D AFTER",
+        "Rezervácie vo väzbe na blokácie."
+      ],
+      [
+        "OBJ_ODB_O",
+        "A",
+        "T_OBJ_ODB_O_VAZ_POL",
+        "UPDATE/DELETE BEFORE",
+        "Ochrana viazaných/makro položiek; ID_R_P/ID_R_V logika."
+      ],
+      [
+        "OBJ_ODB_O",
+        "A",
+        "T_OBJ_ODB_O_VAZ_POL_OV",
+        "UPDATE/DELETE BEFORE",
+        "Doplnková ochrana viazaných položiek."
+      ],
+      [
+        "OBJ_ODB_O",
+        "A",
+        "T_OBJ_ODB_O_ZAMOK_Z_OBSLUHY",
+        "I/U/D BEFORE",
+        "Zámok položky podľa aplikačnej obsluhy."
+      ],
+      [
+        "OBJ_ODB_O",
+        "A",
+        "T_OBJ_ODB_O_ZLAVY",
+        "UPDATE AFTER",
+        "Kontrola nemeniteľnej ceny a zákazu ručne poskytnutej zľavy cez C_DOKL_O."
+      ],
+      [
+        "OBJ_ODB_O",
+        "A",
+        "T_OBJ_ODB_O_ZRUS_POCET",
+        "UPDATE BEFORE",
+        "Kontrola/redukcia rušeného množstva."
+      ],
+      [
+        "OBJ_ODB_O",
+        "A",
+        "T_SZ_P_OBJ_ODB_O",
+        "UPDATE/DELETE AFTER",
+        "Synchronizácia quantity/stock coverage; potvrdzuje open_qty logiku."
+      ],
+      [
+        "OBJ_ODB_O",
+        "A",
+        "T_SZ_P_OBJ_ODB_O_INS",
+        "INSERT AFTER",
+        "Insert vetva quantity/stock synchronizácie."
+      ],
+      [
+        "OBJ_ODB_O",
+        "B",
+        "T_HZ_OBJ_ODB_O",
+        "UPDATE AFTER",
+        "Historizuje zmeny POCET, P_DEL, P_DEL_DOD, RID_CT_A cez history definition 0001006."
+      ],
+      [
+        "OBJ_ODB_O",
+        "B",
+        "T_MC_NAGELEXP",
+        "INSERT/UPDATE BEFORE",
+        "MC/Nagel vetva minimálnej expirácie."
+      ],
+      [
+        "OBJ_ODB_O",
+        "B",
+        "T_MC_ZRUS",
+        "INSERT/UPDATE BEFORE",
+        "MC cancellation branch; source present."
+      ],
+      [
+        "OBJ_ODB_O",
+        "B",
+        "T_OBJ_ODB_L_CTO_PERIODA",
+        "UPDATE AFTER",
+        "Cross-object aktualizácia periodickej cenotvorby; source present."
+      ],
+      [
+        "OBJ_ODB_O",
+        "B",
+        "T_OBJ_ODB_O_AFTER_INS",
+        "INSERT AFTER",
+        "Post-insert aplikačný flow."
+      ],
+      [
+        "OBJ_ODB_O",
+        "B",
+        "T_OBJ_ODB_O_DOKL_ZMENA",
+        "UPDATE AFTER",
+        "Dokladová zmena / downstream reakcie."
+      ],
+      [
+        "OBJ_ODB_O",
+        "B",
+        "T_OBJ_ODB_O_FIN_ZALOHY",
+        "DELETE AFTER",
+        "Finančné zálohy."
+      ],
+      [
+        "OBJ_ODB_O",
+        "B",
+        "T_OBJ_ODB_O_REZ_LOG",
+        "UPDATE AFTER",
+        "Logovanie zmien rezervácie."
+      ],
+      [
+        "OBJ_ODB_O",
+        "B",
+        "T_OBJ_ODB_O_SK_ZALOHA",
+        "I/U BEFORE",
+        "Zálohová SKU: CENA_S2 := CENA."
+      ],
+      [
+        "OBJ_ODB_O",
+        "C",
+        "T_OBJ_ODB_O_DARCEK",
+        "I/U/D BEFORE",
+        "Darčekový subsystem; mimo aktuálneho MC business scope."
+      ],
+      [
+        "OBJ_ODB_O",
+        "C",
+        "T_OBJ_ODB_O_MODIF_I",
+        "UPDATE BEFORE",
+        "Technický modification marker."
+      ],
+      [
+        "OBJ_ODB_O",
+        "C",
+        "T_OBJ_ODB_O_ZLAVA_ZA_BODY",
+        "I/U/D AFTER",
+        "Body/zľavy subsystem; mimo aktuálneho MC business scope."
+      ],
+      [
+        "OBJ_ODB_O",
+        "C",
+        "T_OBJ_ODB_O_ZLAVA_Z_BODOV",
+        "I/U/D BEFORE",
+        "Body/zľavy subsystem; mimo aktuálneho MC business scope."
+      ],
+      [
+        "OBJ_ODB_O",
+        "C",
+        "T_R_OBJ_ODB_O",
+        "INSERT/UPDATE BEFORE",
+        "Replikačné markery MODIF_I/MODIF_U."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "6.2 Session a bypass mechanizmy"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Mechanizmus",
+        "Potvrdený efekt",
+        "Diagnosticky dosledok"
+      ],
+      [
+        "C_SESSION.GetReplikacia",
+        "C_SZ.RezervujTrig môže skoncit bez fyzickej rezervácie.",
+        "Rovnaka zmena P_REZ sa v replikačnom flow nemusí spravat ako manualna editacia."
+      ],
+      [
+        "C_SESSION.GetPrenosRezervacie",
+        "RezervujTrig preskoci fyzicky reservation write pri prenose rezervácie.",
+        "Nesudit stock mutation iba z order-side OLD/NEW."
+      ],
+      [
+        "C_SESSION.GetObjO_NekontrolZamokZObsluhy",
+        "Bypass kontroly locku na obsluhu.",
+        "Rozdielne spravanie medzi procesmi môže byt zamerne."
+      ],
+      [
+        "C_SESSION.GetNeLogujRezervacie / GetNelogujRezervacie",
+        "Vybrane reservation-processing/log flow mozu byt vypnute.",
+        "Absencia pomocného logu nie je dôkaz absencie rezervácie."
+      ],
+      [
+        "Ďalšie C_SESSION flags",
+        "Source harvest potvrdil viacero runtime prepínačov pre pricing, kontroly a spracovanie dokladu.",
+        "Pri reprodukcii chyby vzdy rozlisit manualny UI proces, batch, replikaciu a špeciálne flow."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "6.3 External domain boundaries"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Domena",
+        "Potvrdený order-side kontrakt",
+        "Kde končí scope tohto dokumentu"
+      ],
+      [
+        "Reservation / stock",
+        "P_REZ, ID_SZ; T_OBJ_ODB_O_REZ -> C_SZ.RezervujTrig -> RezervujC/Rezervuj.",
+        "Detail SKLAD_ZASOB lifecycle a všetky warehouse reservation rules budu v skladovom dokumente."
+      ],
+      [
+        "Issue / VYD",
+        "D_VYDAJ_* môže menit P_VYD a v reversal flow aj rezervačné/cancellation bucket-y. Header boundary: OBJ_ODB_L.RID -> VYD_L.RID_V.",
+        "Presny VYD_L/O lifecycle, polozkove joiny, storna a WMS patria do VYD dokumentu."
+      ],
+      [
+        "Invoice",
+        "D_DLAF_*, C_FD, EKASA a D_KASA_UHRADA_L patria medzi order-side P_FAK writery.",
+        "Cislo/stav faktury, invoice line authority a účtovný audit trail budu v INVOICE dokumente."
+      ],
+      [
+        "Purchasing",
+        "P_OBJ_D + RID_N -> OBJ_D_NAVRH; OBJD/C_REZ_OBJ_DOD flow môže prechadzat do P_REZ_PL.",
+        "Supplier order a receipt lifecycle bude v purchasing dokumente."
+      ],
+      [
+        "Pricing",
+        "RID_CT_A/RID_CT_Z -> CT_O; action allocation udrziava POCET_BL_OK.",
+        "Kompletna CT_* architektura a pricing lifecycle bude samostatný deep-dive."
+      ],
+      [
+        "Cancellation history",
+        "OBJ_ODB_O(RID_O,ID_R) -> DOVOD_ZRUS_POL_DOKLAD.",
+        "Detail ciselnikov dovodov a celej historizacie sa rozšíri v samostatnom objekte, ak bude treba."
+      ],
+      [
+        "Generic coverage",
+        "DOKL_VYKRYTE -> C_DOKL_VYKRYTE.GetPackageName -> D_OBJ_ODB_O.ChangeP_VYKR.",
+        "DOKL_VYKRYTE je samostatna cross-document coverage doména."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "6.4 History a temporal coverage objednávkového objektu"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "TEMPORAL PRINCÍP  OBJ_ODB_L/O sú primárne current-state transakčné tabuľky. Existujú selektívne historizačné mechanizmy, ale dokument nepredpokladá úplný event replay všetkých polí. Každý analytický alebo diagnostický výstup musí rozlíšiť aktuálny stav, selektívnu históriu, procesný log a chýbajúcu históriu."
+      ]
+    ]
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Mechanizmus",
+        "Čo pokrýva",
+        "Temporal typ",
+        "Limit / diagnostický význam"
+      ],
+      [
+        "OBJ_ODB_L current row",
+        "Aktuálny stav hlavičky + I_STAMP/U_STAMP",
+        "CURRENT SNAPSHOT + audit stamp",
+        "I_STAMP/U_STAMP nepredstavujú úplnú históriu všetkých zmien."
+      ],
+      [
+        "T_HZ_OBJ_ODB_L -> C_DEF_HIST_ZMENA",
+        "Zmeny DATUM_P; history definition 0001010",
+        "SELECTIVE FIELD HISTORY",
+        "Potvrdzuje históriu DATUM_P, nie celý lifecycle hlavičky."
+      ],
+      [
+        "OBJ_ODB_O current row",
+        "Aktuálny quantity/pricing/coverage stav položky",
+        "CURRENT SNAPSHOT",
+        "Z jedného riadku nemožno spätne odvodiť všetky predošlé hodnoty."
+      ],
+      [
+        "T_HZ_OBJ_ODB_O -> C_DEF_HIST_ZMENA",
+        "POCET, P_DEL, P_DEL_DOD, RID_CT_A; definition 0001006",
+        "SELECTIVE FIELD HISTORY",
+        "Neobsahuje kompletnú históriu P_REZ, P_FAK, P_VYD, pricing ani všetkých flagov."
+      ],
+      [
+        "DOVOD_ZRUS_POL_DOKLAD",
+        "Dôvody zrušenia podľa RID_O + ID_R",
+        "PROCESS-SPECIFIC HISTORY",
+        "1:N historická vrstva; nie kompletná história objednávkového riadku."
+      ],
+      [
+        "MODIF_I / MODIF_U",
+        "Replikačné/change sekvenčné markery",
+        "TECHNICAL MARKER",
+        "Nepoužívať ako business event history bez samostatného kontraktu."
+      ],
+      [
+        "OBJ_SPRAC_REZ",
+        "Pomocný processing pre vybrané reservation flow",
+        "PROCESSING LAYER",
+        "Nie je univerzálny reservation audit; logging môže byť session flagom vypnutý."
+      ],
+      [
+        "VYD / Invoice / Purchasing",
+        "Externé domény menia order-side snapshoty",
+        "EXTERNAL DOMAIN HISTORY",
+        "Presný event trail patrí do vlastných domain dokumentov; order tabuľky ho nenahrádzajú."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": "V1.2 preto zavádza pravidlo: ak otázka znie „čo platilo v minulosti?“, current OBJ_ODB_L/O sa nesmie automaticky použiť ako historický obraz. Najprv treba identifikovať, či existuje selektívna história konkrétneho poľa alebo external-domain event zdroj."
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "MIMO SCOPE V1.2  Dokument zámerne nenavrhuje cieľové fact/snapshot/SCD tabuľky ani surrogate keys. To by bol návrh analytického úložiska, nie popis zdrojovej Oracle reality."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": "6.5 Identity a cross-environment key semantics"
+  },
+  {
+    "type": "p",
+    "text": "Memorandum upozorňuje na globálne kľúče medzi databázami. V tomto katalógu sa preto explicitne rozlišuje lokálna databázová identita od neoverenej globálnej identity. Autoritatívnym slovenským prostredím je MC; MCCZ, TEST a TESTCZ sú samostatné databázy."
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Kľúč",
+        "Rozsah v MC",
+        "Správne použitie",
+        "Cross-environment limit",
+        "Status"
+      ],
+      [
+        "OBJ_ODB_L.RID",
+        "PRIMARY KEY v MC",
+        "Jedinečný objednávkový doklad v MC; exportovať ako text.",
+        "Globálna unikátnosť naprieč databázami nebola potvrdená.",
+        "POTVRDENÉ lokálne / TREBA OVERIŤ globálne"
+      ],
+      [
+        "OBJ_ODB_L.ID + SKLAD + DATUM",
+        "UNIQUE v MC",
+        "Technická uniqueness kombinácia v MC.",
+        "Nie je potvrdený enterprise business key.",
+        "POTVRDENÉ lokálne"
+      ],
+      [
+        "OBJ_ODB_L.SKRATKA + SKLAD",
+        "UNIQUE v MC",
+        "Zobrazovací/local uniqueness kontrakt.",
+        "Nepoužívať ako cross-environment identitu.",
+        "POTVRDENÉ lokálne"
+      ],
+      [
+        "OBJ_ODB_O.RID_O + ID_R",
+        "PRIMARY KEY položky",
+        "ID_R je lokálne ID riadku v rámci objednávky; identita závisí od RID_O.",
+        "Globálny scope je viazaný na neoverenú cross-DB semantiku RID.",
+        "POTVRDENÉ lokálne / TREBA OVERIŤ globálne"
+      ],
+      [
+        "MODIF_I / MODIF_U",
+        "Replikačné markery",
+        "Technická zmena/sekvencia, nie identita objektu.",
+        "Nezamieňať s global key.",
+        "POTVRDENÉ technicky"
+      ]
+    ]
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "CROSS-ENVIRONMENT PRAVIDLO  Kým nebude samostatne potvrdené, či RID je globálne generovaný a replikačne stabilný, každý export alebo porovnanie medzi databázami musí zachovať environment/OWNER kontext. Riadky z MC a MCCZ/TEST/TESTCZ sa nesmú zlučovať iba podľa rovnakého RID."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": "6.6 Časová platnosť master dát a transaction snapshot boundary"
+  },
+  {
+    "type": "p",
+    "text": "Objednávka často uchováva identifikátor master objektu, nie kompletnú historickú podobu master záznamu. JOIN na dnešný master preto môže vrátiť aktuálny názov, klasifikáciu alebo logistický atribút, ktorý nemusel mať rovnakú hodnotu v čase objednávky. V1.2 túto hranicu explicitne dokumentuje."
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Order pole",
+        "Master / target",
+        "Čo je uložené na objednávke",
+        "Temporal limit",
+        "Klasifikácia"
+      ],
+      [
+        "OBJ_ODB_L.PARTNER",
+        "OBCH_PARTNERI.ID",
+        "Order uchováva partner ID.",
+        "Historická platnosť názvu/krajiny/master atribútov nie je v order scope potvrdená.",
+        "MASTER TEMPORAL GAP"
+      ],
+      [
+        "OBJ_ODB_L.MIESTO_DOD",
+        "MIESTA_DODANIA.RID",
+        "Order uchováva delivery-point RID.",
+        "Aktuálny JOIN nemusí predstavovať historickú podobu miesta dodania.",
+        "MASTER TEMPORAL GAP"
+      ],
+      [
+        "OBJ_ODB_O.KOD_ID",
+        "SKLAD_KARTA.ID",
+        "Order line uchováva SKU ID.",
+        "EAN, balenie, hmotnosť a paletizácia patria masteru; historickú platnosť treba potvrdiť v master dokumente.",
+        "MASTER TEMPORAL GAP"
+      ],
+      [
+        "OBJ_ODB_L.TYP_CIS",
+        "TYPY_CIS.ID",
+        "Raw typ/kód je uložený na doklade.",
+        "Názov/label z lookup tabuľky môže byť current-state; raw kód zachovať.",
+        "POTVRDENÉ ID / label temporal gap"
+      ],
+      [
+        "OBJ_ODB_O.CENA/CENA_M/CENA_S/CENA_S2",
+        "transakčný riadok",
+        "Hodnoty na OBJ_ODB_O sú order-side pricing/cost snapshoty.",
+        "Historickú cenu nere-konštruovať spätným JOINom na dnešný cenník.",
+        "TRANSACTION SNAPSHOT"
+      ],
+      [
+        "OBJ_ODB_O.RID_CT_A / RID_CT_Z",
+        "CT_O pricing refs",
+        "Referencia vysvetľuje pricing flow a allocation.",
+        "Temporal lifecycle CT_* nie je kompletne mapovaný v tomto dokumente.",
+        "EXTERNAL PRICING BOUNDARY"
+      ]
+    ]
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "DO NOT ASSUME  Historický report nad objednávkou nesmie automaticky používať dnešné master atribúty ako keby platili v čase objednávky. Kým master dokument nepotvrdí valid-from/valid-to alebo vlastnú históriu, temporal authority master atribútov zostáva DATA GAP/TREBA OVERIŤ."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": "6.7 Relationship Contract Register a ochrana pred JOIN fan-out"
+  },
+  {
+    "type": "p",
+    "text": "Najčastejšia analytická chyba nevzniká zlým poľom, ale správnymi tabuľkami spojenými v nesprávnej granularite. V1.2 preto dopĺňa formálny contract k hlavným väzbám a explicitné pravidlá proti násobeniu riadkov."
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Vzťah",
+        "Join contract",
+        "Kardinalita",
+        "Fan-out / použitie",
+        "Status"
+      ],
+      [
+        "OBJ_ODB_L -> OBJ_ODB_O",
+        "L.RID = O.RID_O",
+        "1:N",
+        "Header sa pri JOINe násobí počtom položiek. Cieľový grain musí byť vopred určený.",
+        "POTVRDENÉ"
+      ],
+      [
+        "OBJ_ODB_O -> DOVOD_ZRUS_POL_DOKLAD",
+        "RID_O + ID_R",
+        "1:N história",
+        "Pri viacerých dôvodoch sa order line násobí. Pred agregáciou order facts históriu najprv agregovať/filtrovať na požadovaný grain.",
+        "POTVRDENÉ"
+      ],
+      [
+        "OBJ_ODB_L -> VYD_L",
+        "VYD_L.RID_V = OBJ_ODB_L.RID",
+        "1:N / podmienené",
+        "Objednávka môže mať viac výdajok; raw JOIN násobí header/order-line agregácie.",
+        "POTVRDENÉ boundary"
+      ],
+      [
+        "OBJ_ODB_O -> VYD_O",
+        "VYD_O.RID_V = <RID objednávky>!<ID_R> pri štandardnej predajnej výdajke",
+        "1:N / podmienené",
+        "Line-level trace je potvrdená iba pre príslušný issue flow; technická paleta KOD_ID=204 sa z business trace vylučuje.",
+        "POTVRDENÉ PODMIENENE"
+      ],
+      [
+        "OBJ_ODB_O -> invoice domain",
+        "P_FAK mutation boundary cez D_DLAF_*/C_FD/EKASA/...",
+        "N:M potenciálne / join kľúč neuzavretý",
+        "Exact invoice-line join nie je v order dokumente potvrdený. Nejoinovať heuristicky cez SKU, dátum, partnera alebo množstvo.",
+        "TREBA OVERIŤ v INVOICE doméne"
+      ],
+      [
+        "OBJ_ODB_O -> SKLAD_KARTA",
+        "KOD_ID = SKLAD_KARTA.ID",
+        "N:1",
+        "Bez fan-out, ak cieľový ID je unikátny; temporal master limit zostáva samostatný problém.",
+        "POTVRDENÉ FK"
+      ],
+      [
+        "OBJ_ODB_O -> SKLAD_ZASOB",
+        "ID_SZ = SKLAD_ZASOB.ID",
+        "N:1",
+        "Konkrétna zásoba; pri sentinel/empty stock zázname rešpektovať order reservation pravidlá.",
+        "POTVRDENÉ FK"
+      ],
+      [
+        "OBJ_ODB_O -> CT_O",
+        "RID_CT_A / RID_CT_Z -> CT_O.RID_OBJ",
+        "N:1 logicky; FK disabled/not validated",
+        "Referenčná integrita nie je garantovaná deklarovaným FK; LEFT JOIN + orphan kontrola.",
+        "SOURCE CONFIRMED / FK DISABLED"
+      ]
+    ]
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "JOIN GUARDRAIL  Nikdy raw JOINom nespájaj dve nezávislé 1:N vetvy toho istého parentu a potom nesčítavaj parent/order-line množstvá. Najprv agreguj každú child vetvu na cieľový grain alebo použi EXISTS pre existenčnú otázku. Po JOINe vždy over count a uniqueness základného kľúča."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": "Definuj cieľový grain výsledku ešte pred prvým JOINom (1 order, 1 order line, 1 issue line, 1 history event)."
+  },
+  {
+    "type": "p",
+    "text": "Pre otázku „existuje súvisiaci záznam?“ preferuj EXISTS pred JOINom, aby sa nemenila granularita."
+  },
+  {
+    "type": "p",
+    "text": "Ak pripájaš 1:N históriu, najprv ju agreguj alebo explicitne vyber požadovaný temporal stav; nikdy implicitne neber náhodný riadok."
+  },
+  {
+    "type": "p",
+    "text": "Po každom novom 1:N JOINe skontroluj duplicity základného kľúča cez GROUP BY ... HAVING COUNT(*)>1."
+  },
+  {
+    "type": "p",
+    "text": "7. DIAGNOSTIC PLAYBOOKY"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "POUŽITIE\nPlaybooky su navrhnute tak, aby nový analytik alebo AI dokazal zacat bez domyslania. Kazdy postup zacina aktualnym order-side stavom, potom kontroluje dokazne vetvy a explicitne sa zastavi na boundary cudzej domény."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "7.1 Nesedi rezervacia"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "SELECT o.rid_o, o.id_r, o.kod_id, o.id_sz,       o.pocet, o.p_rez, o.p_rez_is, o.p_rez_pl,       o.p_obj_d, o.p_dispo, o.p_vykr,       o.p_del, o.p_del_dod, o.p_fak, o.p_vyd, o.p_obj,       o.pocet-o.p_del-o.p_del_dod-o.p_fak-o.p_vyd-o.p_obj AS open_qty,       o.p_rez+o.p_rez_is+o.p_rez_pl+o.p_obj_d+o.p_dispo+o.p_vykr AS coverage_qtyFROM mc.obj_odb_o oWHERE o.rid_o = :rid_o AND o.id_r = :id_r;"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "Ak open_qty=0, dalsia standardna rezervacia nema otvorené množstvo."
+  },
+  {
+    "type": "p",
+    "text": "P_REZ=0 nie je dôkaz nuloveho coverage - skontrolovat všetky coverage bucket-y."
+  },
+  {
+    "type": "p",
+    "text": "Pri P_REZ>0 skontrolovat ID_SZ; technický empty stock record nie je NULL ani neplatný FK, ale nenulova rezervacia na nom je podozrivá."
+  },
+  {
+    "type": "p",
+    "text": "Pri zmene ID_SZ pocitat s realnym stock transferom cez RezervujC(old,-qty) + RezervujC(new,+qty)."
+  },
+  {
+    "type": "p",
+    "text": "Ak order-side a stock-side stav nesedia, preverit session flow (replikacia/prenos rezervácie) a az potom skladovu domenu."
+  },
+  {
+    "type": "p",
+    "text": "7.2 Nejde zmeniť množstvo"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "SELECT l.rid, l.typ_cis, l.flags_s, l.flags_b,       o.id_r, o.pocet, o.p_rez, o.p_rez_is, o.p_rez_pl,       o.p_obj_d, o.p_dispo, o.p_vykr, o.p_del, o.p_del_dod,       o.p_fak, o.p_vyd, o.p_obj, o.rid_vFROM mc.obj_odb_l lJOIN mc.obj_odb_o o ON o.rid_o=l.ridWHERE l.rid=:rid AND o.id_r=:id_r;"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "Skontrolovat formu/stav dokladu, uz kryte množstva a linked-object vetvy."
+  },
+  {
+    "type": "p",
+    "text": "T_OBJ_ODB_O_ZRUS_POCET chráni pred nekonzistentnym znizenim quantity lifecycle a ma špeciálne vetvy pre uzavreté objednávky a ďalšie rezimy."
+  },
+  {
+    "type": "p",
+    "text": "Ak existuju serial-number alebo viazane/makro riadky, zmena môže byt blokovaná dalsimi trigger-mi."
+  },
+  {
+    "type": "p",
+    "text": "Neobchadzat trigger logiku priamym DML; mapping a diagnostika su read-only."
+  },
+  {
+    "type": "p",
+    "text": "7.3 Nesedi storno / P_DEL / P_DEL_DOD"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "SELECT o.rid_o,o.id_r,o.kod_id,o.pocet,o.p_del,o.p_del_dod,       o.p_rez,o.p_fak,o.p_vyd,o.p_objFROM mc.obj_odb_o oWHERE o.rid_o=:rid_o AND o.id_r=:id_r;SELECT d.*FROM mc.dovod_zrus_pol_doklad dWHERE d.rid_o=:rid_o AND d.id_r=:id_rORDER BY d.s_stamp, d.i_stamp;"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "P_DEL a P_DEL_DOD analyzovat oddelene."
+  },
+  {
+    "type": "p",
+    "text": "P_DEL+P_DEL_DOD nie je automaticky realny nezavoz."
+  },
+  {
+    "type": "p",
+    "text": "T_OBJ_ODB_O_DOVOD_ZRUS_INS zapisuje/koriguje dôvodovú históriu; pri P_DEL_DOD môže byt dôvod aj systemovo odvodeny."
+  },
+  {
+    "type": "p",
+    "text": "Ak príčina nie je vysvetlena order triggerom, prejst cez potvrdenych externých writerov (reservation/issue/integration)."
+  },
+  {
+    "type": "p",
+    "text": "7.4 Nesedi cena / promo"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "SELECT o.rid_o,o.id_r,o.kod_id,o.dph,       o.cena,o.cena_m,o.cena_s,o.cena_s2,       o.rid_ct_z,o.rid_ct_a,o.zlavy,o.flags_b,o.xml_dataFROM mc.obj_odb_o oWHERE o.rid_o=:rid_o AND o.id_r=:id_r;"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "RID_CT_A a RID_CT_Z sa mozu legitimne vyskytovať súčasne."
+  },
+  {
+    "type": "p",
+    "text": "Pri RID_CT_A kontrolovat action quantity capacity/consumption v CT_O, nie iba cenu."
+  },
+  {
+    "type": "p",
+    "text": "T_OBJ_ODB_O_CENA a special-price flagy mozu operaciu zablokovať."
+  },
+  {
+    "type": "p",
+    "text": "ZLAVY je strukturovany payload; neparsovat odhadnutym SUBSTR. Pouzit C_DOKL_O accessors tam, kde je potrebna aplikacna interpretacia."
+  },
+  {
+    "type": "p",
+    "text": "Negativna CENA nie je automaticky chyba - v produkcii existuju legitimne zaporne zalohove/zlavove riadky."
+  },
+  {
+    "type": "p",
+    "text": "7.5 Nesedi výdaj / P_VYD"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "SELECT o.rid_o,o.id_r,o.kod_id,o.pocet,o.p_rez,       o.p_del,o.p_del_dod,o.p_fak,o.p_vyd,o.p_obj,       o.pocet-o.p_del-o.p_del_dod-o.p_fak-o.p_vyd-o.p_obj AS open_qtyFROM mc.obj_odb_o oWHERE o.rid_o=:rid_o AND o.id_r=:id_r;SELECT v.*FROM mc.vyd_l vWHERE v.rid_v=:rid_o;"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "P_VYD = vydané zo skladu, nie potvrdené doručenie zákazníkovi."
+  },
+  {
+    "type": "p",
+    "text": "P_VYD=0 nevylucuje existenciu výdajového procesu; P_VYD=POCET nedokazuje doručenie."
+  },
+  {
+    "type": "p",
+    "text": "Ak nesedí order-side P_VYD s vydajkami, ďalší krok je VYD_L/O dokument - nie domyslanie line joinu."
+  },
+  {
+    "type": "p",
+    "text": "7.6 Nesedi fakturácia / P_FAK"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "SELECT o.rid_o,o.id_r,o.kod_id,o.pocet,       o.p_del,o.p_del_dod,o.p_fak,o.p_vyd,o.p_obj,       o.pocet-o.p_del-o.p_del_dod-o.p_fak-o.p_vyd-o.p_obj AS open_qty,       o.cena,o.cena_m,o.dphFROM mc.obj_odb_o oWHERE o.rid_o=:rid_o AND o.id_r=:id_r;"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "P_FAK je order-side mnozstevny snapshot, nie uplny invoice source of truth."
+  },
+  {
+    "type": "p",
+    "text": "P_FAK mozu menit viacere invoice/payment flow; nepredpokladat iba jeden writer."
+  },
+  {
+    "type": "p",
+    "text": "Cislo/stav faktury, storno a line trace treba dokončit v INVOICE doméne po jej zmapovani."
+  },
+  {
+    "type": "p",
+    "text": "7.7 Nesedi purchasing coverage"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "SELECT o.rid_o,o.id_r,o.kod_id,o.pocet,       o.p_rez,o.p_rez_is,o.p_rez_pl,o.p_obj_d,o.p_dispo,o.p_vykr,       o.p_del,o.p_del_dod,o.p_fak,o.p_vyd,o.p_obj,       o.rid_n,o.rid_v,o.sposob_vybaveniaFROM mc.obj_odb_o oWHERE o.rid_o=:rid_o AND o.id_r=:id_r;"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "P_OBJ_D je purchasing coverage, nie supplier PO quantity source of truth."
+  },
+  {
+    "type": "p",
+    "text": "RID_N je purchasing proposal reference; v aktualnom MC profile bol bez vyuzitia, ale source flow je potvrdený."
+  },
+  {
+    "type": "p",
+    "text": "P_REZ_PL je explicitne spojene s supplier delivery/prepravný-list coverage a môže menit SPOSOB_VYBAVENIA."
+  },
+  {
+    "type": "p",
+    "text": "Detail OBJ_D_NAVRH/OBJD_* lifecycle patri do purchasing dokumentu."
+  },
+  {
+    "type": "p",
+    "text": "7.8 Objednavka je v nespravnom stave / nejde uzavrieť"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "SELECT l.rid,l.id,l.ext_dokument,l.typ_cis,l.flags_s,l.flags_b,       l.datum,l.datum_p,l.datum_ok,l.i_stamp,l.obsluhaFROM mc.obj_odb_l lWHERE l.rid=:rid;SELECT COUNT(*) AS line_count,       SUM(o.pocet) AS ordered_qty,       SUM(o.pocet-o.p_del-o.p_del_dod-o.p_fak-o.p_vyd-o.p_obj) AS open_qty,       SUM(o.p_rez) AS reserved_qty,       SUM(o.p_fak) AS invoiced_qty,       SUM(o.p_vyd) AS issued_qtyFROM mc.obj_odb_o oWHERE o.rid_o=:rid;"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "TYP_CIS a FLAGS_S[20] su rozne osi; neporovnavat ako 1:1 ekvivalenciu."
+  },
+  {
+    "type": "p",
+    "text": "DATUM_OK IS NOT NULL nie je autoritativny completion status."
+  },
+  {
+    "type": "p",
+    "text": "Header state vzdy porovnat s line-level quantity stavom a critical trigger guardmi."
+  },
+  {
+    "type": "p",
+    "text": "Ak je editacia blokovaná, preverit zámok na obsluhu a relevantne session bypass mechanizmy."
+  },
+  {
+    "type": "p",
+    "text": "7.9 DO NOT ASSUME - ochranny kontrakt pre SQL a AI"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Nespravny predpoklad",
+        "Spravne pravidlo"
+      ],
+      [
+        "P_VYD = doručené zákazníkovi",
+        "P_VYD je skladovy výdaj; delivery proof je mimo order tabulky."
+      ],
+      [
+        "P_REZ treba odcitat z open_qty",
+        "P_REZ je coverage podmnozina; canonical open_qty ho neodcitava."
+      ],
+      [
+        "P_DEL + P_DEL_DOD = realny nezavoz",
+        "Ide o systémové/process cancellation bucket-y; príčinu treba dokázať."
+      ],
+      [
+        "DATUM_OK != NULL = dokoncena objednávka",
+        "DATUM_OK je technický processing date, nie jednoznacny completion status."
+      ],
+      [
+        "TYP_CIS = FLAGS_S[20]",
+        "Typ a forma dokladu su suvisiace, nie univerzalne 1:1."
+      ],
+      [
+        "P_REZ=0 = objednávka nie je pokrytá",
+        "Coverage môže byt v P_REZ_IS/P_REZ_PL/P_OBJ_D/P_DISPO/P_VYKR."
+      ],
+      [
+        "RID_CT_A a RID_CT_Z sa vylucuju",
+        "Suhlasna existencia je legitimna a produkcne potvrdena."
+      ],
+      [
+        "ID_SZ='0000' = NULL/chybny FK",
+        "Je to validny technický empty stock record; jeho význam sa musí interpretovat v kontexte."
+      ],
+      [
+        "SARZA na OBJ_ODB_O = finalna vydana sarza",
+        "Order-side SARZA nie je autorita finalnej vydanej sarze."
+      ],
+      [
+        "CENA<0 = chybny zaznam",
+        "Negativna cena môže byt legitimna pri zalohach/zlavach."
+      ],
+      [
+        "Disabled FK RID_CT_* garantuje integritu",
+        "RID_CT_A/RID_CT_Z -> CT_O FK su disabled/not validated; diagnostické joiny maju byt LEFT JOIN."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "8. CANONICAL SQL TOOLKIT"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "READ-ONLY KONTRAKT\nVsetky SQL vzory v tejto kapitole su urcene na SELECT diagnostiku. Dokument nedoporucuje priame DML do produkcnych tabuliek; trigger/package side effecty su prave dôvod, preco by priame UPDATE/DELETE mohli obist alebo spustit komplexnu business logiku."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "8.1 Header + lines"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "SELECT l.rid, l.id, l.ext_dokument, l.typ_cis, l.partner,       l.miesto_dod, l.sklad, l.datum_p, l.flags_s, l.flags_b,       o.id_r, o.kod_id, o.id_sz, o.pocet, o.p_rez,       o.p_del, o.p_del_dod, o.p_fak, o.p_vyd, o.p_objFROM mc.obj_odb_l lJOIN mc.obj_odb_o o ON o.rid_o=l.ridWHERE l.rid=:ridORDER BY o.id_r;"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "Dokazuje aktuálny header + line snapshot. Nedokazuje históriu zmeny jednotlivych bucketov."
+  },
+  {
+    "type": "p",
+    "text": "8.2 Quantity diagnostic"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "SELECT rid_o,id_r,kod_id,       pocet,p_del,p_del_dod,p_fak,p_vyd,p_obj,       p_rez,p_rez_is,p_rez_pl,p_obj_d,p_dispo,p_vykr,       pocet-p_del-p_del_dod-p_fak-p_vyd-p_obj AS open_qty,       p_rez+p_rez_is+p_rez_pl+p_obj_d+p_dispo+p_vykr AS coverage_qty,       pocet-p_del-p_del_dod-p_fak-p_vyd-p_obj         -p_rez-p_rez_is-p_rez_pl-p_obj_d-p_dispo-p_vykr AS uncovered_qtyFROM mc.obj_odb_oWHERE rid_o=:rid_oORDER BY id_r;"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "8.3 Cancellation reason join"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "SELECT o.rid_o,o.id_r,o.kod_id,o.pocet,o.p_del,o.p_del_dod,d.*FROM mc.obj_odb_o oLEFT JOIN mc.dovod_zrus_pol_doklad d  ON d.rid_o=o.rid_o AND d.id_r=o.id_rWHERE o.rid_o=:rid_oORDER BY o.id_r;"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "LEFT JOIN zachova order line aj vtedy, ked reason record neexistuje. Ak sa hlada iba aktuálny reason record, pouzit potvrdenu current-state podmienku S_STAMP=0 podla konkretneho use case."
+  },
+  {
+    "type": "p",
+    "text": "8.4 Product join"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "SELECT o.rid_o,o.id_r,o.kod_id,k.*FROM mc.obj_odb_o oLEFT JOIN mc.sklad_karta k ON k.id=o.kod_idWHERE o.rid_o=:rid_o;"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "LEFT JOIN je vhodny pri diagnostike, ak nechceme stratit order line pre prípad master-data problemu. Pri integracnom kontrakte mozno pouzit INNER JOIN iba ak je takato strata riadku zamerna."
+  },
+  {
+    "type": "p",
+    "text": "8.5 Pricing references"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "SELECT o.rid_o,o.id_r,o.kod_id,o.cena,o.cena_m,o.rid_ct_z,o.rid_ct_a,       ctz.rid_obj AS contract_ref_found,       cta.rid_obj AS action_ref_found,       cta.pocet_bl_plan, cta.pocet_bl_st, cta.pocet_bl_okFROM mc.obj_odb_o oLEFT JOIN mc.ct_o ctz ON ctz.rid_obj=o.rid_ct_zLEFT JOIN mc.ct_o cta ON cta.rid_obj=o.rid_ct_aWHERE o.rid_o=:rid_o AND o.id_r=:id_r;"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "Používať LEFT JOIN: FK na CT_O je pre RID_CT_A/RID_CT_Z disabled/not validated a produkcne boli pozorovane orphan references."
+  },
+  {
+    "type": "p",
+    "text": "8.6 Header -> issue boundary"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "SELECT l.rid,l.id,l.ext_dokument,v.*FROM mc.obj_odb_l lLEFT JOIN mc.vyd_l v ON v.rid_v=l.ridWHERE l.rid=:rid;"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "Tento join ukazuje potvrdenu header-level boundary na výdajky. Line-level reconciliation patri do VYD dokumentu."
+  },
+  {
+    "type": "p",
+    "text": "8.7 Current coverage sanity check"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "SELECT rid_o,id_r,kod_id,       pocet-p_del-p_del_dod-p_fak-p_vyd-p_obj AS open_qty,       p_rez+p_rez_is+p_rez_pl+p_obj_d+p_dispo+p_vykr AS coverage_qtyFROM mc.obj_odb_oWHERE rid_o=:rid_o  AND (p_rez+p_rez_is+p_rez_pl+p_obj_d+p_dispo+p_vykr) >      (pocet-p_del-p_del_dod-p_fak-p_vyd-p_obj);"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "Je to diagnostický filter. Definitivnu integritu urcuju Oracle CHECK constraints, vratane špeciálnych vetiev pre ODPIS a zaporne POCET."
+  },
+  {
+    "type": "p",
+    "text": "8.8 Fan-out detector pre cancellation history"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "SELECT o.rid_o,       o.id_r,       COUNT(*) AS joined_rowsFROM mc.obj_odb_o oLEFT JOIN mc.dovod_zrus_pol_doklad d  ON d.rid_o = o.rid_o AND d.id_r  = o.id_rWHERE o.rid_o = :rid_oGROUP BY o.rid_o, o.id_rHAVING COUNT(*) > 1;"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": "Čo dokazuje: identifikuje order-line kľúče, ktoré by sa po priamom JOINe na 1:N cancellation history zobrazili viackrát. Čo nedokazuje: duplicita sama osebe nie je data-quality chyba; môže ísť o legitímne historické záznamy."
+  },
+  {
+    "type": "p",
+    "text": "8.9 Podmienená line-level trace objednávka -> výdajka"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "SELECT o.rid_o,       o.id_r,       o.kod_id,       v.rid_o AS issue_id,       v.id_r  AS issue_line_id,       v.pocet,       v.p_del,       v.p_vysklFROM mc.obj_odb_o oLEFT JOIN mc.vyd_o v  ON v.rid_v = o.rid_o || '!' || TO_CHAR(o.id_r) AND v.kod_id <> 204WHERE o.rid_o = :rid_oORDER BY o.id_r, v.rid_o, v.id_r;"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": "Použitie: iba pre štandardnú predajnú výdajkovú vetvu, kde je formát VYD_O.RID_V = <RID objednávky>!<ID_R> potvrdený. Výsledok môže mať viac VYD_O riadkov na jeden order line; to je očakávaný 1:N fan-out, nie dôvod na SUM order množstiev po JOINe. Presný VYD lifecycle patrí do samostatného VYD dokumentu. Invoice line key zatiaľ nie je potvrdený; P_FAK nie je JOIN key a heuristické invoice JOINy sa nesmú používať."
+  },
+  {
+    "type": "p",
+    "text": "9. DETAIL BACKLOG - NEBLOKUJE DIAGNOSTIC CORE"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Objekt / téma",
+        "Otvorený detail",
+        "Stav"
+      ],
+      [
+        "OBJ_ODB_O.CENA_OCA",
+        "Presný business význam; v profilovanom MC hodnota 0 na celej populácii.",
+        "DETAIL OPEN / NON-BLOCKING"
+      ],
+      [
+        "OBJ_ODB_O.OK",
+        "Presný business význam; v profilovanom MC konštantne -1.",
+        "DETAIL OPEN / NON-BLOCKING"
+      ],
+      [
+        "X_OBJODB_O_XML35",
+        "Presný DDL/function expression domain indexu na hidden SYS_NC00044$.",
+        "DETAIL OPEN / NON-BLOCKING"
+      ],
+      [
+        "ZMENY_VYKRYTIA_OBJ_ODB",
+        "Samostatne zmapovať ako pravdepodobnú coverage-transfer históriu.",
+        "FUTURE TABLE MAPPING"
+      ],
+      [
+        "CT_* pricing architecture",
+        "Posúdiť dizajn, v ktorom akciová cenotvorba plní aj quantity/batch allocation funkciu.",
+        "ARCHITECTURE REVIEW LATER"
+      ],
+      [
+        "OBJ_D_NAVRH / OBJD_*",
+        "Samostatný deep-dive nákupného lifecycle; OBJ_ODB_O drží iba coverage snapshoty/reference.",
+        "FUTURE TABLE MAPPING"
+      ],
+      [
+        "Cross-environment identity / RID/global key semantics",
+        "Overiť, či RID je globálne unikátny a replikačne stabilný medzi MC/MCCZ/TEST/TESTCZ. Dovtedy zachovať environment/OWNER ako súčasť identity pri cross-DB porovnaní.",
+        "TREBA OVERIŤ"
+      ],
+      [
+        "Master temporal validity / OBCH_PARTNERI / MIESTA_DODANIA / SKLAD_KARTA / lookups",
+        "Pri samostatnom master mapovaní potvrdiť, či objekt uchováva valid-from/valid-to, históriu alebo iba current state.",
+        "FUTURE MASTER MAPPING"
+      ],
+      [
+        "Invoice boundary / OBJ_ODB_O -> invoice line",
+        "Potvrdiť presný persistentný line-level JOIN a kardinalitu v samostatnom INVOICE dokumente; dovtedy nepoužívať heuristické JOINy.",
+        "FUTURE TABLE MAPPING"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "10. ZDROJOVÝ RÁMEC A DÔKAZNÁ STOPA"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Zdroj",
+        "Použitie"
+      ],
+      [
+        "Oracle metadata / SQL Navigator",
+        "44 stĺpcov OBJ_ODB_O; 79 stĺpcov OBJ_ODB_L; PK/FK/CHECK/indexy; produkčné SELECT/JOIN testy."
+      ],
+      [
+        "ALL_SOURCE – triggery OBJ_ODB_O",
+        "33 triggerov, všetky ENABLED; kompletný source export 1 267 riadkov."
+      ],
+      [
+        "D_OBJ_ODB_O PACKAGE / BODY",
+        "Spec 761 riadkov; body 15 801 riadkov; cielené CORE range exporty quantity, pricing, coverage, flags, purchasing."
+      ],
+      [
+        "OBJ_ODB_L source exports",
+        "17 triggerov, D_OBJ_ODB_L spec/body, indexy, constraints a validačné testy už uzavreté v pôvodnom v0.7.1."
+      ],
+      [
+        "BarIS / Dreamer business validácia",
+        "Význam súbehu RID_CT_Z + RID_CT_A; interné/zberné doklady; validácia quantity/pricing edge cases."
+      ],
+      [
+        "Živá MC produkcia 8.9.2026",
+        "Profiling ~2,51 mil. OBJ_ODB_O riadkov, distribution/edge-case testy, orphan testy, FLAGS_B a pricing profily."
+      ],
+      [
+        "ODB_DIAG_01-06 / SQL Navigator",
+        "Reverse writer inventory, source-reference inventory, validation/error patterns, session controls, Oracle dependencies a trigger call candidates."
+      ],
+      [
+        "ODB_DIAG_07_RESERVATION_DOMAIN",
+        "C_REZERVACIA / C_REZ_OBJ_* boundary analyza pre P_REZ, P_REZ_IS, P_REZ_PL, ID_SZ a suvisiace flow."
+      ],
+      [
+        "ODB_DIAG_08_ISSUE_DOMAIN",
+        "D_VYDAJ_L/O/O2 boundary analyza: order-side mutation P_VYD a suvisiace reversal/reservation vetvy."
+      ],
+      [
+        "ODB_DIAG_09_INVOICE_DOMAIN",
+        "D_DLAF_L/O, C_FD, EKASA a D_KASA_UHRADA_L boundary analyza pre P_FAK a invoice-side order mutations."
+      ],
+      [
+        "ODB_DIAG_10_PURCHASING_COVERAGE",
+        "OBJ_D_NAVRH / OBJD_* / C_REZ_OBJ_DOD boundary analyza pre P_OBJ_D a P_REZ_PL."
+      ],
+      [
+        "ODB_DIAG_11_ACTION_PRICING_ALLOCATION",
+        "C_CENOTVORBA_O.NastavPocetAkcieObjOdb; potvrdena quantity allocation logika akcie cez CT_O."
+      ],
+      [
+        "ODB_DIAG_12B_C_SZ_REZERVUJTRIG_BODY",
+        "C_SZ.RezervujTrig body; delta rezervácie, zmena ID_SZ, replication/prenos bypass a failure path."
+      ],
+      [
+        "ODB_DIAG_13_INSOBJ_SPRAC_REZ",
+        "D_OBJ_ODB_L.InsOBJ_SPRAC_REZ; potvrdena pomocná tabulka OBJ_SPRAC_REZ a typy processingu."
+      ],
+      [
+        "Memorandum k dátovému katalógu objednávkových objektov – 8. 9. 2026",
+        "Architektonické pripomienky k historizácii, cross-database identite, temporal master dátam, položkovým väzbám a riziku násobenia riadkov pri JOINoch; v1.2 zapracované ako source-catalog hardening bez návrhu DWH."
+      ],
+      [
+        "KASO Data Catalog Other Mapped Objects v0.1",
+        "Potvrdený VYD boundary a podmienená line-level traceability VYD_O.RID_V vo formáte <RID objednávky>!<ID_R> pri štandardnej predajnej výdajke; technická paleta KOD_ID=204 sa vylučuje z business traceability."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "11. REVÍZNA HISTÓRIA"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Verzia",
+        "Dátum",
+        "Zmena"
+      ],
+      [
+        "1.0",
+        "8. 9. 2026",
+        "Prvý samostatný table-domain dokument OBJ_ODB_L + OBJ_ODB_O. Oddelený z pôvodného multi-table katalógu v0.7.1; OBJ_ODB_O doplnené o kompletný CORE deep-dive, quantity/coverage model, pricing dual-reference, 44-field audit, 33 triggerov a D_OBJ_ODB_O source mapping."
+      ],
+      [
+        "1.1",
+        "8. 9. 2026",
+        "Diagnostic-grade rozšírenie: mutation/reverse dependency model, A/B/C trigger klasifikacia, rezervačný execution flow, pricing allocation, external domain boundaries, diagnostické playbooky, canonical SQL toolkit a reverse-writer appendix."
+      ],
+      [
+        "1.2",
+        "9. 9. 2026",
+        "Hardening podľa memoranda: doplnený history/temporal coverage model, identity scope a cross-environment pravidlá, master-data temporal boundary, Relationship Contract Register, JOIN fan-out guardrails a bezpečné SQL kontroly. DWH návrh zámerne nevytvorený. Opravené Word metadata a publikačná hygiena dokumentu."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "PRÍLOHA A. OBJ_ODB_L – ÚPLNÝ FYZICKÝ INVENTÁR STĹPCOV"
+  },
+  {
+    "type": "p",
+    "text": "Čisto technický inventár Oracle tabuľky OBJ_ODB_L podľa exportu ALL_TAB_COLUMNS / ALL_COL_COMMENTS. Potvrdzuje fyzickú existenciu, Oracle datatype, NULL vlastnosť, default a Oracle comment; samotný comment nepotvrdzuje business význam. Business mapovanie kľúčových polí je v kapitole 4."
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Stĺpec",
+        "Oracle typ",
+        "NULL",
+        "Default",
+        "Oracle comment / technická poznámka"
+      ],
+      [
+        "1. ID",
+        "NUMBER(8,0)",
+        "N",
+        "",
+        "P.č. - Poradové čislo jednoznačné za sklad a rok ()"
+      ],
+      [
+        "2. RID",
+        "VARCHAR2(16)",
+        "N",
+        "",
+        "RID - Jednoznačný identifikátor záznamu v BarIS-e, zložený z identifikátora číselníka, roku vloženia (DATUM), skladu (SKLAD) a poradového čísla (ID) ()"
+      ],
+      [
+        "3. DATUM",
+        "DATE",
+        "N",
+        "",
+        "Dátum - Dátum vloženia záznamu ()"
+      ],
+      [
+        "4. SKLAD",
+        "NUMBER(3,0)",
+        "N",
+        "",
+        "Sklad - Sklad za ktorú bol záznam vložený (BARTEX_POBOCKY.ID)"
+      ],
+      [
+        "5. SKRATKA",
+        "VARCHAR2(254)",
+        "N",
+        "",
+        "Skratka - Skratka záznamu ( musí byť jednoznačná za sklad (SKLAD), štandartne je = RID) ()"
+      ],
+      [
+        "6. ID_TREE",
+        "NUMBER(9,0)",
+        "N",
+        "",
+        "Zaradenie - Pozícia v stromovej štruktúre číselníka (CIS_TREE.ID)"
+      ],
+      [
+        "7. FLAGS",
+        "VARCHAR2(254)",
+        "Y",
+        "",
+        "Príznaky - Príznaky voľne definované užívateľom ()"
+      ],
+      [
+        "8. FLAGS_B",
+        "VARCHAR2(254)",
+        "Y",
+        "",
+        "Nastavenia - Priznaky definované aplikáciou ()"
+      ],
+      [
+        "9. I_STAMP",
+        "VARCHAR2(17)",
+        "N",
+        "'0'",
+        "Vložil - Stamp na vloženie záznamu, nesie informáciu kto a kedy záznam vložil ()"
+      ],
+      [
+        "10. U_STAMP",
+        "VARCHAR2(17)",
+        "N",
+        "'0'",
+        "Zmenil - Stamp na zmenu záznamu, nesie informáciu kto a kedy záznam zmenil ()"
+      ],
+      [
+        "11. S_STAMP",
+        "VARCHAR2(17)",
+        "N",
+        "'0'",
+        "Zrušil - Stamp na vyradenie záznamu, nesie informáciu kto a kedy záznam vyradil ()"
+      ],
+      [
+        "12. MENA",
+        "NUMBER(8,0)",
+        "N",
+        "0",
+        " - Hodnota z tabuľky MENY (MENY.ID)"
+      ],
+      [
+        "13. KURZ",
+        "NUMBER(22,11)",
+        "N",
+        "",
+        " - Hodnota z tabuľky KURZY ()"
+      ],
+      [
+        "14. DPH_2",
+        "NUMBER(12,2)",
+        "N",
+        "0",
+        " - Horná DPH ()"
+      ],
+      [
+        "15. DPH_1",
+        "NUMBER(12,2)",
+        "N",
+        "0",
+        " - Dolná DPH ()"
+      ],
+      [
+        "16. SUMA_2",
+        "NUMBER(12,2)",
+        "N",
+        "0",
+        " - Základ DPH - horná sadzba ()"
+      ],
+      [
+        "17. SUMA_1",
+        "NUMBER(12,2)",
+        "N",
+        "0",
+        " - Dolná sadzba DPH ()"
+      ],
+      [
+        "18. SUMA_0",
+        "NUMBER(12,2)",
+        "N",
+        "0",
+        " - Základ DPH ()"
+      ],
+      [
+        "19. SUMA_M",
+        "NUMBER(15,5)",
+        "N",
+        "0",
+        " - Celková suma v mene ()"
+      ],
+      [
+        "20. ROZDIEL",
+        "NUMBER(10,2)",
+        "N",
+        "0",
+        " - Halierový rozdiel ()"
+      ],
+      [
+        "21. SUMA_S",
+        "FLOAT",
+        "N",
+        "0",
+        " - Suma odpisu zo skladu ()"
+      ],
+      [
+        "22. SUMA_S2",
+        "FLOAT",
+        "N",
+        "0",
+        " - Suma dodatočných nákladov ()"
+      ],
+      [
+        "23. DATUM_P",
+        "DATE",
+        "N",
+        "",
+        " - Dátum plnenia ()"
+      ],
+      [
+        "24. SPLATNOST",
+        "NUMBER(5,0)",
+        "N",
+        "",
+        " - Počet dní splatnosti ()"
+      ],
+      [
+        "25. SPLATNOST_2",
+        "NUMBER(5,0)",
+        "N",
+        "",
+        " - Počet dní splatnosti čiastkovej ()"
+      ],
+      [
+        "26. SUMA_CS",
+        "NUMBER(12,2)",
+        "N",
+        "0",
+        " - Čiastková splatnosť ()"
+      ],
+      [
+        "27. UCT_STR",
+        "NUMBER(8,0)",
+        "N",
+        "",
+        " - Účtovné stredisko (UCT_STR.ID)"
+      ],
+      [
+        "28. ZAKAZKA",
+        "NUMBER(8,0)",
+        "N",
+        "",
+        " - Číslo zakázky (ZAKAZKY.ID)"
+      ],
+      [
+        "29. PARTNER",
+        "NUMBER(8,0)",
+        "N",
+        "",
+        " - Číslo odberateľa (OBCH_PARTNERI.ID)"
+      ],
+      [
+        "30. MIESTO_DOD",
+        "VARCHAR2(16)",
+        "N",
+        "",
+        " - Miesto dodania (MIESTA_DODANIA.RID)"
+      ],
+      [
+        "31. OBSLUHA",
+        "NUMBER(8,0)",
+        "N",
+        "",
+        " - Číslo obsluhujúceho (BARTEX_USERS.ID_U)"
+      ],
+      [
+        "32. DOPRAVA",
+        "NUMBER(8,0)",
+        "N",
+        "",
+        " - Hodnota z číselníka DRUHY_DOPRAVY (DRUHY_DOPRAVY.ID)"
+      ],
+      [
+        "33. POCET_POL",
+        "NUMBER(8,0)",
+        "N",
+        "",
+        " - Počet položiek  ()"
+      ],
+      [
+        "34. UCT_STAMP",
+        "VARCHAR2(17)",
+        "N",
+        "",
+        " - Stamp na zaučtovanie záznamu ()"
+      ],
+      [
+        "35. EXT_DOKUMENT",
+        "VARCHAR2(254)",
+        "Y",
+        "",
+        " - Číslo objednávky ()"
+      ],
+      [
+        "36. UCET_DOKLAD",
+        "NUMBER(8,0)",
+        "N",
+        "",
+        " - Saldokontný účet dokladu (UCTY.ID)"
+      ],
+      [
+        "37. RID_V",
+        "VARCHAR2(16)",
+        "N",
+        "'0'",
+        " - vazba na podnetný doklad ()"
+      ],
+      [
+        "38. SPOSOB_OBJ",
+        "VARCHAR2(16)",
+        "N",
+        "",
+        " - Sposob objednania (SPOSOB_OBJEDNANIA.RID)"
+      ],
+      [
+        "39. SPOSOB_KONT",
+        "VARCHAR2(16)",
+        "N",
+        "",
+        " - Sposob kontaktu (SPOSOB_KONTAKTU.RID)"
+      ],
+      [
+        "40. SUMA_U_M",
+        "NUMBER(14,3)",
+        "N",
+        "0",
+        " - Uhradené v mene ()"
+      ],
+      [
+        "41. SUMA_U2",
+        "NUMBER(12,2)",
+        "N",
+        "0",
+        " - Určené pre spätný výpočet k určitému dátumu ()"
+      ],
+      [
+        "42. SUMA_UM2",
+        "NUMBER(14,3)",
+        "N",
+        "0",
+        " - Spätný výpočet - uhradené v mene ()"
+      ],
+      [
+        "43. V_SYMBOL",
+        "VARCHAR2(15)",
+        "Y",
+        "",
+        " - Variabilný symbol ()"
+      ],
+      [
+        "44. KONST_S",
+        "VARCHAR2(4)",
+        "Y",
+        "",
+        " - Konštantný symbol ()"
+      ],
+      [
+        "45. DATUM_U",
+        "DATE",
+        "Y",
+        "",
+        " - Dátum úhrady ()"
+      ],
+      [
+        "46. BANKA",
+        "NUMBER(8,0)",
+        "N",
+        "",
+        " - Kód banky (BANKY_POPIS.ID)"
+      ],
+      [
+        "47. KONTAKT",
+        "VARCHAR2(16)",
+        "N",
+        "'090000000'",
+        " - Kontaktna osoba (KONTAKTY.RID)"
+      ],
+      [
+        "48. PRIORITA",
+        "NUMBER(10,0)",
+        "N",
+        "0",
+        " - Číslo určujuce prioritu spracovania ()"
+      ],
+      [
+        "49. SPOSOB_SPRAC",
+        "NUMBER(1,0)",
+        "N",
+        "0",
+        " - Sposob spracovania v prípade nauplneho uspokojenia (X-1036)"
+      ],
+      [
+        "50. FLAGS_S",
+        "VARCHAR2(254)",
+        "N",
+        "'000000'",
+        "Stavy - Register stavov ()"
+      ],
+      [
+        "51. KOD_O",
+        "VARCHAR2(10)",
+        "Y",
+        "",
+        " - Kod operacie ()"
+      ],
+      [
+        "52. DATUM_DPH",
+        "DATE",
+        "Y",
+        "",
+        " - Dátum DPH ()"
+      ],
+      [
+        "53. DATUM_OK",
+        "DATE",
+        "Y",
+        "",
+        " - Dátum spracovania dokladu systemom ()"
+      ],
+      [
+        "54. POZN",
+        "VARCHAR2(254)",
+        "Y",
+        "",
+        "Poznámka - Poznámka k záznamu ()"
+      ],
+      [
+        "55. DAVKA",
+        "NUMBER(8,0)",
+        "N",
+        "0",
+        " - Dávka generovania výdajok z objednávok ()"
+      ],
+      [
+        "56. MODIF_U",
+        "NUMBER",
+        "N",
+        "-1",
+        ""
+      ],
+      [
+        "57. MODIF_I",
+        "NUMBER",
+        "N",
+        "-1",
+        ""
+      ],
+      [
+        "58. SKLAD_KAM",
+        "NUMBER(8,0)",
+        "Y",
+        "",
+        "Presun na sklad - Objednávka je stredisková objednávka na tento sklad (BARTEX_POBOCKY.ID)"
+      ],
+      [
+        "59. SKLAD_PRE",
+        "NUMBER(8,0)",
+        "Y",
+        "",
+        ""
+      ],
+      [
+        "60. REZ_POLOHA",
+        "VARCHAR2(17)",
+        "Y",
+        "",
+        ""
+      ],
+      [
+        "61. SEGMENT",
+        "VARCHAR2(16)",
+        "N",
+        "'313000000'",
+        ""
+      ],
+      [
+        "62. ZALOHA",
+        "NUMBER(12,2)",
+        "N",
+        "0",
+        ""
+      ],
+      [
+        "63. TYP_UHRADY",
+        "VARCHAR2(16)",
+        "N",
+        "",
+        ""
+      ],
+      [
+        "64. KLUB_KARTA",
+        "VARCHAR2(16)",
+        "N",
+        "'247030000'",
+        ""
+      ],
+      [
+        "65. FOREIGN",
+        "VARCHAR2(16)",
+        "Y",
+        "",
+        ""
+      ],
+      [
+        "66. DATUM_C",
+        "DATE",
+        "Y",
+        "",
+        ""
+      ],
+      [
+        "67. RID_CT_A",
+        "VARCHAR2(16)",
+        "Y",
+        "",
+        ""
+      ],
+      [
+        "68. XML_DATA",
+        "XMLTYPE",
+        "Y",
+        "",
+        ""
+      ],
+      [
+        "69. FAKT_DAVKA",
+        "VARCHAR2(254)",
+        "Y",
+        "",
+        ""
+      ],
+      [
+        "70. TYP_DAT_DOD",
+        "NUMBER(8,0)",
+        "N",
+        "2",
+        ""
+      ],
+      [
+        "71. STAV_VYKRYTIA",
+        "NUMBER(8,0)",
+        "N",
+        "0",
+        ""
+      ],
+      [
+        "72. TYP_CIS",
+        "VARCHAR2(16)",
+        "N",
+        "'00091'",
+        ""
+      ],
+      [
+        "73. STAV",
+        "VARCHAR2(254)",
+        "Y",
+        "",
+        ""
+      ],
+      [
+        "74. ADRESA",
+        "NUMBER",
+        "N",
+        "0",
+        ""
+      ],
+      [
+        "75. PARTNER_L",
+        "NUMBER(8,0)",
+        "Y",
+        "",
+        "Partner pre logistiku - Partner pre logistiku (OBCH_PARTNERI.ID)"
+      ],
+      [
+        "76. RID_MASTER",
+        "VARCHAR2(16)",
+        "Y",
+        "",
+        "RID hlavné - Hlavné RID pri delení dokladov"
+      ],
+      [
+        "77. STAV_ZAPOZICANIA",
+        "VARCHAR2(254)",
+        "Y",
+        "",
+        "Stav zapožičania - Stav zapožičania (CIS_STAVY_TYPY.SKRATKA)"
+      ],
+      [
+        "78. RID_OP",
+        "VARCHAR2(16)",
+        "Y",
+        "",
+        "Väzba na OP - Väzba na obchodný prípad (OBCH_PRIPADY_L.RID)"
+      ],
+      [
+        "79. STAV_UZAVRETIA",
+        "VARCHAR2(254)",
+        "N",
+        "'O-4122'",
+        "Stav uzavretia - Stav uzavretia blokácie na segment (CIS_STAVY_TYPY.SKRATKA)"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": "PRÍLOHA B. OBJ_ODB_O – ÚPLNÝ FYZICKÝ INVENTÁR STĹPCOV"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Stĺpec",
+        "Oracle typ",
+        "NULL",
+        "Canonical alias",
+        "Status"
+      ],
+      [
+        "1. RID_O",
+        "VARCHAR2(16)",
+        "N",
+        "order_id",
+        "CONFIRMED"
+      ],
+      [
+        "2. ID_R",
+        "NUMBER(5,0)",
+        "N",
+        "order_line_id",
+        "CONFIRMED"
+      ],
+      [
+        "3. KOD_ID",
+        "NUMBER(8,0)",
+        "N",
+        "product_id",
+        "CONFIRMED"
+      ],
+      [
+        "4. ID_SZ",
+        "VARCHAR2(16)",
+        "N",
+        "stock_item_id",
+        "CONFIRMED"
+      ],
+      [
+        "5. POCET",
+        "NUMBER(12,3)",
+        "N",
+        "ordered_qty",
+        "CONFIRMED"
+      ],
+      [
+        "6. P_REZ",
+        "NUMBER(12,3)",
+        "N",
+        "reserved_qty",
+        "CONFIRMED"
+      ],
+      [
+        "7. RID_BAL",
+        "VARCHAR2(16)",
+        "N",
+        "packaging_id",
+        "CONFIRMED"
+      ],
+      [
+        "8. DPH",
+        "NUMBER(2,0)",
+        "N",
+        "vat_rate_pct",
+        "CONFIRMED"
+      ],
+      [
+        "9. CENA",
+        "NUMBER(15,4)",
+        "N",
+        "unit_price_base_currency",
+        "CONFIRMED"
+      ],
+      [
+        "10. CENA_M",
+        "NUMBER(15,4)",
+        "N",
+        "unit_price_document_currency",
+        "CONFIRMED"
+      ],
+      [
+        "11. CENA_S",
+        "FLOAT",
+        "N",
+        "purchase_unit_price",
+        "CONFIRMED"
+      ],
+      [
+        "12. CENA_S2",
+        "FLOAT",
+        "N",
+        "additional_cost_unit_price",
+        "CONFIRMED"
+      ],
+      [
+        "13. RID_CT_Z",
+        "VARCHAR2(16)",
+        "N",
+        "contract_pricing_ref",
+        "CONFIRMED"
+      ],
+      [
+        "14. RID_CT_A",
+        "VARCHAR2(16)",
+        "N",
+        "action_pricing_ref",
+        "CONFIRMED"
+      ],
+      [
+        "15. RID_V",
+        "VARCHAR2(100)",
+        "N",
+        "source_reference",
+        "CONFIRMED POLYMORPHIC"
+      ],
+      [
+        "16. ODPIS",
+        "NUMBER(1,0)",
+        "N",
+        "stock_deduction_flag",
+        "CONFIRMED"
+      ],
+      [
+        "17. P_DEL",
+        "NUMBER",
+        "N",
+        "system_cancelled_qty",
+        "CONFIRMED"
+      ],
+      [
+        "18. P_DEL_DOD",
+        "NUMBER",
+        "N",
+        "process_cancelled_qty",
+        "CORE CONFIRMED"
+      ],
+      [
+        "19. P_FAK",
+        "NUMBER",
+        "N",
+        "invoiced_qty",
+        "CONFIRMED"
+      ],
+      [
+        "20. P_VYD",
+        "NUMBER",
+        "N",
+        "issued_qty",
+        "CONFIRMED"
+      ],
+      [
+        "21. ZLAVY",
+        "VARCHAR2(254)",
+        "Y",
+        "pricing_discount_payload",
+        "CONFIRMED"
+      ],
+      [
+        "22. POZN",
+        "VARCHAR2(254)",
+        "Y",
+        "line_note",
+        "CONFIRMED"
+      ],
+      [
+        "23. ID_R_V",
+        "NUMBER(8,0)",
+        "N",
+        "linked_packaging_line_id",
+        "CONFIRMED"
+      ],
+      [
+        "24. MODIF_U",
+        "NUMBER",
+        "N",
+        "replication_update_marker",
+        "TECHNICAL"
+      ],
+      [
+        "25. MODIF_I",
+        "NUMBER",
+        "N",
+        "replication_insert_marker",
+        "TECHNICAL"
+      ],
+      [
+        "26. SARZA",
+        "VARCHAR2(254)",
+        "Y",
+        "batch_code",
+        "CONFIRMED"
+      ],
+      [
+        "27. P_OBJ",
+        "NUMBER(12,3)",
+        "N",
+        "linked_object_covered_qty",
+        "CONFIRMED"
+      ],
+      [
+        "28. DATUM_D",
+        "DATE",
+        "Y",
+        "line_delivery_date",
+        "CONFIRMED / UNUSED"
+      ],
+      [
+        "29. DOVOD_BLOKACIE",
+        "VARCHAR2(16)",
+        "Y",
+        "stock_block_reason_id",
+        "CONFIRMED / UNUSED"
+      ],
+      [
+        "30. XML_DATA",
+        "XMLTYPE",
+        "Y",
+        "application_xml_payload",
+        "CONFIRMED"
+      ],
+      [
+        "31. P_REZ_IS",
+        "NUMBER",
+        "N",
+        "other_warehouse_reserved_qty",
+        "CONFIRMED / CURRENT ZERO"
+      ],
+      [
+        "32. SPOSOB_VYBAVENIA",
+        "NUMBER(8,0)",
+        "N",
+        "fulfillment_method_code",
+        "CONFIRMED"
+      ],
+      [
+        "33. P_OBJ_D",
+        "NUMBER",
+        "N",
+        "purchasing_coverage_qty",
+        "CONFIRMED / CURRENT ZERO"
+      ],
+      [
+        "34. P_REZ_PL",
+        "NUMBER",
+        "N",
+        "supplier_delivery_reserved_qty",
+        "CONFIRMED / CURRENT ZERO"
+      ],
+      [
+        "35. RID_N",
+        "VARCHAR2(16)",
+        "Y",
+        "purchasing_proposal_ref",
+        "CONFIRMED / UNUSED"
+      ],
+      [
+        "36. CENA_OCA",
+        "NUMBER",
+        "N",
+        "cena_oca",
+        "DETAIL OPEN / NON-BLOCKING"
+      ],
+      [
+        "37. OK",
+        "NUMBER(8,0)",
+        "N",
+        "ok_flag",
+        "DETAIL OPEN / NON-BLOCKING"
+      ],
+      [
+        "38. ID_R_P",
+        "NUMBER(5,0)",
+        "N",
+        "macro_parent_line_id",
+        "CONFIRMED"
+      ],
+      [
+        "39. I_STAMP",
+        "VARCHAR2(17)",
+        "Y",
+        "insert_session_stamp",
+        "TECHNICAL"
+      ],
+      [
+        "40. FLAGS_B",
+        "VARCHAR2(254)",
+        "Y",
+        "line_business_flags",
+        "CONFIRMED"
+      ],
+      [
+        "41. MIN_DAT_EXP",
+        "DATE",
+        "Y",
+        "minimum_expiry_date",
+        "CONFIRMED"
+      ],
+      [
+        "42. P_DISPO",
+        "NUMBER",
+        "N",
+        "disposition_reserved_qty",
+        "CONFIRMED / CURRENT ZERO"
+      ],
+      [
+        "43. P_VYKR",
+        "NUMBER",
+        "N",
+        "other_document_coverage_qty",
+        "SOURCE CONFIRMED / UNUSED"
+      ],
+      [
+        "44. RID_OBJEKT",
+        "VARCHAR2(16)",
+        "Y",
+        "document_object_ref",
+        "CONFIRMED / UNUSED"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "PRÍLOHA C. REVERSE WRITER INVENTORY OBJ_ODB_L / OBJ_ODB_O"
+  },
+  {
+    "type": "p",
+    "text": "Inventar je odvodený z ODB_DIAG_01_DIRECT_WRITERS nad MC.ALL_SOURCE. Komentovane DML riadky boli pri sumarizacii odfiltrovane. Pocet referencii je pocet zachytenych source riadkov s priamym DML patternom; nie je to pocet runtime vykonani."
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Source object",
+        "Type",
+        "DML refs OBJ_ODB_L",
+        "DML refs OBJ_ODB_O",
+        "Total"
+      ],
+      [
+        "D_OBJ_ODB_L",
+        "PACKAGE BODY",
+        "71",
+        "136",
+        "207"
+      ],
+      [
+        "D_OBJ_ODB_O",
+        "PACKAGE BODY",
+        "1",
+        "89",
+        "90"
+      ],
+      [
+        "C_REZERVACIA",
+        "PACKAGE BODY",
+        "2",
+        "46",
+        "48"
+      ],
+      [
+        "PREKLAPANIA",
+        "PACKAGE BODY",
+        "10",
+        "13",
+        "23"
+      ],
+      [
+        "D_OBJ_ODB_L_B",
+        "PACKAGE BODY",
+        "9",
+        "11",
+        "20"
+      ],
+      [
+        "PCK_EXPANDO_IMP",
+        "PACKAGE BODY",
+        "13",
+        "7",
+        "20"
+      ],
+      [
+        "D_VYDAJ_O",
+        "PACKAGE BODY",
+        "0",
+        "15",
+        "15"
+      ],
+      [
+        "PREKLAPANIA2",
+        "PACKAGE BODY",
+        "9",
+        "5",
+        "14"
+      ],
+      [
+        "T_OBJD_O_P_OBJ_D",
+        "TRIGGER",
+        "0",
+        "12",
+        "12"
+      ],
+      [
+        "C_BALIACA_DAVKA",
+        "PACKAGE BODY",
+        "10",
+        "1",
+        "11"
+      ],
+      [
+        "HANDYGO",
+        "PACKAGE BODY",
+        "0",
+        "11",
+        "11"
+      ],
+      [
+        "BP_MONET",
+        "PACKAGE BODY",
+        "10",
+        "0",
+        "10"
+      ],
+      [
+        "BSHOP",
+        "PACKAGE BODY",
+        "3",
+        "7",
+        "10"
+      ],
+      [
+        "C_RP_L",
+        "PACKAGE BODY",
+        "4",
+        "6",
+        "10"
+      ],
+      [
+        "D_PRIJEMKA_L",
+        "PACKAGE BODY",
+        "0",
+        "10",
+        "10"
+      ],
+      [
+        "C_ML_GEN",
+        "PACKAGE BODY",
+        "7",
+        "2",
+        "9"
+      ],
+      [
+        "ODOKLADJ",
+        "TYPE BODY",
+        "6",
+        "3",
+        "9"
+      ],
+      [
+        "D_DLAF_L",
+        "PACKAGE BODY",
+        "0",
+        "8",
+        "8"
+      ],
+      [
+        "D_DLAF_O",
+        "PACKAGE BODY",
+        "0",
+        "8",
+        "8"
+      ],
+      [
+        "D_VYDAJ_L",
+        "PACKAGE BODY",
+        "0",
+        "7",
+        "7"
+      ],
+      [
+        "EKASA",
+        "PACKAGE BODY",
+        "2",
+        "5",
+        "7"
+      ],
+      [
+        "MOSHOPPER",
+        "PACKAGE BODY",
+        "4",
+        "3",
+        "7"
+      ],
+      [
+        "BARIS_SKLAD",
+        "PACKAGE BODY",
+        "3",
+        "3",
+        "6"
+      ],
+      [
+        "COPY",
+        "PACKAGE BODY",
+        "3",
+        "3",
+        "6"
+      ],
+      [
+        "C_BALIACA_DAVKA2",
+        "PACKAGE BODY",
+        "5",
+        "1",
+        "6"
+      ],
+      [
+        "PCK_REFAKTURACIA",
+        "PACKAGE BODY",
+        "5",
+        "1",
+        "6"
+      ],
+      [
+        "C_FD",
+        "PACKAGE BODY",
+        "4",
+        "1",
+        "5"
+      ],
+      [
+        "C_OBJ_D_KOMBAJN",
+        "PACKAGE BODY",
+        "3",
+        "2",
+        "5"
+      ],
+      [
+        "T_VYD_O_REZ",
+        "TRIGGER",
+        "0",
+        "5",
+        "5"
+      ],
+      [
+        "C_IMPORT_TEMP_L",
+        "PACKAGE BODY",
+        "4",
+        "0",
+        "4"
+      ],
+      [
+        "D_SER_Z_L",
+        "PACKAGE BODY",
+        "0",
+        "4",
+        "4"
+      ],
+      [
+        "D_T_DOKL_O",
+        "PACKAGE BODY",
+        "0",
+        "4",
+        "4"
+      ],
+      [
+        "D_VYDAJ_O2",
+        "PACKAGE BODY",
+        "0",
+        "4",
+        "4"
+      ],
+      [
+        "HG_PRIPRAVA_BAL",
+        "PACKAGE BODY",
+        "1",
+        "3",
+        "4"
+      ],
+      [
+        "C_DOKL_OBJEKT",
+        "PACKAGE BODY",
+        "0",
+        "3",
+        "3"
+      ],
+      [
+        "C_REZ_OBJ_O",
+        "PACKAGE BODY",
+        "0",
+        "3",
+        "3"
+      ],
+      [
+        "C_SZ_POLOHA",
+        "PACKAGE BODY",
+        "0",
+        "3",
+        "3"
+      ],
+      [
+        "C_WWW_KOSIK_L",
+        "PACKAGE BODY",
+        "2",
+        "1",
+        "3"
+      ],
+      [
+        "D_CPR_L",
+        "PACKAGE BODY",
+        "3",
+        "0",
+        "3"
+      ],
+      [
+        "D_ML_L",
+        "PACKAGE BODY",
+        "0",
+        "3",
+        "3"
+      ],
+      [
+        "D_OBJD_O",
+        "PACKAGE BODY",
+        "0",
+        "3",
+        "3"
+      ],
+      [
+        "D_SER_Z_O",
+        "PACKAGE BODY",
+        "0",
+        "3",
+        "3"
+      ],
+      [
+        "IDOKLAD",
+        "PACKAGE BODY",
+        "1",
+        "2",
+        "3"
+      ],
+      [
+        "PCK_MC_REF",
+        "PACKAGE BODY",
+        "2",
+        "1",
+        "3"
+      ],
+      [
+        "PCK_REFAKTURACIA2",
+        "PACKAGE BODY",
+        "2",
+        "1",
+        "3"
+      ],
+      [
+        "PCK_ZMENA_DPH",
+        "PACKAGE BODY",
+        "1",
+        "2",
+        "3"
+      ],
+      [
+        "T_DLAF_O_REZ",
+        "TRIGGER",
+        "0",
+        "3",
+        "3"
+      ],
+      [
+        "T_PRAC_LIST_O_P_VYD",
+        "TRIGGER",
+        "0",
+        "3",
+        "3"
+      ],
+      [
+        "T_S_OBJ_D_NAVRH",
+        "TRIGGER",
+        "0",
+        "3",
+        "3"
+      ],
+      [
+        "CENOTVORBA",
+        "PACKAGE BODY",
+        "0",
+        "2",
+        "2"
+      ],
+      [
+        "C_BOB_CLIENT",
+        "PACKAGE BODY",
+        "1",
+        "1",
+        "2"
+      ],
+      [
+        "C_DOKL_L",
+        "PACKAGE BODY",
+        "0",
+        "2",
+        "2"
+      ],
+      [
+        "C_DOKL_O",
+        "PACKAGE BODY",
+        "0",
+        "2",
+        "2"
+      ],
+      [
+        "C_DOKL_ZLAVA",
+        "PACKAGE BODY",
+        "0",
+        "2",
+        "2"
+      ],
+      [
+        "C_IMP",
+        "PACKAGE BODY",
+        "0",
+        "2",
+        "2"
+      ],
+      [
+        "C_OBJ_ODB_TMP",
+        "PACKAGE BODY",
+        "2",
+        "0",
+        "2"
+      ],
+      [
+        "C_POM",
+        "PACKAGE BODY",
+        "0",
+        "2",
+        "2"
+      ],
+      [
+        "C_REZ_OBJ_L",
+        "PACKAGE BODY",
+        "0",
+        "2",
+        "2"
+      ],
+      [
+        "C_RZ_O",
+        "PACKAGE BODY",
+        "0",
+        "2",
+        "2"
+      ],
+      [
+        "C_SKLAD_ZASOB_NAKLADY",
+        "PACKAGE BODY",
+        "0",
+        "2",
+        "2"
+      ],
+      [
+        "C_STAHOVACKA_QUE",
+        "PACKAGE BODY",
+        "2",
+        "0",
+        "2"
+      ],
+      [
+        "C_VARIANT_RB_L",
+        "PACKAGE BODY",
+        "0",
+        "2",
+        "2"
+      ],
+      [
+        "D_CEN_PONUKA_L",
+        "PACKAGE BODY",
+        "1",
+        "1",
+        "2"
+      ],
+      [
+        "D_ML_O",
+        "PACKAGE BODY",
+        "0",
+        "2",
+        "2"
+      ],
+      [
+        "D_ZAPOZICKA_L",
+        "PACKAGE BODY",
+        "1",
+        "1",
+        "2"
+      ],
+      [
+        "MCCARTER",
+        "PACKAGE BODY",
+        "0",
+        "2",
+        "2"
+      ],
+      [
+        "PCK_BARISGO_IMPORT",
+        "PACKAGE BODY",
+        "2",
+        "0",
+        "2"
+      ],
+      [
+        "T_S_DISPO_ROZDELENIA",
+        "TRIGGER",
+        "0",
+        "2",
+        "2"
+      ],
+      [
+        "C_CTP_L",
+        "PACKAGE BODY",
+        "1",
+        "0",
+        "1"
+      ],
+      [
+        "C_MPL_L",
+        "PACKAGE BODY",
+        "0",
+        "1",
+        "1"
+      ],
+      [
+        "C_PREPRAVNE",
+        "PACKAGE BODY",
+        "0",
+        "1",
+        "1"
+      ],
+      [
+        "C_PRM_PRESUNY_QUE",
+        "PACKAGE BODY",
+        "1",
+        "0",
+        "1"
+      ],
+      [
+        "C_REZ_OBJ_DOD",
+        "PACKAGE BODY",
+        "0",
+        "1",
+        "1"
+      ],
+      [
+        "C_RMA",
+        "PACKAGE BODY",
+        "1",
+        "0",
+        "1"
+      ],
+      [
+        "C_ROZVOZ_QUE",
+        "PACKAGE BODY",
+        "1",
+        "0",
+        "1"
+      ],
+      [
+        "C_SER_Z_TASK",
+        "PACKAGE BODY",
+        "0",
+        "1",
+        "1"
+      ],
+      [
+        "C_SKLAD_KARTA",
+        "PACKAGE BODY",
+        "0",
+        "1",
+        "1"
+      ],
+      [
+        "C_TRASA_O",
+        "PACKAGE BODY",
+        "0",
+        "1",
+        "1"
+      ],
+      [
+        "C_VYR_SUPIS_PREPOCET",
+        "PACKAGE BODY",
+        "1",
+        "0",
+        "1"
+      ],
+      [
+        "C_VYR_SUPIS_PREPOCET2",
+        "PACKAGE BODY",
+        "1",
+        "0",
+        "1"
+      ],
+      [
+        "C_ZMLUVA_SP",
+        "PACKAGE BODY",
+        "1",
+        "0",
+        "1"
+      ],
+      [
+        "D_KASA_UHRADA_L",
+        "PACKAGE BODY",
+        "0",
+        "1",
+        "1"
+      ],
+      [
+        "D_OBJD_L",
+        "PACKAGE BODY",
+        "1",
+        "0",
+        "1"
+      ],
+      [
+        "D_PRIJEMKA_O",
+        "PACKAGE BODY",
+        "0",
+        "1",
+        "1"
+      ],
+      [
+        "D_REK_DOD_L",
+        "PACKAGE BODY",
+        "0",
+        "1",
+        "1"
+      ],
+      [
+        "D_T_DOKL_L",
+        "PACKAGE BODY",
+        "0",
+        "1",
+        "1"
+      ],
+      [
+        "IWMS",
+        "PACKAGE BODY",
+        "1",
+        "0",
+        "1"
+      ],
+      [
+        "MCCARTER_JC",
+        "PACKAGE BODY",
+        "0",
+        "1",
+        "1"
+      ],
+      [
+        "PCK_EURO",
+        "PACKAGE BODY",
+        "0",
+        "1",
+        "1"
+      ],
+      [
+        "PCK_MONET",
+        "PACKAGE BODY",
+        "0",
+        "1",
+        "1"
+      ],
+      [
+        "PCK_NESTPAY",
+        "PACKAGE BODY",
+        "1",
+        "0",
+        "1"
+      ],
+      [
+        "PCK_XMIT",
+        "PACKAGE BODY",
+        "1",
+        "0",
+        "1"
+      ],
+      [
+        "T_S_DISPO_ROZDELENIA_INS",
+        "TRIGGER",
+        "0",
+        "1",
+        "1"
+      ],
+      [
+        "T_S_OBJ_D_NAVRH_INS",
+        "TRIGGER",
+        "0",
+        "1",
+        "1"
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  },
+  {
+    "type": "p",
+    "text": "PRÍLOHA D. DIAGNOSTIC-GRADE RELEASE CHECK"
+  },
+  {
+    "type": "table",
+    "rows": [
+      [
+        "Kontrola",
+        "Stav v1.2",
+        "Poznamka"
+      ],
+      [
+        "79 fyzickych stlpcov OBJ_ODB_L",
+        "PASS",
+        "Uplny fyzicky inventar zachovany; kľúčové polia maju rozsirenu semantiku."
+      ],
+      [
+        "44 fyzickych stlpcov OBJ_ODB_O",
+        "PASS",
+        "Uplny field dictionary + canonical aliasy."
+      ],
+      [
+        "17 triggerov OBJ_ODB_L",
+        "PASS",
+        "Kompletny inventar; A/B/C priorita a critical flows zdokumentovane."
+      ],
+      [
+        "33 triggerov OBJ_ODB_O",
+        "PASS",
+        "Kompletny inventar; A/B/C priorita a critical flows zdokumentovane."
+      ],
+      [
+        "Quantity/coverage model",
+        "PASS",
+        "Open/coverage/uncovered formulas a constraints zdokumentovane."
+      ],
+      [
+        "Reservation critical flow",
+        "PASS",
+        "T_OBJ_ODB_O_REZ -> C_SZ.RezervujTrig -> RezervujC/Rezervuj + session bypass."
+      ],
+      [
+        "Action pricing allocation",
+        "PASS",
+        "C_CENOTVORBA_O.NastavPocetAkcieObjOdb + CT_O quantity capacity."
+      ],
+      [
+        "External boundaries",
+        "PASS",
+        "Issue, invoice, purchasing, pricing, stock, cancellation history a cross-document coverage."
+      ],
+      [
+        "Mutation/reverse dependency",
+        "PASS",
+        "Critical-field matrix + reverse writer appendix."
+      ],
+      [
+        "Diagnostic playbooky",
+        "PASS",
+        "Reservation, quantity edit, cancellation, pricing, issue, invoice, purchasing, header state."
+      ],
+      [
+        "Canonical SQL toolkit",
+        "PASS",
+        "Read-only diagnostické patterns s dokaznymi limitmi."
+      ],
+      [
+        "Non-blocking backlog",
+        "PASS",
+        "CENA_OCA, OK, XML domain index a ďalšie detaily zostávajú transparentne otvorené."
+      ],
+      [
+        "History / temporal coverage",
+        "PASS",
+        "Current snapshot, selektívna história, process logs a DATA GAP sú explicitne rozlíšené."
+      ],
+      [
+        "Identity / cross-environment scope",
+        "PASS",
+        "Lokálna uniqueness je oddelená od neoverenej globálnej RID semantiky; environment context je povinný."
+      ],
+      [
+        "Master temporal boundary",
+        "PASS",
+        "Transaction snapshot vs current master join je explicitne zdokumentovaný; otvorené history body sú v backlogu."
+      ],
+      [
+        "JOIN fan-out protection",
+        "PASS",
+        "Relationship Contract Register + pravidlá agregácie/EXISTS + fan-out SQL detector."
+      ],
+      [
+        "Word metadata / external references",
+        "PASS",
+        "Core metadata normalizované na v1.2; bez external relationships, comments a tracked changes; iba interné PAGE/NUMPAGES fields."
+      ]
+    ]
+  },
+  {
+    "type": "p",
+    "text": ""
+  }
+]

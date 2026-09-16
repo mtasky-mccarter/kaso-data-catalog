@@ -1,0 +1,247 @@
+[
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_MAIL",
+    "TYPE": "TRIGGER",
+    "LINE": 1,
+    "TEXT": "TRIGGER T_MC_MAIL\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_MAIL",
+    "TYPE": "TRIGGER",
+    "LINE": 2,
+    "TEXT": " AFTER \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_MAIL",
+    "TYPE": "TRIGGER",
+    "LINE": 3,
+    "TEXT": " INSERT OR UPDATE\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_MAIL",
+    "TYPE": "TRIGGER",
+    "LINE": 4,
+    "TEXT": " ON OBJ_ODB_L\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_MAIL",
+    "TYPE": "TRIGGER",
+    "LINE": 5,
+    "TEXT": " REFERENCING OLD AS OLD NEW AS NEW\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_MAIL",
+    "TYPE": "TRIGGER",
+    "LINE": 6,
+    "TEXT": " FOR EACH ROW \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_MAIL",
+    "TYPE": "TRIGGER",
+    "LINE": 7,
+    "TEXT": "declare\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_MAIL",
+    "TYPE": "TRIGGER",
+    "LINE": 8,
+    "TEXT": "    nIsInGroup number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_MAIL",
+    "TYPE": "TRIGGER",
+    "LINE": 9,
+    "TEXT": "    nForma_dokladu number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_MAIL",
+    "TYPE": "TRIGGER",
+    "LINE": 10,
+    "TEXT": "    nOBSLUHA number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_MAIL",
+    "TYPE": "TRIGGER",
+    "LINE": 11,
+    "TEXT": "    sMIESTO_DOD Varchar2(18);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_MAIL",
+    "TYPE": "TRIGGER",
+    "LINE": 12,
+    "TEXT": "    sCISLO Varchar2(20);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_MAIL",
+    "TYPE": "TRIGGER",
+    "LINE": 13,
+    "TEXT": "    nU_STAMP number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_MAIL",
+    "TYPE": "TRIGGER",
+    "LINE": 14,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_MAIL",
+    "TYPE": "TRIGGER",
+    "LINE": 15,
+    "TEXT": "        sCISLO :=  'ObjO '||c_rid.GetBackRIDC( :new.rid, c_rid.Const_RID_Back_ID)||'/'||substr(c_rid.GetBackRIDC( :new.rid, c_rid.Const_RID_Back_ROK),3)||'/'||c_rid.GetBackRIDC( :new.rid, c_rid.Const_RID_Back_SKLAD);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_MAIL",
+    "TYPE": "TRIGGER",
+    "LINE": 16,
+    "TEXT": "        sMIESTO_DOD:=:new.miesto_dod;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_MAIL",
+    "TYPE": "TRIGGER",
+    "LINE": 17,
+    "TEXT": "        nOBSLUHA:=:new.obsluha;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_MAIL",
+    "TYPE": "TRIGGER",
+    "LINE": 18,
+    "TEXT": "        nForma_dokladu:=to_number(substr(:new.flags_s,20,1));\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_MAIL",
+    "TYPE": "TRIGGER",
+    "LINE": 19,
+    "TEXT": "        nU_STAMP:=to_number(substr(:new.u_stamp, 0, 8 ));\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_MAIL",
+    "TYPE": "TRIGGER",
+    "LINE": 20,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_MAIL",
+    "TYPE": "TRIGGER",
+    "LINE": 21,
+    "TEXT": "if INSERTING and nForma_dokladu in (6) then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_MAIL",
+    "TYPE": "TRIGGER",
+    "LINE": 22,
+    "TEXT": "        select count(*) into nIsInGroup  FROM CIS_GROUPS_o where id_cis = 7 and zaznam = :new.obsluha and rid_o = '3911500010';\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_MAIL",
+    "TYPE": "TRIGGER",
+    "LINE": 23,
+    "TEXT": "        if nIsInGroup > 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_MAIL",
+    "TYPE": "TRIGGER",
+    "LINE": 24,
+    "TEXT": "            mccarter.EMailODBObjed( psrid=>:new.rid  ,pnForma_dokladu=>nForma_dokladu ,pnobsluha=>nobsluha ,psmiesto_dod=>smiesto_dod ,psCISLO=>sCISLO, pnU_STAMP=>nU_STAMP );\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_MAIL",
+    "TYPE": "TRIGGER",
+    "LINE": 25,
+    "TEXT": "        end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_MAIL",
+    "TYPE": "TRIGGER",
+    "LINE": 26,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_MAIL",
+    "TYPE": "TRIGGER",
+    "LINE": 27,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_MAIL",
+    "TYPE": "TRIGGER",
+    "LINE": 28,
+    "TEXT": "    if UPDATING and substr(:new.flags_s,20,1) != substr(:old.flags_s,20,1) and     nForma_dokladu in (1) then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_MAIL",
+    "TYPE": "TRIGGER",
+    "LINE": 29,
+    "TEXT": "        select count(*) into nIsInGroup  FROM CIS_GROUPS_o where id_cis = 7 and zaznam = :new.obsluha and rid_o = '3911500010';\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_MAIL",
+    "TYPE": "TRIGGER",
+    "LINE": 30,
+    "TEXT": "        if nIsInGroup > 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_MAIL",
+    "TYPE": "TRIGGER",
+    "LINE": 31,
+    "TEXT": "            mccarter.EMailODBObjed( psrid=>:new.rid  ,pnForma_dokladu=>nForma_dokladu ,pnobsluha=>nobsluha ,psmiesto_dod=>smiesto_dod ,psCISLO=>sCISLO, pnU_STAMP=>nU_STAMP );\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_MAIL",
+    "TYPE": "TRIGGER",
+    "LINE": 32,
+    "TEXT": "        end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_MAIL",
+    "TYPE": "TRIGGER",
+    "LINE": 33,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_MAIL",
+    "TYPE": "TRIGGER",
+    "LINE": 34,
+    "TEXT": "end;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_MC_MAIL",
+    "TYPE": "TRIGGER",
+    "LINE": 35,
+    "TEXT": "\n"
+  }
+]

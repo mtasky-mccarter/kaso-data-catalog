@@ -1,0 +1,134 @@
+schema_version: '1.0'
+kind: temporal
+id: odb.temporal.001
+records:
+- temporal_rule_id: odb.temporal.doc_209_1
+  scope_refs:
+  - mc.object.obj_odb_l
+  classification: RAW CURRENT
+  status: POTVRDENÉ
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  transition_or_event_sk: 'OBJ_ODB_L current row: Aktuálny stav hlavičky + I_STAMP/U_STAMP'
+  history_limitations_sk: 'I_STAMP/U_STAMP nepredstavujú úplnú históriu všetkých zmien. Pôvodný typ: CURRENT SNAPSHOT
+    + audit stamp'
+- temporal_rule_id: odb.temporal.doc_209_2
+  scope_refs:
+  - mc.field.obj_odb_l.datum_p
+  classification: SELECTIVE HISTORY
+  status: POTVRDENÉ
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  transition_or_event_sk: 'T_HZ_OBJ_ODB_L -> C_DEF_HIST_ZMENA: Zmeny DATUM_P; history definition 0001010'
+  history_limitations_sk: 'Potvrdzuje históriu DATUM_P, nie celý lifecycle hlavičky. Pôvodný typ: SELECTIVE FIELD
+    HISTORY'
+- temporal_rule_id: odb.temporal.doc_209_3
+  scope_refs:
+  - mc.object.obj_odb_o
+  classification: RAW CURRENT
+  status: POTVRDENÉ
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  transition_or_event_sk: 'OBJ_ODB_O current row: Aktuálny quantity/pricing/coverage stav položky'
+  history_limitations_sk: 'Z jedného riadku nemožno spätne odvodiť všetky predošlé hodnoty. Pôvodný typ: CURRENT
+    SNAPSHOT'
+- temporal_rule_id: odb.temporal.doc_209_4
+  scope_refs:
+  - mc.field.obj_odb_o.pocet
+  - mc.field.obj_odb_o.p_del
+  - mc.field.obj_odb_o.p_del_dod
+  - mc.field.obj_odb_o.rid_ct_a
+  classification: SELECTIVE HISTORY
+  status: POTVRDENÉ
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  transition_or_event_sk: 'T_HZ_OBJ_ODB_O -> C_DEF_HIST_ZMENA: POCET, P_DEL, P_DEL_DOD, RID_CT_A; definition 0001006'
+  history_limitations_sk: 'Neobsahuje kompletnú históriu P_REZ, P_FAK, P_VYD, pricing ani všetkých flagov. Pôvodný
+    typ: SELECTIVE FIELD HISTORY'
+- temporal_rule_id: odb.temporal.doc_209_5
+  scope_refs:
+  - mc.object.obj_odb_o
+  classification: SELECTIVE HISTORY
+  status: POTVRDENÉ
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  transition_or_event_sk: 'DOVOD_ZRUS_POL_DOKLAD: Dôvody zrušenia podľa RID_O + ID_R'
+  history_limitations_sk: '1:N historická vrstva; nie kompletná história objednávkového riadku. Pôvodný typ: PROCESS-SPECIFIC
+    HISTORY'
+- temporal_rule_id: odb.temporal.quantity_1
+  scope_refs:
+  - mc.object.obj_odb_o
+  classification: DERIVED CURRENT
+  status: POTVRDENÉ
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  transition_or_event_sk: open_qty = POCET-P_DEL-P_DEL_DOD-P_FAK-P_VYD-P_OBJ
+  history_limitations_sk: Aktuálne otvorené množstvo po odratani ukoncenych/odklonenych lifecycle bucketov. Neodcitavat
+    P_REZ.
+- temporal_rule_id: odb.temporal.quantity_2
+  scope_refs:
+  - mc.object.obj_odb_o
+  classification: DERIVED CURRENT
+  status: POTVRDENÉ
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  transition_or_event_sk: coverage_qty = P_REZ+P_REZ_IS+P_REZ_PL+P_OBJ_D+P_DISPO+P_VYKR
+  history_limitations_sk: Aktuálne pokrytie otvoreneho množstva roznymi mechanizmami. P_REZ=0 neznamena bez coverage.
+- temporal_rule_id: odb.temporal.quantity_3
+  scope_refs:
+  - mc.object.obj_odb_o
+  classification: DERIVED CURRENT
+  status: POTVRDENÉ
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  transition_or_event_sk: uncovered_qty = open_qty-coverage_qty
+  history_limitations_sk: Otvorene a zaroven nekryté množstvo. Nezamienat s open_qty.
+- temporal_rule_id: odb.temporal.pricing_snapshot
+  scope_refs:
+  - mc.field.obj_odb_o.cena
+  - mc.field.obj_odb_o.cena_m
+  - mc.field.obj_odb_o.cena_s
+  - mc.field.obj_odb_o.cena_s2
+  classification: STORED SNAPSHOT
+  status: POTVRDENÉ
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  transition_or_event_sk: Hodnoty na OBJ_ODB_O sú order-side pricing/cost snapshoty.
+  history_limitations_sk: Historickú cenu nere-konštruovať spätným JOINom na dnešný cenník.
+- temporal_rule_id: odb.temporal.master_gap_1
+  scope_refs:
+  - mc.field.obj_odb_l.partner
+  classification: DATA GAP
+  status: DATA GAP
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  transition_or_event_sk: Order uchováva partner ID.
+  history_limitations_sk: Historická platnosť názvu/krajiny/master atribútov nie je v order scope potvrdená.
+- temporal_rule_id: odb.temporal.master_gap_2
+  scope_refs:
+  - mc.field.obj_odb_l.miesto_dod
+  classification: DATA GAP
+  status: DATA GAP
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  transition_or_event_sk: Order uchováva delivery-point RID.
+  history_limitations_sk: Aktuálny JOIN nemusí predstavovať historickú podobu miesta dodania.
+- temporal_rule_id: odb.temporal.master_gap_3
+  scope_refs:
+  - mc.field.obj_odb_o.kod_id
+  classification: DATA GAP
+  status: DATA GAP
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  transition_or_event_sk: Order line uchováva SKU ID.
+  history_limitations_sk: EAN, balenie, hmotnosť a paletizácia patria masteru; historickú platnosť treba potvrdiť
+    v master dokumente.
+- temporal_rule_id: odb.temporal.master_gap_4
+  scope_refs:
+  - mc.field.obj_odb_l.typ_cis
+  classification: DATA GAP
+  status: DATA GAP
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+  transition_or_event_sk: Raw typ/kód je uložený na doklade.
+  history_limitations_sk: Názov/label z lookup tabuľky môže byť current-state; raw kód zachovať.

@@ -1,0 +1,247 @@
+[
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DARCEK",
+    "TYPE": "TRIGGER",
+    "LINE": 1,
+    "TEXT": "TRIGGER t_obj_odb_o_darcek\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DARCEK",
+    "TYPE": "TRIGGER",
+    "LINE": 2,
+    "TEXT": "-- EXP 15.12.2021 11:36 CHG 15.12.2021 11:33\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DARCEK",
+    "TYPE": "TRIGGER",
+    "LINE": 3,
+    "TEXT": " BEFORE\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DARCEK",
+    "TYPE": "TRIGGER",
+    "LINE": 4,
+    "TEXT": "  INSERT OR DELETE OR UPDATE\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DARCEK",
+    "TYPE": "TRIGGER",
+    "LINE": 5,
+    "TEXT": " ON obj_odb_o\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DARCEK",
+    "TYPE": "TRIGGER",
+    "LINE": 6,
+    "TEXT": "REFERENCING NEW AS NEW OLD AS OLD\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DARCEK",
+    "TYPE": "TRIGGER",
+    "LINE": 7,
+    "TEXT": " FOR EACH ROW\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DARCEK",
+    "TYPE": "TRIGGER",
+    "LINE": 8,
+    "TEXT": "declare\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DARCEK",
+    "TYPE": "TRIGGER",
+    "LINE": 9,
+    "TEXT": "  nJeDZB number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DARCEK",
+    "TYPE": "TRIGGER",
+    "LINE": 10,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DARCEK",
+    "TYPE": "TRIGGER",
+    "LINE": 11,
+    "TEXT": "  if deleting and nvl(c_session.GetSwap,0) = 1 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DARCEK",
+    "TYPE": "TRIGGER",
+    "LINE": 12,
+    "TEXT": "    return;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DARCEK",
+    "TYPE": "TRIGGER",
+    "LINE": 13,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DARCEK",
+    "TYPE": "TRIGGER",
+    "LINE": 14,
+    "TEXT": "  if nvl(c_session.getrobispracovaniedokladu(),0) = 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DARCEK",
+    "TYPE": "TRIGGER",
+    "LINE": 15,
+    "TEXT": "    if inserting then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DARCEK",
+    "TYPE": "TRIGGER",
+    "LINE": 16,
+    "TEXT": "      --c_bod_cerpania.SpracujTrigODarcekZaBod(:new.rid_o, :new.id_r, :new.rid_ct_a, :old.pocet, :new.pocet, (:old.p_del+:old.p_del_dod), (:new.p_del+:new.p_del_dod), 1);      \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DARCEK",
+    "TYPE": "TRIGGER",
+    "LINE": 17,
+    "TEXT": "      c_bod_cerpania.spracujtrigodarcekzabodOut(psRIDDokl=>:new.rid_o, pnID_R=>:new.id_r, psRid_ct_a_Old=>'0', psRid_ct_a_New=>:new.rid_ct_a, \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DARCEK",
+    "TYPE": "TRIGGER",
+    "LINE": 18,
+    "TEXT": "        pnPocetOld=>0, pnPocetNew=>:new.pocet, pnPocetDelOld=>0, pnPocetDelNew=>(:new.p_del+:new.p_del_dod), \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DARCEK",
+    "TYPE": "TRIGGER",
+    "LINE": 19,
+    "TEXT": "        pntypoperacie=>c_bod_cerpania.TRIG_DOKLAD_O_DARCEK_INSERT, psRid_v=>:new.rid_v, pnJeDZB=>nJeDZB);   \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DARCEK",
+    "TYPE": "TRIGGER",
+    "LINE": 20,
+    "TEXT": "      if nJeDZB = 1 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DARCEK",
+    "TYPE": "TRIGGER",
+    "LINE": 21,
+    "TEXT": "        :new.zlavy := c_dokl_o.setjedarcek(pszlava=> :new.zlavy,pnjedarcek=> nJeDZB);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DARCEK",
+    "TYPE": "TRIGGER",
+    "LINE": 22,
+    "TEXT": "      end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DARCEK",
+    "TYPE": "TRIGGER",
+    "LINE": 23,
+    "TEXT": "    elsif updating then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DARCEK",
+    "TYPE": "TRIGGER",
+    "LINE": 24,
+    "TEXT": "      --c_bod_cerpania.SpracujTrigODarcekZaBod(:old.rid_o, :old.id_r, :old.rid_ct_a, :old.pocet, :new.pocet, (:old.p_del+:old.p_del_dod), (:new.p_del+:new.p_del_dod), 2);    \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DARCEK",
+    "TYPE": "TRIGGER",
+    "LINE": 25,
+    "TEXT": "      c_bod_cerpania.SpracujTrigODarcekZaBod(psRIDDokl=>:old.rid_o, pnID_R=>:old.id_r, psRid_ct_a_Old=>:old.rid_ct_a, psRid_ct_a_New=>:new.rid_ct_a, \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DARCEK",
+    "TYPE": "TRIGGER",
+    "LINE": 26,
+    "TEXT": "        pnPocetOld=>:old.pocet, pnPocetNew=>:new.pocet, pnPocetDelOld=>(:old.p_del+:old.p_del_dod), pnPocetDelNew=>(:new.p_del+:new.p_del_dod), \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DARCEK",
+    "TYPE": "TRIGGER",
+    "LINE": 27,
+    "TEXT": "        pnTypOperacie=>c_bod_cerpania.TRIG_DOKLAD_O_DARCEK_UPDATE); \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DARCEK",
+    "TYPE": "TRIGGER",
+    "LINE": 28,
+    "TEXT": "    elsif deleting then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DARCEK",
+    "TYPE": "TRIGGER",
+    "LINE": 29,
+    "TEXT": "      --c_bod_cerpania.SpracujTrigODarcekZaBod(:old.rid_o, :old.id_r, :old.rid_ct_a, :old.pocet, :new.pocet, (:old.p_del+:old.p_del_dod), (:new.p_del+:new.p_del_dod), 3);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DARCEK",
+    "TYPE": "TRIGGER",
+    "LINE": 30,
+    "TEXT": "      c_bod_cerpania.SpracujTrigODarcekZaBod(psRIDDokl=>:old.rid_o, pnID_R=>:old.id_r, psRid_ct_a_Old=>:old.rid_ct_a, psRid_ct_a_New=>'0', \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DARCEK",
+    "TYPE": "TRIGGER",
+    "LINE": 31,
+    "TEXT": "        pnPocetOld=>:old.pocet, pnPocetNew=>0, pnPocetDelOld=>(:old.p_del+:old.p_del_dod), pnPocetDelNew=>0, \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DARCEK",
+    "TYPE": "TRIGGER",
+    "LINE": 32,
+    "TEXT": "        pnTypOperacie=>c_bod_cerpania.TRIG_DOKLAD_O_DARCEK_DELETE);     \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DARCEK",
+    "TYPE": "TRIGGER",
+    "LINE": 33,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DARCEK",
+    "TYPE": "TRIGGER",
+    "LINE": 34,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DARCEK",
+    "TYPE": "TRIGGER",
+    "LINE": 35,
+    "TEXT": "end;"
+  }
+]

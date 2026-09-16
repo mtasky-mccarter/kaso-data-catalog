@@ -1,0 +1,142 @@
+[
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_NAKLADY_OP_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 1,
+    "TEXT": "TRIGGER t_obj_odb_o_naklady_op_rez\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_NAKLADY_OP_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 2,
+    "TEXT": " BEFORE\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_NAKLADY_OP_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 3,
+    "TEXT": "   UPDATE OF p_rez\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_NAKLADY_OP_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 4,
+    "TEXT": " ON obj_odb_o\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_NAKLADY_OP_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 5,
+    "TEXT": "REFERENCING NEW AS NEW OLD AS OLD\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_NAKLADY_OP_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 6,
+    "TEXT": " FOR EACH ROW\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_NAKLADY_OP_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 7,
+    "TEXT": "declare\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_NAKLADY_OP_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 8,
+    "TEXT": "  nZaskladnenie number; \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_NAKLADY_OP_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 9,
+    "TEXT": "  nUrokZ_NC number;   \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_NAKLADY_OP_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 10,
+    "TEXT": "begin    \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_NAKLADY_OP_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 11,
+    "TEXT": "  if c_session.GetSKLAD_DodatocneNaklady = 0 or nvl(c_session.GetNelogujNakladyOP,0) = 1 or instr(:new.rid_o,'-') > 0 or :new.p_rez = :old.p_rez then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_NAKLADY_OP_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 12,
+    "TEXT": "    return;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_NAKLADY_OP_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 13,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_NAKLADY_OP_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 14,
+    "TEXT": "  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_NAKLADY_OP_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 15,
+    "TEXT": "  c_sklad_zasob_naklady.ZmenaRezOP_2_NakladyOP_Trigg(psRID_O=>:new.rid_o, pnID_R=>:new.id_r, pnP_REZ_OLD=>:old.p_rez, pnP_REZ_NEW=>:new.p_rez, \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_NAKLADY_OP_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 16,
+    "TEXT": "    pxXML_DATA=>:new.xml_data, psID_SZ=>:new.id_sz, pnZakladnenie=>nZaskladnenie, pnUrokZ_NC=>nUrokZ_NC);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_NAKLADY_OP_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 17,
+    "TEXT": "    \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_NAKLADY_OP_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 18,
+    "TEXT": "  :new.xml_data := c_xml_tags.settagvalue(xml=>:new.xml_data, pspath=> '/B/B33',psvalue=>nZaskladnenie);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_NAKLADY_OP_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 19,
+    "TEXT": "  :new.xml_data := c_xml_tags.settagvalue(xml=>:new.xml_data, pspath=> '/B/B34',psvalue=>nUrokZ_NC);  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_NAKLADY_OP_REZ",
+    "TYPE": "TRIGGER",
+    "LINE": 20,
+    "TEXT": "end;\n"
+  }
+]

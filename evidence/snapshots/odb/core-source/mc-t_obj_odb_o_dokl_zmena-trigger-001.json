@@ -1,0 +1,261 @@
+[
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 1,
+    "TEXT": "TRIGGER\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 2,
+    "TEXT": "T_OBJ_ODB_O_DOKL_ZMENA\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 3,
+    "TEXT": " AFTER \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 4,
+    "TEXT": " UPDATE OF P_REZ, P_DEL, P_DEL_DOD\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 5,
+    "TEXT": " ON OBJ_ODB_O\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 6,
+    "TEXT": " REFERENCING OLD AS OLD NEW AS NEW\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 7,
+    "TEXT": " FOR EACH ROW \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 8,
+    "TEXT": "DECLARE\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 9,
+    "TEXT": "   v_old_val number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 10,
+    "TEXT": "   v_new_val number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 11,
+    "TEXT": "   v_typ_zmeny number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 12,
+    "TEXT": "BEGIN\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 13,
+    "TEXT": " if c_session.getrobispracovaniedokladu != 0 or INSTR(:old.RID_O, '-' ) > 0  then \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 14,
+    "TEXT": "       return; \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 15,
+    "TEXT": " else    \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 16,
+    "TEXT": "    if  c_session.GetLogDoklad_Rezervacia_ObjO = 1   and  :new.p_rez != :old.p_rez  then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 17,
+    "TEXT": "           v_typ_zmeny := c_dokl_zmena.ZM_ODB_OBJ_RESERVACIA;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 18,
+    "TEXT": "           v_new_val :=  :new.p_rez;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 19,
+    "TEXT": "           v_old_val  :=   :old.p_rez;       \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 20,
+    "TEXT": "     end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 21,
+    "TEXT": "    if c_session.GetLogDoklad_Zrus_odb_ObjO =1  and :new.p_del != :old.p_del then  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 22,
+    "TEXT": "           v_typ_zmeny := c_dokl_zmena.ZM_ODB_OBJ_ZRUS_ODB;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 23,
+    "TEXT": "           v_new_val :=  :new.p_del;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 24,
+    "TEXT": "           v_old_val  :=  :old.p_del;       \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 25,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 26,
+    "TEXT": "    if  c_session.GetLogDoklad_Zrus_dod_ObjO =1  and :new.p_del_dod != :old.p_del_dod then  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 27,
+    "TEXT": "          v_typ_zmeny := c_dokl_zmena.ZM_ODB_OBJ_ZRUS_DOD;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 28,
+    "TEXT": "           v_new_val :=  :new.p_del_dod;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 29,
+    "TEXT": "           v_old_val  :=  :old.p_del_dod;       \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 30,
+    "TEXT": "    end if;   \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 31,
+    "TEXT": "          -- Insert record into audit table\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 32,
+    "TEXT": "    if  v_typ_zmeny is not null then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 33,
+    "TEXT": "        c_dokl_zmena.LogInsert(:old.RID_O, :old.ID_R, v_typ_zmeny, v_old_val, v_new_val );\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 34,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 35,
+    "TEXT": " end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 36,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_DOKL_ZMENA",
+    "TYPE": "TRIGGER",
+    "LINE": 37,
+    "TEXT": "end;"
+  }
+]

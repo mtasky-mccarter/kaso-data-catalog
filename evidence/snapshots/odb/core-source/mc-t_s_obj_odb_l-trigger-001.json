@@ -1,0 +1,926 @@
+[
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 1,
+    "TEXT": "TRIGGER t_s_obj_odb_l\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 2,
+    "TEXT": " BEFORE\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 3,
+    "TEXT": "  INSERT OR DELETE OR UPDATE\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 4,
+    "TEXT": " ON obj_odb_l\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 5,
+    "TEXT": "REFERENCING NEW AS NEW OLD AS OLD\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 6,
+    "TEXT": " FOR EACH ROW\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 7,
+    "TEXT": "declare\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 8,
+    "TEXT": "  sNetlacitCNaDL varchar2(1);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 9,
+    "TEXT": "Begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 10,
+    "TEXT": "  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 11,
+    "TEXT": "  if INSERTING then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 12,
+    "TEXT": "    :new.i_stamp := C_Stamp.GetSessionStampTrigg( :new.i_stamp);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 13,
+    "TEXT": "    if :new.typ_cis is null then      \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 14,
+    "TEXT": "      select decode(SUBSTR( :new.FLAGS_S, 20, 1 ),'0','00091','1','00091','2','00096','3','00098','4','00099','5','00092','6','00095','7','00097','8','000100','9','00093')\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 15,
+    "TEXT": "        into :new.typ_cis from dual;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 16,
+    "TEXT": "    else -- v pripade logistickej objednavky sa sem uz posiela priamo typ_cis a k nemu nastavujem formu\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 17,
+    "TEXT": "      select SUBSTR( :new.FLAGS_S, 1, 19 )||\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 18,
+    "TEXT": "        decode(:new.typ_cis,'00091','0','00091','1','00096','2','00098','3','00099','4','00092','5','00095','6','00097','7','000100','8','00093','9','000323','3','000575','2','000612','9','000750','7','0') ||\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 19,
+    "TEXT": "        SUBSTR( :new.FLAGS_S, 21 )\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 20,
+    "TEXT": "        into :new.flags_s from dual;    \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 21,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 22,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 23,
+    "TEXT": "    -- vlozenie stavu - Navrhnuta pri spracovani CP\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 24,
+    "TEXT": "    if :new.typ_cis = c_typy_cis.TC_ObjO_Cenova_Ponuka then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 25,
+    "TEXT": "      if :new.id > 0 then -- len spracovana\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 26,
+    "TEXT": "        :new.stav := D_OBJ_ODB_L.STAV_CP_Navrhnuta;    \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 27,
+    "TEXT": "        if :new.rid_v = '0' then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 28,
+    "TEXT": "          :new.skratka := d_obj_odb_l.CP_GetPrvaVerzia(:new.skratka);    \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 29,
+    "TEXT": "        end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 30,
+    "TEXT": "      end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 31,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 32,
+    "TEXT": "    \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 33,
+    "TEXT": "    if c_session.GETPROGRAM in (c_program.PRG_BARTMAIN, c_program.PRG_NEZADANY) then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 34,
+    "TEXT": "      -- mk 24.7.2013 - kopirovanie nastavenie \"netlačiť ceny na DL\" z miesta dodania\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 35,
+    "TEXT": "      if :new.id < 0 and :new.miesto_dod is not null and :new.miesto_dod != c_const.NULA_MiestaDodania then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 36,
+    "TEXT": "        select nvl(c_flags.fgetflagsstate(flags_b, c_m_dod.FLAGS_B_NetlacitCenyNaDL),'0') into sNetlacitCNaDL from miesta_dodania where rid = :new.miesto_dod;   -- 15. ty flags_b\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 37,
+    "TEXT": "        :new.flags_b := c_flags.fsetflagsstate(:new.flags_b, 8, sNetlacitCNaDl);   -- 8. ty flags_b\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 38,
+    "TEXT": "      end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 39,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 40,
+    "TEXT": "    C_CIS.LogujInsert(psRid=> :new.RID);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 41,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 42,
+    "TEXT": "  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 43,
+    "TEXT": "  if UPDATING then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 44,
+    "TEXT": "    :new.u_stamp := C_Stamp.GetSessionStamp;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 45,
+    "TEXT": "--  C_STAMP.VlozDoUpdateHist(:new.RID, :new.u_stamp);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 46,
+    "TEXT": "    IF substr(:old.flags_s,D_OBJ_ODB_L.FLAGS_S_OBJ_ODB_FORMA_DOKL,1)=D_OBJ_ODB_L.FORMA_DOKL_CENOVA_PONUKA\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 47,
+    "TEXT": "    AND substr(:new.flags_s,D_OBJ_ODB_L.FLAGS_S_OBJ_ODB_FORMA_DOKL,1)!=D_OBJ_ODB_L.FORMA_DOKL_CENOVA_PONUKA THEN\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 48,
+    "TEXT": "      -- meni sa z cenovej ponuky\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 49,
+    "TEXT": "      :new.i_stamp := C_Stamp.GetSessionStampTrigg( :new.i_stamp);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 50,
+    "TEXT": "    END IF;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 51,
+    "TEXT": "    if :new.typ_cis != :old.typ_cis then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 52,
+    "TEXT": "      select SUBSTR( :new.FLAGS_S, 1, 19 )||\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 53,
+    "TEXT": "        decode(:new.typ_cis,'00091','0','00091','1','00096','2','00098','3','00099','4','00092','5','00095','6','00097','7','000100','8','00093','9','000323','3','000575','2','000612','9','000750','7','0') ||\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 54,
+    "TEXT": "        SUBSTR( :new.FLAGS_S, 21 )\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 55,
+    "TEXT": "        into :new.flags_s from dual;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 56,
+    "TEXT": "      -- ak sa meni forma dokladu --> musim prehodit pasivne kusy\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 57,
+    "TEXT": "      D_OBJ_ODB_L.PrehodPasivneKusy(:new.rid, D_OBJ_ODB_L.GetS_FormaDokladu(:old.flags_s), D_OBJ_ODB_L.GetS_FormaDokladu(:new.flags_s));\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 58,
+    "TEXT": "    elsif SUBSTR( :new.FLAGS_S, 20, 1 ) != SUBSTR( :old.FLAGS_S, 20, 1 ) then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 59,
+    "TEXT": "      if :new.typ_cis = C_TYPY_CIS.TC_ObjO_LogistickaObj then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 60,
+    "TEXT": "        if SUBSTR( :new.FLAGS_S, 20, 1 ) not in (d_obj_odb_l.FORMA_DOKL_OBJ_OTVORENA, d_obj_odb_l.FORMA_DOKL_OBJ_UZAVRETA) then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 61,
+    "TEXT": "          c_exc.raiseerrormsg('Pre logistickú objednávku nieje dovolené meniť formu na inú než Otvorenú a Uzavretú objednávku!');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 62,
+    "TEXT": "        end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 63,
+    "TEXT": "      else  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 64,
+    "TEXT": "        select decode(SUBSTR( :new.FLAGS_S, 20, 1 ),'0','00091','1','00091','2','00096','3','00098','4','00099','5','00092','6','00095','7','00097','8','000100','9','00093')\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 65,
+    "TEXT": "          into :new.typ_cis from dual;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 66,
+    "TEXT": "      end if;  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 67,
+    "TEXT": "        -- ak sa meni forma dokladu --> musim prehodit pasivne kusy\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 68,
+    "TEXT": "        D_OBJ_ODB_L.PrehodPasivneKusy(:new.rid, D_OBJ_ODB_L.GetS_FormaDokladu(:old.flags_s), D_OBJ_ODB_L.GetS_FormaDokladu(:new.flags_s));\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 69,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 70,
+    "TEXT": "    -- kontrola na zmenu specialnej ceny a specialnej objednavky\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 71,
+    "TEXT": "    if :new.id > 0 and d_obj_odb_l.gets_formadokladu(:new.flags_s) = d_obj_odb_l.FORMA_DOKL_OBJ_UZAVRETA then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 72,
+    "TEXT": "      if (d_obj_odb_l.getfb_specialnacena(:old.flags_b) = 1 and d_obj_odb_l.getfb_specialnacena(:new.flags_b) = 0) or\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 73,
+    "TEXT": "        (d_obj_odb_l.getfb_specialnaObj(:old.flags_b) = 1 and d_obj_odb_l.getfb_specialnaObj(:new.flags_b) = 0) then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 74,
+    "TEXT": "        c_exc.raiseerrormsg('Na uzavretej objednávke nie je možné zrušiť nastavenie \"Špecialna cena\" alebo \"Špecialna objednávka\" !');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 75,
+    "TEXT": "        \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 76,
+    "TEXT": "      elsif (d_obj_odb_l.getfb_specialnacena(:old.flags_b) = 0 and d_obj_odb_l.getfb_specialnacena(:new.flags_b) = 1) or\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 77,
+    "TEXT": "        (d_obj_odb_l.getfb_specialnaObj(:old.flags_b) = 0 and d_obj_odb_l.getfb_specialnaObj(:new.flags_b) = 1) then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 78,
+    "TEXT": "        if c_session.GetZmenaObjOSpecialnaCena = 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 79,
+    "TEXT": "          c_exc.raiseerrormsg('Na uzavretej objednávke nie je možné zapnúť nastavenie \"Špecialna cena\" alebo \"Špecialna objednávka\" týmto spôsobom !\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 80,
+    "TEXT": "použite operáciu \"Nastav vlastnosť Špeciálna objednávka\" alebo \"Nastav vlastnosť Špeciálna cena\" v menu Nástroje !');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 81,
+    "TEXT": "        end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 82,
+    "TEXT": "        --d_obj_odb_l.uzavrinakup(psrid=> :new.rid,pncheckstav=> 0, pdtTermin=> :new.datum_p);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 83,
+    "TEXT": "      end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 84,
+    "TEXT": "    else\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 85,
+    "TEXT": "      null;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 86,
+    "TEXT": "      /* presunute do UpdateT kvoli mutovaniu\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 87,
+    "TEXT": "      if d_obj_odb_l.getfb_specialnacena(:old.flags_b) <> d_obj_odb_l.getfb_specialnacena(:new.flags_b) then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 88,
+    "TEXT": "        d_obj_odb_o.NastavSpecialnaCena(psRID_O=>:new.rid, pnID_R=>null, pbZmenaZHlavicky=>true, pnValue=>d_obj_odb_l.getfb_specialnacena(psFlagsB=>:new.flags_b));\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 89,
+    "TEXT": "      end if;  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 90,
+    "TEXT": "      */\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 91,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 92,
+    "TEXT": "   \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 93,
+    "TEXT": "    -- mk 24.7.2013 - kopirovanie nastavenie \"netlačiť ceny na DL\" z miesta dodania\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 94,
+    "TEXT": "    if :old.miesto_dod != :new.miesto_dod and :new.miesto_dod is not null then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 95,
+    "TEXT": "      select nvl(c_flags.fgetflagsstate(flags_b, c_m_dod.FLAGS_B_NetlacitCenyNaDL),'0') into sNetlacitCNaDL from miesta_dodania where rid = :new.miesto_dod;   -- 15. ty flags_b\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 96,
+    "TEXT": "      :new.flags_b := c_flags.fsetflagsstate(:new.flags_b, 8, sNetlacitCNaDl);   -- 8. ty flags_b\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 97,
+    "TEXT": "    end if;    \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 98,
+    "TEXT": "    \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 99,
+    "TEXT": "    if :new.flags_b != :old.flags_b then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 100,
+    "TEXT": "      -- na logistickej objednavke nemozno zapnut - 9.Prijem pre logistiku\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 101,
+    "TEXT": "      if d_obj_odb_l.GetFB_PrijemPreLogistiku(psFLAGS_B=>:old.flags_b)=0 and d_obj_odb_l.GetFB_PrijemPreLogistiku(psFLAGS_B=>:new.flags_b)=1 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 102,
+    "TEXT": "        if :new.typ_cis = C_TYPY_CIS.TC_ObjO_LogistickaObj then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 103,
+    "TEXT": "          c_exc.raiseerrormsgid(pnIdMsg=>3592); -- Na logistickej objednávke nemôžeš zapnúť nastavenie: 9. Príjem pre logistiku !\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 104,
+    "TEXT": "        end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 105,
+    "TEXT": "      end if;  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 106,
+    "TEXT": "      -- na ne-logistickej objednavke nemozno zapnut - 10.Zpatny prijem z logistiky  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 107,
+    "TEXT": "      if d_obj_odb_l.GetFB_PrijemZLogistiky(psFLAGS_B=>:old.flags_b)=0 and d_obj_odb_l.GetFB_PrijemZLogistiky(psFLAGS_B=>:new.flags_b)=1 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 108,
+    "TEXT": "        if :new.typ_cis != C_TYPY_CIS.TC_ObjO_LogistickaObj then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 109,
+    "TEXT": "          c_exc.raiseerrormsgid(pnIdMsg=>3593); -- Na ne-logistickej objednávke nemôžeš zapnúť nastavenie: 10. Zpätný príjem z logistiky !;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 110,
+    "TEXT": "        end if;    \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 111,
+    "TEXT": "      end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 112,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 113,
+    "TEXT": "    \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 114,
+    "TEXT": "    if :new.s_stamp != :old.s_stamp then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 115,
+    "TEXT": "      -- stornujem\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 116,
+    "TEXT": "      if :new.s_stamp != C_STAMP.DEFAULT_VAL and :old.s_stamp = C_STAMP.DEFAULT_VAL then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 117,
+    "TEXT": "        delete from sklad_zasob_p where rid_o = :new.rid;  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 118,
+    "TEXT": "      end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 119,
+    "TEXT": "    end if;    \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 120,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 121,
+    "TEXT": "    \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 122,
+    "TEXT": "  if deleting then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 123,
+    "TEXT": "    if :old.id > 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 124,
+    "TEXT": "      IF nvl(c_session.getswap,0) != 1 THEN \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 125,
+    "TEXT": "        -- ak swapujem tak mozem mazat\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 126,
+    "TEXT": "        raise C_Exc.c_DOKL_NEMNOZNO_MAZAT;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 127,
+    "TEXT": "      END IF;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 128,
+    "TEXT": "    end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 129,
+    "TEXT": "    c_dokl_l.zrusvazby(:old.rid);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 130,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 131,
+    "TEXT": "  \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_S_OBJ_ODB_L",
+    "TYPE": "TRIGGER",
+    "LINE": 132,
+    "TEXT": "End;"
+  }
+]

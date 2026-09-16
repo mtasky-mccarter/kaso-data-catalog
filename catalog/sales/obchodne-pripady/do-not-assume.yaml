@@ -1,0 +1,1197 @@
+schema_version: '1.0'
+kind: do-not-assume
+id: odb.do_not_assume.001
+records:
+- rule_id: odb.rule.doc_288_1
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: P_VYD = doručené zákazníkovi — P_VYD je skladovy výdaj; delivery proof je mimo order tabulky.
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_288_2
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: P_REZ treba odcitat z open_qty — P_REZ je coverage podmnozina; canonical open_qty ho neodcitava.
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_288_3
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: P_DEL + P_DEL_DOD = realny nezavoz — Ide o systémové/process cancellation bucket-y; príčinu treba
+    dokázať.
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_288_4
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: DATUM_OK != NULL = dokoncena objednávka — DATUM_OK je technický processing date, nie jednoznacny
+    completion status.
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_288_5
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: TYP_CIS = FLAGS_S[20] — Typ a forma dokladu su suvisiace, nie univerzalne 1:1.
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_288_6
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: P_REZ=0 = objednávka nie je pokrytá — Coverage môže byt v P_REZ_IS/P_REZ_PL/P_OBJ_D/P_DISPO/P_VYKR.
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_288_7
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: RID_CT_A a RID_CT_Z sa vylucuju — Suhlasna existencia je legitimna a produkcne potvrdena.
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_288_8
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: ID_SZ='0000' = NULL/chybny FK — Je to validny technický empty stock record; jeho význam sa musí
+    interpretovat v kontexte.
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_288_9
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: SARZA na OBJ_ODB_O = finalna vydana sarza — Order-side SARZA nie je autorita finalnej vydanej sarze.
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_288_10
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: CENA<0 = chybny zaznam — Negativna cena môže byt legitimna pri zalohach/zlavach.
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_288_11
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: Disabled FK RID_CT_* garantuje integritu — RID_CT_A/RID_CT_Z -> CT_O FK su disabled/not validated;
+    diagnostické joiny maju byt LEFT JOIN.
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_80_1
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Canonical pole: total_pieces | Zdroj / formula: SUM(POCET-P_DEL-P_DEL_DOD) z OBJ_ODB_O | Business
+    význam: Aktuálne nezrušené kusové množstvo na objednávke. | Status: POTVRDENÉ / ODVODENÉ'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_80_2
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Canonical pole: total_cartons | Zdroj / formula: SUM((POCET-P_DEL-P_DEL_DOD)/SKLAD_KARTA.VELKE_BAL)
+    | Business význam: Aktuálny počet kartónov; nulové veľké balenie ošetriť. | Status: POTVRDENÉ / ODVODENÉ'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_80_3
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Canonical pole: total_weight_kg | Zdroj / formula: SUM((POCET-P_DEL-P_DEL_DOD)*SKLAD_KARTA.HMOTNOST)
+    | Business význam: Aktuálna hmotnosť nezrušeného množstva. | Status: POTVRDENÉ / ODVODENÉ'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_80_4
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Canonical pole: order_value_net | Zdroj / formula: SUMA_0 + SUMA_1 + SUMA_2 + C_CIS_DPH_VAL.GetSuma_C(RID)
+    | Business význam: Netto hodnota objednávky podľa BarIS logiky. | Status: TECHNICKY ZNÁME / ODVODENÉ'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_99_1
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pozícia: 12 | Package konštanta: FLAGS_S_OBJ_ODB_STAV_VYB | Interpretácia: stav vybavenia objednávky
+    | Status: POTVRDENÉ'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_99_2
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pozícia: 13 | Package konštanta: FLAGS_S_OBJ_ODB_STAV_REZ | Interpretácia: stav rezervácie | Status:
+    POTVRDENÉ'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_99_3
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pozícia: 14 | Package konštanta: FLAGS_S_OBJ_ODB_STAV_FAKT | Interpretácia: stav fakturácie - presná
+    mapa hodnôt ešte neuzavretá | Status: TECHNICKY ODVODENÉ'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_99_4
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pozícia: 15 | Package konštanta: FLAGS_S_OBJ_ODB_STAV_VYD | Interpretácia: stav vydania | Status:
+    POTVRDENÉ'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_99_5
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pozícia: 16 | Package konštanta: FLAGS_S_OBJ_ODB_STAV_ZRUS | Interpretácia: stav zrušenia - mapa
+    hodnôt neuzavretá | Status: TECHNICKY ODVODENÉ'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_99_6
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pozícia: 17 | Package konštanta: FLAGS_S_OBJ_ODB_STAV_ZRUS_D | Interpretácia: stav zrušenia D -
+    presný business význam neuzavretý | Status: TECHNICKY ODVODENÉ'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_99_7
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pozícia: 18 | Package konštanta: FLAGS_S_OBJ_ODB_ZAK_MENIT_POL | Interpretácia: zákaz meniť položky
+    | Status: TECHNICKY ODVODENÉ'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_99_8
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pozícia: 19 | Package konštanta: FLAGS_S_OBJ_ODB_ZAK_ZRUS_REZ | Interpretácia: zákaz zrušiť rezerváciu
+    | Status: TECHNICKY ODVODENÉ'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_99_9
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pozícia: 20 | Package konštanta: FLAGS_S_OBJ_ODB_FORMA_DOKL | Interpretácia: forma dokladu | Status:
+    POTVRDENÉ'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_99_10
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pozícia: 21 | Package konštanta: FLAGS_S_OBJ_ODB_STAV_ODOSLANIA | Interpretácia: stav odoslania
+    - mapa hodnôt neuzavretá | Status: TECHNICKY ODVODENÉ'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_99_11
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pozícia: 22 | Package konštanta: FLAGS_S_OBJ_ODB_STAV_NAKUPU | Interpretácia: stav nákupu - mapa
+    hodnôt neuzavretá | Status: TECHNICKY ODVODENÉ'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_99_12
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pozícia: 23 | Package konštanta: FLAGS_S_OBJ_ODB_MOC_FAK | Interpretácia: MOC_FAK - business význam
+    neuzavretý | Status: TECHNICKY ODVODENÉ'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_100_1
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'FLAGS_B pozícia: 1 | Package konštanta / význam: KonsiObj | Poznámka:  | Status: POTVRDENÉ - PACKAGE
+    SOURCE'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_100_2
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'FLAGS_B pozícia: 2 | Package konštanta / význam: vDavkeSoloVyd | Poznámka:  | Status: POTVRDENÉ
+    - PACKAGE SOURCE'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_100_3
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'FLAGS_B pozícia: 3 | Package konštanta / význam: FaktSamostatne | Poznámka:  | Status: POTVRDENÉ
+    - PACKAGE SOURCE'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_100_4
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'FLAGS_B pozícia: 5 | Package konštanta / význam: VybSamostatne | Poznámka:  | Status: POTVRDENÉ
+    - PACKAGE SOURCE'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_100_5
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'FLAGS_B pozícia: 6 | Package konštanta / význam: SpecialnaObj | Poznámka:  | Status: POTVRDENÉ
+    - PACKAGE SOURCE'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_100_6
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'FLAGS_B pozícia: 7 | Package konštanta / význam: SpecialnaCena | Poznámka:  | Status: POTVRDENÉ
+    - PACKAGE SOURCE'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_100_7
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'FLAGS_B pozícia: 8 | Package konštanta / význam: NetlacitCenyNaDL | Poznámka: T_S_OBJ_ODB_L kopíruje
+    nastavenie z MIESTA_DODANIA pri insert/zmenách miesta dodania. | Status: POTVRDENÉ - PACKAGE SOURCE'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_100_8
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'FLAGS_B pozícia: 9 | Package konštanta / význam: PrijemPreLog | Poznámka:  | Status: POTVRDENÉ
+    - PACKAGE SOURCE'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_100_9
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'FLAGS_B pozícia: 10 | Package konštanta / význam: PrijemZLog | Poznámka:  | Status: POTVRDENÉ -
+    PACKAGE SOURCE'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_100_10
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'FLAGS_B pozícia: 11 | Package konštanta / význam: UplatneneBody | Poznámka:  | Status: POTVRDENÉ
+    - PACKAGE SOURCE'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_100_11
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'FLAGS_B pozícia: 13 | Package konštanta / význam: UzamknutaPreObsl | Poznámka: 0 = odomknutá; 1
+    = uzamknutá na obsluhu. Pri uzamknutí sa OBSLUHA nastaví na aktuálneho používateľa; iný používateľ je pri editácii
+    blokovaný. Odomknúť môže vlastník zámku; bypass cez C_SESSION.GetObjO_NekontrolZamokZObsluhy. V aktuálnej produkčnej
+    populácii MC nebol zaznamenaný žiadny aktívny flag=1. | Status: POTVRDENÉ - PACKAGE BODY / AKTUÁLNE BEZ VÝSKYTU
+    V MC'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_100_12
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'FLAGS_B pozícia: 14 | Package konštanta / význam: Montaz | Poznámka:  | Status: POTVRDENÉ - PACKAGE
+    SOURCE'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_100_13
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'FLAGS_B pozícia: 15 | Package konštanta / význam: StavPripravy | Poznámka: 0 Nebalená / 1 Balí
+    sa / 2 Zabalená; mapované na CIS_STAVY_TYPY 000-403 / 000-401 / 000-402. | Status: POTVRDENÉ - PACKAGE SOURCE'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_100_14
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'FLAGS_B pozícia: 16 | Package konštanta / význam: OpatovneObjZCP | Poznámka:  | Status: POTVRDENÉ
+    - PACKAGE SOURCE'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_100_15
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'FLAGS_B pozícia: 17 | Package konštanta / význam: KontrolaDoklPoSpl | Poznámka:  | Status: POTVRDENÉ
+    - PACKAGE SOURCE'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_100_16
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'FLAGS_B pozícia: 18 | Package konštanta / význam: ObjNaDodPoZaplZal | Poznámka:  | Status: POTVRDENÉ
+    - PACKAGE SOURCE'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_104_1
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Mechanizmus: D_OBJ_ODB_L.GetS_FormaDokladu | Potvrdená implementácia / význam: Ak FLAGS_S nie je
+    dodané a RID je známe, načíta OBJ_ODB_L.FLAGS_S; formu číta cez C_FLAGS.GetFlagsState(..., FLAGS_S_OBJ_ODB_FORMA_DOKL).
+    | Status: POTVRDENÉ'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_104_2
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Mechanizmus: D_OBJ_ODB_L.PrehodPasivneKusy | Potvrdená implementácia / význam: Pri zmene formy
+    dokladu prejde všetky OBJ_ODB_O položky, odstráni staré pasívne typy cez C_SKLAD_ZASOB_P.Delc a vytvorí nové
+    cez C_SKLAD_ZASOB_P.Insc. | Status: POTVRDENÉ'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_104_3
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Mechanizmus: open_qty | Potvrdená implementácia / význam: POCET-P_DEL-P_DEL_DOD-P_FAK-P_VYD-P_OBJ;
+    v PrehodPasivneKusy je to celková otvorená vrstva. | Status: POTVRDENÉ'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_104_4
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Mechanizmus: reserved_qty | Potvrdená implementácia / význam: P_REZ; samostatná podmnožina otvoreného
+    množstva. | Status: POTVRDENÉ'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_104_5
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Mechanizmus: unreserved_open_qty | Potvrdená implementácia / význam: open_qty-P_REZ; používa sa
+    pre nerezervovanú pasívnu vrstvu. | Status: POTVRDENÉ'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_104_6
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Mechanizmus: D_OBJ_ODB_L.GetFB_UzamknutaPreObsluhu / KontrolaNaZamokZObsluhy | Potvrdená implementácia
+    / význam: FLAGS_B[13] je zámok objednávky na obsluhu. Ak je flag=1 a OBSLUHA <> aktuálne prihlásený používateľ,
+    zmena dokladu je blokovaná; bypass je session-level prepínač. | Status: POTVRDENÉ'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_104_7
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Mechanizmus: D_OBJ_ODB_L.UzamkniPreObsluhu / OdomkniPreObsluhu | Potvrdená implementácia / význam:
+    Uzamknutie nastaví FLAGS_B[13]=1 a OBSLUHA na aktuálneho používateľa. Odomknutie nastaví flag=0 a je povolené
+    vlastníkovi zámku; OBSLUHA sa podľa source automaticky nenuluje. | Status: POTVRDENÉ'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_107_1
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pole / väzba: DATUM | Technicky potvrdené: Oracle comment: „Dátum vloženia záznamu“; živá vzorka
+    MC potvrdila zhodu kalendárneho dňa s c_stamp.getdatumc(I_STAMP). | Katalógový status: POTVRDENÉ - order_creation_date'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_107_2
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pole / väzba: DATUM_OK | Technicky potvrdené: Oracle comment: „Dátum spracovania dokladu systémom“.
+    Populačný test: pri FLAGS_S[12]=2 bolo DATUM_OK vyplnené v 265 121 riadkoch a NULL iba v 4; zároveň existujú
+    vyplnené hodnoty aj pri stavoch 0/1. C_DOKL_L Get/Set sú iba accessors. | Katalógový status: POTVRDENÉ TECHNICKY;
+    NIE JE TOTOŽNÉ S completion status'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_107_3
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pole / väzba: PRIORITA | Technicky potvrdené: Oracle comment: „Číslo určujúce prioritu spracovania“;
+    T_MC_NAGEL ju plní zo SQ_MC_NAGEL v konkrétnej vetve. | Katalógový status: TECHNICKY ZNÁME / ČIASTOČNE POTVRDENÉ'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_107_4
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pole / väzba: RID_OP | Technicky potvrdené: Deklarovaný FK -> OBCH_PRIPADY_L.RID; v MC je RID_OP
+    vyplnené v 0 z 265 965 riadkov. | Katalógový status: POTVRDENÉ TECHNICKY / NEPOUŽÍVANÉ V AKTUÁLNOM MC SCOPE'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_107_5
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pole / väzba: RID_MASTER | Technicky potvrdené: Samostatne indexované pole; Oracle comment: hlavné
+    RID pri delení dokladov. | Katalógový status: TECHNICKY ZNÁME'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_107_6
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pole / väzba: MODIF_I / MODIF_U | Technicky potvrdené: Replikačné/change sekvenčné markery riadené
+    T_R_OBJ_ODB_L. | Katalógový status: POTVRDENÉ'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_107_7
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pole / väzba: ROZVOZ_QUE.RID_V | Technicky potvrdené: T_OBJ_ODB_L_AFTER aktualizuje ROZVOZ_QUE
+    WHERE RID_V = OBJ_ODB_L.RID. | Katalógový status: POTVRDENÉ - TRIGGER SOURCE'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_107_8
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pole / väzba: SKLAD_ZASOB_P.RID_O | Technicky potvrdené: T_S_OBJ_ODB_L pri storne maže záznamy
+    WHERE RID_O = OBJ_ODB_L.RID. | Katalógový status: POTVRDENÉ - TRIGGER SOURCE'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_107_9
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pole / väzba: FLAGS_B[13] | Technicky potvrdené: Package body potvrdil zámok na obsluhu; aktuálna
+    produkčná populácia MC má iba hodnotu 0. | Katalógový status: POTVRDENÉ / AKTUÁLNE BEZ VÝSKYTU'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_107_10
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pole / väzba: TYP_CIS vs FLAGS_S[20] | Technicky potvrdené: Produkčný GROUP BY potvrdil, že vzťah
+    nie je univerzálne 1:1. Špeciálne typy 000323 a 000612 zdieľajú formy s inými typmi. | Katalógový status: POTVRDENÉ
+    - ŽIVÉ MC DÁTA'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_107_11
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pole / väzba: OBJ_ODB_L closure | Technicky potvrdené: Technický deep-dive + živé validačné testy
+    splnili Definition of Done pre CORE tabuľku. | Katalógový status: CLOSED / CORE MAPPED'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_122_1
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Vrstva: Zdrojové množstvo | Formula / polia: POCET | Význam: Objednané množstvo riadku.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_122_2
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Vrstva: Fulfilment odpočty | Formula / polia: P_DEL + P_DEL_DOD + P_FAK + P_VYD + P_OBJ | Význam:
+    Množstvo už systémovo zrušené, fakturované, vydané alebo vybavované naviazaným objektom.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_122_3
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Vrstva: Open qty | Formula / polia: POCET-P_DEL-P_DEL_DOD-P_FAK-P_VYD-P_OBJ | Význam: Otvorené
+    množstvo po fulfilment odpočtoch.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_122_4
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Vrstva: Coverage | Formula / polia: P_REZ + P_REZ_IS + P_REZ_PL + P_OBJ_D + P_DISPO + P_VYKR |
+    Význam: Aktuálne krytie otvoreného množstva; stavy sa môžu medzi vetvami presúvať.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_122_5
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Vrstva: Uncovered qty | Formula / polia: open_qty - coverage | Význam: Otvorené množstvo bez aktuálneho
+    krytia.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_124_1
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: CHECK XCE_OBJ_ODB_O_POCTY vynucuje, že coverage vrstvy sa pri štandardných riadkoch zmestia do open_qty.
+    Pri P_OBJ_D sa používa DECODE(ODPIS,0,0,P_OBJ_D), takže položky bez štandardného skladového odpisu majú osobitnú
+    vetvu. Produkčný profiling nezistil porušenie constraint logiky.
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_126_1
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pole: P_REZ | Funkčný význam: Rezervácia na skladovej zásobe | Kľúčový technický dôkaz / flow:
+    T_OBJ_ODB_O_REZ -> C_SZ.RezervujTrig; uvoľnenia/delete spracúva ten istý rezervačný mechanizmus. | Aktuálny
+    MC: Aktívne, ale zriedkavé'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_126_2
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pole: P_REZ_IS | Funkčný význam: Rezervácia z iného skladu | Kľúčový technický dôkaz / flow: D_OBJ_ODB_O
+    source explicitne rozlišuje reservation from another warehouse a presuny coverage stavov. | Aktuálny MC: 0 nenulových'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_126_3
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pole: P_REZ_PL | Funkčný význam: Krytie cez dodávateľský prepravný list | Kľúčový technický dôkaz
+    / flow: D_OBJ_ODB_O vetva TC_ObjD_PrepravnyList; presuny medzi coverage stavmi. | Aktuálny MC: 0 nenulových'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_126_4
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pole: P_OBJ_D | Funkčný význam: Purchasing coverage | Kľúčový technický dôkaz / flow: JeZaradeneDoNakupu;
+    OBJ_D_NAVRH / C_OBJ_D_KOMBAJN; P_OBJ_D je snapshot, nie supplier PO source of truth. | Aktuálny MC: 0 nenulových'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_126_5
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pole: P_DISPO | Funkčný význam: Dispo rezervácia | Kľúčový technický dôkaz / flow: RezervujZDispoZasoby
+    a súvisiaca package logika. | Aktuálny MC: 0 nenulových'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_126_6
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pole: P_VYKR | Funkčný význam: Cross-document coverage | Kľúčový technický dôkaz / flow: DOKL_VYKRYTE
+    trigger -> GetPackageName -> D_OBJ_ODB_O.ChangeP_VYKR. | Aktuálny MC: 0; DOKL_VYKRYTE tiež 0'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_126_7
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pole: RID_N | Funkčný význam: Návrh nákupu | Kľúčový technický dôkaz / flow: OBJ_D_NAVRH.RID; C_OBJ_D_KOMBAJN.ObjednatNavrh/VlozNavrhObjRID.
+    | Aktuálny MC: aktuálne NULL'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_130_1
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Téma: CENA vs CENA_M | Potvrdené pravidlo: ZmenCenuO prepočítava CENA <-> CENA_M kurzom; ide o
+    tú istú predajnú cenu v dvoch menových vyjadreniach. | Dôsledok pre SQL / agenta: Nepovažovať ich za dve nezávislé
+    ceny.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_130_2
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Téma: CENA_S | Potvrdené pravidlo: Nákupná/nákladová cena položky. | Dôsledok pre SQL / agenta:
+    Používať pre cost/margin, nie ako revenue price.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_130_3
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Téma: CENA_S2 | Potvrdené pravidlo: Doplnková nákladová zložka. T_OBJ_ODB_O_SK_ZALOHA pri zálohovej
+    SKU nastavuje CENA_S2 := CENA; iné flow ju používajú pre viazané obaly/služby. | Dôsledok pre SQL / agenta:
+    Pri aplikačnej cost logike môže byť effective cost CENA_S + CENA_S2.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_130_4
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Téma: RID_CT_Z + RID_CT_A | Potvrdené pravidlo: Nie sú vzájomne výlučné. Akciová cenotvorba môže
+    rezervovať množstvo/šaržu a mať cenu 0; predajná cena sa potom čerpá zo zmluvnej cenotvorby. | Dôsledok pre
+    SQL / agenta: Súbeh oboch referencií nie je automaticky data-quality konflikt.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_130_5
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Téma: ZLAVY | Potvrdené pravidlo: Serializovaný pricing payload interpretovaný C_DOKL_O/CENOTVORBA
+    helpermi. | Dôsledok pre SQL / agenta: Neparsovať ručne ako jednoduché percento.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_130_6
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Téma: Negatívna CENA | Potvrdené pravidlo: Legitímny business stav; dominantne zálohy/zľavy/finančné
+    položky, ale vyskytuje sa aj na štandardnej order vetve. | Dôsledok pre SQL / agenta: CENA < 0 neoznačovať automaticky
+    ako chybu.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_135_1
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pole / mechanizmus: ID_SZ | Význam: FK na SKLAD_ZASOB.ID; 0000 je platný technický master bez konkrétnej
+    zásoby. | Dôležité rozlíšenie: ID_SZ IS NULL nie je správny test pre „bez zásoby“.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_135_2
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pole / mechanizmus: SARZA | Význam: Požadovaná/priradená šarža používaná pri rezervácii; môže prísť
+    z CT_A/CT_Z. | Dôležité rozlíšenie: Nie je autoritou skutočne fyzicky vydanej šarže.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_135_3
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pole / mechanizmus: FLAGS_B[1] | Význam: SarzaBolaZadana | Dôležité rozlíšenie: Rozlišuje explicitne
+    zadanú šaržu od šarže doplnenej systémom.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_135_4
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pole / mechanizmus: MIN_DAT_EXP | Význam: Minimálna požadovaná expirácia pre výber zásoby. | Dôležité
+    rozlíšenie: SKLAD_ZASOB.DATUM_EXP je reálny dátum konkrétnej zásoby.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_135_5
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pole / mechanizmus: T_MC_NAGELEXP | Význam: Špecifická MC/Nagel vetva nastavuje MIN_DAT_EXP podľa
+    zásoby pre skladový prefix 025. | Dôležité rozlíšenie: Aktívny špecifický proces; 381 vyplnených MIN_DAT_EXP
+    v snapshot-e.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_138_1
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pozícia: 1 | Package konštanta: FLAGS_B_SarzaBolaZadana | Význam: Šarža bola zadaná | Aktuálny
+    produkčný obraz: aktívna'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_138_2
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pozícia: 2 | Package konštanta: FLAGS_B_SpecialnaCena | Význam: Špeciálna cena | Aktuálny produkčný
+    obraz: v prvých 6 znakoch aktuálne bez výskytu'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_138_3
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pozícia: 3 | Package konštanta: FLAGS_B_PolozkaViazanaNaZalohu | Význam: Položka viazaná na zálohu
+    | Aktuálny produkčný obraz: aktívna'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_138_4
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pozícia: 4 | Package konštanta: FLAGS_B_NeuzavretaPredajCena | Význam: Neuzavretá predajná cena
+    | Aktuálny produkčný obraz: aktuálne bez výskytu'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_138_5
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pozícia: 5 | Package konštanta: FLAGS_B_VyrabaSaMontazou | Význam: Vyrába sa montážou | Aktuálny
+    produkčný obraz: aktuálne bez výskytu'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_138_6
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Pozícia: 6+ | Package konštanta: FLAGS_B_SposobStiahnutia | Význam: Spôsob stiahnutia; začína na
+    pozícii 6 | Aktuálny produkčný obraz: encoding detail mimo CORE'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_142_1
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Constraint: XPK_OBJ_ODB_O | Typ / stav: PK ENABLED / VALIDATED | Výraz / význam: (RID_O, ID_R)'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_142_2
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Constraint: XCE_OBJ_ODB_O_POCET_MR_POCET_V | Typ / stav: CHECK ENABLE NOVALIDATE | Výraz / význam:
+    pocet >= p_vyd OR pocet < 0'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_142_3
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Constraint: XCE_OBJ_ODB_O_POCTY | Typ / stav: CHECK ENABLE / VALIDATED | Výraz / význam: Coverage
+    sa musí zmestiť do open_qty; osobitná vetva pre negatívne POCET a zákaz ODPIS=1 pri pocet<0.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_142_4
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Constraint: XCE_OBJ_ODB_O_P_REZ_0 | Typ / stav: CHECK ENABLE NOVALIDATE | Výraz / význam: P_REZ,
+    P_REZ_IS, P_REZ_PL, P_OBJ_D, P_DISPO >= 0'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_144_1
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Fyzicky potvrdených je 8 FK: DOVOD_BLOKACIE, ID_SZ, KOD_ID, RID_BAL, RID_CT_A, RID_CT_Z, RID_O
+    a RID_OBJEKT. RID_CT_A a RID_CT_Z sú DISABLED / NOT VALIDATED; ostatné sú ENABLED / VALIDATED.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_179_1
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Vrstva: open_qty | Formula / polia: POCET-P_DEL-P_DEL_DOD-P_FAK-P_VYD-P_OBJ | Interpretacia: Aktuálne
+    otvorené množstvo po odratani ukoncenych/odklonenych lifecycle bucketov. | Zakazane zjednodusenie: Neodcitavat
+    P_REZ.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_179_2
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Vrstva: coverage_qty | Formula / polia: P_REZ+P_REZ_IS+P_REZ_PL+P_OBJ_D+P_DISPO+P_VYKR | Interpretacia:
+    Aktuálne pokrytie otvoreneho množstva roznymi mechanizmami. | Zakazane zjednodusenie: P_REZ=0 neznamena bez
+    coverage.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_179_3
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Vrstva: uncovered_qty | Formula / polia: open_qty-coverage_qty | Interpretacia: Otvorene a zaroven
+    nekryté množstvo. | Zakazane zjednodusenie: Nezamienat s open_qty.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_179_4
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Vrstva: issued_qty | Formula / polia: P_VYD | Interpretacia: Vydane zo skladu. | Zakazane zjednodusenie:
+    Nie potvrdené doručenie zákazníkovi.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_179_5
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Vrstva: invoiced_qty | Formula / polia: P_FAK | Interpretacia: Order-side fakturované množstvo.
+    | Zakazane zjednodusenie: Nie uplny invoice lifecycle/source of truth faktury.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_202_1
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Mechanizmus: C_SESSION.GetReplikacia | Potvrdený efekt: C_SZ.RezervujTrig môže skoncit bez fyzickej
+    rezervácie. | Diagnosticky dosledok: Rovnaka zmena P_REZ sa v replikačnom flow nemusí spravat ako manualna editacia.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_202_2
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Mechanizmus: C_SESSION.GetPrenosRezervacie | Potvrdený efekt: RezervujTrig preskoci fyzicky reservation
+    write pri prenose rezervácie. | Diagnosticky dosledok: Nesudit stock mutation iba z order-side OLD/NEW.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_202_3
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Mechanizmus: C_SESSION.GetObjO_NekontrolZamokZObsluhy | Potvrdený efekt: Bypass kontroly locku
+    na obsluhu. | Diagnosticky dosledok: Rozdielne spravanie medzi procesmi môže byt zamerne.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_202_4
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Mechanizmus: C_SESSION.GetNeLogujRezervacie / GetNelogujRezervacie | Potvrdený efekt: Vybrane reservation-processing/log
+    flow mozu byt vypnute. | Diagnosticky dosledok: Absencia pomocného logu nie je dôkaz absencie rezervácie.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_202_5
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Mechanizmus: Ďalšie C_SESSION flags | Potvrdený efekt: Source harvest potvrdil viacero runtime
+    prepínačov pre pricing, kontroly a spracovanie dokladu. | Diagnosticky dosledok: Pri reprodukcii chyby vzdy
+    rozlisit manualny UI proces, batch, replikaciu a špeciálne flow.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_205_1
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Domena: Reservation / stock | Potvrdený order-side kontrakt: P_REZ, ID_SZ; T_OBJ_ODB_O_REZ -> C_SZ.RezervujTrig
+    -> RezervujC/Rezervuj. | Kde končí scope tohto dokumentu: Detail SKLAD_ZASOB lifecycle a všetky warehouse reservation
+    rules budu v skladovom dokumente.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_205_2
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Domena: Issue / VYD | Potvrdený order-side kontrakt: D_VYDAJ_* môže menit P_VYD a v reversal flow
+    aj rezervačné/cancellation bucket-y. Header boundary: OBJ_ODB_L.RID -> VYD_L.RID_V. | Kde končí scope tohto
+    dokumentu: Presny VYD_L/O lifecycle, polozkove joiny, storna a WMS patria do VYD dokumentu.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_205_3
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Domena: Invoice | Potvrdený order-side kontrakt: D_DLAF_*, C_FD, EKASA a D_KASA_UHRADA_L patria
+    medzi order-side P_FAK writery. | Kde končí scope tohto dokumentu: Cislo/stav faktury, invoice line authority
+    a účtovný audit trail budu v INVOICE dokumente.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_205_4
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Domena: Purchasing | Potvrdený order-side kontrakt: P_OBJ_D + RID_N -> OBJ_D_NAVRH; OBJD/C_REZ_OBJ_DOD
+    flow môže prechadzat do P_REZ_PL. | Kde končí scope tohto dokumentu: Supplier order a receipt lifecycle bude
+    v purchasing dokumente.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_205_5
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Domena: Pricing | Potvrdený order-side kontrakt: RID_CT_A/RID_CT_Z -> CT_O; action allocation udrziava
+    POCET_BL_OK. | Kde končí scope tohto dokumentu: Kompletna CT_* architektura a pricing lifecycle bude samostatný
+    deep-dive.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_205_6
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Domena: Cancellation history | Potvrdený order-side kontrakt: OBJ_ODB_O(RID_O,ID_R) -> DOVOD_ZRUS_POL_DOKLAD.
+    | Kde končí scope tohto dokumentu: Detail ciselnikov dovodov a celej historizacie sa rozšíri v samostatnom objekte,
+    ak bude treba.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_205_7
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Domena: Generic coverage | Potvrdený order-side kontrakt: DOKL_VYKRYTE -> C_DOKL_VYKRYTE.GetPackageName
+    -> D_OBJ_ODB_O.ChangeP_VYKR. | Kde končí scope tohto dokumentu: DOKL_VYKRYTE je samostatna cross-document coverage
+    doména.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_209_1
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Mechanizmus: OBJ_ODB_L current row | Čo pokrýva: Aktuálny stav hlavičky + I_STAMP/U_STAMP | Temporal
+    typ: CURRENT SNAPSHOT + audit stamp | Limit / diagnostický význam: I_STAMP/U_STAMP nepredstavujú úplnú históriu
+    všetkých zmien.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_209_2
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Mechanizmus: T_HZ_OBJ_ODB_L -> C_DEF_HIST_ZMENA | Čo pokrýva: Zmeny DATUM_P; history definition
+    0001010 | Temporal typ: SELECTIVE FIELD HISTORY | Limit / diagnostický význam: Potvrdzuje históriu DATUM_P,
+    nie celý lifecycle hlavičky.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_209_3
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Mechanizmus: OBJ_ODB_O current row | Čo pokrýva: Aktuálny quantity/pricing/coverage stav položky
+    | Temporal typ: CURRENT SNAPSHOT | Limit / diagnostický význam: Z jedného riadku nemožno spätne odvodiť všetky
+    predošlé hodnoty.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_209_4
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Mechanizmus: T_HZ_OBJ_ODB_O -> C_DEF_HIST_ZMENA | Čo pokrýva: POCET, P_DEL, P_DEL_DOD, RID_CT_A;
+    definition 0001006 | Temporal typ: SELECTIVE FIELD HISTORY | Limit / diagnostický význam: Neobsahuje kompletnú
+    históriu P_REZ, P_FAK, P_VYD, pricing ani všetkých flagov.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_209_5
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Mechanizmus: DOVOD_ZRUS_POL_DOKLAD | Čo pokrýva: Dôvody zrušenia podľa RID_O + ID_R | Temporal
+    typ: PROCESS-SPECIFIC HISTORY | Limit / diagnostický význam: 1:N historická vrstva; nie kompletná história objednávkového
+    riadku.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_209_6
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Mechanizmus: MODIF_I / MODIF_U | Čo pokrýva: Replikačné/change sekvenčné markery | Temporal typ:
+    TECHNICAL MARKER | Limit / diagnostický význam: Nepoužívať ako business event history bez samostatného kontraktu.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_209_7
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Mechanizmus: OBJ_SPRAC_REZ | Čo pokrýva: Pomocný processing pre vybrané reservation flow | Temporal
+    typ: PROCESSING LAYER | Limit / diagnostický význam: Nie je univerzálny reservation audit; logging môže byť
+    session flagom vypnutý.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_209_8
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Mechanizmus: VYD / Invoice / Purchasing | Čo pokrýva: Externé domény menia order-side snapshoty
+    | Temporal typ: EXTERNAL DOMAIN HISTORY | Limit / diagnostický význam: Presný event trail patrí do vlastných
+    domain dokumentov; order tabuľky ho nenahrádzajú.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_214_1
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Kľúč: OBJ_ODB_L.RID | Rozsah v MC: PRIMARY KEY v MC | Správne použitie: Jedinečný objednávkový
+    doklad v MC; exportovať ako text. | Cross-environment limit: Globálna unikátnosť naprieč databázami nebola potvrdená.
+    | Status: POTVRDENÉ lokálne / TREBA OVERIŤ globálne'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_214_2
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Kľúč: OBJ_ODB_L.ID + SKLAD + DATUM | Rozsah v MC: UNIQUE v MC | Správne použitie: Technická uniqueness
+    kombinácia v MC. | Cross-environment limit: Nie je potvrdený enterprise business key. | Status: POTVRDENÉ lokálne'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_214_3
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Kľúč: OBJ_ODB_L.SKRATKA + SKLAD | Rozsah v MC: UNIQUE v MC | Správne použitie: Zobrazovací/local
+    uniqueness kontrakt. | Cross-environment limit: Nepoužívať ako cross-environment identitu. | Status: POTVRDENÉ
+    lokálne'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_214_4
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Kľúč: OBJ_ODB_O.RID_O + ID_R | Rozsah v MC: PRIMARY KEY položky | Správne použitie: ID_R je lokálne
+    ID riadku v rámci objednávky; identita závisí od RID_O. | Cross-environment limit: Globálny scope je viazaný
+    na neoverenú cross-DB semantiku RID. | Status: POTVRDENÉ lokálne / TREBA OVERIŤ globálne'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_214_5
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Kľúč: MODIF_I / MODIF_U | Rozsah v MC: Replikačné markery | Správne použitie: Technická zmena/sekvencia,
+    nie identita objektu. | Cross-environment limit: Nezamieňať s global key. | Status: POTVRDENÉ technicky'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_218_1
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Order pole: OBJ_ODB_L.PARTNER | Master / target: OBCH_PARTNERI.ID | Čo je uložené na objednávke:
+    Order uchováva partner ID. | Temporal limit: Historická platnosť názvu/krajiny/master atribútov nie je v order
+    scope potvrdená. | Klasifikácia: MASTER TEMPORAL GAP'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_218_2
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Order pole: OBJ_ODB_L.MIESTO_DOD | Master / target: MIESTA_DODANIA.RID | Čo je uložené na objednávke:
+    Order uchováva delivery-point RID. | Temporal limit: Aktuálny JOIN nemusí predstavovať historickú podobu miesta
+    dodania. | Klasifikácia: MASTER TEMPORAL GAP'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_218_3
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Order pole: OBJ_ODB_O.KOD_ID | Master / target: SKLAD_KARTA.ID | Čo je uložené na objednávke: Order
+    line uchováva SKU ID. | Temporal limit: EAN, balenie, hmotnosť a paletizácia patria masteru; historickú platnosť
+    treba potvrdiť v master dokumente. | Klasifikácia: MASTER TEMPORAL GAP'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_218_4
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Order pole: OBJ_ODB_L.TYP_CIS | Master / target: TYPY_CIS.ID | Čo je uložené na objednávke: Raw
+    typ/kód je uložený na doklade. | Temporal limit: Názov/label z lookup tabuľky môže byť current-state; raw kód
+    zachovať. | Klasifikácia: POTVRDENÉ ID / label temporal gap'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_218_5
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Order pole: OBJ_ODB_O.CENA/CENA_M/CENA_S/CENA_S2 | Master / target: transakčný riadok | Čo je uložené
+    na objednávke: Hodnoty na OBJ_ODB_O sú order-side pricing/cost snapshoty. | Temporal limit: Historickú cenu
+    nere-konštruovať spätným JOINom na dnešný cenník. | Klasifikácia: TRANSACTION SNAPSHOT'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_218_6
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'Order pole: OBJ_ODB_O.RID_CT_A / RID_CT_Z | Master / target: CT_O pricing refs | Čo je uložené
+    na objednávke: Referencia vysvetľuje pricing flow a allocation. | Temporal limit: Temporal lifecycle CT_* nie
+    je kompletne mapovaný v tomto dokumente. | Klasifikácia: EXTERNAL PRICING BOUNDARY'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.vyd_identity_reconciliation
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  - vyd.oracle.f1dfff357c6da5d31924380f
+  - vyd.oracle.c05d6994b969d9ce00ed3039
+  statement_sk: Existujúce VYD boundary IDs zostávajú nezmenené. MC.OBJ_ODB_L boundary vyd.oracle.f1dfff357c6da5d31924380f
+    zodpovedá sales mc.object.obj_odb_l; MC.OBJ_ODB_O boundary vyd.oracle.c05d6994b969d9ce00ed3039 zodpovedá sales
+    mc.object.obj_odb_o. Ide o tie isté fyzické objekty, nie ďalšie business objekty.
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_187_1
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: C_CENOTVORBA_O.NastavPocetAkcieObjOdb udrziava množstevné cerpanie akcie v CT_O. Z dostupneho source
+    je potvrdena logika nad POCET_BL_PLAN, POCET_BL_ST a POCET_BL_OK; prekročenie limitu je blokované. Pri presnom
+    naplnení a opatovnom uvoľnení môže procedura menit storno stav pricing objektu.
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_191_1
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: TYP_CIS je autoritativny typ dokladu. FLAGS_S[20] je samostatna forma dokladu. T_S_OBJ_ODB_L obsahuje
+    synchronizacnu logiku, ale produkcne MC data potvrdili, ze vztah nie je univerzalne 1:1. DATUM_OK je technický
+    datum spracovania a nie synonymum completion statusu.
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_198_1
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: A = diagnostic critical (môže menit klucovy stav/množstvo/cenu alebo blokovať operaciu). B = business
+    relevant. C = technický/periferny alebo mimo aktualneho MC scope. Klasifikacia neurcuje, ci trigger existuje
+    - všetky nizsie su zdokumentovane; urcuje hlbku diagnostickeho popisu.
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_210_1
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: 'V1.2 preto zavádza pravidlo: ak otázka znie „čo platilo v minulosti?“, current OBJ_ODB_L/O sa nesmie
+    automaticky použiť ako historický obraz. Najprv treba identifikovať, či existuje selektívna história konkrétneho
+    poľa alebo external-domain event zdroj.'
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_213_1
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: Memorandum upozorňuje na globálne kľúče medzi databázami. V tomto katalógu sa preto explicitne rozlišuje
+    lokálna databázová identita od neoverenej globálnej identity. Autoritatívnym slovenským prostredím je MC; MCCZ,
+    TEST a TESTCZ sú samostatné databázy.
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_217_1
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: Objednávka často uchováva identifikátor master objektu, nie kompletnú historickú podobu master záznamu.
+    JOIN na dnešný master preto môže vrátiť aktuálny názov, klasifikáciu alebo logistický atribút, ktorý nemusel
+    mať rovnakú hodnotu v čase objednávky. V1.2 túto hranicu explicitne dokumentuje.
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_221_1
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: Najčastejšia analytická chyba nevzniká zlým poľom, ale správnymi tabuľkami spojenými v nesprávnej
+    granularite. V1.2 preto dopĺňa formálny contract k hlavným väzbám a explicitné pravidlá proti násobeniu riadkov.
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_224_1
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: Definuj cieľový grain výsledku ešte pred prvým JOINom (1 order, 1 order line, 1 issue line, 1 history
+    event).
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_225_1
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: Pre otázku „existuje súvisiaci záznam?“ preferuj EXISTS pred JOINom, aby sa nemenila granularita.
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_226_1
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: Ak pripájaš 1:N históriu, najprv ju agreguj alebo explicitne vyber požadovaný temporal stav; nikdy
+    implicitne neber náhodný riadok.
+  evidence_refs:
+  - odb.evidence.d.approved_contract
+- rule_id: odb.rule.doc_227_1
+  scope_refs:
+  - mc.object.obj_odb_l
+  - mc.object.obj_odb_o
+  statement_sk: Po každom novom 1:N JOINe skontroluj duplicity základného kľúča cez GROUP BY ... HAVING COUNT(*)>1.
+  evidence_refs:
+  - odb.evidence.d.approved_contract

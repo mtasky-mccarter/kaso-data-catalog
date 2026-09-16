@@ -1,0 +1,2935 @@
+[
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7398,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7399,
+    "TEXT": "    FOR rDokl in (select round(sum(o.pocet*o.cena*decode(nSposobOdpoctuZalohy,2,(1+o.dph/100),1)),2) suma,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7400,
+    "TEXT": "        c_sadzba_dph.geturovenpresadzbudph(pndph=> o.dph,pdtplnenie=> l.datum_p,pnpre_sklad=> l.sklad) uroven_dph,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7401,
+    "TEXT": "        l.datum_p, l.sklad\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7402,
+    "TEXT": "        from dlaf_o o, dlaf_l l where o.rid_o = l.rid and o.rid_o=psRID_DLAF and o.kod_id != c_session.getsk_zaloha\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7403,
+    "TEXT": "        and o.dph=nvl(nDph_Param,o.dph)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7404,
+    "TEXT": "        group by c_sadzba_dph.geturovenpresadzbudph(pndph=> o.dph,pdtplnenie=> l.datum_p,pnpre_sklad=> l.sklad), l.datum_p, l.sklad)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7405,
+    "TEXT": "    LOOP\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7406,
+    "TEXT": "      dbms_output.put_line('--rDokl.SUMA '||rDokl.SUMA);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7407,
+    "TEXT": "      nSumaDokladSadzba := rDokl.SUMA;  -- odlozim si aka je suma za danu sadzbu\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7408,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7409,
+    "TEXT": "      -- POMERNE\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7410,
+    "TEXT": "      if (nSumaVysporZalohy is null and nRozdeleniePreddavku = 1) -- automat (1011)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7411,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7412,
+    "TEXT": "        or nSumaVysporZalohy = -1  -- zvolene v dlg\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7413,
+    "TEXT": "      then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7414,
+    "TEXT": "        begin -- ak nie je dana konkretna suma na ponizenie najdem pomer\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7415,
+    "TEXT": "          -- kolko je este nevysporiadanej zalohy\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7416,
+    "TEXT": "          select sum(decode(nSposobOdpoctuZalohy,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7417,
+    "TEXT": "\t\t\t\t\t\t--2,c_xml_tags.GetTagValueNumT(o.xml_data, 'S5', C_CIS_DEF.CIS_CIS_DEF, null) + c_xml_tags.GetTagValueNumT(o.xml_data, 'S6', C_CIS_DEF.CIS_CIS_DEF, null),\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7418,
+    "TEXT": "\t\t\t\t\t\t2,x.S5 + x.S6\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7419,
+    "TEXT": "\t\t\t\t\t\t,-CENA)*(o.POCET - o.P_DEL - o.P_DEL_DOD))\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7420,
+    "TEXT": "\t\t\t\t\t\tinto nZalohaC\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7421,
+    "TEXT": "            from obj_odb_o o LEFT OUTER JOIN xmltable( '/B' passing o.xml_data columns S6 number path 'S6[last()]', S5 number path 'S5[last()]') x on 1=1\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7422,
+    "TEXT": "\t\t\t\t\t\twhere o.rid_o=rObj.RID_OBJ and o.kod_id=c_session.getsk_zaloha\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7423,
+    "TEXT": "\t\t\t\t\t\t--and o.dph=rDokl.DPH\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7424,
+    "TEXT": "\t\t\t\t\t\tand rDokl.uroven_DPH = c_sadzba_dph.GETUROVENPRESADZBUDPH(pndph=> o.dph, pdtplnenie=> rObj.datum_p, pnpre_sklad=> rObj.sklad)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7425,
+    "TEXT": "\t\t\t\t\t\tand o.p_fak = 0;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7426,
+    "TEXT": "          --dbms_output.put_line('--nZalohaC>'||nZalohaC);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7427,
+    "TEXT": "          if nZalohaC = 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7428,
+    "TEXT": "            continue;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7429,
+    "TEXT": "          end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7430,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7431,
+    "TEXT": "        -- hladam sumar uz naviazanych fakturovanych poloziek na objednavku (okrem aktualnej faktury a spracovane)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7432,
+    "TEXT": "        -- hladam sumar novych poloziek z objednavky v aktualnej fakture (ceny z obj, pocet dlaf)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7433,
+    "TEXT": "        select\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7434,
+    "TEXT": "          nvl(sum(\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7435,
+    "TEXT": "            (select (pocet*decode(nSposobOdpoctuZalohy,2,(1+dph/100),1)*decode(substr(o.rid_v,1,3),'019',\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7436,
+    "TEXT": "              (select oo.cena from obj_odb_o oo where oo.rid_o=c_rid.getbackrid(o.rid_v) and oo.id_r=c_rid.getbackid_r(o.rid_v))\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7437,
+    "TEXT": "              , (select oo.cena from obj_odb_o oo, vyd_o vo where vo.rid_o=c_rid.getbackrid(o.rid_v) and vo.id_r=c_rid.getbackid_r(o.rid_v)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7438,
+    "TEXT": "                and oo.rid_o=c_rid.getbackrid(vo.rid_v) and oo.id_r=c_rid.getbackid_r(vo.rid_v))))\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7439,
+    "TEXT": "              from dlaf_l l, dlaf_o o where l.rid != psRID_DLAF and l.s_stamp = '0' and l.id>0 and l.rid = o.rid_o\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7440,
+    "TEXT": "                --and o.dph = rDokl.dph\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7441,
+    "TEXT": "\t\t\t\t\t\t\t\tand rDokl.uroven_DPH = c_sadzba_dph.GETUROVENPRESADZBUDPH(pndph=> o.dph, pdtplnenie=> l.datum_p, pnpre_sklad=> l.sklad)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7442,
+    "TEXT": "\t\t\t\t\t\t\t\tand o.rid_v = a.rid))\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7443,
+    "TEXT": "                , 0) as fakturovane\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7444,
+    "TEXT": "          , nvl(sum(\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7445,
+    "TEXT": "            (select (pocet*decode(nSposobOdpoctuZalohy,2,(1+dph/100),1)*decode(substr(o.rid_v,1,3),'019',\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7446,
+    "TEXT": "              (select oo.cena from obj_odb_o oo where oo.rid_o=c_rid.getbackrid(o.rid_v) and oo.id_r=c_rid.getbackid_r(o.rid_v))\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7447,
+    "TEXT": "              , (select oo.cena from obj_odb_o oo, vyd_o vo where vo.rid_o=c_rid.getbackrid(o.rid_v) and vo.id_r=c_rid.getbackid_r(o.rid_v)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7448,
+    "TEXT": "                and oo.rid_o=c_rid.getbackrid(vo.rid_v) and oo.id_r=c_rid.getbackid_r(vo.rid_v))))\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7449,
+    "TEXT": "              from dlaf_l l, dlaf_o o where l.rid = psRID_DLAF and l.s_stamp = '0' and l.rid = o.rid_o\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7450,
+    "TEXT": "                --and o.dph = rDokl.dph\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7451,
+    "TEXT": "\t\t\t\t\t\t\t\tand rDokl.uroven_DPH = c_sadzba_dph.GETUROVENPRESADZBUDPH(pndph=> o.dph, pdtplnenie=> l.datum_p, pnpre_sklad=> l.sklad)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7452,
+    "TEXT": "\t\t\t\t\t\t\t\tand o.rid_v = a.rid))\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7453,
+    "TEXT": "                , 0) as nove\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7454,
+    "TEXT": "            into nSumaFaktPoloziek, nNovePolozky\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7455,
+    "TEXT": "          from table(d_dlaf_l.tblVazobneObjednavkyR_U(psRID_OBJ=>rObj.RID_OBJ, pnUroven_DPH=>rDokl.uroven_dph)) a;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7456,
+    "TEXT": "            dbms_output.put_line('--nSumaFaktPoloziek>'||nSumaFaktPoloziek);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7457,
+    "TEXT": "            dbms_output.put_line('--nNovePolozky>'||nNovePolozky);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7458,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7459,
+    "TEXT": "          -- celkova suma objednavky okrem zalohy\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7460,
+    "TEXT": "          select nvl(sum(decode(nSposobOdpoctuZalohy,2,o.CENA*(1+o.DPH/100),o.CENA)*(o.POCET - o.P_DEL - o.P_DEL_DOD)),0) into nPom\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7461,
+    "TEXT": "            from obj_odb_o o where o.rid_o=rObj.RID_OBJ and o.kod_id!=c_session.getsk_zaloha\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7462,
+    "TEXT": "\t\t\t\t\t\t--and dph=rDokl.DPH\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7463,
+    "TEXT": "\t\t\t\t\t\tand rDokl.uroven_DPH = c_sadzba_dph.GETUROVENPRESADZBUDPH(pndph=> o.dph, pdtplnenie=> rObj.datum_p, pnpre_sklad=> rObj.sklad)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7464,
+    "TEXT": "\t\t\t\t\t\t;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7465,
+    "TEXT": "            --dbms_output.put_line('--nPom>'||nPom);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7466,
+    "TEXT": "          -- vsetky nefakturovane polozky\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7467,
+    "TEXT": "          nPom := nPom - nSumaFaktPoloziek;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7468,
+    "TEXT": "          nPomer := pck_tools.podiel(nNovePolozky,nPom,0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7469,
+    "TEXT": "            dbms_output.put_line('--vsetky nefakturovane polozky>'||nPom);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7470,
+    "TEXT": "            dbms_output.put_line('--nPomer (nove/vsetky nefakt)>'||nPomer);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7471,
+    "TEXT": "          if nPomer not in (0,1) then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7472,
+    "TEXT": "            nPomer := least(nPomer, 1);-- pre istotu, nemalo by nastať\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7473,
+    "TEXT": "            nPom := c_dokl_l.Zaokruhly( nZalohaC*nPomer, c_dokl_l.getroundDoklMpm(c_cis_def.CIS_DLAF_L ), c_dokl_l.getroundDoklMTyp(c_cis_def.CIS_DLAF_L));\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7474,
+    "TEXT": "              --dbms_output.put_line('--zaokruhlene>'||nPom);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7475,
+    "TEXT": "            if (nSumaDokladSadzba - nPom) not between 0 and 1 then -- do 1 eura ponecham celu zalohu\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7476,
+    "TEXT": "              nSumaDokladSadzba := least(nPom,nSumaDokladSadzba); -- neriesim ze zostane v objednavke nevysporiadana zaloha\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7477,
+    "TEXT": "                --dbms_output.put_line('--vysledok1>'||nSumaDokladSadzba);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7478,
+    "TEXT": "            end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7479,
+    "TEXT": "              --dbms_output.put_line('--vysledok2>'||nSumaDokladSadzba);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7480,
+    "TEXT": "          end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7481,
+    "TEXT": "          exception when no_data_found then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7482,
+    "TEXT": "            nZalohaC :=0; nPomer :=0;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7483,
+    "TEXT": "        end;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7484,
+    "TEXT": "      -- SUMA JE ZADANA EXaktne\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7485,
+    "TEXT": "      elsif nSumaVysporZalohy is not null and nSumaVysporZalohy >=0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7486,
+    "TEXT": "        nSumaDokladSadzba := least(nSumaVysporZalohy,nSumaDokladSadzba);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7487,
+    "TEXT": "      end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7488,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7489,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7490,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7491,
+    "TEXT": "      FOR R in (select o.rid_o, o.id_r, o.xml_data, o.cena, o.kod_id, o.id_sz, o.rid_bal, o.rid_v, o.odpis, o.pozn, o.sarza, o.dph,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7492,
+    "TEXT": "        Nvl( x.S5 + x.S6, 0 ) suma_zal,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7493,
+    "TEXT": "        c_rid.zlozrid_r(o.rid_o,o.id_r) rid_r,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7494,
+    "TEXT": "        --c_xml_tags.GetTagValueNumT(o.XML_DATA,'S5', -2022, NULL) zal_zakl, c_xml_tags.GetTagValueNumT(o.XML_DATA,'S6', -2022, NULL) zal_dph\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7495,
+    "TEXT": "        x.S5 zal_zakl, x.S6 zal_dph\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7496,
+    "TEXT": "        from obj_odb_o o LEFT OUTER JOIN xmltable( '/B' passing o.xml_data columns S6 number path 'S6[last()]', S5 number path 'S5[last()]') x on 1=1\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7497,
+    "TEXT": "\t\t\t\twhere o.rid_o=rObj.RID_OBJ and o.kod_id = c_session.getsk_zaloha\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7498,
+    "TEXT": "        and o.POCET=1 AND (o.P_DEL + o.P_DEL_DOD + o.P_FAK + o.P_VYD  + o.P_OBJ) = 0 and o.CENA < 0\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7499,
+    "TEXT": "        --and o.DPH = rDokl.DPH\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7500,
+    "TEXT": "\t\t\t\tand rDokl.uroven_DPH = c_sadzba_dph.GETUROVENPRESADZBUDPH(pndph=> o.dph, pdtplnenie=> rObj.datum_p, pnpre_sklad=> rObj.sklad)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7501,
+    "TEXT": "        and c_rid.zlozrid_r(o.rid_o, o.id_r)=nvl(sParam,c_rid.zlozrid_r(o.rid_o, o.id_r))\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7502,
+    "TEXT": "        and c_rid.getbackcis(o.rid_v) in (c_cis_def.CIS_DLAF_L, c_fd.FD_REG_POK, c_fd.FD_POKLADNA, c_fd.FD_BANKA)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7503,
+    "TEXT": "        order by Abs(o.cena))\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7504,
+    "TEXT": "      LOOP\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7505,
+    "TEXT": "          --dbms_output.put_line('R.rid_o!R.id_r '||R.rid_o||'!'||R.id_r);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7506,
+    "TEXT": "        IF nSumaDoklad > 0 AND nSumaDokladSadzba > 0 THEN\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7507,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7508,
+    "TEXT": "          if nSposobOdpoctuZalohy = 2 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7509,
+    "TEXT": "            nSumaZalohy := R.suma_zal;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7510,
+    "TEXT": "            nSumaZalohyP := null;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7511,
+    "TEXT": "          else\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7512,
+    "TEXT": "            nSumaZalohy := -R.cena;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7513,
+    "TEXT": "            -- doplnene kvoli predpokladu, ze pre nSposobOdpoctuZalohy = 2 to rata dobre a zvysok nie => lepenie\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7514,
+    "TEXT": "            nSumaZalohyP := R.suma_zal;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7515,
+    "TEXT": "          end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7516,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7517,
+    "TEXT": "          nSumaZalohyBeriem := least(nSumaDoklad, nSumaZalohy, nSumaDokladSadzba); -- mensiu zo sum dokladu, preddavoku a za sadzbu\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7518,
+    "TEXT": "          -- nastavi rid_v pre vlozenie do dlaf_l\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7519,
+    "TEXT": "          sRID_V := R.RID_R;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7520,
+    "TEXT": "            dbms_output.put_line('sRID_V>'||sRID_V||',nSumaZalohy>'||nSumaZalohy||',nSumaZalohyBeriem>'||nSumaZalohyBeriem||',nSumaDokladSadzba>'||nSumaDokladSadzba);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7521,
+    "TEXT": "          IF nSumaZalohy = nSumaZalohyBeriem or abs(nSumaZalohy - nSumaZalohyBeriem) <= .01 THEN\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7522,
+    "TEXT": "            -- je to cela suma zalohy takze len zmenim p_fak - alebo rozdiel maximalne 1 cent\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7523,
+    "TEXT": "            update obj_odb_o set p_fak=(POCET - P_DEL - P_DEL_DOD - P_FAK - P_VYD- P_OBJ) where rid_o=R.RID_O and id_r=R.ID_R;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7524,
+    "TEXT": "              --dbms_output.put_line('obj_odb_o.p_fak>');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7525,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7526,
+    "TEXT": "\t\t\t\t\t\tif nSposobOdpoctuZalohy = 2 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7527,
+    "TEXT": "\t\t\t\t\t\t\t--nDph := C_DOKL_L.GetDPHZoSumaC( nSumaZalohyBeriem, rDokl.Uroven_Dph, rDokl.Datum_P, rDokl.Sklad );\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7528,
+    "TEXT": "\t\t\t\t\t\t\tnDph := GetDPHZoSumaC( pnSumaC=> nSumaZalohyBeriem, pnUroven=>rDokl.uroven_dph, pnDPH=> r.dph, pnSklad=>rDokl.Sklad);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7529,
+    "TEXT": "\t\t\t\t\t\telse\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7530,
+    "TEXT": "\t\t\t\t\t\t\tnDph := 0;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7531,
+    "TEXT": "\t\t\t\t\t\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7532,
+    "TEXT": "\t\t\t\t\t\tnZaklad := nSumaZalohyBeriem - nDph;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7533,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7534,
+    "TEXT": "          ELSE\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7535,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7536,
+    "TEXT": "            -- je to cast zalohy, zistim kolko ostane po oddeleni zaklad\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7537,
+    "TEXT": "            if nSposobOdpoctuZalohy = 2 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7538,
+    "TEXT": "              --nDph := C_DOKL_L.GetDPHZoSumaC( nSumaZalohy - nSumaZalohyBeriem, rDokl.uroven_dph, rDokl.Datum_P, rDokl.Sklad );\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7539,
+    "TEXT": "\t\t\t\t\t\t\tnDph := GetDPHZoSumaC( pnSumaC=> nSumaZalohy - nSumaZalohyBeriem, pnUroven=>rDokl.uroven_dph, pnDPH=> r.dph, pnSklad=>rDokl.Sklad);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7540,
+    "TEXT": "            else\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7541,
+    "TEXT": "              nDph := 0;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7542,
+    "TEXT": "            end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7543,
+    "TEXT": "            nZaklad := nSumaZalohy - nSumaZalohyBeriem - nDph;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7544,
+    "TEXT": "            nZakladp := nZaklad; nDphP := nDph;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7545,
+    "TEXT": "            -- odlozim si zaklad a dph toho co ostane, kvoli zruseniu zaokruhlovania pre nSposobOdpoctuZalohy != 2 na povodnom riadku objednavky pri deleni,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7546,
+    "TEXT": "            -- a aj kvoli tomu, ze sme to prehodili az za vypocet toho co beriem\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7547,
+    "TEXT": "            If nZaklad > 0.0001 Then -- môže dôjsť k centovému rozdielu, neriešim delenie kvoli predošlému výpočtu zaokruhlenej dph\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7548,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7549,
+    "TEXT": "              -- zistim zaklad a DPH toho, co pouzijem na DLaF\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7550,
+    "TEXT": "              if nSposobOdpoctuZalohy = 2 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7551,
+    "TEXT": "                --nDph := C_DOKL_L.GetDPHZoSumaC( nSumaZalohyBeriem, rDokl.Uroven_Dph, rDokl.Datum_P, rDokl.Sklad );\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7552,
+    "TEXT": "\t\t\t\t\t\t\t\tnDph := GetDPHZoSumaC( pnSumaC=> nSumaZalohyBeriem, pnUroven=>rDokl.uroven_dph, pnDPH=> r.dph, pnSklad=>rDokl.Sklad);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7553,
+    "TEXT": "                nDphN := nDph;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7554,
+    "TEXT": "              else\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7555,
+    "TEXT": "                nDph := 0;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7556,
+    "TEXT": "                --nDphN := C_DOKL_L.GetDPHZoZakladu( nSumaZalohyBeriem, rDokl.Uroven_Dph, rDokl.Datum_P, rDokl.Sklad);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7557,
+    "TEXT": "\t\t\t\t\t\t\t\tnDphN := GetDPHZoSumaC( pnSumaC=> nSumaZalohyBeriem, pnUroven=>rDokl.uroven_dph, pnDPH=> r.dph, pnSklad=>rDokl.Sklad);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7558,
+    "TEXT": "              end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7559,
+    "TEXT": "              nZaklad := nSumaZalohyBeriem - nDph;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7560,
+    "TEXT": "              if nSposobOdpoctuZalohy = 2 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7561,
+    "TEXT": "                nDphN := nDph;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7562,
+    "TEXT": "              else\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7563,
+    "TEXT": "                --nDphN := C_DOKL_L.GetDPHZoZakladu( nZaklad, rDokl.Uroven_Dph, rDokl.Datum_P, rDokl.Sklad);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7564,
+    "TEXT": "\t\t\t\t\t\t\t\tnDphN := GetDPHZoSumaC( pnSumaC=> nZaklad, pnUroven=>rDokl.uroven_dph, pnDPH=> r.dph, pnSklad=>rDokl.Sklad);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7565,
+    "TEXT": "              end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7566,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7567,
+    "TEXT": "              -- oddelim zalohu, ktoru pouzijeme do DlaF\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7568,
+    "TEXT": "              RozdelPreddavok(psRID=> R.rid_o,pnID_R=> R.id_r,pnSumaOddel=> nZaklad + nDphN,pnID_R_New=> nid_r, pnZakladOddel=> nZaklad);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7569,
+    "TEXT": "                --dbms_output.put_line('RozdelPreddavok,psRID>'||R.rid_o||',pnID_R>'||R.id_r||',pnSumaOddel>'||(nZaklad + nDphN)||',pnID_R_New>'||nid_r);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7570,
+    "TEXT": "              sRID_V := c_rid.zlozrid_r(R.rid_o, nid_r);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7571,
+    "TEXT": "              -- znovu nacitam povodne hodnoty zalohy\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7572,
+    "TEXT": "              select\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7573,
+    "TEXT": "\t\t\t\t\t\t\t\t--c_xml_tags.GetTagValueNumT(o.XML_DATA,'S5', -2022, NULL) zal_zakl, c_xml_tags.GetTagValueNumT(o.XML_DATA,'S6', -2022, NULL) zal_dph\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7574,
+    "TEXT": "\t\t\t\t\t\t\t\tx.S5 zal_zakl, x.S6 zal_dph\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7575,
+    "TEXT": "                into r.zal_zakl, r.zal_dph\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7576,
+    "TEXT": "                from obj_odb_o o LEFT OUTER JOIN xmltable( '/B' passing o.xml_data columns S6 number path 'S6[last()]', S5 number path 'S5[last()]') x on 1=1\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7577,
+    "TEXT": "\t\t\t\t\t\t\t\twhere o.rid_o=r.rid_o and o.id_r = nid_r;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7578,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7579,
+    "TEXT": "              -- poznacim fakturaciu na ObjO\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7580,
+    "TEXT": "              update obj_odb_o set p_fak=(POCET - P_DEL - P_DEL_DOD - P_FAK - P_VYD- P_OBJ) where rid_o = R.RID_O and id_r = nid_r;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7581,
+    "TEXT": "                --dbms_output.put_line('obj_odb_o.p_fak>');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7582,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7583,
+    "TEXT": "            End If;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7584,
+    "TEXT": "          END IF;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7585,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7586,
+    "TEXT": "          sZlavy := CENOTVORBA.GetZlavyStringC(-nZaklad,0,0,0,0, -nZaklad,0,-nZaklad,-nZaklad,0,0, 0, '0','0',0,  0, null,null,100/*p_np1*/,0/*p_np2*/,0/*p_np3*/,0/*p_np4*/,0/*p_np5*/,0/*pnZlavaPC*/);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7587,
+    "TEXT": "          -- vlozenie do faktury\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7588,
+    "TEXT": "          nid_r := null;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7589,
+    "TEXT": "          IF R.ODPIS = 0 THEN\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7590,
+    "TEXT": "            nVyskl := 1;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7591,
+    "TEXT": "          ELSE\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7592,
+    "TEXT": "            nVyskl := 0;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7593,
+    "TEXT": "          END IF;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7594,
+    "TEXT": "            --dbms_output.put_line('d_dlaf_o.insc, pncena>'||-nZaklad||',rDokl.dph>'||rDokl.dph);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7595,
+    "TEXT": "          d_dlaf_o.insc(pnkladne=> 1,pnid_r=> nid_r,psrid_o=> psRID_DLAF,pnkod_id=> r.kod_id,psid_sz=> r.id_sz,psrid_bal=> r.rid_bal,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7596,
+    "TEXT": "            pnpocet=> 1,pnp_rez=> 0,pncena=> -nZaklad,pncena_m=> -nZaklad,pndph=> r.dph,pszlavy=> sZlavy,psrid_ct_a=> '0',psrid_ct_z=> '0',\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7597,
+    "TEXT": "            pncena_s=> 0,psrid_v=> sRID_V,pnodpis=> r.odpis,pspozn=> null,pncena_s2=> 0,pnid_r_v=> 0,pso_cislo_e=> R.rid_v,pnp_vyskl=> nVyskl\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7598,
+    "TEXT": "            --,pnid_r_p,pxxml_data\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7599,
+    "TEXT": "            );\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7600,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7601,
+    "TEXT": "          update dlaf_o o set o.xml_data =\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7602,
+    "TEXT": "            c_xml_tags.settagvalue(\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7603,
+    "TEXT": "              xml=> c_xml_tags.settagvalue(\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7604,
+    "TEXT": "                xml=> xml_data,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7605,
+    "TEXT": "                pspath=> '/B/S5',\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7606,
+    "TEXT": "                psvalue=> r.zal_zakl\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7607,
+    "TEXT": "                ),\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7608,
+    "TEXT": "              pspath=> '/B/S6',\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7609,
+    "TEXT": "              psvalue=> r.zal_dph\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7610,
+    "TEXT": "              )\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7611,
+    "TEXT": "            where o.rid_o=psRID_DLAF and o.id_r=nid_r;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7612,
+    "TEXT": "          /*\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7613,
+    "TEXT": "          update dlaf_o o set o.xml_data = c_xml_tags.SetTagValueNumT(o.xml_data, 'S5', C_CIS_DEF.CIS_CIS_DEF, nZaklad, null)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7614,
+    "TEXT": "            where o.rid_o=psRID_DLAF and o.id_r=nid_r;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7615,
+    "TEXT": "          if nSposobOdpoctuZalohy = 2 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7616,
+    "TEXT": "            update dlaf_o o set o.xml_data = c_xml_tags.SetTagValueNumT(o.xml_data, 'S6', C_CIS_DEF.CIS_CIS_DEF, nDph, null)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7617,
+    "TEXT": "              where o.rid_o=psRID_DLAF and o.id_r=nid_r;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7618,
+    "TEXT": "          else\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7619,
+    "TEXT": "            nDphN := C_DOKL_L.GetDPHZoZakladu( nZaklad, rDokl.Uroven_Dph, rDokl.Datum_P, rDokl.Sklad); -- DPH je vypocitana zo zakladu so zaokruhlenim\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7620,
+    "TEXT": "            update dlaf_o o set o.xml_data = c_xml_tags.SetTagValueNumT(o.xml_data, 'S6', C_CIS_DEF.CIS_CIS_DEF, nDphN, null)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7621,
+    "TEXT": "              where o.rid_o=psRID_DLAF and o.id_r=nid_r;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7622,
+    "TEXT": "          end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7623,
+    "TEXT": "          */\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7624,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7625,
+    "TEXT": "          -- ponizim sumy\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7626,
+    "TEXT": "          nSumaDoklad := nSumaDoklad - nSumaZalohyBeriem;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7627,
+    "TEXT": "          nSumaDokladSadzba := nSumaDokladSadzba - nSumaZalohyBeriem;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7628,
+    "TEXT": "          if nSumaVysporZalohy > 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7629,
+    "TEXT": "            nSumaVysporZalohy := nSumaVysporZalohy - nSumaZalohyBeriem;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7630,
+    "TEXT": "          end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7631,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7632,
+    "TEXT": "          -- vybavenie cerpania fin zalohy\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7633,
+    "TEXT": "          c_fin_zaloha_cerp.poznacvybavenieobjo(psrid_r_objo=> sRID_V,psrid_vyb=> c_rid.zlozrid_r(psRID_DLAF, nid_r));\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7634,
+    "TEXT": "            --dbms_output.put_line('c_fin_zaloha_cerp.poznacvybavenieobjo, psrid_r_objo>'||sRID_V||',psrid_vyb>'||c_rid.zlozrid_r(psRID_DLAF, nid_r));\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7635,
+    "TEXT": "        END IF;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7636,
+    "TEXT": "      END LOOP;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7637,
+    "TEXT": "    END LOOP;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7638,
+    "TEXT": "    D_OBJ_ODB_L.PrepocitajObsahC(rObj.RID_OBJ);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7639,
+    "TEXT": "  end loop;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7640,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7641,
+    "TEXT": "end VlozDoDokladuPreddavokZObjOld;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7642,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7643,
+    "TEXT": "function SumaPreddavkuPomerna(psRID_DLAF varchar2, pnDPH number default null) return number is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7644,
+    "TEXT": "  nSposobOdpoctuZalohy number;nZalohaC number; nSumaFaktPoloziek number; nNovePolozky number; nPom number; nPomer number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7645,
+    "TEXT": "  nSumaDokladSadzba number; nSumaDoklad number := 0;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7646,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7647,
+    "TEXT": "  nSposobOdpoctuZalohy := nvl(C_INI.GetINI(955),0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7648,
+    "TEXT": "  for rObj in (select distinct D_DLAF_L.GetVyrazFromVazba (o.RID_V, 'L.RID', 2) RID_OBJ\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7649,
+    "TEXT": "    from dlaf_l l, DLAF_O o WHERE l.rid = o.rid_o And o.RID_O=psRID_DLAF AND substr(o.RID_V,1,3) in ('029','019')\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7650,
+    "TEXT": "    -- fakturácia zalohy vytvara fakt. s iba kartou na fakt zalohy, takže sa prenesu predavky len pri vybavení obj --> vyd --> fakt\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7651,
+    "TEXT": "    and o.kod_id != c_session.getsk_zaloha and o.dph = nvl(pnDPH, o.dph)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7652,
+    "TEXT": "    AND substr(l.RID_V,1,3) in ('029','019'))\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7653,
+    "TEXT": "  loop\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7654,
+    "TEXT": "      dbms_output.put_line('--rObj.RID_OBJ>'||rObj.RID_OBJ);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7655,
+    "TEXT": "    for rDokl in (select o.dph, sum(o.pocet*o.cena*decode(nSposobOdpoctuZalohy,2,(1+o.dph/100),1)) suma,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7656,
+    "TEXT": "      c_sadzba_dph.geturovenpresadzbudph(pndph=> o.dph,pdtplnenie=> l.datum_p,pnpre_sklad=> l.sklad) uroven_dph,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7657,
+    "TEXT": "      l.datum_p, l.sklad\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7658,
+    "TEXT": "      from dlaf_o o, dlaf_l l where o.rid_o = l.rid and o.rid_o=psRID_DLAF and o.kod_id != c_session.getsk_zaloha and o.dph = nvl(pnDPH, o.dph)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7659,
+    "TEXT": "      group by o.dph, c_sadzba_dph.geturovenpresadzbudph(pndph=> o.dph,pdtplnenie=> l.datum_p,pnpre_sklad=> l.sklad), l.datum_p, l.sklad)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7660,
+    "TEXT": "    loop\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7661,
+    "TEXT": "        dbms_output.put_line('--rDokl.SUMA>'||rDokl.SUMA);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7662,
+    "TEXT": "      nSumaDokladSadzba := rDokl.SUMA;  -- odlozim si aka je suma za danu sadzbu\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7663,
+    "TEXT": "      begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7664,
+    "TEXT": "        -- kolko je este zaloh\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7665,
+    "TEXT": "        select nvl(sum(decode(nSposobOdpoctuZalohy,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7666,
+    "TEXT": "\t\t\t\t\t--2,c_xml_tags.GetTagValueNumT(o.xml_data, 'S5', C_CIS_DEF.CIS_CIS_DEF, null) + c_xml_tags.GetTagValueNumT(o.xml_data, 'S6', C_CIS_DEF.CIS_CIS_DEF, null)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7667,
+    "TEXT": "\t\t\t\t\t2,x.S5 + x.S6\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7668,
+    "TEXT": "\t\t\t\t\t,-o.CENA)*(o.POCET - o.P_DEL - o.P_DEL_DOD)),0) into nZalohaC\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7669,
+    "TEXT": "          from obj_odb_o o LEFT OUTER JOIN xmltable( '/B' passing o.xml_data columns S6 number path 'S6[last()]', S5 number path 'S5[last()]') x on 1=1\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7670,
+    "TEXT": "\t\t\t\t\twhere o.rid_o=rObj.RID_OBJ and o.kod_id=c_session.getsk_zaloha and o.dph=rDokl.DPH and o.p_fak = 0;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7671,
+    "TEXT": "          dbms_output.put_line('--nZalohaC>'||nZalohaC);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7672,
+    "TEXT": "        if nZalohaC = 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7673,
+    "TEXT": "          continue;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7674,
+    "TEXT": "        end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7675,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7676,
+    "TEXT": "        -- hladam sumar uz naviazanych fakturovanych poloziek na objednavku (okrem aktualnej faktury a spracovane)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7677,
+    "TEXT": "        -- hladam sumar novych poloziek z objednavky v aktualnej fakture (ceny z obj, pocet dlaf)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7678,
+    "TEXT": "        /*\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7679,
+    "TEXT": "        select\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7680,
+    "TEXT": "          nvl(sum(\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7681,
+    "TEXT": "            (select (pocet*decode(nSposobOdpoctuZalohy,2,(1+dph/100),1)*decode(substr(o.rid_v,1,3),'019',\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7682,
+    "TEXT": "              (select oo.cena from obj_odb_o oo where oo.rid_o=c_rid.getbackrid(o.rid_v) and oo.id_r=c_rid.getbackid_r(o.rid_v))\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7683,
+    "TEXT": "              , (select oo.cena from obj_odb_o oo, vyd_o vo where vo.rid_o=c_rid.getbackrid(o.rid_v) and vo.id_r=c_rid.getbackid_r(o.rid_v)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7684,
+    "TEXT": "                and oo.rid_o=c_rid.getbackrid(vo.rid_v) and oo.id_r=c_rid.getbackid_r(vo.rid_v))))\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7685,
+    "TEXT": "              from dlaf_l l, dlaf_o o where l.rid != psRID_DLAF and l.s_stamp = '0' and l.id>0 and l.rid = o.rid_o\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7686,
+    "TEXT": "                and o.dph = rDokl.dph and o.rid_v = a.rid))\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7687,
+    "TEXT": "                , 0) as fakturovane\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7688,
+    "TEXT": "          , nvl(sum(\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7689,
+    "TEXT": "            (select (pocet*decode(nSposobOdpoctuZalohy,2,(1+dph/100),1)*decode(substr(o.rid_v,1,3),'019',\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7690,
+    "TEXT": "              (select oo.cena from obj_odb_o oo where oo.rid_o=c_rid.getbackrid(o.rid_v) and oo.id_r=c_rid.getbackid_r(o.rid_v))\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7691,
+    "TEXT": "              , (select oo.cena from obj_odb_o oo, vyd_o vo where vo.rid_o=c_rid.getbackrid(o.rid_v) and vo.id_r=c_rid.getbackid_r(o.rid_v)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7692,
+    "TEXT": "                and oo.rid_o=c_rid.getbackrid(vo.rid_v) and oo.id_r=c_rid.getbackid_r(vo.rid_v))))\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7693,
+    "TEXT": "              from dlaf_l l, dlaf_o o where l.rid = psRID_DLAF and l.s_stamp = '0' and l.rid = o.rid_o\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7694,
+    "TEXT": "                and o.dph = rDokl.dph and o.rid_v = a.rid))\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7695,
+    "TEXT": "                , 0) as nove\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7696,
+    "TEXT": "            into nSumaFaktPoloziek, nNovePolozky\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7697,
+    "TEXT": "          from table(d_dlaf_l.tblVazobneObjednavkyR(psRID_OBJ=>rObj.RID_OBJ, pnDPH=>rDokl.dph)) a;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7698,
+    "TEXT": "        */\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7699,
+    "TEXT": "        select nvl(sum((pocet*decode(nSposobOdpoctuZalohy,2,(1+dph/100),1)*decode(substr(o.rid_v,1,3),'019',\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7700,
+    "TEXT": "              (select oo.cena from obj_odb_o oo where oo.rid_o=c_rid.getbackrid(o.rid_v) and oo.id_r=c_rid.getbackid_r(o.rid_v))\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7701,
+    "TEXT": "              , (select oo.cena from obj_odb_o oo, vyd_o vo where vo.rid_o=c_rid.getbackrid(o.rid_v) and vo.id_r=c_rid.getbackid_r(o.rid_v)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7702,
+    "TEXT": "                and oo.rid_o=c_rid.getbackrid(vo.rid_v) and oo.id_r=c_rid.getbackid_r(vo.rid_v))))),0)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7703,
+    "TEXT": "              into nSumaFaktPoloziek\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7704,
+    "TEXT": "              from dlaf_l l, dlaf_o o where l.rid != psRID_DLAF and l.s_stamp = '0' and l.id>0 and l.rid = o.rid_o\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7705,
+    "TEXT": "                and o.dph = rDokl.dph and o.rid_v\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7706,
+    "TEXT": "                in (select rid from table(d_dlaf_l.tblVazobneObjednavkyR(psRID_OBJ=>rObj.RID_OBJ, pnDPH=>rDokl.dph)));\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7707,
+    "TEXT": "        select nvl(sum((pocet*decode(nSposobOdpoctuZalohy,2,(1+dph/100),1)*decode(substr(o.rid_v,1,3),'019',\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7708,
+    "TEXT": "              (select oo.cena from obj_odb_o oo where oo.rid_o=c_rid.getbackrid(o.rid_v) and oo.id_r=c_rid.getbackid_r(o.rid_v))\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7709,
+    "TEXT": "              , (select oo.cena from obj_odb_o oo, vyd_o vo where vo.rid_o=c_rid.getbackrid(o.rid_v) and vo.id_r=c_rid.getbackid_r(o.rid_v)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7710,
+    "TEXT": "                and oo.rid_o=c_rid.getbackrid(vo.rid_v) and oo.id_r=c_rid.getbackid_r(vo.rid_v))))),0)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7711,
+    "TEXT": "              into nNovePolozky\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7712,
+    "TEXT": "              from dlaf_l l, dlaf_o o where l.rid = psRID_DLAF and l.s_stamp = '0' and l.rid = o.rid_o\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7713,
+    "TEXT": "                and o.dph = rDokl.dph and o.rid_v\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7714,
+    "TEXT": "                in (select rid from table(d_dlaf_l.tblVazobneObjednavkyR(psRID_OBJ=>rObj.RID_OBJ, pnDPH=>rDokl.dph)));\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7715,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7716,
+    "TEXT": "            dbms_output.put_line('--nSumaFaktPoloziek>'||nSumaFaktPoloziek);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7717,
+    "TEXT": "            dbms_output.put_line('--nNovePolozky>'||nNovePolozky);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7718,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7719,
+    "TEXT": "        -- celkova suma objednavky okrem zalohy\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7720,
+    "TEXT": "        select sum(decode(nSposobOdpoctuZalohy,2,CENA*(1+DPH/100),CENA)*(POCET - P_DEL - P_DEL_DOD)) into nPom\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7721,
+    "TEXT": "          from obj_odb_o where rid_o=rObj.RID_OBJ and kod_id!=c_session.getsk_zaloha and dph=rDokl.DPH;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7722,
+    "TEXT": "          dbms_output.put_line('--nPom>'||nPom);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7723,
+    "TEXT": "        -- vsetky nefakturovane polozky\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7724,
+    "TEXT": "        nPom := nPom - nSumaFaktPoloziek;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7725,
+    "TEXT": "        nPomer := pck_tools.podiel(nNovePolozky,nPom,0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7726,
+    "TEXT": "          dbms_output.put_line('--vsetky nefakturovane polozky>'||nPom);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7727,
+    "TEXT": "          dbms_output.put_line('--nPomer (nove/vsetky nefakt)>'||nPomer);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7728,
+    "TEXT": "        if nPomer not in (0) then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7729,
+    "TEXT": "          nPomer := least(nPomer, 1);-- pre istotu, nemalo by nastať\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7730,
+    "TEXT": "          nPom := c_dokl_l.Zaokruhly( nZalohaC*nPomer, c_dokl_l.getroundDoklMpm(c_cis_def.CIS_DLAF_L ), c_dokl_l.getroundDoklMTyp(c_cis_def.CIS_DLAF_L));\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7731,
+    "TEXT": "            dbms_output.put_line('--zaokruhlena>'||nPom);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7732,
+    "TEXT": "          if abs(nZalohaC-nPom) between 0 and 1 then -- do 1 eura ponecham celu zalohu\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7733,
+    "TEXT": "            nPom := nZalohaC;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7734,
+    "TEXT": "          end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7735,
+    "TEXT": "          if (nSumaDokladSadzba - nPom) not between 0 and 1 then -- do 1 eura ponecham celu zalohu\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7736,
+    "TEXT": "            nSumaDokladSadzba := least(nPom,nSumaDokladSadzba); -- neriesim ze zostane v objednavke nevysporiadana zaloha\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7737,
+    "TEXT": "              dbms_output.put_line('--vysledok1>'||nSumaDokladSadzba);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7738,
+    "TEXT": "          end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7739,
+    "TEXT": "            dbms_output.put_line('--vysledok12>'||nSumaDokladSadzba);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7740,
+    "TEXT": "        end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7741,
+    "TEXT": "        exception when no_data_found then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7742,
+    "TEXT": "          nZalohaC :=0; nPomer :=0;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7743,
+    "TEXT": "      end;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7744,
+    "TEXT": "      nSumaDoklad := nSumaDoklad + nSumaDokladSadzba;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7745,
+    "TEXT": "            dbms_output.put_line('--nSumaDoklad>'||nSumaDoklad);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7746,
+    "TEXT": "    end loop;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7747,
+    "TEXT": "  end loop;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7748,
+    "TEXT": "  return nSumaDoklad;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7749,
+    "TEXT": "end SumaPreddavkuPomerna;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7750,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7751,
+    "TEXT": "function SumaPreddavkuPomernaTMP(psRID varchar2, pnDPH number default null) return number is\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7752,
+    "TEXT": "  nSposobOdpoctuZalohy number;nZalohaC number; nSumaFaktPoloziek number; nNovePolozky number; nPom number; nPomer number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7753,
+    "TEXT": "  nSumaDokladSadzba number; nSumaDoklad number := 0;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7754,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7755,
+    "TEXT": "  nSposobOdpoctuZalohy := nvl(C_INI.GetINI(955),0);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7756,
+    "TEXT": "  for rObj in (select distinct D_DLAF_L.GetVyrazFromVazba (o.RID_V, 'L.RID', 2) RID_OBJ\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7757,
+    "TEXT": "    from t_dokl_l l, t_dokl_o o WHERE l.rid = o.rid_o And o.RID_O=psRID AND substr(o.RID_V,1,3) in ('029','019')\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7758,
+    "TEXT": "    -- fakturácia zalohy vytvara fakt. s iba kartou na fakt zalohy, takže sa prenesu predavky len pri vybavení obj --> vyd --> fakt\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7759,
+    "TEXT": "    and o.kod_id != c_session.getsk_zaloha and o.dph = nvl(pnDPH, o.dph)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7760,
+    "TEXT": "    AND substr(l.RID_V,1,3) in ('029','019'))\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7761,
+    "TEXT": "  loop\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7762,
+    "TEXT": "      dbms_output.put_line('--rObj.RID_OBJ>'||rObj.RID_OBJ);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7763,
+    "TEXT": "    for rDokl in (select o.dph, sum(o.pocet*o.cena*decode(nSposobOdpoctuZalohy,2,(1+o.dph/100),1)) suma,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7764,
+    "TEXT": "      c_sadzba_dph.geturovenpresadzbudph(pndph=> o.dph,pdtplnenie=> l.datum_p,pnpre_sklad=> l.sklad) uroven_dph,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7765,
+    "TEXT": "      l.datum_p, l.sklad\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7766,
+    "TEXT": "      from t_dokl_o o, t_dokl_l l where o.rid_o = l.rid and o.rid_o=psRID and o.kod_id != c_session.getsk_zaloha and o.dph = nvl(pnDPH, o.dph)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7767,
+    "TEXT": "      group by o.dph, c_sadzba_dph.geturovenpresadzbudph(pndph=> o.dph,pdtplnenie=> l.datum_p,pnpre_sklad=> l.sklad), l.datum_p, l.sklad)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7768,
+    "TEXT": "    loop\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7769,
+    "TEXT": "        dbms_output.put_line('--rDokl.SUMA>'||rDokl.SUMA);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7770,
+    "TEXT": "      nSumaDokladSadzba := rDokl.SUMA;  -- odlozim si aka je suma za danu sadzbu\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7771,
+    "TEXT": "      begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7772,
+    "TEXT": "        -- kolko je este zaloh\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7773,
+    "TEXT": "        select nvl(sum(decode(nSposobOdpoctuZalohy,\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7774,
+    "TEXT": "\t\t\t\t\t--2,c_xml_tags.GetTagValueNumT(o.xml_data, 'S5', C_CIS_DEF.CIS_CIS_DEF, null) + c_xml_tags.GetTagValueNumT(o.xml_data, 'S6', C_CIS_DEF.CIS_CIS_DEF, null)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7775,
+    "TEXT": "\t\t\t\t\t2,x.S5 + x.S6\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7776,
+    "TEXT": "\t\t\t\t\t,-o.CENA)*(o.POCET - o.P_DEL - o.P_DEL_DOD)),0) into nZalohaC\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7777,
+    "TEXT": "          from obj_odb_o o LEFT OUTER JOIN xmltable( '/B' passing o.xml_data columns S6 number path 'S6[last()]', S5 number path 'S5[last()]') x on 1=1\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7778,
+    "TEXT": "\t\t\t\t\twhere o.rid_o=rObj.RID_OBJ and o.kod_id=c_session.getsk_zaloha and o.dph=rDokl.DPH and o.p_fak = 0;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7779,
+    "TEXT": "          dbms_output.put_line('--nZalohaC>'||nZalohaC);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7780,
+    "TEXT": "        if nZalohaC = 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7781,
+    "TEXT": "          continue;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7782,
+    "TEXT": "        end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7783,
+    "TEXT": "\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7784,
+    "TEXT": "        -- hladam sumar uz naviazanych fakturovanych poloziek na objednavku (okrem aktualnej faktury a spracovane)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7785,
+    "TEXT": "        -- hladam sumar novych poloziek z objednavky v aktualnej fakture (ceny z obj, pocet dlaf)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7786,
+    "TEXT": "        /*\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7787,
+    "TEXT": "        select\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7788,
+    "TEXT": "          nvl(sum(\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7789,
+    "TEXT": "            (select (pocet*decode(nSposobOdpoctuZalohy,2,(1+dph/100),1)*decode(substr(o.rid_v,1,3),'019',\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7790,
+    "TEXT": "              (select oo.cena from obj_odb_o oo where oo.rid_o=c_rid.getbackrid(o.rid_v) and oo.id_r=c_rid.getbackid_r(o.rid_v))\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7791,
+    "TEXT": "              , (select oo.cena from obj_odb_o oo, vyd_o vo where vo.rid_o=c_rid.getbackrid(o.rid_v) and vo.id_r=c_rid.getbackid_r(o.rid_v)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7792,
+    "TEXT": "                and oo.rid_o=c_rid.getbackrid(vo.rid_v) and oo.id_r=c_rid.getbackid_r(vo.rid_v))))\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7793,
+    "TEXT": "              from dlaf_l l, dlaf_o o where l.s_stamp = '0' and l.id>0 and l.rid = o.rid_o and o.dph = rDokl.dph and o.rid_v = a.rid))\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7794,
+    "TEXT": "                , 0) as fakturovane\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7795,
+    "TEXT": "          , nvl(sum(\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7796,
+    "TEXT": "            (select (pocet*decode(nSposobOdpoctuZalohy,2,(1+dph/100),1)*decode(substr(o.rid_v,1,3),'019',\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7797,
+    "TEXT": "              (select oo.cena from obj_odb_o oo where oo.rid_o=c_rid.getbackrid(o.rid_v) and oo.id_r=c_rid.getbackid_r(o.rid_v))\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7798,
+    "TEXT": "              , (select oo.cena from obj_odb_o oo, vyd_o vo where vo.rid_o=c_rid.getbackrid(o.rid_v) and vo.id_r=c_rid.getbackid_r(o.rid_v)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7799,
+    "TEXT": "                and oo.rid_o=c_rid.getbackrid(vo.rid_v) and oo.id_r=c_rid.getbackid_r(vo.rid_v))))\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7800,
+    "TEXT": "              from t_dokl_l l, t_dokl_o o where l.rid = psRID and l.s_stamp = '0' and l.rid = o.rid_o and o.dph = rDokl.dph and o.rid_v = a.rid))\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7801,
+    "TEXT": "                , 0) as nove\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7802,
+    "TEXT": "            into nSumaFaktPoloziek, nNovePolozky\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7803,
+    "TEXT": "          from table(d_dlaf_l.tblVazobneObjednavkyR(psRID_OBJ=>rObj.RID_OBJ, pnDPH=>rDokl.dph)) a;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7804,
+    "TEXT": "        */\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7805,
+    "TEXT": "        select nvl(sum((pocet*decode(nSposobOdpoctuZalohy,2,(1+dph/100),1)*decode(substr(o.rid_v,1,3),'019',\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7806,
+    "TEXT": "              (select oo.cena from obj_odb_o oo where oo.rid_o=c_rid.getbackrid(o.rid_v) and oo.id_r=c_rid.getbackid_r(o.rid_v))\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7807,
+    "TEXT": "              , (select oo.cena from obj_odb_o oo, vyd_o vo where vo.rid_o=c_rid.getbackrid(o.rid_v) and vo.id_r=c_rid.getbackid_r(o.rid_v)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7808,
+    "TEXT": "                and oo.rid_o=c_rid.getbackrid(vo.rid_v) and oo.id_r=c_rid.getbackid_r(vo.rid_v))))),0)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7809,
+    "TEXT": "              into nSumaFaktPoloziek\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7810,
+    "TEXT": "              from dlaf_l l, dlaf_o o where l.s_stamp = '0' and l.id>0 and l.rid = o.rid_o and o.dph = rDokl.dph and o.rid_v\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7811,
+    "TEXT": "              in (select rid from table(d_dlaf_l.tblVazobneObjednavkyR(psRID_OBJ=>rObj.RID_OBJ, pnDPH=>rDokl.dph)));\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7812,
+    "TEXT": "        select nvl(sum((pocet*decode(nSposobOdpoctuZalohy,2,(1+dph/100),1)*decode(substr(o.rid_v,1,3),'019',\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7813,
+    "TEXT": "              (select oo.cena from obj_odb_o oo where oo.rid_o=c_rid.getbackrid(o.rid_v) and oo.id_r=c_rid.getbackid_r(o.rid_v))\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7814,
+    "TEXT": "              , (select oo.cena from obj_odb_o oo, vyd_o vo where vo.rid_o=c_rid.getbackrid(o.rid_v) and vo.id_r=c_rid.getbackid_r(o.rid_v)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7815,
+    "TEXT": "                and oo.rid_o=c_rid.getbackrid(vo.rid_v) and oo.id_r=c_rid.getbackid_r(vo.rid_v))))),0)\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "D_OBJ_ODB_L",
+    "TYPE": "PACKAGE BODY",
+    "LINE": 7816,
+    "TEXT": "              into nNovePolozky\n"
+  }
+]

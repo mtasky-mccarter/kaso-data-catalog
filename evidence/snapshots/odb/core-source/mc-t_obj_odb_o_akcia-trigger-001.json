@@ -1,0 +1,226 @@
+[
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 1,
+    "TEXT": "TRIGGER T_OBJ_ODB_O_AKCIA\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 2,
+    "TEXT": " BEFORE \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 3,
+    "TEXT": " INSERT OR UPDATE OF KOD_ID\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 4,
+    "TEXT": " ON OBJ_ODB_O\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 5,
+    "TEXT": " REFERENCING OLD AS OLD NEW AS NEW\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 6,
+    "TEXT": " FOR EACH ROW \n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 7,
+    "TEXT": "declare\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 8,
+    "TEXT": "  sNazovCtL varchar2(254);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 9,
+    "TEXT": "  sRid_ct_a varchar2(16);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 10,
+    "TEXT": "  nKod_id number;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 11,
+    "TEXT": "  sNazov varchar2(254);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 12,
+    "TEXT": "  sIntKod varchar2(254);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 13,
+    "TEXT": "  sPomenovanie varchar2(254);\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 14,
+    "TEXT": "begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 15,
+    "TEXT": "  if inserting or updating then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 16,
+    "TEXT": "\t\t-- kontrola sa nebude robit na viazanych obaloch\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 17,
+    "TEXT": "\t\tif :new.id_r_v != 0 then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 18,
+    "TEXT": "\t\t\treturn;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 19,
+    "TEXT": "\t\tend if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 20,
+    "TEXT": "\t\t--\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 21,
+    "TEXT": "    Select rid_ct_a Into sRid_ct_a From obj_odb_l Where rid = :new.rid_o;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 22,
+    "TEXT": "    If sRid_ct_a Is Not Null Then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 23,
+    "TEXT": "      Begin\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 24,
+    "TEXT": "        Select kod_id Into nKod_id From ct_o Where kod_id = :new.kod_id And rid_o = sRid_ct_a And s_stamp = '0' and rownum = 1;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 25,
+    "TEXT": "      Exception When no_data_found Then\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 26,
+    "TEXT": "       Select max(nazov) into sNazovCtL From ct_l Where rid = sRid_ct_a;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 27,
+    "TEXT": "       c_sklad_karta.GetInfoSK( :new.kod_id, sIntKod, sNazov, sPomenovanie );\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 28,
+    "TEXT": "       c_exc.raiseerrormsg('Položka  '|| sNazov ||', '|| sIntKod ||' \\\\'|| :new.kod_id ||' nie je definovaná v akcii  '|| sNazovCtL ||' \\\\'|| sRid_ct_a ||', nie je možné ju vložiť !');\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 29,
+    "TEXT": "      End;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 30,
+    "TEXT": "    End If;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 31,
+    "TEXT": "  end if;\n"
+  },
+  {
+    "OWNER": "MC",
+    "NAME": "T_OBJ_ODB_O_AKCIA",
+    "TYPE": "TRIGGER",
+    "LINE": 32,
+    "TEXT": "end;"
+  }
+]

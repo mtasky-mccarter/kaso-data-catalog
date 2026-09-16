@@ -11,7 +11,7 @@ def summary_errors(document):
         return []
     records = document.get('records', [])
     callers = {(r.get('caller_owner'), r.get('caller_name'), r.get('caller_type')) for r in records}
-    members = {(r.get('target_package'), r.get('member_name_raw')) for r in records}
+    members = {(r.get('target_package'), r.get('member_name_normalized', r.get('member_name_raw'))) for r in records}
     actual = {
         'record_count': len(records),
         'caller_count': len(callers),
@@ -30,7 +30,8 @@ class ApiReferenceTests(unittest.TestCase):
     def test_approved_cp_vyd_and_purchasing_targets_validate(self):
         targets = ['D_CPR_L', 'D_CPR_O', 'D_VYDAJ_L', 'D_VYDAJ_L_B',
                    'D_VYDAJ_O', 'D_VYDAJ_O2', 'C_VYD_O_P_PRIJ', 'D_OBJD_L',
-                   'D_OBJD_O', 'C_OBJ_D_KOMBAJN', 'C_REZ_OBJ_DOD']
+                   'D_OBJD_O', 'C_OBJ_D_KOMBAJN', 'C_REZ_OBJ_DOD',
+                   'D_OBJ_ODB_L', 'D_OBJ_ODB_L_B', 'D_OBJ_ODB_O']
         schema = json.loads((ROOT / 'schema/api-references.schema.json').read_text())
         self.assertEqual(targets, schema['$defs']['record']['properties']['target_package']['enum'])
         for target in targets:
