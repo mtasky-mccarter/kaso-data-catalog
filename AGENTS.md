@@ -49,8 +49,30 @@ This repository is the canonical machine-readable source of truth for the KASO D
 - Codex / catalog engineer owns repository changes, parsing, machine-readable materialization, consistency checks, dependency graph tooling, lint, tests, PRs and generated artifacts.
 - Codex must not create or upgrade business meaning, source-of-truth claims, JOIN correctness or writer/reader/caller roles without evidence already approved in the handoff.
 
+## Codex Lean Execution v3
+`docs/codex-execution-standard-v3.md` is the normative engineering-context optimization for Codex work. It changes how context is loaded and validated; it does not weaken the Mapping Standard or evidence requirements.
+
+Core rules:
+- Repository state is persistent memory; the chat prompt is a command, not a duplicate specification.
+- Required first reads are this `AGENTS.md`, the approved machine-readable handoff, the existing target domain contract, and the nearest applicable nested `AGENTS.md` if present.
+- Read `docs/mapping-standard.md` in full only when the task changes semantic mapping rules, record semantics, or the handoff is missing/ambiguous. Otherwise use the handoff as the approved semantic boundary.
+- Read `docs/publication-standard.md` only when publication work is enabled by the handoff or a publication test fails.
+- After handoff integrity passes, do not rediscover approved counts, paths, IDs or invariants by broad repository search. Search only to resolve a conflict, missing reference or failed validation.
+- Raw XLSX/source/dependency evidence should be processed by deterministic tooling where available. Do not stream whole raw datasets or giant generated YAML registries into model context when a parser/summary can answer the engineering question.
+- Start with domain-scoped tests and compact summaries. Run the full repository validator/regression only after domain gates are green and again only if subsequent changes could invalidate the final result.
+- For successful commands retain only exit status and concise summary. Inspect full logs/patches only for failures or semantically relevant diffs.
+- Start review with changed filenames and `git diff --stat`; read full patches only for files that require inspection.
+- Do not inspect unrelated domains unless a declared cross-domain reference fails or the handoff explicitly requests comparison.
+- A committed milestone is a context boundary. Prefer a fresh Codex thread for the next substantial phase, using repository state plus a short resume prompt, instead of carrying a long prior tool-call history.
+
+Canonical handoff template: `docs/handoffs/codex-handoff.template.yaml`.
+Validate a completed handoff with:
+`python tools/check_codex_handoff.py <handoff.yaml> --summary`.
+
 ## READY FOR CODEX HANDOFF
-Codex should perform production catalog materialization only after ChatGPT supplies a `READY FOR CODEX HANDOFF` package. The handoff must identify at least:
+Codex should perform production catalog materialization only after ChatGPT supplies a `READY FOR CODEX HANDOFF` package. Prefer a machine-readable YAML handoff derived from `docs/handoffs/codex-handoff.template.yaml`; prose may accompany it but must not be the only authoritative engineering instruction.
+
+The handoff must identify at least:
 - domain and Oracle objects;
 - target maturity and authoritative environment;
 - canonical repository path and existing canonical references;
@@ -66,15 +88,17 @@ Codex should perform production catalog materialization only after ChatGPT suppl
 If required evidence is missing, the handoff conflicts with `main`, or business meaning is ambiguous, do not guess. Return the specific item as `HANDOFF BLOCKED` for ChatGPT/business review.
 
 ## Codex engineering workflow
-1. Read this `AGENTS.md`, `docs/mapping-standard.md`, `docs/publication-standard.md`, the handoff package and the existing domain contract in `main`.
-2. Work on a feature branch; do not bypass review by silently changing canonical `main`.
-3. Materialize only approved facts into catalog YAML, evidence manifests and canonical SQL.
-4. Preserve stable IDs and revision/change-management rules; mark breaking changes explicitly.
-5. Run the validator, generic tests, relevant domain acceptance gate and SQL safety lint.
-6. Check unresolved references, duplicate IDs, evidence requirements and semantic-loss assertions.
-7. Prepare a focused PR containing only intended changes and explicit system/domain boundaries.
-8. Merge only with green CI and a clean diff; verify the `main` workflow after merge.
-9. Generate DOCX/PDF/viewer outputs only from the canonical layer when a generator exists, and enforce the generated publication naming/layout standard.
+1. Read this `AGENTS.md`, the approved machine-readable handoff, the existing target domain contract, and any nearer nested `AGENTS.md`. Apply the v3 context-loading rules above instead of automatically reading every long standard.
+2. Validate the handoff and evidence integrity before materialization. Treat a validated handoff as the semantic boundary; do not redo discovery that ChatGPT already closed.
+3. Work on a feature branch; do not bypass review by silently changing canonical `main`.
+4. Materialize only approved facts into catalog YAML, evidence manifests and canonical SQL. Prefer deterministic parsers/materializers for large evidence bundles and dependency graphs.
+5. Preserve stable IDs and revision/change-management rules; mark breaking changes explicitly.
+6. Run domain parser/acceptance/SQL-safety tests first. Inspect only failing details until the domain gate is green.
+7. Check unresolved references, duplicate IDs, evidence requirements and semantic-loss assertions using compact machine summaries where available.
+8. Run the full repository validator/unittest suite and publication `--check` only after the domain gate is green and the intended diff is stable.
+9. Prepare a focused PR containing only intended changes and explicit system/domain boundaries. Review filenames/stat first, then only relevant full patches.
+10. Merge only with green CI and a clean diff; verify the `main` workflow after merge.
+11. Generate DOCX/PDF/viewer outputs only from the canonical layer when the handoff enables publication, and enforce the generated publication naming/layout standard.
 
 ## Change management
 - Do not silently overwrite a confirmed fact. Revalidate conflicts and record revisions.

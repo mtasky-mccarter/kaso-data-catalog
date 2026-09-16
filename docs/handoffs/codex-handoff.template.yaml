@@ -1,0 +1,94 @@
+schema_version: '1.0'
+kind: codex-handoff
+handoff_id: '<domain>.handoff.<revision>'
+status: READY_FOR_CODEX_HANDOFF
+
+repository:
+  name: mtasky-mccarter/kaso-data-catalog
+  base_branch: main
+  base_commit: '<sha>'
+  feature_branch: 'feat/<slug>-<revision>'
+
+scope:
+  domain: '<domain>'
+  slug: '<publication-slug>'
+  oracle_objects:
+    - 'MC.<OBJECT>'
+  authoritative_environment: MC
+  canonical_path: 'catalog/<domain>/<slug>/'
+  existing_canonical_refs: []
+
+target:
+  maturity: AGENT-READY
+  documentation_version: '<version>'
+  breaking_change: false
+  revision_date: '<YYYY-MM-DD>'
+  revision_note_sk: '<approved revision note>'
+
+semantic_contract:
+  approved: true
+  grain: []
+  identity: []
+  source_of_truth: []
+  temporal_rules: []
+  critical_relationships: []
+  fan_out_rules: []
+  mutation_boundaries: []
+  dependency_boundaries: []
+  do_not_assume: []
+
+evidence:
+  bundles: []
+  manifests: []
+  mapping_packs: []
+  expected_checksums: []
+  snapshot_dates: []
+  interpretation_limits: []
+
+canonical_sql:
+  source_paths: []
+  materialize: true
+  read_only_required: true
+
+backlog:
+  blocking_count: 0
+  blocking_items: []
+  nonblocking_items: []
+
+acceptance:
+  expected_counts: {}
+  semantic_loss_assertions: []
+  required_domain_tests: []
+  required_sql_safety_tests: []
+  unresolved_refs: 0
+  duplicate_global_ids: 0
+
+publication:
+  enabled: false
+  slug: '<publication-slug>'
+  subject_sk: '<approved Slovak subject>'
+  output_dir: 'generated/<publication-slug>/'
+  generator_command: 'python tools/generate_publication.py <publication-slug>'
+
+execution:
+  standard: 'docs/codex-execution-standard-v3.md'
+  prefer_deterministic_materializer: true
+  do_not_rediscover_approved_facts: true
+  inspect_unrelated_domains: false
+  domain_tests_first: true
+  full_regression_after_domain_green: true
+  concise_success_logs: true
+
+repository_actions:
+  create_or_update: []
+  preserve: []
+  forbidden: []
+  prepare_pr: true
+  merge_only_with_green_ci: true
+  verify_main_after_merge: true
+
+handoff_stop_conditions:
+  - missing_required_evidence
+  - evidence_conflicts_with_confirmed_semantics
+  - unresolved_required_reference
+  - schema_cannot_losslessly_represent_approved_fact
