@@ -1,0 +1,61 @@
+schema_version: '1.0'
+kind: temporal
+id: pm.temporal
+records:
+- temporal_rule_id: pm.temporal.i_stamp
+  scope_refs:
+  - pm.field.sklad_karta.i_stamp
+  classification: TRANSITION STAMP
+  reconstructable: false
+  history_limitations_sk: Technical insert only.
+  status: POTVRDENÉ
+  evidence_refs:
+  - pm.evidence.handoff
+- temporal_rule_id: pm.temporal.u_stamp
+  scope_refs:
+  - pm.field.sklad_karta.u_stamp
+  classification: LAST UPDATE
+  reconstructable: false
+  history_limitations_sk: Last technical update; not per-field history.
+  status: POTVRDENÉ
+  evidence_refs:
+  - pm.evidence.handoff
+- temporal_rule_id: pm.temporal.s_stamp
+  scope_refs:
+  - pm.field.sklad_karta.s_stamp
+  classification: TRANSITION STAMP
+  reconstructable: false
+  history_limitations_sk: Remove/storno only.
+  status: POTVRDENÉ
+  evidence_refs:
+  - pm.evidence.handoff
+- temporal_rule_id: pm.temporal.n_stamp
+  scope_refs:
+  - pm.field.sklad_karta.n_stamp
+  classification: TRANSITION STAMP
+  reconstructable: false
+  history_limitations_sk: Selective Novinka process; not creation date or universal lifecycle timestamp.
+  status: POTVRDENÉ
+  evidence_refs:
+  - pm.evidence.handoff
+- temporal_rule_id: pm.temporal.raw_current
+  scope_refs:
+  - pm.object.sklad_karta
+  classification: RAW CURRENT
+  reconstructable: false
+  history_limitations_sk: Historical transaction joined to current master is not historical master truth.
+  status: POTVRDENÉ
+  evidence_refs:
+  - pm.evidence.handoff
+- temporal_rule_id: pm.temporal.selective_history
+  scope_refs:
+  - pm.oracle.mc.sklad_karta_intkod_z.table
+  - pm.oracle.mc.hist_zmien.table
+  - pm.oracle.mc.sk_temp.table
+  classification: SELECTIVE HISTORY
+  reconstructable: false
+  history_limitations_sk: SK_TEMP is process/change queue; selective history cannot reconstruct arbitrary master
+    fields.
+  status: POTVRDENÉ
+  evidence_refs:
+  - pm.evidence.handoff

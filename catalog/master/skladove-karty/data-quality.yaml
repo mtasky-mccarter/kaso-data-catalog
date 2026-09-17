@@ -1,0 +1,154 @@
+schema_version: '1.0'
+kind: data-quality
+id: pm.data_quality
+records:
+- dq_id: pm.dq.coef_001
+  scope_refs:
+  - pm.object.sk_nakl_polozky
+  observation_sk: 'DQ-COEF-001: stale BOM-auto rows (101 product×coefficient groups / 42 products in PM07B)'
+  snapshot_date: '2026-09-15'
+  blocking: false
+  status: POTVRDENÉ
+  evidence_refs:
+  - pm.evidence.handoff
+  interpretation_limit_sk: Scope-sensitive; no automatic master-data remediation. Preserve norm loss, lifecycle/effective
+    context and jurisdiction boundary.
+  incident_code: DQ-COEF-001
+- dq_id: pm.dq.coef_002
+  scope_refs:
+  - pm.object.sk_nakl_polozky
+  observation_sk: 'DQ-COEF-002: CRITICAL overwrite/no aggregation when multiple BOM components map to same NK_ID;
+    64 multi-component groups in PM07A'
+  snapshot_date: '2026-09-15'
+  blocking: false
+  status: POTVRDENÉ
+  evidence_refs:
+  - pm.evidence.handoff
+  interpretation_limit_sk: Scope-sensitive; no automatic master-data remediation. Preserve norm loss, lifecycle/effective
+    context and jurisdiction boundary.
+  incident_code: DQ-COEF-002
+  severity: CRITICAL
+- dq_id: pm.dq.coef_003
+  scope_refs:
+  - pm.object.sk_nakl_polozky
+  observation_sk: 'DQ-COEF-003: stored vs current recompute mismatch'
+  snapshot_date: '2026-09-15'
+  blocking: false
+  status: POTVRDENÉ
+  evidence_refs:
+  - pm.evidence.handoff
+  interpretation_limit_sk: Scope-sensitive; no automatic master-data remediation. Preserve norm loss, lifecycle/effective
+    context and jurisdiction boundary.
+  incident_code: DQ-COEF-003
+- dq_id: pm.dq.coef_004
+  scope_refs:
+  - pm.object.sk_nakl_polozky
+  observation_sk: 'DQ-COEF-004: missing stored auto coefficient where current mapping suggests one should exist
+    (scope-sensitive)'
+  snapshot_date: '2026-09-15'
+  blocking: false
+  status: POTVRDENÉ
+  evidence_refs:
+  - pm.evidence.handoff
+  interpretation_limit_sk: Scope-sensitive; no automatic master-data remediation. Preserve norm loss, lifecycle/effective
+    context and jurisdiction boundary.
+  incident_code: DQ-COEF-004
+- dq_id: pm.dq.coef_005
+  scope_refs:
+  - pm.object.sk_nakl_polozky
+  observation_sk: 'DQ-COEF-005: SK/CZ prefix naming is legacy/transitional; informational/warn, not jurisdiction
+    truth'
+  snapshot_date: '2026-09-15'
+  blocking: false
+  status: POTVRDENÉ
+  evidence_refs:
+  - pm.evidence.handoff
+  interpretation_limit_sk: Scope-sensitive; no automatic master-data remediation. Preserve norm loss, lifecycle/effective
+    context and jurisdiction boundary.
+  incident_code: DQ-COEF-005
+  severity: WARNING
+- dq_id: pm.dq.coef_006
+  scope_refs:
+  - pm.object.sk_nakl_polozky
+  observation_sk: 'DQ-COEF-006: report may include invalid/storned assignment in sugar/reporting branch due missing
+    lifecycle filter'
+  snapshot_date: '2026-09-15'
+  blocking: false
+  status: POTVRDENÉ
+  evidence_refs:
+  - pm.evidence.handoff
+  interpretation_limit_sk: Scope-sensitive; no automatic master-data remediation. Preserve norm loss, lifecycle/effective
+    context and jurisdiction boundary.
+  incident_code: DQ-COEF-006
+- dq_id: pm.dq.report_001
+  scope_refs:
+  - pm.object.sklad_karta
+  - pm.object.sk_nakl_polozky
+  observation_sk: DQ-REPORT-001; CRITICAL; POTVRDENÉ. Both SK and CZ total/footer omit FLAGS[12] eligibility filter
+    present in detail. Fix belongs to report SQL, not master values or coefficients.
+  snapshot_date: '2026-09-15'
+  blocking: false
+  status: POTVRDENÉ
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.pm-11p
+  - pm.evidence.pm-11n
+  - pm.evidence.pm-11s2
+  interpretation_limit_sk: 'SK Q2/2026: 154.416745 t versus 150.787039 t; excluded 3.629706 t, 12 cards. Current
+    master does not reconstruct historical eligibility.'
+  incident_code: DQ-REPORT-001
+  severity: CRITICAL
+- dq_id: pm.dq.logistics
+  scope_refs:
+  - pm.object.sklad_karta_lb
+  observation_sk: 5 active LB missing exact piece code; 4 active unlinked codes; 1 linked to inactive LB; 1 code
+    not represented by LB level; 14 main LB without main piece code; 27 active shared codes. Candidates are scope-dependent,
+    not automatic errors.
+  snapshot_date: '2026-09-14'
+  blocking: false
+  status: POTVRDENÉ
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.lm-03c
+- dq_id: pm.dq.supplier
+  scope_refs:
+  - pm.object.sklad_dodavatel
+  observation_sk: 102 matches; 13 root main suppliers absent from active satellite. DOD_KOD, KOD_DOD, VYROBCA_KOD
+    are not synonyms.
+  snapshot_date: '2026-09-14'
+  blocking: false
+  status: POTVRDENÉ
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.pm-05e
+- dq_id: pm.dq.vat
+  scope_refs:
+  - pm.object.sklad_karta_fu
+  observation_sk: 2080 false / 481 true SAME_AS_ROOT. Contextual overrides may be valid.
+  snapshot_date: '2026-09-14'
+  blocking: false
+  status: POTVRDENÉ
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.pm-05f
+- dq_id: pm.dq.nahrada
+  scope_refs:
+  - pm.object.sklad_karta
+  observation_sk: 164 groups; 3162 nonzero rows; 164 anchors; 2998 other members; 837 USED=1. No substitutability
+    or automatic remediation.
+  snapshot_date: '2026-09-14'
+  blocking: false
+  status: POTVRDENÉ
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.pm-10f
+- dq_id: pm.dq.typ_t
+  scope_refs:
+  - pm.object.sklad_karta
+  observation_sk: 12 unresolved '00'; no ID/TYP_T/tree resolution. No guessed classification or cleanup.
+  snapshot_date: '2026-09-14'
+  blocking: false
+  status: POTVRDENÉ
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.pm-10b2

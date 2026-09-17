@@ -1,0 +1,557 @@
+schema_version: '1.0'
+kind: mutations
+id: pm.mutations
+records:
+- mutation_id: pm.mutation.insert
+  target_refs:
+  - pm.field.sklad_karta.hlavna_tp
+  - pm.field.sklad_karta.nahrada
+  - pm.field.sklad_karta.sk_id
+  - pm.field.sklad_karta.rid_obj
+  - pm.field.sklad_karta.used
+  - pm.field.sklad_karta.datum
+  - pm.field.sklad_karta.i_stamp
+  writer_ref: pm.oracle.mc.t_s_sklad_karta_ins.trigger
+  writer_role: DIRECT WRITER
+  event_sk: BEFORE INSERT
+  condition_sk: Outside replication; defaults retain source conditions.
+  session_or_bypass_sk: C_SESSION.GETREPLIKACIA != 0 returns early.
+  direct_mutations_sk: HLAVNA_TP=self when null/0; NAHRADA=self when null; SK_ID=ID; RID_OBJ=RID; USED=1; DATUM=SYSDATE;
+    I_STAMP technical insert; U_STAMP/S_STAMP zero. Template branch may subsequently override values.
+  status: POTVRDENÉ
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.mp03-a
+- mutation_id: pm.mutation.storno
+  target_refs:
+  - pm.object.sklad_karta
+  - pm.object.b_kod_u
+  - pm.object.sklad_karta_lb
+  - pm.object.sklad_dodavatel
+  writer_ref: pm.oracle.mc.t_s_sklad_karta.trigger
+  writer_role: DIRECT WRITER
+  event_sk: BEFORE DELETE OR UPDATE
+  condition_sk: On S_STAMP change to nonzero, active child rows only.
+  session_or_bypass_sk: Replication early return; C_SESSION.GetSwap branch retained in source.
+  direct_mutations_sk: USED and S_STAMP technical synchronization; storno B_KOD_U, SKLAD_KARTA_LB and SKLAD_DODAVATEL.
+    B_KOD_U and LB SKRATKA=RID. Reverse root activation does not prove child restoration.
+  status: POTVRDENÉ
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.mp03-a
+- mutation_id: pm.mutation.novinka
+  target_refs:
+  - pm.field.sklad_karta.n_stamp
+  writer_ref: pm.oracle.mc.t_s_sklad_karta.trigger
+  writer_role: DIRECT WRITER
+  event_sk: UPDATE STAV
+  condition_sk: NEW.STAV=1 AND OLD.STAV!=1
+  session_or_bypass_sk: null
+  direct_mutations_sk: N_STAMP=C_STAMP.GetSessionStamp for selective Novinka transition, not universal lifecycle
+    history.
+  status: POTVRDENÉ
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.mp03-a
+- mutation_id: pm.mutation.end_of_sale
+  target_refs:
+  - pm.boundary_field.obch_pl_o.plan_pocet2
+  - pm.boundary_field.obch_pl_o.pozn
+  writer_ref: pm.oracle.mc.t_sklad_karta_stav_after_mc.trigger
+  writer_role: TRIGGER SIDE EFFECT
+  event_sk: AFTER UPDATE OF STAV
+  condition_sk: OLD.STAV <> 8 AND NEW.STAV = 8
+  session_or_bypass_sk: 'C_Session.GetReplikacia: replication returns early.'
+  direct_mutations_sk: 'Calls MCCARTER_PLAN.MC_UKONCENY_PREDAJ_SK(NEW.ID). Current/future OBCH_PL_O forecast types
+    OPTyp_Prognoza / OPTyp_PrognPartn: PLAN_POCET2=0 and POZN beginning Ukončený predaj with date and original quantity.
+    POZN is part of the executable bypass contract.'
+  status: POTVRDENÉ
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.pm-12a
+- mutation_id: pm.mutation.end_of_sale_reset
+  target_refs:
+  - pm.boundary_field.obch_pl_o.plan_pocet2
+  - pm.boundary_field.obch_pl_o.pozn
+  writer_ref: pm.oracle.mc.mccarter_plan.package_body
+  writer_role: DIRECT WRITER
+  event_sk: MC_UKONCENY_PREDAJ_SK(SK.ID)
+  condition_sk: Matching SKU; current week-period forward; OBCH_PL_L.TYP_PLANU in OPTyp_Prognoza / OPTyp_PrognPartn.
+  session_or_bypass_sk: null
+  direct_mutations_sk: Directly sets OBCH_PL_O.PLAN_POCET2=0 and POZN beginning Ukončený predaj with date and original
+    quantity; the simultaneous note change is required by the dedicated lock exception.
+  status: POTVRDENÉ
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.pm-12a
+- mutation_id: pm.mutation.bom_coefficients
+  target_refs:
+  - pm.object.sk_nakl_polozky
+  writer_ref: pm.oracle.mc.mccarter.package_body
+  writer_role: DIRECT WRITER
+  event_sk: imp_SK_NAKL_POL_VYR
+  condition_sk: Active BOM rows; executable finished-product INT_KOD prefix 3; DU8/DU9 tokens.
+  session_or_bypass_sk: null
+  direct_mutations_sk: 'Uses component HMOTNOST_NETTO times BOM POCET (can include norm loss), DU7 split and CZ;SK
+    tokens. Deletes product+NK_ID then inserts per component/token: overwrite instead of aggregation. DQ-COEF-001..006
+    remain incidents; do not normalize away.'
+  status: POTVRDENÉ
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.pm-04f_0eff0ebf
+- mutation_id: pm.mutation.assignments.t_r_sklad_karta
+  target_refs:
+  - pm.field.sklad_karta.modif_i
+  - pm.field.sklad_karta.modif_u
+  writer_ref: pm.oracle.mc.t_r_sklad_karta.trigger
+  writer_role: DIRECT WRITER
+  event_sk: Source-visible :NEW assignments; trigger event recorded in flows.
+  condition_sk: Preserve branch conditions and exceptions in pm.source.mp03-a.t_r_sklad_karta.trigger; assignments
+    are not unconditional defaults.
+  direct_mutations_sk: ':NEW.modif_i := NN;
+
+    :NEW.modif_u := -1;
+
+    :NEW.modif_u := NN;'
+  status: TECHNICKY ZNÁME
+  evidence_refs:
+  - pm.evidence.mp03-a
+- mutation_id: pm.mutation.assignments.t_sklad_karta
+  target_refs:
+  - pm.field.sklad_karta.zmenene
+  writer_ref: pm.oracle.mc.t_sklad_karta.trigger
+  writer_role: DIRECT WRITER
+  event_sk: Source-visible :NEW assignments; trigger event recorded in flows.
+  condition_sk: Preserve branch conditions and exceptions in pm.source.mp03-a.t_sklad_karta.trigger; assignments
+    are not unconditional defaults.
+  direct_mutations_sk: :NEW.zmenene := TRUNC(SYSDATE,'DDD')-TO_DATE('01.01.1993','DD.MM.YYYY');
+  status: TECHNICKY ZNÁME
+  evidence_refs:
+  - pm.evidence.mp03-a
+- mutation_id: pm.mutation.assignments.t_sklad_karta_id_tree
+  target_refs:
+  - pm.field.sklad_karta.id_tree
+  writer_ref: pm.oracle.mc.t_sklad_karta_id_tree.trigger
+  writer_role: DIRECT WRITER
+  event_sk: Source-visible :NEW assignments; trigger event recorded in flows.
+  condition_sk: Preserve branch conditions and exceptions in pm.source.mp03-a.t_sklad_karta_id_tree.trigger; assignments
+    are not unconditional defaults.
+  direct_mutations_sk: :NEW.id_tree := nId;
+  status: TECHNICKY ZNÁME
+  evidence_refs:
+  - pm.evidence.mp03-a
+- mutation_id: pm.mutation.assignments.t_sklad_karta_zmena_ceny
+  target_refs:
+  - pm.field.sklad_karta.c_stamp
+  writer_ref: pm.oracle.mc.t_sklad_karta_zmena_ceny.trigger
+  writer_role: DIRECT WRITER
+  event_sk: Source-visible :NEW assignments; trigger event recorded in flows.
+  condition_sk: Preserve branch conditions and exceptions in pm.source.mp03-a.t_sklad_karta_zmena_ceny.trigger;
+    assignments are not unconditional defaults.
+  direct_mutations_sk: ':NEW.C_STAMP := ''0''||substr(:new.C_Stamp,2);
+
+    :NEW.C_STAMP := substr(:new.C_Stamp,1,1)||''11111'';
+
+    :NEW.C_STAMP := substr(:new.C_STAMP,1,1)||''1''||substr(:new.C_STAMP,1+2);
+
+    :NEW.C_STAMP := substr(:new.C_STAMP,1,2)||''1''||substr(:new.C_STAMP,2+2);
+
+    :NEW.C_STAMP := substr(:new.C_STAMP,1,3)||''1''||substr(:new.C_STAMP,3+2);
+
+    :NEW.C_STAMP := substr(:new.C_STAMP,1,4)||''1''||substr(:new.C_STAMP,4+2);
+
+    :NEW.C_STAMP := substr(:new.C_STAMP,1,5)||''1''||substr(:new.C_STAMP,5+2);
+
+    :NEW.C_STAMP := substr(:new.C_STAMP,1,1)||''0''||substr(:new.C_STAMP,1+2);
+
+    :NEW.C_STAMP := substr(:new.C_STAMP,1,2)||''0''||substr(:new.C_STAMP,2+2);
+
+    :NEW.C_STAMP := substr(:new.C_STAMP,1,3)||''0''||substr(:new.C_STAMP,3+2);
+
+    :NEW.C_STAMP := substr(:new.C_STAMP,1,4)||''0''||substr(:new.C_STAMP,4+2);
+
+    :NEW.C_STAMP := substr(:new.C_STAMP,1,5)||''0''||substr(:new.C_STAMP,5+2);'
+  status: TECHNICKY ZNÁME
+  evidence_refs:
+  - pm.evidence.mp03-a
+- mutation_id: pm.mutation.assignments.t_s_sklad_karta
+  target_refs:
+  - pm.field.sklad_karta.u_stamp
+  - pm.field.sklad_karta.n_stamp
+  - pm.field.sklad_karta.flags_povol
+  - pm.field.sklad_karta.s_stamp
+  - pm.field.sklad_karta.used
+  - pm.field.sklad_karta.odpis_sk
+  - pm.field.sklad_karta.makro
+  - pm.field.sklad_karta.stav
+  - pm.field.sklad_karta.nahrada
+  - pm.field.sklad_karta.dod_sk
+  - pm.field.sklad_karta.vyrobca
+  - pm.field.sklad_karta.par_1
+  - pm.field.sklad_karta.par_2
+  - pm.field.sklad_karta.par_str_1
+  - pm.field.sklad_karta.id_prod_man
+  - pm.field.sklad_karta.zaruka
+  - pm.field.sklad_karta.zaruka_obd
+  - pm.field.sklad_karta.p_jednotka
+  - pm.field.sklad_karta.objem
+  - pm.field.sklad_karta.hmotnost
+  - pm.field.sklad_karta.hlbka
+  - pm.field.sklad_karta.vyska
+  - pm.field.sklad_karta.sirka
+  - pm.field.sklad_karta.zlomky
+  - pm.field.sklad_karta.zlomky_skala
+  - pm.field.sklad_karta.t_tovaru
+  - pm.field.sklad_karta.skala
+  - pm.field.sklad_karta.kalkul_p
+  - pm.field.sklad_karta.poloha
+  - pm.field.sklad_karta.sla_standard
+  - pm.field.sklad_karta.kod_id_obalu
+  - pm.field.sklad_karta.c_1
+  - pm.field.sklad_karta.c_2
+  - pm.field.sklad_karta.c_3
+  - pm.field.sklad_karta.c_4
+  - pm.field.sklad_karta.c_5
+  - pm.field.sklad_karta.c_n
+  - pm.field.sklad_karta.c_m
+  - pm.field.sklad_karta.col_sadzba
+  - pm.field.sklad_karta.krajina_p
+  - pm.field.sklad_karta.skp
+  - pm.field.sklad_karta.mnozstvo_dmj
+  - pm.field.sklad_karta.flags
+  - pm.field.sklad_karta.flags_b
+  - pm.field.sklad_karta.dph
+  - pm.field.sklad_karta.farby
+  - pm.field.sklad_karta.techinfo
+  - pm.field.sklad_karta.c_x
+  - pm.field.sklad_karta.cen_skupina
+  - pm.field.sklad_karta.pref_cena
+  - pm.field.sklad_karta.c_ekv
+  - pm.field.sklad_karta.zlavy
+  - pm.field.sklad_karta.doba_nak
+  - pm.field.sklad_karta.obj_jednotka
+  writer_ref: pm.oracle.mc.t_s_sklad_karta.trigger
+  writer_role: DIRECT WRITER
+  event_sk: Source-visible :NEW assignments; trigger event recorded in flows.
+  condition_sk: Preserve branch conditions and exceptions in pm.source.mp03-a.t_s_sklad_karta.trigger; assignments
+    are not unconditional defaults.
+  direct_mutations_sk: ':NEW.u_stamp := C_Stamp.GetSessionStamp;
+
+    :NEW.n_stamp := C_STAMP.GetSessionStamp;
+
+    :NEW.flags_povol := ''1''||substr(:new.flags_povol,2);
+
+    :NEW.flags_povol := ''0''||substr(:new.flags_povol,2);
+
+    :NEW.flags_povol := substr(:new.flags_povol,1,1)||''1''||substr(:new.flags_povol,3);
+
+    :NEW.flags_povol := substr(:new.flags_povol,1,1)||''0''||substr(:new.flags_povol,3);
+
+    :NEW.U_STAMP := C_STAMP.GetSessionStamp;
+
+    :NEW.S_STAMP := ''0'';
+
+    :NEW.S_STAMP := C_STAMP.GetSessionStamp;
+
+    :NEW.used := 0;
+
+    :NEW.used := 1;
+
+    :NEW.odpis_sk := rSK.odpis_sk;
+
+    :NEW.makro := rsk.makro;
+
+    :NEW.stav := rSK.Stav;
+
+    :NEW.nahrada := rSK.Nahrada;
+
+    :NEW.dod_sk := rSK.dod_sk;
+
+    :NEW.vyrobca := rSK.vyrobca;
+
+    :NEW.par_1 := rSk.par_1;
+
+    :NEW.par_2 := rSK.par_2;
+
+    :NEW.par_str_1 := rSK.par_str_1;
+
+    :NEW.id_prod_man := rSK.id_prod_man;
+
+    :NEW.zaruka := rSk.zaruka;
+
+    :NEW.zaruka_obd := rSk.zaruka_obd;
+
+    :NEW.p_jednotka := rSk.p_jednotka;
+
+    :NEW.objem := rSk.objem;
+
+    :NEW.hmotnost := rSk.hmotnost;
+
+    :NEW.hlbka := rSk.hlbka;
+
+    :NEW.vyska := rSk.vyska;
+
+    :NEW.sirka := rSk.sirka;
+
+    :NEW.zlomky := rSk.zlomky;
+
+    :NEW.zlomky_skala := rSk.zlomky_skala;
+
+    :NEW.t_tovaru := rSk.t_tovaru;
+
+    :NEW.skala := rSk.skala;
+
+    :NEW.kalkul_p := rSk.kalkul_p;
+
+    :NEW.poloha := rSk.poloha;
+
+    :NEW.sla_standard := rSk.sla_standard;
+
+    :NEW.kod_id_obalu := rSk.kod_id_obalu;
+
+    :NEW.c_1 := rSk.c_1;
+
+    :NEW.c_2 := rSk.c_2;
+
+    :NEW.c_3 := rSk.c_3;
+
+    :NEW.c_4 := rSk.c_4;
+
+    :NEW.c_5 := rSk.c_5;
+
+    :NEW.c_n := rSk.c_n;
+
+    :NEW.c_m := rSk.c_m;
+
+    :NEW.col_sadzba := rSk.col_sadzba;
+
+    :NEW.krajina_p := rSk.krajina_p;
+
+    :NEW.skp := rSk.skp;
+
+    :NEW.mnozstvo_dmj := rSk.mnozstvo_dmj;
+
+    :NEW.flags := rSk.flags;
+
+    :NEW.flags_b := rSk.flags_b;
+
+    :NEW.dph := rSk.dph;
+
+    :NEW.farby := rSk.farby;
+
+    :NEW.techinfo := rSk.techinfo;
+
+    :NEW.c_x := rSk.c_x;
+
+    :NEW.cen_skupina := rSk.cen_skupina;
+
+    :NEW.pref_cena := rSk.pref_cena;
+
+    :NEW.c_ekv := rSk.c_ekv;
+
+    :NEW.zlavy := rSk.zlavy;
+
+    :NEW.doba_nak := rSk.doba_nak;
+
+    :NEW.obj_jednotka := rSk.obj_jednotka;'
+  status: TECHNICKY ZNÁME
+  evidence_refs:
+  - pm.evidence.mp03-a
+- mutation_id: pm.mutation.assignments.t_s_sklad_karta_ins
+  target_refs:
+  - pm.field.sklad_karta.hlavna_tp
+  - pm.field.sklad_karta.nahrada
+  - pm.field.sklad_karta.int_kod
+  - pm.field.sklad_karta.skratka
+  - pm.field.sklad_karta.n_stamp
+  - pm.field.sklad_karta.sk_id
+  - pm.field.sklad_karta.rid_obj
+  - pm.field.sklad_karta.used
+  - pm.field.sklad_karta.flags_s
+  - pm.field.sklad_karta.datum
+  - pm.field.sklad_karta.i_stamp
+  - pm.field.sklad_karta.u_stamp
+  - pm.field.sklad_karta.s_stamp
+  - pm.field.sklad_karta.flags_povol
+  - pm.field.sklad_karta.odpis_sk
+  - pm.field.sklad_karta.makro
+  - pm.field.sklad_karta.stav
+  - pm.field.sklad_karta.dod_sk
+  - pm.field.sklad_karta.vyrobca
+  - pm.field.sklad_karta.par_1
+  - pm.field.sklad_karta.par_2
+  - pm.field.sklad_karta.par_str_1
+  - pm.field.sklad_karta.id_prod_man
+  - pm.field.sklad_karta.zaruka
+  - pm.field.sklad_karta.zaruka_obd
+  - pm.field.sklad_karta.p_jednotka
+  - pm.field.sklad_karta.objem
+  - pm.field.sklad_karta.hmotnost
+  - pm.field.sklad_karta.hlbka
+  - pm.field.sklad_karta.vyska
+  - pm.field.sklad_karta.sirka
+  - pm.field.sklad_karta.zlomky
+  - pm.field.sklad_karta.zlomky_skala
+  - pm.field.sklad_karta.t_tovaru
+  - pm.field.sklad_karta.skala
+  - pm.field.sklad_karta.kalkul_p
+  - pm.field.sklad_karta.poloha
+  - pm.field.sklad_karta.sla_standard
+  - pm.field.sklad_karta.kod_id_obalu
+  - pm.field.sklad_karta.c_1
+  - pm.field.sklad_karta.c_2
+  - pm.field.sklad_karta.c_3
+  - pm.field.sklad_karta.c_4
+  - pm.field.sklad_karta.c_5
+  - pm.field.sklad_karta.c_n
+  - pm.field.sklad_karta.c_m
+  - pm.field.sklad_karta.col_sadzba
+  - pm.field.sklad_karta.krajina_p
+  - pm.field.sklad_karta.skp
+  - pm.field.sklad_karta.mnozstvo_dmj
+  - pm.field.sklad_karta.flags
+  - pm.field.sklad_karta.flags_b
+  - pm.field.sklad_karta.dph
+  - pm.field.sklad_karta.farby
+  - pm.field.sklad_karta.techinfo
+  - pm.field.sklad_karta.c_x
+  - pm.field.sklad_karta.cen_skupina
+  - pm.field.sklad_karta.pref_cena
+  - pm.field.sklad_karta.c_ekv
+  - pm.field.sklad_karta.zlavy
+  - pm.field.sklad_karta.doba_nak
+  writer_ref: pm.oracle.mc.t_s_sklad_karta_ins.trigger
+  writer_role: DIRECT WRITER
+  event_sk: Source-visible :NEW assignments; trigger event recorded in flows.
+  condition_sk: Preserve branch conditions and exceptions in pm.source.mp03-a.t_s_sklad_karta_ins.trigger; assignments
+    are not unconditional defaults.
+  direct_mutations_sk: ':NEW.hlavna_tp := :new.id;
+
+    :NEW.nahrada := :new.id;
+
+    :NEW.int_kod := :new.id;
+
+    :NEW.skratka := null;
+
+    :NEW.n_stamp := C_STAMP.GetSessionStamp;
+
+    :NEW.sk_id := :new.id;
+
+    :NEW.rid_obj := :new.rid;
+
+    :NEW.used := 1;
+
+    :NEW.FLAGS_S := ''0'';
+
+    :NEW.datum := sysdate;
+
+    :NEW.I_STAMP := C_Stamp.GetSessionStampTrigg( :new.i_stamp);
+
+    :NEW.U_STAMP := ''0'';
+
+    :NEW.S_STAMP := ''0'';
+
+    :NEW.flags_povol := rpad( ''1'', 20 + nPocetPovoleni, ''0'');
+
+    :NEW.flags_povol := rpad( ''0'', 20 + nPocetPovoleni, ''0'');
+
+    :NEW.flags_povol := substr(:new.flags_povol,1,1)||''1''||substr(:new.flags_povol,3);
+
+    :NEW.odpis_sk := rSK.odpis_sk;
+
+    :NEW.makro := rsk.makro;
+
+    :NEW.stav := rSK.Stav;
+
+    :NEW.nahrada := rSK.Nahrada;
+
+    :NEW.dod_sk := rSK.dod_sk;
+
+    :NEW.vyrobca := rSK.vyrobca;
+
+    :NEW.par_1 := rSk.par_1;
+
+    :NEW.par_2 := rSK.par_2;
+
+    :NEW.par_str_1 := rSK.par_str_1;
+
+    :NEW.id_prod_man := rSK.id_prod_man;
+
+    :NEW.zaruka := rSk.zaruka;
+
+    :NEW.zaruka_obd := rSk.zaruka_obd;
+
+    :NEW.p_jednotka := rSk.p_jednotka;
+
+    :NEW.objem := rSk.objem;
+
+    :NEW.hmotnost := rSk.hmotnost;
+
+    :NEW.hlbka := rSk.hlbka;
+
+    :NEW.vyska := rSk.vyska;
+
+    :NEW.sirka := rSk.sirka;
+
+    :NEW.zlomky := rSk.zlomky;
+
+    :NEW.zlomky_skala := rSk.zlomky_skala;
+
+    :NEW.t_tovaru := rSk.t_tovaru;
+
+    :NEW.skala := rSk.skala;
+
+    :NEW.kalkul_p := rSk.kalkul_p;
+
+    :NEW.poloha := rSk.poloha;
+
+    :NEW.sla_standard := rSk.sla_standard;
+
+    :NEW.kod_id_obalu := rSk.kod_id_obalu;
+
+    :NEW.c_1 := rSk.c_1;
+
+    :NEW.c_2 := rSk.c_2;
+
+    :NEW.c_3 := rSk.c_3;
+
+    :NEW.c_4 := rSk.c_4;
+
+    :NEW.c_5 := rSk.c_5;
+
+    :NEW.c_n := rSk.c_n;
+
+    :NEW.c_m := rSk.c_m;
+
+    :NEW.col_sadzba := rSk.col_sadzba;
+
+    :NEW.krajina_p := rSk.krajina_p;
+
+    :NEW.skp := rSk.skp;
+
+    :NEW.mnozstvo_dmj := rSk.mnozstvo_dmj;
+
+    :NEW.flags := rSk.flags;
+
+    :NEW.flags_b := rSk.flags_b;
+
+    :NEW.dph := rSk.dph;
+
+    :NEW.farby := rSk.farby;
+
+    :NEW.techinfo := rSk.techinfo;
+
+    :NEW.c_x := rSk.c_x;
+
+    :NEW.cen_skupina := rSk.cen_skupina;
+
+    :NEW.pref_cena := rSk.pref_cena;
+
+    :NEW.c_ekv := rSk.c_ekv;
+
+    :NEW.zlavy := rSk.zlavy;
+
+    :NEW.doba_nak := rSk.doba_nak;'
+  status: TECHNICKY ZNÁME
+  evidence_refs:
+  - pm.evidence.mp03-a

@@ -1,0 +1,2992 @@
+schema_version: '1.0'
+kind: dependencies
+id: pm.source_references_part010
+records:
+- dependency_id: pm.source.pm-08c.t_s_zmluvy_sp_ins.trigger
+  source_ref: pm.oracle.mc.t_s_zmluvy_sp_ins.trigger
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-08c
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "15:      :new.flags_s := c_flags.fSetFlagsState( psFlags=>:new.FLAGS_S, nIndex=>2, psState=>c_zmluva_sp.StavToFlagStav(:new.STAV));\
+    \ \n\n17:      :new.STAV := c_zmluva_sp.FlagStavToStav(substr(:new.FLAGS_S, 2, 1)); \n"
+- dependency_id: pm.source.pm-09c.c_cis_poznamka.package
+  source_ref: pm.oracle.mc.c_cis_poznamka.package
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09c
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "1: PACKAGE c_cis_poznamka\n\n2:   IS\n\n3: -- EXP 19.09.2022 11:02 CHG 19.09.2022 11:02\n\n4: -- EXP 19.08.2022\
+    \ 08:48 CHG 19.08.2022 08:47\n\n5: -- EXP 24.02.2022 08:34 CHG 23.02.2022 15:35\n\n6: --\n\n7: -- Version 1.0.0\n\
+    \n8: -- Ciselnik C_CIS_POZNAMKA\n\n9: --\n\n10: -- Generator: PackageGen 22013-10-03-14.00.16.330000\n\n11:\
+    \ -- Definition file: RID_CIS.DEF\n\n12: --\n\n13: -- MODIFICATION HISTORY\n\n14: -- Person       Version  Date\
+    \     Comments\n\n15: -- -----------  -------- -------- ------------------------------------------\n\n16: --\n\
+    \n17: \n\n18: CIS_CIS_POZNAMKY constant C_CIS_DEF.DT_ID_CIS := -426 ;\n\n19: \n\n20: STAV_Neurcene constant\
+    \ number(1, 0) := 0;\n\n21: STAV_Varovanie constant number(1, 0) := 1;\n\n22: STAV_Chyba constant number(1,\
+    \ 0) := 2;\n\n23: STAV_VybaveneVarovanie constant number(1, 0) := 3;\n\n24: STAV_VybavenaChyba constant number(1,\
+    \ 0) := 4;\n\n25: \n\n26: TYP_SYSTEM_POZN constant varchar2(16) := '000-13';\n\n27: \n\n28: -- InsT spec\n\n\
+    29: procedure InsT( pnKladne number default 1, psID in out C_CIS_ID.DT_ID,\n\n30:                 psSkratka\
+    \ C_CIS_ID.DT_SKRATKA default null, pnSKLAD C_CIS_ID.DT_SKLAD default null, psPOZN C_CIS_ID.DT_POZN default\
+    \ null, pxXml_Data xmltype default null,\n\n31:                 psPoznamka CIS_POZNAMKY.POZNAMKA%TYPE default\
+    \ null,\n\n32:                 psRid_v CIS_POZNAMKY.RID_V%TYPE default null,\n\n33:                 pnId_z CIS_POZNAMKY.ID_Z%TYPE\
+    \ default null,\n\n34:                 psPredmet CIS_POZNAMKY.PREDMET%TYPE default null,\n\n35:            \
+    \     psTyp CIS_POZNAMKY.TYP%TYPE default null,\n\n36:                 psFlags_B CIS_POZNAMKY.FLAGS_B%TYPE default\
+    \ null,\n\n37:                 pdtZobrazit_od CIS_POZNAMKY.ZOBRAZIT_OD%TYPE default null,\n\n38:           \
+    \      pdtZobrazit_do CIS_POZNAMKY.ZOBRAZIT_DO%TYPE default null,\n\n39:                 pnStav CIS_POZNAMKY.STAV%TYPE\
+    \ default null,\n\n40:                 pnAktualizuj number default 0 /*ak uz existuje tak sa updejtne*/);\n\n\
+    41: \n\n42: procedure StornoRIDC( psID C_CIS_ID.DT_ID );\n\n43: procedure ZrusStornoRIDC( psID C_CIS_ID.DT_ID\
+    \ );\n\n44: \n\n45: procedure Copy(psRIDFrom varchar2, psRIDTo varchar2);\n\n46: procedure GetPoznamka_ID_Z(psRID\
+    \ varchar2, pnID_Z in out number );\n\n47: function GetPoznamkaDynamColumn(psRID_Zaznam varchar2, psTyp varchar2,\
+    \ pnAko number) return varchar2;\n\n48: function GetPoznamkaDreamer(psRID_V varchar2, psTyp varchar2, pnAko\
+    \ number, pnIdCis number default null) return varchar2;\n\n49: function GetPoznamkaParams(psRID_V varchar2,\
+    \ psTyp varchar2, pnAko number, pnIdCis number default null) return varchar2;\n\n50: \n\n51: procedure SetSysPoznamku(psRID_V\
+    \ varchar2, psPOZN varchar);\n\n52: function GetSysPoznamku(psRID_V varchar2) return varchar2;\n\n53: \n\n54:\
+    \ procedure SetPoznamku(psRID_V varchar2, psTYP varchar2, psPOZN varchar);\n\n55: function GetPoznamku(psRID_V\
+    \ varchar2, psTYP varchar2, psDELIMITER varchar2 default null) return clob;\n\n56: \n\n57: \n\n58: procedure\
+    \ InsTMulti(psRid_V varchar2,psTyp varchar2,\n\n59:                     psPoznamka_1 varchar2 default null,psPoznamka_2\
+    \ varchar2 default null,psPoznamka_3 varchar2 default null,psPoznamka_4 varchar2 default null,psPoznamka_5 varchar2\
+    \ default null,\n\n60:                     psPoznamka_6 varchar2 default null,psPoznamka_7 varchar2 default\
+    \ null,psPoznamka_8 varchar2 default null,psPoznamka_9 varchar2 default null);\n\n61: function ZlozPoznamky(psRid_v\
+    \ varchar2,psTyp varchar2) return clob;\n\n62: procedure ValidTMulti(pnState out number, psMessage out varchar2,\
+    \ psFieldName varchar2, psFieldValue varchar2, psPK varchar2, psFieldParams varchar2, psFieldsSetup out varchar2);\n\
+    \n63: \n\n64: procedure NastavPoznamku(psRID varchar2, psPoznamka varchar2, psTyp varchar2);\n\n65: \n\n66:\
+    \ END;"
+- dependency_id: pm.source.pm-09c.c_cis_poznamka.package_body
+  source_ref: pm.oracle.mc.c_cis_poznamka.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09c
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "1: PACKAGE BODY c_cis_poznamka\n\n2: IS\n\n3:   -- InsT body\n\n4: type XC is ref cursor;\n\n5: \n\n6: procedure\
+    \ InsT( pnKladne number default 1, psID in out C_CIS_ID.DT_ID,\n\n7:                 psSkratka C_CIS_ID.DT_SKRATKA\
+    \ default null, pnSKLAD C_CIS_ID.DT_SKLAD default null, psPOZN C_CIS_ID.DT_POZN default null, pxXml_Data xmltype\
+    \ default null,\n\n8:                 psPoznamka CIS_POZNAMKY.POZNAMKA%TYPE default null,\n\n9:            \
+    \     psRid_v CIS_POZNAMKY.RID_V%TYPE default null,\n\n10:                 pnId_z CIS_POZNAMKY.ID_Z%TYPE default\
+    \ null,\n\n11:                 psPredmet CIS_POZNAMKY.PREDMET%TYPE default null,\n\n12:                 psTyp\
+    \ CIS_POZNAMKY.TYP%TYPE default null,\n\n13:                 psFlags_B CIS_POZNAMKY.FLAGS_B%TYPE default null,\n\
+    \n14:                 pdtZobrazit_od CIS_POZNAMKY.ZOBRAZIT_OD%TYPE default null,\n\n15:                 pdtZobrazit_do\
+    \ CIS_POZNAMKY.ZOBRAZIT_DO%TYPE default null,\n\n16:                 pnStav CIS_POZNAMKY.STAV%TYPE default null,\n\
+    \n17:                 pnAktualizuj number default 0 /*ak uz existuje tak sa updejtne*/)\n\n18: is\n\n19: \t\
+    sColumns varchar2(9000) := '';\n\n20: \tsValues varchar2(9000) := '';\n\n21: \tsDeclaration varchar2(9000) :=\
+    \ '';\n\n22: \tnID_Z number;\n\n23: \tsFlags_b varchar2(254) := c_flags_b_def.ZarovnajFlagC(CIS_CIS_POZNAMKY,\
+    \ psFlags_b);\n\n24: begin\n\n25: \n\n26: \tif pnAktualizuj = 1 AND psId is null then\n\n27: \t\tbegin\n\n28:\
+    \ \t\t\tSELECT ID INTO psId FROM CIS_POZNAMKY WHERE S_STAMP='0'AND TYP=psTyp AND RID_V=psRID_V;\n\n29: \t\t\t\
+    exception when others then\n\n30: \t\t\t\tnull;\n\n31: \t\tend;\n\n32: \tend if;\n\n33: \n\n34: \tif psId is\
+    \ not null then\n\n35: \t\tUPDATE CIS_POZNAMKY SET PREDMET = NVL(psPREDMET, PREDMET), POZN = NVL(psPOZN, POZN),\
+    \ POZNAMKA = NVL(psPOZNAMKA, POZNAMKA)\n\n36: \t\t\tWHERE ID = psID;\n\n37: \t\tif sql%found then\n\n38: \t\t\
+    \treturn;\n\n39: \t\tend if;\n\n40: \t\tpsId := null;\n\n41: \tend if;\n\n42: \n\n43: \tif pnId_z is null then\n\
+    \n44: \t\tselect nvl( max(id_z),0) +1 into nID_Z from cis_poznamky where rid_v = psRID_V;\n\n45: \telse\n\n\
+    46: \t\tnID_Z := pnId_z;\n\n47: \tend if;\n\n48: \n\n49: \tif pnKladne = -1 then psID := '-1'; end if;\n\n50:\
+    \ \tsDeclaration := ' Declare ';\n\n51: \tsDeclaration:= sDeclaration||' psID C_CIS_ID.DT_ID := :psID ;';\n\n\
+    52: \tsDeclaration:= sDeclaration||' pnSklad number := :pnSklad ;';\n\n53: \tsDeclaration:= sDeclaration||'\
+    \ psSkratka CIS_POZNAMKY.skratka%TYPE := :psSkratka ;';\n\n54: \tsDeclaration:= sDeclaration||' psPozn CIS_POZNAMKY.POZN%TYPE\
+    \ := :psPozn ;';\n\n55: \tsDeclaration:= sDeclaration||' pxXml_Data XMLTYPE := :pxXml_Data ;';\n\n56: \tsDeclaration:=\
+    \ sDeclaration||'psPoznamka CIS_POZNAMKY.POZNAMKA%TYPE := :psPoznamka ;' ;\n\n57: \tsDeclaration:= sDeclaration||'psRid_v\
+    \ CIS_POZNAMKY.RID_V%TYPE := :psRid_v ;' ;\n\n58: \tsDeclaration:= sDeclaration||'nID_Z CIS_POZNAMKY.ID_Z%TYPE\
+    \ := :nID_Z ;' ;\n\n59: \tsDeclaration:= sDeclaration||'psPredmet CIS_POZNAMKY.PREDMET%TYPE := :psPredmet ;'\
+    \ ;\n\n60: \tsDeclaration:= sDeclaration||'psTyp CIS_POZNAMKY.TYP%TYPE := :psTyp ;' ;\n\n61: \tsDeclaration:=\
+    \ sDeclaration||'sFlags_B CIS_POZNAMKY.FLAGS_B%TYPE := :sFlags_b ;' ;\n\n62: \tsDeclaration:= sDeclaration||'pdtZobrazit_od\
+    \ CIS_POZNAMKY.ZOBRAZIT_OD%TYPE := :pdtZobrazit_od;';\n\n63: \tsDeclaration:= sDeclaration||'pdtZobrazit_do\
+    \ CIS_POZNAMKY.ZOBRAZIT_DO%TYPE := :pdtZobrazit_do;';\n\n64: \tsDeclaration:= sDeclaration||'pnStav CIS_POZNAMKY.STAV%TYPE\
+    \ := :pnStav;';\n\n65: \tsColumns := ' begin  insert into CIS_POZNAMKY ( ' ;\n\n66: \tsValues := ' ) values\
+    \ ( ';\n\n67: \n\n68: \tIf psID is not null then sColumns:= sColumns||' ID ,';  sValues := sValues||' psID ,';\
+    \   end if;\n\n69: \tIf pnSklad is not null then sColumns:= sColumns||' SKLAD ,';  sValues := sValues||' pnSklad\
+    \ ,';   end if;\n\n70: \tIf psSkratka is not null then sColumns:= sColumns||' Skratka ,';  sValues := sValues||'\
+    \ psSkratka ,';   end if;\n\n71: \tIf psPozn is not null then sColumns:= sColumns||' POZN ,';  sValues := sValues||'\
+    \ psPozn ,';   end if;\n\n72: \tIf pxXml_Data is not null then sColumns:= sColumns||' Xml_Data ,';  sValues\
+    \ := sValues||' pxXml_Data ,';   end if;\n\n73: \n\n74: \tIf psPoznamka is not null then   sColumns:= sColumns||\
+    \ 'POZNAMKA,'; sValues := sValues||'psPoznamka,'; end if;\n\n75: \tIf psRid_v is not null then   sColumns:=\
+    \ sColumns|| 'RID_V,'; sValues := sValues||'psRid_v,'; end if;\n\n76: \tIf nID_Z is not null then   sColumns:=\
+    \ sColumns|| 'ID_Z,'; sValues := sValues||'nID_Z,'; end if;\n\n77: \tIf psPredmet is not null then   sColumns:=\
+    \ sColumns|| 'PREDMET,'; sValues := sValues||'psPredmet,'; end if;\n\n78: \tIf psTyp is not null then   sColumns:=\
+    \ sColumns|| 'TYP,'; sValues := sValues||'psTyp,'; end if;\n\n79: \tIf sFlags_b is not null then   sColumns:=\
+    \ sColumns|| 'FLAGS_B,'; sValues := sValues||'sFlags_b,'; end if;\n\n80: \n\n81: \tIf pdtZobrazit_od is not\
+    \ null then sColumns:= sColumns|| 'ZOBRAZIT_OD,'; sValues := sValues||'pdtZobrazit_od,'; end if;\n\n82: \tIf\
+    \ pdtZobrazit_do is not null then sColumns:= sColumns|| 'ZOBRAZIT_DO,'; sValues := sValues||'pdtZobrazit_do,';\
+    \ end if;\n\n83: \tIf pnStav is not null then sColumns:= sColumns|| 'STAV,'; sValues := sValues||'pnStav,';\
+    \ end if;\n\n84: \tsColumns := substr(sColumns,1,length(sColumns)-1)  ;\n\n85: \tsValues := substr(sValues,1,length(sValues)-1)\
+    \ ||' ) ' ;\n\n86: \tsValues:=sValues||' returning ID into :oa; end; ' ;\n\n87: \n\n88: \texecute immediate\
+    \ sDeclaration || sColumns || sValues  using\n\n89: \t\tIN psID, IN pnSklad, IN psSkratka, IN psPozn, IN pxXml_Data,\n\
+    \n90: \t\tIN psPoznamka,\n\n91: \t\tIN psRid_v,\n\n92: \t\tIN nID_Z,\n\n93: \t\tIN psPredmet,\n\n94: \t\tIN\
+    \ psTyp,\n\n95: \t\tIN sFlags_B,\n\n96: \t\tIN pdtZobrazit_od,\n\n97: \t\tIN pdtZobrazit_do,\n\n98: \t\tIN pnStav,\n\
+    \n99: \t\tOUT psID;\n\n100: \n\n101: \tdbms_output.put_line('Id='||psID);\n\n102: end InsT;\n\n103: \n\n104:\
+    \ procedure StornoRIDC( psID C_CIS_ID.DT_ID ) is\n\n105: begin\n\n106: \tC_CIS_ID.storno_id(psID, 'CIS_POZNAMKY');\n\
+    \n107: end StornoRIDC;\n\n108: \n\n109: procedure ZrusStornoRIDC( psID C_CIS_ID.DT_ID) is\n\n110: begin\n\n\
+    111: \tC_CIS_ID.zrusstorno_id(psID,'CIS_POZNAMKY');\n\n112: end ZrusStornoRIDC;\n\n113: \n\n114: procedure Copy(psRIDFrom\
+    \ varchar2, psRIDTo varchar2)\n\n115: is\n\n116: \tsPozn varchar(254);\n\n117: \tsPredmet varchar(254);\n\n\
+    118: \tsTyp varchar(16);\n\n119: \tcCopy xc;\n\n120: \tsID varchar2(16);\n\n121: \tsFlags_B varchar2(254);\n\
+    \n122: begin\n\n123: \topen cCopy for 'Select poznamka, predmet, typ,flags_b from cis_poznamky where rid_v =\
+    \ :sRIDFrom' using psRIDFrom;\n\n124: \tLOOP\n\n125: \t\tFETCH cCopy INTO sPozn, sPredmet, sTyp,sFlags_B;\n\n\
+    126: \t\tEXIT WHEN cCopy%NOTFOUND;\n\n127: \t\tsID := null;\n\n128: \t\tInsT(pnKladne=>1,psID=>sID,psPoznamka=>sPozn,psRid_v=>psRIDTo,psPredmet=>sPredmet,psTyp=>sTyp,psFlags_B=>sFlags_B);\n\
+    \n129: \tEND LOOP;\n\n130: \tCLOSE cCopy;\n\n131: end Copy;\n\n132: \n\n133: procedure GetPoznamka_ID_Z(psRID\
+    \ varchar2, pnID_Z in out number) is\n\n134: begin\n\n135: \tselect nvl( max(id_z),0) + 1 into pnID_Z from cis_poznamky\
+    \ where rid_v = psRID;\n\n136: end GetPoznamka_ID_Z;\n\n137: \n\n138: function GetPoznamkaDynamColumn(psRID_Zaznam\
+    \ varchar2, psTyp varchar2, pnAko number) return varchar2 is\n\n139: \tnCount number;\n\n140: begin\n\n141:\
+    \ \tif pnAko = 0 then\n\n142: \t\tselect count(*) into nCount from cis_poznamky where rid_v = psRID_Zaznam and\
+    \ typ = decode(psTyp,null,typ,psTyp);\n\n143: \t\tif nCount > 0 then\n\n144: \t\t\treturn '*';\n\n145: \t\t\
+    else\n\n146: \t\t\treturn null;\n\n147: \t\tend if;\n\n148: \telsif pnAko = 1 then\n\n149: \t\tif psTyp is null\
+    \ then\n\n150: \t\t\treturn s2t('select substr(poznamka,1,4000) from cis_poznamky where rid_v = :rid_v', psRID_Zaznam,\
+    \ '*');\n\n151: \t\telse\n\n152: \t\t\treturn s2t2('select substr(poznamka,1,4000) from cis_poznamky where rid_v\
+    \ = :rid_v and typ = :typ', psRID_Zaznam, psTyp, '*');\n\n153: \t\tend if;\n\n154: \tend if;\n\n155: \treturn\
+    \ null;\n\n156: end GetPoznamkaDynamColumn;\n\n157: \n\n158: function GetPoznamkaDreamer(psRID_V varchar2, psTyp\
+    \ varchar2, pnAko number, pnIdCis number default null) return varchar2 is\n\n159: \tnCount number;\n\n160: \t\
+    sPoznamka varchar2(4000);\n\n161: \tsRID_V varchar2(254) := psRID_V;\n\n162: begin\n\n163: \tif pnIdCis is not\
+    \ null then\n\n164: \t\tif c_rid.GetBackCISO(psRid=>sRID_V) != pnIdCis then\n\n165: \t\t\tsRID_V := GetRID(sRID_V,\
+    \ pnIdCis);\n\n166: \t\tend if;\n\n167: \tend if;\n\n168: \n\n169: \tif pnAko = 1 then -- zobrazujem vsetky\
+    \ poznamky\n\n170: \t\tif psTyp is null then\n\n171: \t\t\treturn s2t('select poznamka from cis_poznamky where\
+    \ s_stamp = ''0'' and rid_v = :rid_v', sRID_V, '*');\n\n172: \t\telse\n\n173: \t\t\treturn s2t2('select poznamka\
+    \ from cis_poznamky where s_stamp = ''0'' and rid_v = :rid_v and typ = :typ', sRID_V, psTyp, '*');\n\n174: \t\
+    \tend if;\n\n175: \telse\n\n176: \t\tselect count(*) into nCount from cis_poznamky where s_stamp = '0' and rid_v\
+    \ = sRID_V and typ = nvl(psTyp,typ);\n\n177: \t\tif pnAko = 2 then -- zobrazujem pocet poznammok\n\n178: \t\t\
+    \tif nCount > 0 then\n\n179: \t\t\t\treturn nCount;\n\n180: \t\t\telse\n\n181: \t\t\t\treturn null;\n\n182:\
+    \ \t\t\tend if;\n\n183: \t\telsif pnAko = 0 then -- Zobrazujem iba prvu poznamku inac pocet\n\n184: \t\t\tif\
+    \ nCount = 1 then\n\n185: \t\t\t\tselect poznamka into sPoznamka from cis_poznamky where s_stamp = '0' and rid_v\
+    \ = sRID_V and typ = nvl(psTyp,typ);\n\n186: \t\t\t\treturn sPoznamka;\n\n187: \t\t\telsif nCount > 1 then\n\
+    \n188: \t\t\t\tif nCount = 1 then\n\n189: \t\t\t\t\treturn nCount || ' ' || lower(GetRes(psKeyword=>'6039',\
+    \ psDefaultText=>'poznámka'));\n\n190: \t\t\t\telsif nCount in (2,3,4) then\n\n191: \t\t\t\t\treturn nCount\
+    \ || ' ' || lower(GetRes(psKeyword=>'6050', psDefaultText=>'poznámky'));\n\n192: \t\t\t\telse\n\n193: \t\t\t\
+    \t\treturn nCount || ' ' || lower(GetRes(psKeyword=>'40874', psDefaultText=>'poznámok'));\n\n194: \t\t\t\tend\
+    \ if;\n\n195: \t\t\telse\n\n196: \t\t\t\treturn null;\n\n197: \t\t\tend if;\n\n198: \t\tend if;\n\n199: \tend\
+    \ if;\n\n200: \treturn null;\n\n201: end GetPoznamkaDreamer;\n\n202: \n\n203: function GetPoznamkaParams(psRID_V\
+    \ varchar2, psTyp varchar2, pnAko number, pnIdCis number default null) return varchar2 is\n\n204: \tsRID_V varchar2(254)\
+    \ := psRID_V;\n\n205: \tsParams varchar2(20000);\n\n206: \tnStav number;\n\n207: begin\n\n208: \tif pnIdCis\
+    \ is not null then\n\n209: \t\tif c_rid.GetBackCISO(psRid=>sRID_V) != pnIdCis then\n\n210: \t\t\tsRID_V := GetRID(sRID_V,\
+    \ pnIdCis);\n\n211: \t\tend if;\n\n212: \tend if;\n\n213: \n\n214: \tsParams := 'RID_O;' || sRID_V || ';RID_VAZBA;'\
+    \ || sRID_V || ';RPK;' || sRID_V || ';';\n\n215: \n\n216: \tif psTyp is null then\n\n217: \t\tsParams := sParams\
+    \ || 'PKS;' || s2t('select ID from cis_poznamky where rid_v = :rid_v', sRID_V, ',') || ';';\n\n218: \telse\n\
+    \n219: \t\tsParams := sParams || 'PKS;' || s2t2('select ID from cis_poznamky where rid_v = :rid_v and typ =\
+    \ :typ', sRID_V, psTyp, ',') || ';';\n\n220: \tend if;\n\n221: \n\n222: \tselect max(STAV) into nStav from cis_poznamky\
+    \ where rid_v = sRID_V and typ = nvl(psTyp,typ) and stav in (STAV_Neurcene, STAV_Varovanie, STAV_Chyba);\n\n\
+    223: \tif nStav = STAV_Neurcene then\n\n224: \t\tsParams := sParams || 'color;#000000;';\n\n225: \telsif nStav\
+    \ = STAV_Varovanie then\n\n226: \t\tsParams := sParams || 'color;#E79805;';\n\n227: \telsif nStav = STAV_Chyba\
+    \ then\n\n228: \t\tsParams := sParams || 'color;#E10B20;';\n\n229: \tend if;\n\n230: \treturn sParams;\n\n231:\
+    \ end GetPoznamkaParams;\n\n232: \n\n233: procedure SetSysPoznamku(psRID_V varchar2, psPOZN varchar) is\n\n\
+    234: \tsId varchar2(16);\n\n235: begin\n\n236: \tSetPoznamku(psPOZN=>psPOZN, psRid_v=>psRID_V, psTyp=>TYP_SYSTEM_POZN);\n\
+    \n237: end SetSysPoznamku;\n\n238: \n\n239: function GetSysPoznamku(psRID_V varchar2) return varchar2 is\n\n\
+    240: \tsREt varchar2(4000);\n\n241: begin\n\n242: \treturn GetPoznamku(psRID_V=>psRID_V,psTYP=>TYP_SYSTEM_POZN);\n\
+    \n243: end GetSysPoznamku;\n\n244: \n\n245: \n\n246: procedure SetPoznamku(psRID_V varchar2, psTYP varchar2,\
+    \ psPOZN varchar) is\n\n247: \tsId varchar2(16);\n\n248: begin\n\n249:  \tInsT( psID=>sId, psPozn=>'SYS', psPoznamka=>psPOZN,\
+    \ psRid_v=>psRID_V, psTyp=>psTYP, pnAktualizuj=>1);\n\n250: end SetPoznamku;\n\n251: \n\n252: function GetPoznamku(psRID_V\
+    \ varchar2, psTYP varchar2, psDELIMITER varchar2 default null) return clob is\n\n253: \tsREt clob;\n\n254: begin\n\
+    \n255: \tfor R in ( SELECT POZNAMKA  FROM CIS_POZNAMKY WHERE S_STAMP='0' AND RID_V=psRID_V AND TYP=psTYP ORDER\
+    \ BY ID_Z)\n\n256: \tloop\n\n257: \t\tif R.poznamka is null then\n\n258: \t\t\tcontinue;\n\n259: \t\tend if;\n\
+    \n260: \t\tif psDelimiter is null then\n\n261: \t\t\treturn R.POZNAMKA;\n\n262: \t\tend if;\n\n263: \t\tif sRet\
+    \ is not null then\n\n264: \t\t\tsRet := sRet || psDELIMITER;\n\n265: \t\tend if;\n\n266: \t\tsRet := R.POZNAMKA;\n\
+    \n267: \tend loop;\n\n268: \treturn sRet;\n\n269: end GetPoznamku;\n\n270: \n\n271: procedure InsTMulti(psRid_V\
+    \ varchar2,psTyp varchar2,\n\n272:                     psPoznamka_1 varchar2 default null,psPoznamka_2 varchar2\
+    \ default null,psPoznamka_3 varchar2 default null,psPoznamka_4 varchar2 default null,psPoznamka_5 varchar2 default\
+    \ null,\n\n273:                     psPoznamka_6 varchar2 default null,psPoznamka_7 varchar2 default null,psPoznamka_8\
+    \ varchar2 default null,psPoznamka_9 varchar2 default null)\n\n274: is\n\n275: \tsId varchar2(16);\n\n276: \t\
+    nCnt number := 0;\n\n277: begin\n\n278: \n\n279: \tif trim(psPoznamka_1) is not null then\n\n280: \t\tsId :=\
+    \ null;\n\n281: \t\tnCnt := nCnt + 1;\n\n282: \t\tc_cis_poznamka.InsT( psId=>sId,psTyp=>psTyp,psRid_v=>psRid_v,psPoznamka=>psPoznamka_1,pnId_z=>1);\n\
+    \n283: \tend if;\n\n284: \n\n285: \tif trim(psPoznamka_2) is not null then\n\n286: \t\tsId := null;\n\n287:\
+    \ \t\tnCnt := nCnt + 1;\n\n288: \t\tc_cis_poznamka.InsT( psId=>sId,psTyp=>psTyp,psRid_v=>psRid_v,psPoznamka=>psPoznamka_2,pnId_z=>2);\n\
+    \n289: \tend if;\n\n290: \n\n291: \tif trim(psPoznamka_3) is not null then\n\n292: \t\tsId := null;\n\n293:\
+    \ \t\tnCnt := nCnt + 1;\n\n294: \t\tc_cis_poznamka.InsT( psId=>sId,psTyp=>psTyp,psRid_v=>psRid_v,psPoznamka=>psPoznamka_3,pnId_z=>3);\n\
+    \n295: \tend if;\n\n296: \n\n297: \tif trim(psPoznamka_4) is not null then\n\n298: \t\tsId := null;\n\n299:\
+    \ \t\tnCnt := nCnt + 1;\n\n300: \t\tc_cis_poznamka.InsT( psId=>sId,psTyp=>psTyp,psRid_v=>psRid_v,psPoznamka=>psPoznamka_4,pnId_z=>4);\n\
+    \n301: \tend if;\n\n302: \n\n303: \tif trim(psPoznamka_5) is not null then\n\n304: \t\tsId := null;\n\n305:\
+    \ \t\tnCnt := nCnt + 1;\n\n306: \t\tc_cis_poznamka.InsT( psId=>sId,psTyp=>psTyp,psRid_v=>psRid_v,psPoznamka=>psPoznamka_5,pnId_z=>5);\n\
+    \n307: \tend if;\n\n308: \n\n309: \tif trim(psPoznamka_6) is not null then\n\n310: \t\tsId := null;\n\n311:\
+    \ \t\tnCnt := nCnt + 1;\n\n312: \t\tc_cis_poznamka.InsT( psId=>sId,psTyp=>psTyp,psRid_v=>psRid_v,psPoznamka=>psPoznamka_6,pnId_z=>6);\n\
+    \n313: \tend if;\n\n314: \n\n315: \tif trim(psPoznamka_7) is not null then\n\n316: \t\tsId := null;\n\n317:\
+    \ \t\tnCnt := nCnt + 1;\n\n318: \t\tc_cis_poznamka.InsT( psId=>sId,psTyp=>psTyp,psRid_v=>psRid_v,psPoznamka=>psPoznamka_7,pnId_z=>7);\n\
+    \n319: \tend if;\n\n320: \n\n321: \tif trim(psPoznamka_8) is not null then\n\n322: \t\tsId := null;\n\n323:\
+    \ \t\tnCnt := nCnt + 1;\n\n324: \t\tc_cis_poznamka.InsT( psId=>sId,psTyp=>psTyp,psRid_v=>psRid_v,psPoznamka=>psPoznamka_8,pnId_z=>8);\n\
+    \n325: \tend if;\n\n326: \n\n327: \tif trim(psPoznamka_9) is not null then\n\n328: \t\tsId := null;\n\n329:\
+    \ \t\tnCnt := nCnt + 1;\n\n330: \t\tc_cis_poznamka.InsT( psId=>sId,psTyp=>psTyp,psRid_v=>psRid_v,psPoznamka=>psPoznamka_9,pnId_z=>9);\n\
+    \n331: \tend if;\n\n332: \n\n333: \tc_session.SetLastMessage('Vložených ' || nCnt || ' poznámok.' );\n\n334:\
+    \ end InsTMulti;\n\n335: \n\n336: \n\n337: function ZlozPoznamky(psRid_v varchar2, psTyp varchar2) return clob\
+    \ is\n\n338: \tcPozn clob;\n\n339: begin\n\n340: \tfor CP in (SELECT CP.POZNAMKA FROM CIS_POZNAMKY CP WHERE\
+    \ CP.RID_V=psRID_V AND CP.TYP=psTYP AND CP.POZNAMKA IS NOT NULL ORDER BY ID_Z)\n\n341: \tloop\n\n342: \t\tcPozn\
+    \ := cPozn || C_CONST.T || CP.POZNAMKA;\n\n343: \tend loop;\n\n344: \treturn SUBSTR(cPozn,2);\n\n345: end ZlozPoznamky;\n\
+    \n346: \n\n347: procedure ValidTMulti(pnState out number, psMessage out varchar2, psFieldName varchar2, psFieldValue\
+    \ varchar2, psPK varchar2, psFieldParams varchar2, psFieldsSetup out varchar2) is\n\n348: \tsVal varchar2(1000);\n\
+    \n349: \tnExist number;\n\n350: begin\n\n351: \tpnState := c_const.VALIDATION_STATE_Ok;\n\n352: \tif(psFieldName\
+    \ = 'BTN_PRIDAT') then\n\n353: \t\tfor i in 1..9 loop\n\n354: \t\t\tc_cis.GetFieldValue(psfieldname=>'POZNAMKA_'\
+    \ || i, psvalues=>psFieldParams ,pnexist=>nExist, psvalue=>sVal);\n\n355: \t\t\tif(sVal is null) then\n\n356:\
+    \ \t\t\t\tc_cis.SetValidTValue(psValues=>psFieldsSetup, psFieldName=>'POZNAMKA_' || i || 'Setup',psFieldValue=>'M:E',pnNoValid=>1);\n\
+    \n357: \t\t\t\treturn;\n\n358: \t\t\tend if;\n\n359: \t\tend loop;\n\n360: \t\tpsMessage := 'Dosiahnutý maximálny\
+    \ počet poznámok';\n\n361: \tend if;\n\n362: end ValidTMulti;\n\n363: \n\n364: procedure NastavPoznamku(psRID\
+    \ varchar2, psPoznamka varchar2, psTyp varchar2) is\n\n365: \tsID varchar2(16);\n\n366: begin\n\n367: \tselect\
+    \ cp.id into sID from cis_poznamky cp where cp.rid_v = psRID and cp.typ = psTyp and cp.s_stamp = '0' and rownum\
+    \ = 1;\n\n368: \tupdate cis_poznamky cp set cp.poznamka = psPoznamka where cp.id = sID;\n\n369: \n\n370: \t\
+    exception when no_data_found then\n\n371: \t\tc_cis_poznamka.InsT(pnKladne=>1, psID=>sID, psPoznamka=>psPoznamka,\
+    \ psRID_V=>psRID, psTYP=>psTyp);\n\n372: end NastavPoznamku;\n\n373: \n\n374: END;"
+- dependency_id: pm.source.pm-09c.c_cis_poznamka_typ.package
+  source_ref: pm.oracle.mc.c_cis_poznamka_typ.package
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09c
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "1: PACKAGE c_cis_poznamka_typ\n\n2:   IS\n\n3: \n\n4: --\n\n5: -- Version 1.0.0\n\n6: -- Ciselnik C_CIS_POZNAMKA_TYP\n\
+    \n7: --\n\n8: -- Generator: PackageGen 22013-10-02-12.50.53.180000\n\n9: -- Definition file: RID_CIS.DEF\n\n\
+    10: --\n\n11: -- MODIFICATION HISTORY\n\n12: -- Person       Version  Date     Comments\n\n13: -- -----------\
+    \  -------- -------- ------------------------------------------\n\n14: --\n\n15: \n\n16: CIS_CIS_POZNAMKY_TYPY\
+    \ constant C_CIS_DEF.DT_ID_CIS := -425 ;\n\n17: \n\n18: TYP_Komentar             constant varchar2(16) := '000-1';\n\
+    \n19: TYP_WmsInfo              constant varchar2(16) := '000-2';\n\n20: TYP_InfoPreDopravcu_Vyd  constant varchar2(16)\
+    \ := '000-3';\n\n21: TYP_InfoPreDopravcu_Obj  constant varchar2(16) := '000-4';\n\n22: TYP_PreNakupcu      \
+    \     constant varchar2(16) := '000-5';\n\n23: TYP_PrePredajcu          constant varchar2(16) := '000-6';\n\n\
+    24: TYP_RQ_InfoOptimal       constant varchar2(16) := '000-7';\n\n25: TYP_DodatocneInfoCT      constant varchar2(16)\
+    \ := '000-8';\n\n26: TYP_InfoKlubKarta        constant varchar2(16) := '000-9';\n\n27: TYP_InfoOcakavaneVybSZ\
+    \   constant varchar2(16) := '000-10';\n\n28: TYP_InfoPreDopravcu_MD   constant varchar2(16) := '000-11';\n\n\
+    29: TYP_InfoPreDopravcu_MZ   constant varchar2(16) := '000-12';\n\n30: TYP_InternaPoznamka      constant varchar2(16)\
+    \ := '000-13';\n\n31: TYP_PoznamkaZrus         constant varchar2(16) := '000-14';\n\n32: TYP_DovodOdlozeniaBal\
+    \    constant varchar2(16) := '000-15';\n\n33: TYP_PoznamkaLikvidacieDF constant varchar2(16) := '000-16';\n\
+    \n34: TYP_PoznamkaLikvidacieDD constant varchar2(16) := '000-17';\n\n35: TYP_TextFakturacie       constant varchar2(16)\
+    \ := '000-18';\n\n36: TYP_Uctovanie            constant varchar2(16) := '000-19';\n\n37: TYP_PoznHlavickyDokl\
+    \     constant varchar2(16) := '000-20';\n\n38: TYP_PoznPatyDokl         constant varchar2(16) := '000-21';\n\
+    \n39: \n\n40: -- InsT spec\n\n41: procedure InsT(pnKladne number default 1, psID in out C_CIS_ID.DT_ID,\n\n\
+    42:                psSkratka C_CIS_ID.DT_SKRATKA default null, pnSKLAD C_CIS_ID.DT_SKLAD default null, psPOZN\
+    \ C_CIS_ID.DT_POZN default null, pxXml_Data xmltype default null,\n\n43:                psNazov CIS_POZNAMKY_TYPY.NAZOV%TYPE\
+    \ default null,\n\n44:                pnId_cis CIS_POZNAMKY_TYPY.ID_CIS%TYPE default null,\n\n45:          \
+    \      psTyp_cis CIS_POZNAMKY_TYPY.TYP_CIS%TYPE default null);\n\n46: \n\n47: procedure StornoRIDC( psID C_CIS_ID.DT_ID\
+    \ );\n\n48: procedure ZrusStornoRIDC( psID C_CIS_ID.DT_ID );\n\n49: \n\n50: function GetPravoVidiet(psID C_CIS_ID.DT_ID,\
+    \ pnUserID number default c_session.GetUser) return number;\n\n51: function GetPravoVytvorit(psID C_CIS_ID.DT_ID,\
+    \ pnUserID number default c_session.GetUser) return number;\n\n52: \n\n53: procedure ValidT(pnState out number,\
+    \ psMessage out varchar2, psFieldName varchar2, psFieldValue varchar2, psPK varchar2, psFieldParams varchar2,\
+    \ psFieldsSetup out varchar2);\n\n54: \n\n55: END;"
+- dependency_id: pm.source.pm-09c.c_cis_poznamka_typ.package_body
+  source_ref: pm.oracle.mc.c_cis_poznamka_typ.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09c
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "1: PACKAGE BODY c_cis_poznamka_typ\n\n2: IS\n\n3:   -- InsT body\n\n4: \n\n5: procedure InsT(pnKladne number\
+    \ default 1, psID in out C_CIS_ID.DT_ID,\n\n6:                psSkratka C_CIS_ID.DT_SKRATKA default null, pnSKLAD\
+    \ C_CIS_ID.DT_SKLAD default null, psPOZN C_CIS_ID.DT_POZN default null, pxXml_Data xmltype default null,\n\n\
+    7:                psNazov CIS_POZNAMKY_TYPY.NAZOV%TYPE default null,\n\n8:                pnId_cis CIS_POZNAMKY_TYPY.ID_CIS%TYPE\
+    \ default null,\n\n9:                psTyp_cis CIS_POZNAMKY_TYPY.TYP_CIS%TYPE default null)\n\n10: is\n\n11:\
+    \ \tsColumns varchar2(9000) := '';\n\n12: \tsValues varchar2(9000) := '';\n\n13: \tsDeclaration varchar2(9000)\
+    \ := '';\n\n14: begin\n\n15: \n\n16: \tif pnKladne = -1 then psID := '-1'; end if;\n\n17: \tsDeclaration :=\
+    \ ' Declare ';\n\n18: \tsDeclaration:= sDeclaration||' psID C_CIS_ID.DT_ID := :psID ;';\n\n19: \tsDeclaration:=\
+    \ sDeclaration||' pnSklad number := :pnSklad ;';\n\n20: \tsDeclaration:= sDeclaration||' psSkratka CIS_POZNAMKY_TYPY.skratka%TYPE\
+    \ := :psSkratka ;';\n\n21: \tsDeclaration:= sDeclaration||' psPozn CIS_POZNAMKY_TYPY.POZN%TYPE := :psPozn ;';\n\
+    \n22: \tsDeclaration:= sDeclaration||' pxXml_Data XMLTYPE := :pxXml_Data ;';\n\n23: \tsDeclaration:= sDeclaration||'psNazov\
+    \ CIS_POZNAMKY_TYPY.NAZOV%TYPE := :psNazov ;' ;\n\n24: \tsDeclaration:= sDeclaration||'pnId_cis CIS_POZNAMKY_TYPY.ID_CIS%TYPE\
+    \ := :pnId_cis ;' ;\n\n25: \tsDeclaration:= sDeclaration||'psTyp_cis CIS_POZNAMKY_TYPY.TYP_CIS%TYPE := :psTyp_cis\
+    \ ;' ;\n\n26: \n\n27: \tsColumns := ' begin  insert into CIS_POZNAMKY_TYPY ( ' ;\n\n28: \tsValues := ' ) values\
+    \ ( ';\n\n29: \tIf psID is not null then sColumns:= sColumns||' ID ,';  sValues := sValues||' psID ,';   end\
+    \ if;\n\n30: \tIf pnSklad is not null then sColumns:= sColumns||' SKLAD ,';  sValues := sValues||' pnSklad ,';\
+    \   end if;\n\n31: \tIf psSkratka is not null then sColumns:= sColumns||' Skratka ,';  sValues := sValues||'\
+    \ psSkratka ,';   end if;\n\n32: \tIf psPozn is not null then sColumns:= sColumns||' POZN ,';  sValues := sValues||'\
+    \ psPozn ,';   end if;\n\n33: \tIf pxXml_Data is not null then sColumns:= sColumns||' Xml_Data ,';  sValues\
+    \ := sValues||' pxXml_Data ,';   end if;\n\n34: \n\n35: \tIf psNazov is not null then   sColumns:= sColumns||\
+    \ 'NAZOV,'; sValues := sValues||'psNazov,'; end if;\n\n36: \tIf pnId_cis is not null then   sColumns:= sColumns||\
+    \ 'ID_CIS,'; sValues := sValues||'pnId_cis,'; end if;\n\n37: \tIf psTyp_cis is not null then   sColumns:= sColumns||\
+    \ 'TYP_CIS,'; sValues := sValues||'psTyp_cis,'; end if;\n\n38: \n\n39: \tsColumns := substr(sColumns,1,length(sColumns)-1)\
+    \  ;\n\n40: \tsValues := substr(sValues,1,length(sValues)-1) ||' ) ' ;\n\n41: \tsValues:=sValues||' returning\
+    \ ID into :oa; end; ' ;\n\n42: \n\n43: \t--dbms_output.put_line ( sDeclaration||sColumns||sValues );\n\n44:\
+    \ \texecute immediate sDeclaration||sColumns||sValues  using\n\n45: \t\tIN psID, IN pnSklad, IN psSkratka, IN\
+    \ psPozn, IN pxXml_Data,\n\n46: \t\tIN psNazov,\n\n47: \t\tIN pnId_cis,\n\n48: \t\tIN psTyp_cis,\n\n49: \t\t\
+    OUT psID;\n\n50: \n\n51: \tdbms_output.put_line('Id='||psID);\n\n52: end InsT;\n\n53: \n\n54: procedure StornoRIDC(\
+    \ psID C_CIS_ID.DT_ID ) is\n\n55: begin\n\n56: \tc_cis_id.storno_id(psID, 'CIS_POZNAMKY_TYPY');\n\n57: end StornoRIDC;\n\
+    \n58: \n\n59: procedure ZrusStornoRIDC( psID C_CIS_ID.DT_ID) is\n\n60: begin\n\n61: \tc_cis_id.zrusstorno_id(psID,'CIS_POZNAMKY_TYPY');\n\
+    \n62: end ZrusStornoRIDC;\n\n63: \n\n64: function GetPravoVidiet(psID C_CIS_ID.DT_ID, pnUserID number default\
+    \ c_session.GetUser) return number is\n\n65: \tnPravo number;\n\n66: begin\n\n67: \tnPravo := C_CIS_PRAVA.GetPravoOperacie(pnUserID=>pnUserID,\
+    \ psRID_O=>C_RID.ZlozRID(CIS_CIS_POZNAMKY_TYPY,psID), psIDOper=>C_CIS_OPER.TO_VidietDetail, pnLoadDefPravo=>\
+    \ 1);\n\n68: \tif nPravo = C_CIS_PRAVA.PRAVO_Povolene then\n\n69: \t\treturn 1;\n\n70: \tend if;\n\n71: \treturn\
+    \ 0;\n\n72: end GetPravoVidiet;\n\n73: \n\n74: function GetPravoVytvorit(psID C_CIS_ID.DT_ID, pnUserID number\
+    \ default c_session.GetUser) return number is\n\n75: \tnPravo number;\n\n76: begin\n\n77: \tnPravo := c_cis_prava.GetPravoOperacie(pnUserID=>pnUserID,\
+    \ psRID_O=>C_RID.ZlozRID(CIS_CIS_POZNAMKY_TYPY,psID), psIDOper=>C_CIS_OPER.TO_NovyZaznam, pnLoadDefPravo=> 1);\n\
+    \n78: \tif nPravo = c_cis_prava.PRAVO_Povolene then\n\n79: \t\treturn 1;\n\n80: \tend if;\n\n81: \treturn 0;\n\
+    \n82: end GetPravoVytvorit;\n\n83: \n\n84: procedure ValidT(pnState out number, psMessage out varchar2, psFieldName\
+    \ varchar2, psFieldValue varchar2, psPK varchar2, psFieldParams varchar2, psFieldsSetup out varchar2) is\n\n\
+    85: begin\n\n86: \tpnState := C_CONST.VALIDATION_State_NotSolved;\n\n87: \tif psFieldName  = 'ID_CIS' then\n\
+    \n88: \t\tc_cis.SetValidTValue(psValues=>psFieldsSetup, psFieldName=>'TYP_CIS', psFieldValue=>null, pnSetup=>0,\
+    \ pnNoValid=>1);\n\n89: \t\tpnState := C_CONST.VALIDATION_STATE_Ok;\n\n90: \tend if;\n\n91: end ValidT;\n\n\
+    92: \n\n93: END;"
+- dependency_id: pm.source.pm-09c.t_s_cis_poznamky.trigger
+  source_ref: pm.oracle.mc.t_s_cis_poznamky.trigger
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09c
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "1: TRIGGER T_S_CIS_POZNAMKY\n\n2:  BEFORE\n\n3:   DELETE OR UPDATE\n\n4:  ON CIS_POZNAMKY\n\n5: REFERENCING\
+    \ NEW AS NEW OLD AS OLD\n\n6:  FOR EACH ROW\n\n7: Begin\n\n8:   if UPDATING then\n\n9:     :new.u_stamp := C_Stamp.GetSessionStamp;\n\
+    \n10:   end if;\n\n11: End;\n\n12: \n\n13: \n\n14: \n"
+- dependency_id: pm.source.pm-09c.t_s_cis_poznamky_ins.trigger
+  source_ref: pm.oracle.mc.t_s_cis_poznamky_ins.trigger
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09c
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "1: TRIGGER T_S_CIS_POZNAMKY_Ins\n\n2:  BEFORE\n\n3:   INSERT\n\n4:  ON CIS_POZNAMKY\n\n5: REFERENCING NEW AS\
+    \ NEW OLD AS OLD\n\n6:  FOR EACH ROW\n\n7: Begin\n\n8:   c_cis_id.Do_Trg_Ins( ps_trigger_name => stk.whoami,\
+    \ ps_new_Id => :new.id, pn_new_Sklad => :new.sklad, \n\n9:            ps_new_i_stamp => :new.i_stamp, ps_new_Skratka\
+    \ => :new.skratka);\n\n10: End;\n\n11: \n\n12: \n\n13: \n"
+- dependency_id: pm.source.pm-09c.t_s_cis_poznamky_typy.trigger
+  source_ref: pm.oracle.mc.t_s_cis_poznamky_typy.trigger
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09c
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "1: TRIGGER T_S_CIS_POZNAMKY_TYPY\n\n2:  BEFORE\n\n3:   DELETE OR UPDATE\n\n4:  ON CIS_POZNAMKY_TYPY\n\n5: REFERENCING\
+    \ NEW AS NEW OLD AS OLD\n\n6:  FOR EACH ROW\n\n7: Begin\n\n8:   if UPDATING then\n\n9:     :new.u_stamp := C_Stamp.GetSessionStamp;\n\
+    \n10:   end if;\n\n11: End;\n\n12: \n\n13: \n\n14: \n"
+- dependency_id: pm.source.pm-09c.t_s_cis_poznamky_typy_ins.trigger
+  source_ref: pm.oracle.mc.t_s_cis_poznamky_typy_ins.trigger
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09c
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "1: TRIGGER T_S_CIS_POZNAMKY_TYPY_Ins\n\n2:  BEFORE\n\n3:   INSERT\n\n4:  ON CIS_POZNAMKY_TYPY\n\n5: REFERENCING\
+    \ NEW AS NEW OLD AS OLD\n\n6:  FOR EACH ROW\n\n7: Begin\n\n8:   c_cis_id.Do_Trg_Ins( ps_trigger_name => stk.whoami,\
+    \ ps_new_Id => :new.id, pn_new_Sklad => :new.sklad, \n\n9:            ps_new_i_stamp => :new.i_stamp, ps_new_Skratka\
+    \ => :new.skratka);\n\n10: End;\n\n11: \n\n12: \n\n13: \n"
+- dependency_id: pm.source.pm-09d.bp_crm.package_body
+  source_ref: pm.oracle.mc.bp_crm.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '1753:             SELECT NVL(MAX(ID_Z),0)+1 INTO nPoradie FROM CIS_POZNAMKY WHERE RID_V=psRidV;
+
+
+    1770:         UPDATE CIS_POZNAMKY SET POZNAMKA = psPozn, PREDMET = psTema, FLAGS_B=NVL(psFlags,FLAGS_B), ID_Z=DECODE(pnPoradie,0,ID_Z,pnPoradie)
+    WHERE ID = psId;
+
+
+    1776:         select * from CIS_POZNAMKY WHERE ID = psId  AND ( SUBSTR(FLAGS_B,1,1) = ''0'' OR C_STAMP.getuserc(I_STAMP)=
+    pnIdUser);
+
+
+    1783:             from CIS_POZNAMKY WHERE RID_V=psRid
+
+
+    1949:          (SELECT COUNT(*) FROM CIS_POZNAMKY WHERE RID_V=OP.RID AND S_STAMP=''0''  AND ( SUBSTR(FLAGS_B,1,1)
+    = ''0'' OR C_STAMP.getuserc(I_STAMP)= pnUserId)) POZN_CNT,
+
+
+    2408:     open cx for '' SELECT ID,ID_Z FROM CIS_POZNAMKY WHERE S_STAMP=''''0'''' AND RID_V='''''' || psRidV
+    || '''''' ORDER BY PORADIE '' || sOrder;
+
+
+    2418:             UPDATE CIS_POZNAMKY SET ID_Z = nSwapPoradie WHERE ID=sId;
+
+
+    2419:             UPDATE CIS_POZNAMKY SET ID_Z = nPoradie WHERE ID=sSwapId;
+
+
+    2828:     delete from CIS_POZNAMKY where PREDMET = psTema and c_stamp.getuserc(i_stamp)= pnUserId and rid_v
+    = psRID_V;
+
+    '
+- dependency_id: pm.source.pm-09d.c_cis.package_body
+  source_ref: pm.oracle.mc.c_cis.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "2649: \t\t\tc_cis_poznamka.NastavPoznamku(psRID=>sRid, psPoznamka=>substr(psValues,nLast+nPoz+2,nNext-nPoz-nLast-3),\
+    \ psTyp=>c_cis_poznamka_typ.TYP_PoznHlavickyDokl);\n\n2652: \t\t\tc_cis_poznamka.NastavPoznamku(psRID=>sRid,\
+    \ psPoznamka=>substr(psValues,nLast+nPoz+2,nNext-nPoz-nLast-3), psTyp=>c_cis_poznamka_typ.TYP_PoznPatyDokl);\n"
+- dependency_id: pm.source.pm-09d.c_cis_template.package_body
+  source_ref: pm.oracle.mc.c_cis_template.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '414:     for rP in (SELECT PREDMET, POZNAMKA, TYP FROM CIS_POZNAMKY WHERE S_STAMP =''0'' and RID_V = pTemplateRID)
+
+
+    417:      INSERT INTO CIS_POZNAMKY (PREDMET,ID,POZNAMKA,RID_V,ID_Z )
+
+
+    418:      SELECT "PREDMET",(SELECT Max(ID) FROM CIS_POZNAMKY)+Rownum,"POZNAMKA",pRID,"ID_Z" FROM CIS_POZNAMKY
+
+    '
+- dependency_id: pm.source.pm-09d.c_dobd_l.package_body
+  source_ref: pm.oracle.mc.c_dobd_l.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "648: \t\tc_cis_poznamka.NastavPoznamku(psRID=>psRID, psPoznamka=>psPOZN_HLAVA, psTyp=>c_cis_poznamka_typ.TYP_PoznHlavickyDokl);\n\
+    \n652: \t\tc_cis_poznamka.NastavPoznamku(psRID=>psRID, psPoznamka=>psPOZN_PATA, psTyp=>c_cis_poznamka_typ.TYP_PoznPatyDokl);\n"
+- dependency_id: pm.source.pm-09d.c_dodf_l.package_body
+  source_ref: pm.oracle.mc.c_dodf_l.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "950: \t\tc_cis_poznamka.NastavPoznamku(psRID=>psRID, psPoznamka=>psPOZN_HLAVA, psTyp=>c_cis_poznamka_typ.TYP_PoznHlavickyDokl);\n\
+    \n954: \t\tc_cis_poznamka.NastavPoznamku(psRID=>psRID, psPoznamka=>psPOZN_PATA, psTyp=>c_cis_poznamka_typ.TYP_PoznPatyDokl);\n"
+- dependency_id: pm.source.pm-09d.c_doklad_vazba.package_body
+  source_ref: pm.oracle.mc.c_doklad_vazba.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "63: \t\telsif nIdCis = c_cis_poznamka.CIS_CIS_POZNAMKY then\n\n65: \t\t\t\tupdate CIS_POZNAMKY set rid_v =\
+    \ psRID_new where ID = c_rid.GetBackID(r.RID_V(i));\n"
+- dependency_id: pm.source.pm-09d.c_dokl_dod_l.package_body
+  source_ref: pm.oracle.mc.c_dokl_dod_l.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "1199: \t\treturn c_cis_poznamka_typ.TYP_PoznamkaLikvidacieDF;\n\n1201: \t\treturn c_cis_poznamka_typ.TYP_PoznamkaLikvidacieDD;\n"
+- dependency_id: pm.source.pm-09d.c_dokl_l.package_body
+  source_ref: pm.oracle.mc.c_dokl_l.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "1535:   update cis_poznamky set rid_v = psRID_new where rid_v = psRID_old;\n\n1585:   update cis_poznamky set\
+    \ rid_v = psRID_R_new where rid_v = psRID_R_old;\n\n1598: \t\tupdate cis_poznamky set rid_v = c_rid.ZLOZRID_R(psrid=>\
+    \ psRID_new, pnid2=> prID_RS(j)) where rid_v = c_rid.ZLOZRID_R(psrid=> psRID_old, pnid2=> prID_RS(j));\n\n1646:\
+    \     for r in (select * from cis_poznamky where rid_v = psRID_old)\n\n1651:         insert into cis_poznamky\
+    \ values r;\n\n1683:   delete from cis_poznamky where rid_v = psRID_old;\n\n16885: \t\tsPoznHlavicky := c_cis_poznamka.GetPoznamku(psRID_V=>sRid,\
+    \ psTYP=>c_cis_poznamka_typ.TYP_PoznHlavickyDokl);\n\n16892: \t\tsPoznPaty := c_cis_poznamka.GetPoznamku(psRID_V=>sRid,\
+    \ psTYP=>c_cis_poznamka_typ.TYP_PoznPatyDokl);\n\n16906: \t\tc_cis_poznamka.NastavPoznamku(psRID=>sRid, psPoznamka=>sPoznHlavicky,\
+    \ psTyp=>c_cis_poznamka_typ.TYP_PoznHlavickyDokl);\n\n16910: \t\tc_cis_poznamka.NastavPoznamku(psRID=>sRid,\
+    \ psPoznamka=>sPoznPaty, psTyp=>c_cis_poznamka_typ.TYP_PoznPatyDokl);\n"
+- dependency_id: pm.source.pm-09d.c_doprava.package_body
+  source_ref: pm.oracle.mc.c_doprava.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "2038: \t\tsTypPozn := c_cis_poznamka_typ.TYP_InfoPreDopravcu_Obj;\n\n2040: \t\tsTypPozn := c_cis_poznamka_typ.TYP_InfoPreDopravcu_Vyd;\n\
+    \n2046: \t\tselect id, substr(poznamka,1,4000) into sID, sPrepravneUdaje from cis_poznamky where rid_v = psRID_Dokl\
+    \ and typ = sTypPozn and rownum = 1;\n\n2053: \t-- PU_ =>prepravne udaje => idu do cis_poznamky\n\n2166: \t\t\
+    \t\tupdate cis_poznamky cp set cp.poznamka = sPrepravneUdaje where cp.id = sID;\n"
+- dependency_id: pm.source.pm-09d.c_imp.package
+  source_ref: pm.oracle.mc.c_imp.package
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '284:   psAlergeny DOD_SKLAD_KARTA.ALERGENY%TYPE default null,
+
+    '
+- dependency_id: pm.source.pm-09d.c_imp.package_body
+  source_ref: pm.oracle.mc.c_imp.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '1693:   ALERGENY = nvl(r.alergeny,ALERGENY),
+
+
+    2335:     IF upper(sStlpec) = upper(''ALERGENY'') THEN
+
+
+    2336:       Aktualizuj_GetUPDString (''ALERGENY'', R.ALERGENY, nOperacia, DATA_TYPE_VARCHAR, sUPD_SK);
+
+
+    3929:                 --vytvorenie cis_poznamky
+
+
+    3931:                   debugpck(''c_imp'',''ispp zmena => vkladam cis_poznamky pre CT'',''ZaradDod_CT_L'');
+
+
+    3989:                 --vytvorenie cis_poznamky
+
+
+    3992:                   debugpck(''c_imp'',''ispp vlozenie => generujem cis_poznamky pre CT'',''ZaradDod_CT_L'');
+
+
+    4511:                 --vytvorenie cis_poznamky
+
+
+    4513:                   debugpck(''c_imp'',''ispp zmena => vkladam cis_poznamky pre CT'',''ZaradDod_CT_L'');
+
+
+    4572:                 --vytvorenie cis_poznamky
+
+
+    4575:                   debugpck(''c_imp'',''ispp vlozenie => generujem cis_poznamky pre CT'',''ZaradDod_CT_L'');
+
+
+    5155:                 --vytvorenie cis_poznamky
+
+
+    5157:                   debugpck(''c_imp'',''ispp zmena => vkladam cis_poznamky pre CT'',''ZaradDod_CT_L'');
+
+
+    5215:                 --vytvorenie cis_poznamky
+
+
+    5218:                   debugpck(''c_imp'',''ispp vlozenie => generujem cis_poznamky pre CT'',''ZaradDod_CT_L'');
+
+
+    5737:                 --vytvorenie cis_poznamky
+
+
+    5739:                   debugpck(''c_imp'',''ispp zmena => vkladam cis_poznamky pre CT'',''ZaradDod_CT_L'');
+
+
+    5798:                 --vytvorenie cis_poznamky
+
+
+    5801:                   debugpck(''c_imp'',''ispp vlozenie => generujem cis_poznamky pre CT'',''ZaradDod_CT_L'');
+
+
+    5977: rcispozn cis_poznamky%rowtype;
+
+
+    5984:     rcispozn.typ:=c_cis_poznamka_typ.TYP_DodatocneInfoCT;
+
+
+    6282:   psAlergeny DOD_SKLAD_KARTA.ALERGENY%TYPE default null,
+
+
+    6410:   sDeclaration:= sDeclaration||''psAlergeny DOD_SKLAD_KARTA.ALERGENY%TYPE := :psAlergeny ;'' ;
+
+
+    6535:   If psAlergeny is not null then   sColumns:= sColumns|| ''ALERGENY,''; sValues := sValues||''psAlergeny,'';
+    end if;
+
+
+    6659:      IN psAlergeny,
+
+
+    7503:                 --vytvorenie cis_poznamky
+
+
+    7505:                   debugpck(''c_imp'',''ispp zmena => vkladam cis_poznamky pre CT'',''ZaradDod_CT_L'');
+
+
+    7581:                 --vytvorenie cis_poznamky
+
+
+    7584:                   debugpck(''c_imp'',''ispp vlozenie => generujem cis_poznamky pre CT'',''ZaradDod_CT_L'');
+
+
+    7903:                --vytvorenie cis_poznamky
+
+
+    7905:                   debugpck(''c_imp'',''ispp zmena => vkladam cis_poznamky pre CT'',''ZaradDod_CT_L'');
+
+
+    8009:                 --vytvorenie cis_poznamky
+
+
+    8012:                   debugpck(''c_imp'',''ispp vlozenie => generujem cis_poznamky pre CT'',''ZaradDod_CT_L'');
+
+
+    8299:                 --vytvorenie cis_poznamky
+
+
+    8301:                   debugpck(''c_imp'',''ispp zmena => vkladam cis_poznamky pre CT'',''ZaradDod_CT_L'');
+
+
+    8361:                             --vytvorenie cis_poznamky
+
+
+    8364:                               debugpck(''c_imp'',''ispp vlozenie => generujem cis_poznamky pre CT'',''ZaradDod_CT_L'');
+
+    '
+- dependency_id: pm.source.pm-09d.c_rozvoz_davka.package_body
+  source_ref: pm.oracle.mc.c_rozvoz_davka.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '1690:       delete from cis_poznamky where typ = c_cis_poznamka_typ.TYP_RQ_InfoOptimal
+
+
+    1700:       delete from cis_poznamky where typ = c_cis_poznamka_typ.TYP_RQ_InfoOptimal
+
+
+    1772:       delete from cis_poznamky where typ = c_cis_poznamka_typ.TYP_RQ_InfoOptimal
+
+
+    1779:       delete from cis_poznamky where typ = c_cis_poznamka_typ.TYP_RQ_InfoOptimal
+
+
+    1790:       delete from cis_poznamky where typ = c_cis_poznamka_typ.TYP_RQ_InfoOptimal
+
+
+    1796:       delete from cis_poznamky where typ = c_cis_poznamka_typ.TYP_RQ_InfoOptimal
+
+
+    2135:   delete from cis_poznamky where typ = c_cis_poznamka_typ.TYP_RQ_InfoOptimal
+
+
+    2582:           PSPOZNAMKA=>tNeoptDokl(i).info, PSRID_V=>c_rid.zlozrid(pnCISDEF=>-30, psID=>sID_RQ), PSTYP=>c_cis_poznamka_typ.TYP_RQ_InfoOptimal);
+
+    '
+- dependency_id: pm.source.pm-09d.c_rozvoz_davka_pt.package_body
+  source_ref: pm.oracle.mc.c_rozvoz_davka_pt.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '319:         psPoznRozvozu :=nvl( substr(c_cis_poznamka.GetPoznamkaDreamer(psRID_V=>psRID_V, psTyp=>c_cis_poznamka_typ.TYP_InfoPreDopravcu_Obj,
+    pnAko=>1, pnIdCis=>null),1,150), psPoznRozvozu);
+
+    '
+- dependency_id: pm.source.pm-09d.c_rozvoz_davka_xml.package_body
+  source_ref: pm.oracle.mc.c_rozvoz_davka_xml.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '4751:            c_cis_poznamka.GetPoznamkaDreamer(psRID_V=>md.rid, psTyp=>c_cis_poznamka_typ.TYP_InfoPreDopravcu_MD,
+    pnAko=>1, pnIdCis=>null),
+
+
+    4768:            c_cis_poznamka.GetPoznamkaDreamer(psRID_V=>mz.rid, psTyp=>c_cis_poznamka_typ.TYP_InfoPreDopravcu_MZ,
+    pnAko=>1, pnIdCis=>null),
+
+    '
+- dependency_id: pm.source.pm-09d.c_rozvoz_que.package_body
+  source_ref: pm.oracle.mc.c_rozvoz_que.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '1477:     psPozn_rozv := c_cis_poznamka.GetPoznamkaDynamColumn(psRID_Zaznam=>psRID_V, psTyp=>c_cis_poznamka_typ.TYP_InfoPreDopravcu_Obj,
+    pnAko=>1);
+
+
+    1479:     psPozn_rozv := c_cis_poznamka.GetPoznamkaDynamColumn(psRID_Zaznam=>psRID_V, psTyp=>c_cis_poznamka_typ.TYP_InfoPreDopravcu_Vyd,
+    pnAko=>1);
+
+
+    2691:     delete from cis_poznamky where rid_v = sRID_RQ;
+
+
+    4218: --  select poznamka into sPOzn from cis_poznamky where rid_v = sRID_RQ and typ = c_cis_poznamka_typ.TYP_RQ_InfoOptimal
+    and s_stamp = ''0'' and rownum = 1;
+
+
+    4219:   select listagg( poznamka,''/ '') within group (order by id) into sPOzn from cis_poznamky where rid_v
+    = sRID_RQ and typ = c_cis_poznamka_typ.TYP_RQ_InfoOptimal and s_stamp = ''0'' ;
+
+    '
+- dependency_id: pm.source.pm-09d.c_rp_l.package_body
+  source_ref: pm.oracle.mc.c_rp_l.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "4241: \t\tdelete from cis_poznamky where rid_v=psRID;\n"
+- dependency_id: pm.source.pm-09d.c_sada_parametrov.package
+  source_ref: pm.oracle.mc.c_sada_parametrov.package
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '18: PARAMS_SKLAD_KARTA constant varchar2(1000) := ''PARTNUM¤0¤NAZOV¤0¤NAZOV2¤0¤JEDNOTKA¤0¤ZARUKA¤0¤DPH¤0¤NOTE¤0¤TECHINFO_S¤0¤TECHINFO_L¤0¤URL¤0¤OBJEM¤0¤HMOTNOST¤0¤LENGTH¤0¤WIDTH¤0¤HEIGHT¤0¤OBSAH_CUKOR¤0¤MENAKOD¤0¤DOBA_DOD¤0¤MIN_ORDER¤0¤COL_SADZ_ID¤0¤MNOZSTVO_DMJ¤0¤COUNTRY_ORIGIN¤0¤BAL_KS¤0¤BAL_DOD¤0¤BAL_ROW¤0¤BAL_PAL¤0¤Kusy_Info¤0¤PAR_N_1¤0¤PAR_N_2¤0¤PAR_N_3¤0¤PAR_N_4¤0¤PAR_N_5¤0¤PAR_N_6¤0¤PAR_N_7¤0¤PAR_N_8¤0¤PAR_N_9¤0¤PAR_N_10¤0¤PAR_S_1¤0¤PAR_S_2¤0¤PAR_S_3¤0¤PAR_S_4¤0¤PAR_S_5¤0¤PAR_S_6¤0¤PAR_S_7¤0¤PAR_S_8¤0¤PAR_S_9¤0¤PAR_S_10¤0¤M_JEDNOTKA¤0¤CENA¤0¤MNOZSTVO_MJ¤0¤MANUAL¤0¤ALERGENY¤0¤TYP_T¤0¤HMOTNOST_NETTO¤0¤OBJEM_NETTO¤0¤PIC_S¤0¤PIC_L¤0'';
+
+    '
+- dependency_id: pm.source.pm-09d.d_cpr_l.package_body
+  source_ref: pm.oracle.mc.d_cpr_l.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '8791:   delete from cis_poznamky where typ = c_cis_poznamka_typ.TYP_RQ_InfoOptimal
+
+
+    10223:           PSPOZNAMKA=>tNeoptDokl(i).info, PSRID_V=>c_rid.zlozrid(pnCISDEF=>-30, psID=>sID_RQ), PSTYP=>c_cis_poznamka_typ.TYP_RQ_InfoOptimal);
+
+    '
+- dependency_id: pm.source.pm-09d.d_dlaf_l.package_body
+  source_ref: pm.oracle.mc.d_dlaf_l.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '4804:   delete from cis_poznamky where rid_v=psRID;
+
+
+    12925:                           psPoznamka=>sInfoPreDopravcu, psRID_V=>sRID_Vyd, psTyp=>c_cis_poznamka_typ.TYP_InfoPreDopravcu_Vyd);
+
+    '
+- dependency_id: pm.source.pm-09d.d_obj_odb_l.package_body
+  source_ref: pm.oracle.mc.d_obj_odb_l.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '3645:   delete from cis_poznamky where rid_v=psRID;
+
+    '
+- dependency_id: pm.source.pm-09d.d_prijemka_l.package_body
+  source_ref: pm.oracle.mc.d_prijemka_l.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "14040: \t\tdelete from cis_poznamky where rid_v=psRID;\n"
+- dependency_id: pm.source.pm-09d.d_ser_z_l.package_body
+  source_ref: pm.oracle.mc.d_ser_z_l.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '8764:     select cp.poznamka, cp.id into rSZ.pozn, sID from cis_poznamky cp where cp.rid_v = psRID and cp.typ
+    = c_cis_poznamka_typ.TYP_InfoOcakavaneVybSZ and cp.s_stamp = ''0'' and rownum = 1;
+
+
+    8771:       update cis_poznamky cp set cp.poznamka = psPOZN_OV where cp.id = sID;
+
+
+    8773:       c_cis_poznamka.InsT(pnKLADNE=>1, psID=>sID, psPOZNAMKA=>psPOZN_OV, psRID_V=>psRID, pnID_Z=>null,
+    psPREDMET=>null, psTYP=>c_cis_poznamka_typ.TYP_InfoOcakavaneVybSZ);
+
+
+    8828:     c_cis_poznamka.InsT(pnKLADNE=>1, psID=>sID, psPOZNAMKA=>psPOZN_OV, psRID_V=>psRid_SerZak, pnID_Z=>null,
+    psPREDMET=>null, psTYP=>c_cis_poznamka_typ.TYP_InfoOcakavaneVybSZ);
+
+
+    9041:       select cp.poznamka into sPoznamka from cis_poznamky cp where cp.rid_v = sRID_SZ and cp.typ = c_cis_poznamka_typ.TYP_InfoOcakavaneVybSZ
+    and cp.s_stamp = ''0'' and rownum = 1;
+
+    '
+- dependency_id: pm.source.pm-09d.d_t_dokl_l.package_body
+  source_ref: pm.oracle.mc.d_t_dokl_l.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '9900:             if c_cis_poznamka_typ.GetPravoVytvorit(psID=>c_cis_poznamka_typ.TYP_InfoPreDopravcu_Vyd)
+    = 1 then
+
+
+    9902:               c_cis_poznamka.InsT(pnKLADNE=>1, psID=>sID, psPOZNAMKA=>sLogPozn, psRID_V=>sRID_Vyd, psTYP=>c_cis_poznamka_typ.TYP_InfoPreDopravcu_Vyd);
+
+    '
+- dependency_id: pm.source.pm-09d.d_vydaj_l.package_body
+  source_ref: pm.oracle.mc.d_vydaj_l.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '3944:   delete from cis_poznamky where rid_v=psRID;
+
+
+    12286:                               PSPOZNAMKA=>sInfoPreDopravcu, PSRID_V=>psRidOut, PSTYP=>c_cis_poznamka_typ.TYP_InfoPreDopravcu_Vyd);
+
+    '
+- dependency_id: pm.source.pm-09d.d_zapozicka_l.package_body
+  source_ref: pm.oracle.mc.d_zapozicka_l.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "540: \tsTextFakturacie cis_poznamky.poznamka%type;\n\n542: \tselect cp.poznamka into sTextFakturacie from cis_poznamky\
+    \ cp where cp.rid_v = psRID and cp.typ = c_cis_poznamka_typ.TYP_TextFakturacie and cp.s_stamp = '0' and rownum\
+    \ = 1;\n\n551: \tselect cp.id into sID from cis_poznamky cp where cp.rid_v = psRID and cp.typ = c_cis_poznamka_typ.TYP_TextFakturacie\
+    \ and cp.s_stamp = '0' and rownum = 1;\n\n552: \tupdate cis_poznamky cp set cp.poznamka = psTextFakt where cp.id\
+    \ = sID;\n\n554: \tc_cis_poznamka.InsT(pnKladne=>1, psID=>sID, psPoznamka=>psTextFakt, psRID_V=>psRID, psTYP=>c_cis_poznamka_typ.TYP_TextFakturacie);\n"
+- dependency_id: pm.source.pm-09d.handygo.package_body
+  source_ref: pm.oracle.mc.handygo.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '6760:         select poznamka into prsPoznamka from (select * from cis_poznamky where rid_v=(select sk.rid
+    from sklad_zasob sz, sklad_karta sk where sk.id=sz.kod_id and sz.id=sIDSZ)
+
+
+    6761:             and typ=C_CIS_POZNAMKA_TYP.TYP_WmsInfo and (zobrazit_od<=trunc(sysdate) or zobrazit_od is
+    null) and (zobrazit_do>=trunc(sysdate) or zobrazit_do is null)
+
+    '
+- dependency_id: pm.source.pm-09d.iwms.package_body
+  source_ref: pm.oracle.mc.iwms.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "255:     \tC_CIS_POZNAMKA.SetPoznamku(psrid_v=> psRidVyd, pstyp=> c_cis_poznamka_typ.TYP_DovodOdlozeniaBal,\
+    \ pspozn=> psPoznamka);\n"
+- dependency_id: pm.source.pm-09d.moshopper.package_body
+  source_ref: pm.oracle.mc.moshopper.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '2270:    UPDATE CIS_POZNAMKY SET POZN=psPoznDopravcu  WHERE TYP=TYP_POZN_OBJ_DOPRAVCA AND RID_V=psRID;
+
+
+    2394:            UPDATE CIS_POZNAMKY SET POZN=psPOZN  WHERE TYP=TYP_POZN_OBJ_DOPRAVCA AND RID_V=psPK;
+
+    '
+- dependency_id: pm.source.pm-09d.pck_123kurier.package_body
+  source_ref: pm.oracle.mc.pck_123kurier.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '214:       from cis_poznamky
+
+    '
+- dependency_id: pm.source.pm-09d.pck_brandbank.package_body
+  source_ref: pm.oracle.mc.pck_brandbank.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "539: \t\t\t\t\t\t\t\t\t\t\t\t alergeny  xmltype\n\n544: \t\t\t\t\t\t\t\t\t\t\t\tpassing x.alergeny\n\n545:\
+    \ \t\t\t\t\t\t\t\t\t\t\t\tcolumns id_alergen varchar2(100) path 'Name/@Id',\n\n546: \t\t\t\t\t\t\t\t\t\t\t\t\
+    \t\t\t\talergen varchar2(100) path 'Name',\n\n810: \t\t\t\t\t\t\t\t\t--alergeny\n\n1369: \t\t\t\t\t\t\t\t--alergeny\n"
+- dependency_id: pm.source.pm-09d.pck_dpd.package_body
+  source_ref: pm.oracle.mc.pck_dpd.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "291: \t\t\tfrom cis_poznamky\n\n967: \t\t\tfrom cis_poznamky\n"
+- dependency_id: pm.source.pm-09d.pck_duplicate.package_body
+  source_ref: pm.oracle.mc.pck_duplicate.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '111:     sID CIS_POZNAMKY.ID%TYPE;
+
+
+    115:     for r in (select * from CIS_POZNAMKY where rid_v = sRidOld and s_stamp = ''0'' and (psValues is null
+    or id in (select COLUMN_VALUE from table(ppf.GetTokensTbl(pStr=>psValues, pToken=>'','')))))
+
+    '
+- dependency_id: pm.source.pm-09d.pck_packeta.package_body
+  source_ref: pm.oracle.mc.pck_packeta.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "166: \t\t\tfrom cis_poznamky\n\n167: \t\t\twhere typ = c_cis_poznamka_typ.TYP_InfoPreDopravcu_Vyd and rid_v\
+    \ = sRidVyd;\n"
+- dependency_id: pm.source.pm-09d.pck_paletexpress.package_body
+  source_ref: pm.oracle.mc.pck_paletexpress.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "718: \t\t--poznamka pre prijmatela sa vybera z cis_poznamky\n\n723: \t\t\t\t\t\tfrom cis_poznamky cp, cis_poznamky_typy\
+    \ cpt\n"
+- dependency_id: pm.source.pm-09d.pck_ppl.package_body
+  source_ref: pm.oracle.mc.pck_ppl.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '1117:                     --xmlelement("v1:Note", (select nvl(poz.poznamka,'''') from cis_poznamky poz where
+    poz.s_stamp=0 and poz.predmet=''DPR'' and poz.rid_v=vl.rid and rownum=1) ),
+
+
+    1251:           --xmlelement("v1:Note", (select nvl(poz.poznamka,'''') from cis_poznamky poz where poz.s_stamp=0
+    and poz.predmet=''DPR'' and poz.rid_v=vl.rid and rownum=1) ),
+
+    '
+- dependency_id: pm.source.pm-09d.pck_ucto.package
+  source_ref: pm.oracle.mc.pck_ucto.package
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "289: \t\t\t\t\t\t\t\t\t\t\t\t cis_poznamka cis_poznamky.poznamka%type,\n"
+- dependency_id: pm.source.pm-09d.pck_ucto.package_body
+  source_ref: pm.oracle.mc.pck_ucto.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "8619: \tsTextFakturacie cis_poznamky.poznamka%type;\n\n8621: \tselect cp.poznamka into sTextFakturacie from\
+    \ cis_poznamky cp where cp.rid_v = psRID and cp.typ = c_cis_poznamka_typ.TYP_Uctovanie and cp.s_stamp = '0'\
+    \ and rownum = 1;-- '00019'\n\n8630: \tselect cp.id into sID from cis_poznamky cp where cp.rid_v = psRID and\
+    \ cp.typ = c_cis_poznamka_typ.TYP_Uctovanie and cp.s_stamp = '0' and rownum = 1;-- '00019'\n\n8631: \tupdate\
+    \ cis_poznamky cp set cp.poznamka = psPoznamka where cp.id = sID;\n\n8633: \tc_cis_poznamka.InsT(pnKladne=>1,\
+    \ psID=>sID, psPoznamka=>psPoznamka, psRID_V=>psRID, psTYP=>c_cis_poznamka_typ.TYP_Uctovanie);-- '00019'\n"
+- dependency_id: pm.source.pm-09d.preklapania.package_body
+  source_ref: pm.oracle.mc.preklapania.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '5234:                           PSPOZNAMKA=>sInfoPreDopravcu, PSRID_V=>psRIDFakt, PSTYP=>c_cis_poznamka_typ.TYP_InfoPreDopravcu_Vyd);
+
+
+    12554:                           PSPOZNAMKA=>sInfoPreDopravcu, PSRID_V=>psRIDFakt, PSTYP=>c_cis_poznamka_typ.TYP_InfoPreDopravcu_Vyd);
+
+
+    19113:                           PSPOZNAMKA=>sInfoPreDopravcu, PSRID_V=>psRIDFakt, PSTYP=>c_cis_poznamka_typ.TYP_InfoPreDopravcu_Vyd);
+
+    '
+- dependency_id: pm.source.pm-09d.t_r_sklad_karta.trigger
+  source_ref: pm.oracle.mc.t_r_sklad_karta.trigger
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '2: Before insert or update  OF  KOEF_PREP_PAL, VELKE_BAL_NAZOV, TYP_BODU_FAKT, HMOTNOST_KS, PORADIE_PREDAJNOSTI_MO,
+    ZARUKA_ODR, ZARUKA_OBD_ODR, POMENOVANIE, SMER, DOD_SK, BALENIE, C_3, INT_KOD, T_TOVARU, USED, MENA_SK, PREF_CENA,
+    ODPIS_SK, C_4, C_5, C_M, C_2, COL_SADZBA, MAKRO_OLD, FLAGS, DOD_KOD, C_N, ZALOZENA, OBJEM, HMOTNOST, ZLAVY,
+    ZLAVA_MIN_POC, TYP_T, PAR_1, PAR_2, SKLAD, TECHINFO, ZMENENE, KALKUL_P, VYROBCA, VELKE_BAL, CEN_SKUPINA, PAR_STR_1,
+    PAR_STR_2, C_EKV, DATUM_MINMAX, SKRATKA, ID_TREE, FLAGS_B, POZN, S_STAMP, FLAGS_S, KOD_ID_OBALU, PALETA_BAL,
+    UROVEN_DPH, DOBA_NAK, ID_C_KOEF_L_OLD, ZLOMKY, ZLOMKY_SKALA, KRAJINA_P, MNOZSTVO_DMJ, DOD_BAL, VRSTVA_BAL, NAHRADA,
+    ID_PROD_MAN, STAT, SKP, SIRKA, VYSKA, HLBKA, SLA_STANDARD, STAV, URL, ZARUKA, ZARUKA_OBD, C_X, KIR_1, KIR_2,
+    KIR_3, KIR_4, KIR_5, C_STAMP, N_STAMP, TYP_POLOHY, NAHRADZA_KARTU, HMOTNOST_NETTO, MNOZSTVO_ALKOHOLU, FLAGS_POVOL,
+    DOD_SK_N, OBJEM_NETTO, MNOZSTVO_CUKRU, BOBI_KOD, M_JEDNOTKA, MNOZSTVO_MJ, SPOSOB_UP, FULLTEXT, C_FIX, XML_DATA,
+    PORADIE_PREDAJNOSTI, KATEGORIA_PREDAJNOSTI, MAX_POCET_OBJ, SKALA, MANUAL, HLAVNA_TP, TYP_PS, DLZKA_PS, POCET_VK_PS,
+    POLICA_PS, MIN_ZASOBA, ART_SKUP, OBCH_BONUS, POCET_OBALOV, MVM_BAL, OBCH_ZNACKA, NAZOV_ETIK, VYSKA_VRS, PRINTER,
+    MNM, MAKRO, SK_ID, DRUH, C_1, ZARUKA_OLD, ZLAVA_ID, NAZOV, POLOHA, FARBY, P_JEDNOTKA, DPH, PORADIE, OBJ_METODA,
+    BITMASK_RZ, ZASTUPCA, ALERGENY, TYP_REG_BLOKU, OBJ_METODA_MO, C_6, C_7, TYP_CENOVKY, MTM, KIR_6, KIR_7, DOPL_INFO,
+    HMOTNOST_TOL, TEP_SK_OD, TEP_SK_DO, ZARUKA_OTV, ZARUKA_OBD_OTV, MAX_POCET_PARAG, FLAGS_A, DAVKA_NUT_H, HMOTNOST_SCO,
+    OBJ_JEDNOTKA, POCET_SN_EVID, TYP_SN, TYP_CIS, NAK_JEDNOTKA  on SKLAD_KARTA
+
+    '
+- dependency_id: pm.source.pm-09d.t_s_cis_poznamky.trigger
+  source_ref: pm.oracle.mc.t_s_cis_poznamky.trigger
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '1: TRIGGER T_S_CIS_POZNAMKY
+
+
+    4:  ON CIS_POZNAMKY
+
+    '
+- dependency_id: pm.source.pm-09d.t_s_cis_poznamky_ins.trigger
+  source_ref: pm.oracle.mc.t_s_cis_poznamky_ins.trigger
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '1: TRIGGER T_S_CIS_POZNAMKY_Ins
+
+
+    4:  ON CIS_POZNAMKY
+
+    '
+- dependency_id: pm.source.pm-09d.t_s_cis_poznamky_typy.trigger
+  source_ref: pm.oracle.mc.t_s_cis_poznamky_typy.trigger
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '1: TRIGGER T_S_CIS_POZNAMKY_TYPY
+
+
+    4:  ON CIS_POZNAMKY_TYPY
+
+    '
+- dependency_id: pm.source.pm-09d.t_s_cis_poznamky_typy_ins.trigger
+  source_ref: pm.oracle.mc.t_s_cis_poznamky_typy_ins.trigger
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09d
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '1: TRIGGER T_S_CIS_POZNAMKY_TYPY_Ins
+
+
+    4:  ON CIS_POZNAMKY_TYPY
+
+    '
+- dependency_id: pm.source.pm-09e.c_var.package
+  source_ref: pm.oracle.mc.c_var.package
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09e
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "1: PACKAGE c_var\n\n2: is\n\n3: -- EXP 28.03.2023 14:06 CHG 28.03.2023 14:06\n\n4: -- EXP 11.07.2022 10:45\
+    \ CHG 11.07.2022 10:41\n\n5: -- EXP 11.03.2021 13:20 CHG 11.03.2021 13:20\n\n6: \n\n7: TYPE R_PARAMETER is record\n\
+    \n8: (\n\n9:     NAZOV varchar2(254),\n\n10:     HODNOTA varchar2(4000)\n\n11: );\n\n12: TYPE TBL_PARAMETRE\
+    \ is table of R_PARAMETER;\n\n13: \n\n14: -- funkcia vrati premennu z volitelnych doplnkovych udajov\n\n15:\
+    \ function GetVarDUV(psId varchar2,psRID varchar2) return varchar2;\n\n16: -- funkcia vrati premennu z www_variable\n\
+    \n17: function GetVar(psId varchar2,pnUserId number default C_SESSION.GetUser,pnModul number default null,pnRekurzivne\
+    \ number default 1, psDefaultNotExist varchar2 default null,psId_V varchar2 default null) return varchar2;\n\
+    \n18: \n\n19: --funkcia zmeni hodnotu variably a nastavi ju ako uzivatelsku\n\n20: procedure ChangeVar(psId\
+    \ varchar2, psValue varchar2, psDescription varchar2 default null, pnTYPE number default 0, pnMODUL number default\
+    \ null, pnLog number default 1, psDovod varchar2 default null);\n\n21: \n\n22: -- funkcia replacne bindovane\
+    \ premenne (% %) z retazca psIn\n\n23: -- pnLeaveUnbinded ak je 1 tak co sa nepodarilo replacnut necha v povodnom\
+    \ stave, inak odmazava\n\n24: function ReplaceVars(psIn varchar2, pnLeaveUnbinded number default 0, pnSetGlobalPar\
+    \ number default 0, pnSetDUVPar number default 0, pnModul  number default null, pnUserId number default C_SESSION.GetUser,\
+    \ psCustomParams varchar2 default null, psCustomToken varchar2 default ';') return varchar2;\n\n25: \n\n26:\
+    \ function GetParams(pcParametre clob, psToken varchar2 default ';') return TBL_PARAMETRE PIPELINED;\n\n27:\
+    \ \n\n28: procedure EditWwwVar(psID varchar2,psMODUL varchar2,pnID_CIS number,psTYPE varchar2,psDESCRIPTION\
+    \ varchar2,psVALUE varchar2,pnMODIFIED number,psID_V varchar2 default null);\n\n29: procedure DeleteWwwVar(psPK\
+    \ varchar2);\n\n30: \n\n31: end;"
+- dependency_id: pm.source.pm-09e.c_var.package_body
+  source_ref: pm.oracle.mc.c_var.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09e
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "1: PACKAGE BODY c_var\n\n2: is\n\n3: \n\n4: function GetVarDUV(psId varchar2,psRID varchar2) return varchar2\
+    \ is\n\n5:   sRet varchar2(254);\n\n6: begin\n\n7:   select nvl(o.hodnota, o.hodnota_id) into sRet from CIS_DUV_o\
+    \ o, CIS_DUV_L l\n\n8:     where o.id_duv_l = l.id and l.s_stamp = '0' and l.bind_variable = psId and l.bind_variable\
+    \ is not null and rownum = 1;\n\n9:   return sRet;\n\n10:   exception\n\n11:     when no_data_found then\n\n\
+    12:       return null;\n\n13: end GetVarDUV;\n\n14: \n\n15: \n\n16: function GetVar(psId varchar2,pnUserId number\
+    \ default C_SESSION.GetUser,pnModul number default null,pnRekurzivne number default 1, psDefaultNotExist varchar2\
+    \ default null,psId_V varchar2 default null) return varchar2 is\n\n17:   sValue varchar2(4000);\n\n18: begin\n\
+    \n19:   for r in ( select  value  from www_variables where id=psId and ( modul is null or modul=nvl(pnModul,-1))\
+    \ and ( ( psId_V is null AND ID_V is null ) OR ID_V=psID_V) order by modul desc nulls last,modified desc ) loop\n\
+    \n20:     if(pnRekurzivne  = 1 and (instr(r.Value,'(%') > 0 or instr(r.Value,'<%') > 0)) then\n\n21:       \
+    \  r.Value := ReplaceVars(psIn=>r.Value,pnLeaveUnbinded=>1,pnSetGlobalPar=>0,pnSetDUVPar=>0,pnModul=>pnModul);\n\
+    \n22:     end if;\n\n23:     return r.Value;\n\n24:   end loop;\n\n25:   return psDefaultNotExist;\n\n26: end\
+    \ GetVar;\n\n27: \n\n28: procedure ChangeVar(psId varchar2, psValue varchar2, psDescription varchar2 default\
+    \ null, pnTYPE number default 0, pnMODUL number default null, pnLog number default 1, psDovod varchar2 default\
+    \ null) is\n\n29:     rVariable WWW_VARIABLES%ROWTYPE;\n\n30:     nExist number;\n\n31: begin\n\n32:     begin\n\
+    \n33:         select * into rVariable from www_variables where id = psId and modified = 1;\n\n34:         if\
+    \ nvl(rVariable.VALUE, c_const.UndefinedDefaultValue) != nvl(psValue, c_const.UndefinedDefaultValue) then\n\n\
+    35:             update www_variables set value = psValue where id = psId and modified = 1;\n\n36:         else\n\
+    \n37:             return;\n\n38:         end if;\n\n39: \n\n40:         exception when no_data_found then\n\n\
+    41:         begin\n\n42:             select * into rVariable from www_variables where id = psId and modified\
+    \ = 0;\n\n43:             if nvl(rVariable.VALUE, c_const.UndefinedDefaultValue) != nvl(psValue, c_const.UndefinedDefaultValue)\
+    \ then\n\n44:                 insert into www_variables(ID, VALUE, DESCRIPTION, WWW_ROLA, TYPE, MODIFIED, MODUL,\
+    \ ID_CIS)\n\n45:                     values(rVariable.ID, psValue, rVariable.DESCRIPTION, rVariable.WWW_ROLA,\
+    \ rVariable.TYPE, 1, rVariable.MODUL, rVariable.ID_CIS);\n\n46:             else\n\n47:                 return;\n\
+    \n48:             end if;\n\n49: \n\n50:             exception when no_data_found then\n\n51:              \
+    \   if psValue is not null then\n\n52:                     rVariable.ID := psId;\n\n53:                    \
+    \ rVariable.VALUE := null;\n\n54:                     rVariable.DESCRIPTION := psDescription;\n\n55:       \
+    \              rVariable.WWW_ROLA := 2147483647;\n\n56:                     rVariable.TYPE := pnType;\n\n57:\
+    \                     rVariable.MODUL := pnMODUL;\n\n58:                     rVariable.ID_CIS := null;\n\n59:\
+    \                     insert into www_variables(ID, VALUE, DESCRIPTION, WWW_ROLA, TYPE, MODIFIED, MODUL, ID_CIS)\n\
+    \n60:                         values(rVariable.ID, psValue, rVariable.DESCRIPTION, rVariable.WWW_ROLA, rVariable.TYPE,\
+    \ 1, rVariable.MODUL, rVariable.ID_CIS);\n\n61:                 else\n\n62:                     return;\n\n\
+    63:                 end if;\n\n64:         end;\n\n65:     end;\n\n66: \n\n67:     if pnLog = 1 then\n\n68:\
+    \         c_hist_zmien_field.inst(psPK_V=>psId, psTABULKA=>'WWW_VARIABLES', psFIELD=>'VALUE', psHODNOTA_NOVA=>psValue,\
+    \ pdtDATUM_OD=>sysdate, psHODNOTA_STARA=>rVariable.VALUE, pdtDATUM_DO=>null, psPOPIS=>psDovod, psZ_STAMP=>c_stamp.GetSessionStamp,\
+    \ pnDATA_TYPE=>c_hist_zmien_field.DATA_TYPE_STRING);\n\n69:     end if;\n\n70: end ChangeVar;\n\n71: \n\n72:\
+    \ function ReplaceVars(psIn varchar2, pnLeaveUnbinded number default 0, pnSetGlobalPar number default 0, pnSetDUVPar\
+    \ number default 0, pnModul number default null, pnUserId number default C_SESSION.GetUser, psCustomParams varchar2\
+    \ default null, psCustomToken varchar2 default ';') return varchar2\n\n73: is\n\n74:   sParam varchar2(100);\n\
+    \n75:   sKey varchar2(100);\n\n76:   sValue varchar2(4000);\n\n77:   nIdx1 number;\n\n78:   nIdx2 number;\n\n\
+    79:   nOdPozicie number;\n\n80:   nStop number;\n\n81:   sVystup varchar2(4000);\n\n82:   sRid varchar2(16);\n\
+    \n83:   sIn varchar2(4000) := psIn;\n\n84:   nExist number;\n\n85: begin\n\n86:   nOdPozicie := 1;\n\n87:  \
+    \ nStop:=0;\n\n88:   sVystup:='';\n\n89:   sIn := replace(replace(psIn,'<%','(%'),'%>','%)');\n\n90:   loop\n\
+    \n91: \n\n92:     nIdx1 := INSTR(sIn,'(%',nOdPozicie);\n\n93: --    dbms_output.put_line('Nidx1 je ' || nIdx1\
+    \ || 'od pozicie ' || nOdPozicie);\n\n94:     if(nIdx1 < 1 or nIdx1 is null )  then\n\n95: --      dbms_output.put_line('Doplnam\
+    \ vystup od pozicie ' || nOdPozicie || ' ' || SUBSTR(sIn,nOdPozicie));\n\n96:       sVystup := sVystup || SUBSTR(sIn,nOdPozicie);\n\
+    \n97:       return sVystup;\n\n98:     end if;\n\n99: \n\n100:     sVystup := sVystup || SUBSTR(sIn,nOdPozicie,nIdx1\
+    \ - nOdPozicie);\n\n101: --    dbms_output.put_line( sVystup);\n\n102: \n\n103:     nOdPozicie := nIdx1+2;\n\
+    \n104:     nIdx2 := INSTR(sIn,'%)',nOdPozicie);\n\n105: --    dbms_output.put_line('Nidx2 je ' || nIdx2);\n\n\
+    106:     if(nIdx2 < 1 or nIdx2 is null )  then\n\n107:       return sVystup;\n\n108:     end if;\n\n109: \n\n\
+    110:     sKey := SUBSTR(sIn,nIdx1+2,nIdx2-nIdx1-2);\n\n111:     nExist:=0;\n\n112: \n\n113: --    dbms_output.put_line('Kluc\
+    \ je = ' || sKey);\n\n114: \n\n115:     if( psCustomParams is not null ) then\n\n116: --         dbms_output.put_line('Hladam\
+    \ ' || sKey || ' v ' || psCustomparams);\n\n117:          c_cis.GetFieldValue(psFieldName=>sKey, psValues=>psCustomParams,\
+    \ pnExist=>nExist, psValue=>sValue,psToken=>nvl(psCustomToken, ';'));\n\n118:     end if;\n\n119: \n\n120: \
+    \    if(nExist = 0) then\n\n121:         if(SUBSTR(sKey,1,1)='#') then\n\n122:             sValue := GetVar(psId=>substr(sKey,2),pnUserId=>pnUserId,pnModul=>pnModul);\n\
+    \n123:         else\n\n124:             sValue := GetVar(psId=>sKey,pnUserId=>pnUserId,pnModul=>pnModul);\n\n\
+    125:         end if;\n\n126:     end if;\n\n127: \n\n128:     if sValue is null and pnSetGlobalPar = 1 then\n\
+    \n129:       sValue := c_session_bs.GetVar( sKey);\n\n130:     end if;\n\n131:     if sValue is null and pnSetDUVPar\
+    \ = 1 then\n\n132:       -- nacitanie premenej z DUV za usera\n\n133:       select rid into sRid from b_users\
+    \ where id = c_session.getuser;\n\n134:       sValue := GetVarDUV(psId=> sKey,psRID=> sRid);\n\n135:     end\
+    \ if;\n\n136: \n\n137:     if(sValue is null and pnLeaveUnbinded = 1) then\n\n138:       sValue := '(%' || sKey\
+    \ || '%)';\n\n139:     elsif(instr(sValue,'(%')>0) then\n\n140:       sValue  := ReplaceVars(psIn=>sValue, pnLeaveUnbinded=>pnLeaveUnbinded,\
+    \ pnSetGlobalPar=>pnSetGlobalPar, pnSetDUVPar=>pnSetDUVPar, psCustomParams=>psCustomParams, psCustomToken=>psCustomToken);\n\
+    \n141:     end if;\n\n142: \n\n143:     sVystup := sVystup || sValue;\n\n144:     nOdPozicie := nIdx2 +2;\n\n\
+    145:     nStop := nStop + 1;\n\n146:     if( nStop > 100 ) then\n\n147:       return 'ERROR STOP ZACYKLENIE\
+    \ (' || nStop || ')';\n\n148:     end if;\n\n149:   end loop;\n\n150: \n\n151:   return sVystup;\n\n152: end\
+    \ ReplaceVars;\n\n153: \n\n154: function GetParams(pcParametre clob, psToken varchar2 default ';') return TBL_PARAMETRE\
+    \ PIPELINED is\n\n155:     rParameter R_PARAMETER;\n\n156:     nStartIndex number;\n\n157:     nEndIndex number;\n\
+    \n158:     nLength number;\n\n159: begin\n\n160:     nLength := dbms_lob.getlength(pcParametre);\n\n161:   \
+    \  nStartIndex := 1;\n\n162:     loop\n\n163:         --NAZOV\n\n164:         nEndIndex := instr(pcParametre,\
+    \ psToken, nStartIndex);\n\n165:         if nEndIndex >= nStartIndex then\n\n166:             rParameter.NAZOV\
+    \ := substr(pcParametre, nStartIndex, nEndIndex - nStartIndex);\n\n167:         else\n\n168:             rParameter.NAZOV\
+    \ := substr(pcParametre, nStartIndex);\n\n169:             rParameter.HODNOTA := null;\n\n170:             if\
+    \ rParameter.NAZOV is not null then\n\n171:                 pipe row (rParameter);\n\n172:             end if;\n\
+    \n173:             exit;\n\n174:         end if;\n\n175:         nStartIndex := nEndIndex + length(psToken);\n\
+    \n176:         --HODNOTA\n\n177:         nEndIndex := instr(pcParametre, psToken, nStartIndex);\n\n178:    \
+    \     if nEndIndex >= nStartIndex then\n\n179:             rParameter.HODNOTA := substr(pcParametre, nStartIndex,\
+    \ nEndIndex - nStartIndex);\n\n180:         else\n\n181:             rParameter.HODNOTA := substr(pcParametre,\
+    \ nStartIndex);\n\n182:             pipe row (rParameter);\n\n183:             exit;\n\n184:         end if;\n\
+    \n185:         nStartIndex := nEndIndex + length(psToken);\n\n186: \n\n187:         pipe row (rParameter);\n\
+    \n188:         exit when nEndIndex = 0;\n\n189:     end loop;\n\n190: end GetParams;\n\n191: \n\n192: procedure\
+    \ EditWwwVar(psID varchar2,psMODUL varchar2,pnID_CIS number,psTYPE varchar2,psDESCRIPTION varchar2,psVALUE varchar2,pnMODIFIED\
+    \ number,psID_V varchar2 default null) is\n\n193:     sMessage varchar2(1000);\n\n194:     bInsert boolean :=\
+    \ false;\n\n195: begin\n\n196: \n\n197:     if( psID_V is not null) then\n\n198:         UPDATE WWW_VARIABLES\
+    \ SET VALUE=psVALUE,TYPE=psTYPE,DESCRIPTION=psDESCRIPTION,ID_CIS=pnID_CIS\n\n199:                          \
+    \                    WHERE ID=psID AND nvl(MODUL, '-1') = nvl(psMODUL, '-1') AND MODIFIED=pnMODIFIED AND ID_V=psID_V;\n\
+    \n200:     else\n\n201:         UPDATE WWW_VARIABLES SET VALUE=psVALUE,TYPE=psTYPE,DESCRIPTION=psDESCRIPTION,ID_CIS=pnID_CIS\n\
+    \n202:                                                      WHERE ID=psID AND nvl(MODUL, '-1') = nvl(psMODUL,\
+    \ '-1') AND MODIFIED=pnMODIFIED AND ID_V IS NULL;\n\n203:     end if;\n\n204: \n\n205:     if(sql%notfound)\
+    \ then\n\n206: \n\n207:         INSERT INTO WWW_VARIABLES   (ID ,MODUL ,ID_CIS ,TYPE ,DESCRIPTION ,VALUE ,MODIFIED,ID_V\
+    \ )\n\n208:         VALUES (psID ,psMODUL ,pnID_CIS ,psTYPE ,psDESCRIPTION ,psVALUE ,pnMODIFIED,psID_V );\n\n\
+    209:         bInsert := true;\n\n210:     end if;\n\n211: \n\n212:     if(pnMODIFIED = 1) then\n\n213:     \
+    \    sMessage := 'Zákaznícky variant ' || psID ;\n\n214:     else\n\n215:         sMessage := 'Systémový variant\
+    \ ' || psID ;\n\n216:     end if;\n\n217: \n\n218:     if( psID_V is not null ) then\n\n219:         sMessage\
+    \ :=  sMessage || '.' || psID_V;\n\n220:     end if;\n\n221: \n\n222:     if psMODUL is not null then\n\n223:\
+    \         sMessage :=  sMessage || ' za modul ' || psMODUL;\n\n224:     end if;\n\n225: \n\n226:     if(bInsert)\
+    \ then\n\n227:             sMessage :=  sMessage || ' vytvorený.';\n\n228:     else\n\n229:             sMessage\
+    \ :=  sMessage || ' zmenený.';\n\n230:     end if;\n\n231: \n\n232:     c_session.SetLastMessage(sMessage);\n\
+    \n233: \n\n234: end EditWwwVar;\n\n235: \n\n236: procedure DeleteWwwVar(psPK varchar2) is\n\n237:     sModulName\
+    \ varchar2(254);\n\n238:     sId WWW_VARIABLES.ID%TYPE;\n\n239:     nModul WWW_VARIABLES.MODUL%TYPE;\n\n240:\
+    \     nModified WWW_VARIABLES.MODIFIED%TYPE;\n\n241: begin\n\n242:     sId := ppf.GetToken(pstr=>psPK, ppos=>1,\
+    \ ptoken=>'!');\n\n243:     nModified := ToNumber(ppf.GetToken(pstr=>psPK, ppos=>2, ptoken=>'!'));\n\n244: \
+    \    nModul := ToNumber(ppf.GetToken(pstr=>psPK, ppos=>3, ptoken=>'!'));\n\n245:     delete from www_variables\
+    \ where ID = sId and nvl(MODUL, -1) = nvl(nModul, -1) and MODIFIED = nModified;\n\n246: \n\n247:     if nModul\
+    \ is not null then\n\n248:         sModulName := ' za modul ' || nModul;\n\n249:     end if;\n\n250: \n\n251:\
+    \     if(nModified = 1) then\n\n252:         c_session.SetLastMessage('Zákaznícky variant vymazaný' || sModulName);\n\
+    \n253:     else\n\n254:         c_session.SetLastMessage('Základný variant vymazaný' || sModulName);\n\n255:\
+    \     end if;\n\n256: end DeleteWwwVar;\n\n257: \n\n258: end;"
+- dependency_id: pm.source.pm-09e.c_dokl_l.package_body
+  source_ref: pm.oracle.mc.c_dokl_l.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09e
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "14268:             nFlag := ToNumber(substr(rStlpec.FLAGS, 12, 1));\n\n14345:             nFlag := ToNumber(substr(rStlpec.FLAGS,\
+    \ 12, 1));\n\n14538: \t\tnFlag := ToNumber(substr(rStlpec.FLAGS, 12, 1));\n\n14579:             nFlag := ToNumber(substr(rStlpec.FLAGS,\
+    \ 12, 1));\n"
+- dependency_id: pm.source.pm-09e.c_fd.package_body
+  source_ref: pm.oracle.mc.c_fd.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09e
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "6130: \t\t\tnFlag := ToNumber(substr(rStlpec.FLAGS, 12, 1));\n\n6264: \t\t\tnFlag := ToNumber(substr(rStlpec.FLAGS,\
+    \ 12, 1));\n"
+- dependency_id: pm.source.pm-09e.mccarter.package_body
+  source_ref: pm.oracle.mc.mccarter.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09e
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '3778:     1=1 AND L.RID = O.RID_O AND L.ID_VYR = VKL.ID AND O.ID_VYR = VKO.ID AND L.S_STAMP = ''0'' AND O.S_STAMP
+    = ''0'' and SUBSTR(VKL.INT_KOD,1,1) in (''3'') /* mato povedal ze vsade predtym mi to kazal dat z substr(flags,12,1)=''0''
+    na ...and exists (select 1 from sklad_karta where substr(flags,12,1)=''1'' and int_kod=VKL.INT_KOD) */)
+
+
+    3955: select substr(flags,12,1) into sPom from sklad_karta where id=nID;
+
+
+    3978: select substr(flags,12,1) into sPom from sklad_karta where id=nID;
+
+
+    4001: select substr(flags,12,1) into sPom from sklad_karta where id=nID;
+
+
+    4024: select substr(flags,12,1) into sPom from sklad_karta where id=nID;
+
+    '
+- dependency_id: pm.source.pm-09e.c_sk_nakl_pol.package_body
+  source_ref: pm.oracle.mc.c_sk_nakl_pol.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09e
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '839:   sPodmVariabla := c_var.getvar(''ZS-NAKL-KOEF-ODPAD-PODM'');
+
+    '
+- dependency_id: pm.source.pm-09e.c_sk_nakl_pol_pp.package_body
+  source_ref: pm.oracle.mc.c_sk_nakl_pol_pp.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09e
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '831:   sPodmVariabla := c_var.getvar(''ZS-NAKL-KOEF-ODPAD-PODM'');
+
+    '
+- dependency_id: pm.source.pm-09f.baris_ciselnik.package
+  source_ref: pm.oracle.mc.baris_ciselnik.package
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '165: --   4 - dod_kod
+
+
+    344: --   4 - dod_kod
+
+    '
+- dependency_id: pm.source.pm-09f.baris_ciselnik.package_body
+  source_ref: pm.oracle.mc.baris_ciselnik.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '204:  THEN SELECT dod_kod||'' \\''||sk_id INTO n_sklad_karta
+
+
+    611:  THEN SELECT sk.dod_kod||'' \\''||sk.sk_id INTO n_servis_id_sk
+
+    '
+- dependency_id: pm.source.pm-09f.baris_sklad.package_body
+  source_ref: pm.oracle.mc.baris_sklad.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '1291:   sDod_kod VARCHAR2(250);
+
+
+    1293:   CURSOR c1 IS SELECT se.id_ser_karta, se.kod_sk, sk.dod_kod
+
+
+    1298:   sTyp_t VARCHAR2(250);
+
+
+    1300:   CURSOR c2 IS SELECT s.int_kod, s.typ_t
+
+
+    1313:     FETCH c1 INTO nId_ser_karta, nSk_id, sDod_kod;
+
+
+    1323:       FETCH c2 INTO sInt_kod, sTyp_t;
+
+
+    1329:       IF    sTyp_t=''0300'' THEN sDu_6 := sDu_6 || sInt_kod || '','';
+
+
+    1330:       ELSIF sTyp_t=''0301'' THEN sDu_4 := sDu_4 || sInt_kod || '','';
+
+
+    1331:       ELSIF sTyp_t=''0302'' THEN sDu_5 := sDu_5 || sInt_kod || '','';
+
+
+    1341:     UPDATE dokl_dopl_udaje SET du_2=sDod_kod, du_4=sDu_4, du_5=sDu_5, du_6=sDu_6
+
+
+    1414:                  AND s1.typ_t LIKE ''01%''
+
+    '
+- dependency_id: pm.source.pm-09f.bdriver.package
+  source_ref: pm.oracle.mc.bdriver.package
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '4: TYP_TASKU_Priprava constant varchar2(4) := ''0009'';
+
+
+    5: TYP_TASKU_Navsteva constant varchar2(5) := ''00010'';
+
+
+    115: function NevybaveneUlohy(psMiesto_Zobraz varchar2 default null,psPK varchar2,psTyp_Tasku varchar2 default
+    null,pnPrepocitaj number default 0) return number;
+
+
+    116: function ValidujPovinneItinerarePreFORM(psMiesto_Zobraz varchar2 default null,psPK varchar2,psMessage varchar2,psTyp_Tasku
+    varchar2 default null,pnPrepocitaj number default 0) return varchar2;
+
+    '
+- dependency_id: pm.source.pm-09f.bdriver.package_body
+  source_ref: pm.oracle.mc.bdriver.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '1681:             C_CIS_TASK_GENERATOR.GenerujManualne(PSTYP_TASKU=>TYP_TASKU_Priprava, psRID_O=>psPK,pnDEFAULT_RIESITEL=>C_KONTAKT.Getuser(psKONTAKT),pnKONTROLA_DUP=>1);
+
+
+    1691:     SELECT COUNT(*) INTO nPocetTask FROM CIS_TASKS CT  WHERE  CT.S_STAMP=''0'' AND CT.RID_O=psPK AND CT.TYP=TYP_TASKU_PRIPRAVA
+    AND CT.V_STAMP=''0'';
+
+
+    1708:     C_CIS_TASK_GENERATOR.GenerujManualne(PSTYP_TASKU=>TYP_TASKU_Navsteva, psRID_O=>psPK,pnDEFAULT_RIESITEL=>C_KONTAKT.Getuser(psKONTAKT),pnKONTROLA_DUP=>1);
+
+
+    1751: function NevybaveneUlohy(psMiesto_Zobraz varchar2 default null,psPK varchar2,psTyp_Tasku varchar2 default
+    null,pnPrepocitaj number default 0) return number
+
+
+    1760:         if(psTyp_Tasku is not null) then
+
+
+    1761:                C_CIS_TASK_GENERATOR.GenerujManualne(PSTYP_TASKU=>TYP_TASKU_Priprava, psRID_O=>psPK,pnDEFAULT_RIESITEL=>C_SESSION.GetUser,pnKONTROLA_DUP=>1);
+
+
+    1772:     if(psTyp_Tasku is not null) then
+
+
+    1774:             FROM CIS_TASKS CT WHERE CT.S_STAMP=''0'' AND CT.V_STAMP=''0'' AND C_FLAGS.fgetflagsstate(PSFLAGS=>CT.FLAGS_B,
+    NINDEX=>C_CIS_TASK.FLAG_B_VysokaPriorita)=''1'' AND CT.TYP IN (psTyp_Tasku) AND CT.RID_O=psPK;
+
+
+    1779: function ValidujPovinneItinerarePreFORM(psMiesto_Zobraz varchar2 default null,psPK varchar2,psMessage
+    varchar2,psTyp_Tasku varchar2 default null,pnPrepocitaj number default 0) return varchar2
+
+
+    1783:     nCnt := NevybaveneUlohy(psMiesto_Zobraz=>psMiesto_Zobraz, psPK=>psPK,  psTyp_Tasku=>psTyp_Tasku, pnPrepocitaj=>pnPrepocitaj);
+
+    '
+- dependency_id: pm.source.pm-09f.bfin.package_body
+  source_ref: pm.oracle.mc.bfin.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '1313:         if(DP.TYP <> C_DOKL_PRILOHA_TYP.TYP_PoklDoklad AND DP.FORMA <> C_DOKL_PRILOHA.FORMA_TempSubor
+    ) then
+
+
+    1422:             if(DP.TYP <> C_DOKL_PRILOHA_TYP.TYP_PoklDoklad) then
+
+
+    1423:                 UPDATE DOKL_PRILOHY SET TYP=C_DOKL_PRILOHA_TYP.TYP_PoklDoklad  WHERE RID=DP.RID;
+
+    '
+- dependency_id: pm.source.pm-09f.bp_crm.package
+  source_ref: pm.oracle.mc.bp_crm.package
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '70:     TYP_Telefonat constant number(2,0) :=1;
+
+    '
+- dependency_id: pm.source.pm-09f.bp_crm.package_body
+  source_ref: pm.oracle.mc.bp_crm.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '1813:        PRE_TYP TYP_ID,(SELECT NAZOV FROM MANAGER_TYPY WHERE ID=PRE_TYP) TYP_NAZOV, MS.DOPL_UDAJE,
+
+
+    2218:       Z.TYP_T IDR5,(SELECT TT.NAZOV FROM TOVAR_TYP TT WHERE TT.ID=TYP_T) IDR6,Z.VERZIA IDR7,
+
+    '
+- dependency_id: pm.source.pm-09f.bp_monet.package
+  source_ref: pm.oracle.mc.bp_monet.package
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '60: KOD_ID_Typ_Text constant number := 7 ;
+
+    '
+- dependency_id: pm.source.pm-09f.bp_monet.package_body
+  source_ref: pm.oracle.mc.bp_monet.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '3908:                 WHERE dod_kod = TRIM (pskodid);
+
+
+    4074:                            ( sk.dod_kod = TRIM (pskodid) and sk.dod_sk=pnDodavatel) or
+
+
+    4081:                      WHERE s_stamp=''0'' and dod_kod = TRIM (pskodid);
+
+
+    4095:             ELSIF (pnkodidtyp = KOD_ID_Typ_Text)
+
+    '
+- dependency_id: pm.source.pm-09f.cenotvorba.package
+  source_ref: pm.oracle.mc.cenotvorba.package
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '439: function GetDarcekySql(pnTypCT number, pnPartner number, psM_DOD varchar2) return varchar2;
+
+
+    441: --PrepocitajZlavu ulozi kumulativnu zlavu ( BODY_KUMULATIV) pre dany typCT alebo partnera, alebo M_DOD
+
+
+    442: procedure PrepocitajZlavu( pnTypCT number, pnPartner number, psM_DOD varchar2);
+
+
+    443: procedure PrepocitajZlavuD( pnTypCT number, pnId_partner number, psM_DOD varchar2);
+
+
+    481: function GetTypCTString( pnTypCT  in number ) return varchar2;
+
+
+    482: function GetTypCTNumber( psTypCT  in varchar2 ) return number;
+
+
+    483: procedure GetTypCTStringC( pnTypCT  in number , psTypCT  out varchar2 );
+
+
+    484: procedure GetTypCTNumberC( psTypCT  in varchar2 ,pnTypCT  out number  );
+
+
+    579: function GetTypCT(pnOkruhCT number, pnTypCT number) return number;
+
+
+    613: function GetTypCTFromRid( psRidCT C_RID.DT_RID ) return number;
+
+
+    619: function GetCursor_Rid_CTO(pnTypPCT number default null, pnTypCT num_pole default null, pnLoadParamH number
+    default 1, pnLoadParamP number default 1,
+
+
+    631: procedure GetRids_CTO_SQL(poS in out nocopy oSQL, pnTypPCT number default null, ptTypCT num_pole default
+    null, pnLoadParamH number default 1, pnLoadParamP number default 1,
+
+
+    715:   pnTypCT number,
+
+
+    747:   pnTypCT number,
+
+
+    774: procedure GetRIDs_CTO(pnTypPCT number default null, pnTypCT num_pole default null, pnLoadParamH number
+    default 1, pnLoadParamP number default 1,
+
+    '
+- dependency_id: pm.source.pm-09f.cenotvorba.package_body
+  source_ref: pm.oracle.mc.cenotvorba.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "387:   n1 number; nCasZl number; nObchSkupMD number; nTypCT number;\n\n453:         oSKarta.TYP_T,\n\n474:\
+    \         oSKarta.TYP_T,\n\n482:       fetch cx into nZlavaK0, nSumaZlavySK_K0, sRID_KZ, nTypCT, sSkupRZ;\n\n\
+    627:   pnTypCT number,\n\n658:   if pnTypCT not in (TYP_CT_Akcia, TYP_CT_Zmluva) then\n\n849:   pnTypCT number,\n\
+    \n881:   if pnTypCT not in (TYP_CT_Akcia, TYP_CT_Zmluva) then\n\n1208:   nTypCT1 number; --nZlavaK0_Ign number;\
+    \ nSumaZlavySK_K0_Ign number; -- pomocne na napocitavanie\n\n1209:   nTypCT2 number;\n\n1736:     select ct_l.typ\
+    \ into nTypCT1 from ct_l where rid = psPreferovanaCT;\n\n1737:     if nTypCT1 = TYP_CT_Akcia then\n\n1744: \
+    \    elsif nTypCT1 = TYP_CT_IndividualnaAkcia then\n\n1747:       cx := GetCursor_Rid_CTO(pnTypPCT=> p_nTypMOC,pnTypCT=>\
+    \ num_pole(TYP_CT_IndividualnaAkcia),pnLoadParamH=> 1,pnLoadParamP=> 1,pdtDatum=> dtDat,\n\n1762:   sDruhIN\
+    \ := oSKarta.TYP_T;\n\n1878: \toS.bind_varchar ( psName=> ':sTovar_typ', psVal=> oSKarta.TYP_T);\n\n1893:  \
+    \   \tsPodm_SQL := sPodm_SQL||' AND ct_o.TYP in (:nTypCT1,:nTypCT2)';\n\n1894: \t  \toS.bind_number ( psName=>\
+    \ ':nTypCT2', pnVal=> null);\n\n1896:     \tsPodm_SQL := sPodm_SQL||' AND ct_o.TYP = :nTypCT1';\n\n1898: \t\
+    \  oS.bind_number ( psName=> ':nTypCT1', pnVal=> null);\n\n1926:       nTypCT1 := TYP_CT_Akcia; nTypCT2 := TYP_CT_Akcia;\n\
+    \n1928:       nTypCT1 := TYP_CT_AkciaDod; nTypCT2 := TYP_CT_AkciaDod;\n\n1930:       nTypCT1 := TYP_CT_AkceptaciaZaruky;\
+    \ nTypCT2 := TYP_CT_AkceptaciaZaruky;\n\n1932:       nTypCT1 := TYP_CT_AkceptaciaZarukyDod; nTypCT2 := TYP_CT_AkceptaciaZarukyDod;\n\
+    \n1934:       nTypCT1 := TYP_CT_OstatnaBlokacia; nTypCT2 := TYP_CT_OstatnaBlokaciaOP;\n\n1936:       nTypCT1\
+    \ := TYP_CT_AkciaMOC;\n\n1938: \t\t\t\tnTypCT2 := TYP_CT_IndividAkciaMO;\n\n1939:     \t\toS.set_bind_number\
+    \ ( psName=> ':nTypCT2', pnVal=> nTypCT2);\n\n1941: \t\t\t\tnTypCT2 := TYP_CT_AkciaMOC;\n\n1945:     oS.set_bind_number\
+    \ ( psName=> ':nTypCT1', pnVal=> nTypCT1);\n\n1949:     debugpck(pst0=> 'par. akcia. nTypCT1:'||nTypCT1||' nTypCT2:'||nTypCT2,\
+    \ psPK=> psRID_R_Dokl);\n\n1967:         AND ct_o.TYP IN (:nTypCT1, :nTypCT2) AND ct_o.STAV = '||C_CENOTVORBA_O.STAV_CT_Uzavreta||'\n\
+    \n1972:           pnTypCT=>ct_o.TYP, pnCena_CT=>ct_o.CENA, pnBitMaskRZ_CT=>ct_o.BITMASK_RZ, pbZlavaSK_A_CT=>ct_o.ZLAVA_SK,\
+    \ pnJednotkaC_CT=>ct_o.JEDNOTKA_C, pnMena_CT=>ct_o.MENA, pnZlavaA_CT=>ct_o.ZLAVA,\n\n1985:         p_nSkladDokladu,\
+    \ p_nSkladDokladu, p_nSkladDokladu, p_nSkladDokladu, snSposobObjednania, nDruhDop, pnZakazka, nTypCT1, nTypCT2,\
+    \ psTypUhrady,\n\n1993:         AND TYP IN (:nTypCT1, :nTypCT2) AND STAV = '||C_CENOTVORBA_O.STAV_CT_Uzavreta||'\n\
+    \n1998:           pnTypCT=>TYP, pnCena_CT=>CENA, pnBitMaskRZ_CT=>BITMASK_RZ, pbZlavaSK_A_CT=>ZLAVA_SK, pnJednotkaC_CT=>JEDNOTKA_C,\
+    \ pnMena_CT=>MENA, pnZlavaA_CT=>ZLAVA,\n\n2006:         AND TYP IN (:nTypCT1, :nTypCT2) AND STAV = '||C_CENOTVORBA_O.STAV_CT_Uzavreta||'\n\
+    \n2011:           pnTypCT=>TYP, pnCena_CT=>CENA, pnBitMaskRZ_CT=>BITMASK_RZ, pbZlavaSK_A_CT=>ZLAVA_SK, pnJednotkaC_CT=>JEDNOTKA_C,\
+    \ pnMena_CT=>MENA, pnZlavaA_CT=>ZLAVA,\n\n2022:         p_nSkladDokladu, p_nSkladDokladu, snSposobObjednania,\
+    \ nDruhDop, pnZakazka, nTypCT1, nTypCT2, psTypUhrady,\n\n2038:           AND ct_o.TYP IN (:nTypCT1, :nTypCT2)\
+    \ AND ct_o.STAV = '||C_CENOTVORBA_O.STAV_CT_Uzavreta||'\n\n2046:           AND ct_o.TYP IN (:nTypCT1, :nTypCT2)\
+    \ AND ct_o.STAV = '||C_CENOTVORBA_O.STAV_CT_Uzavreta||'\n\n2058:           p_nSkladDokladu, p_nSkladDokladu,\
+    \ p_nSkladDokladu, p_nSkladDokladu, snSposobObjednania, nDruhDop, pnZakazka, nTypCT1, nTypCT2, psTypUhrady;\n\
+    \n2063:           AND TYP IN (:nTypCT1, :nTypCT2) AND STAV = '||C_CENOTVORBA_O.STAV_CT_Uzavreta||'\n\n2065:\
+    \           'dtDateIN,'||to_char(dtDateIN,'dd.mm.yyyy')||' oSKarta.ID,'||oSKarta.ID||' sSK_flags,'||sSK_flags||'\
+    \ snSposobObjednania,'||snSposobObjednania||' nDruhDop,'||nDruhDop||' nTypCT1,'||nTypCT1||' psPreferovanaCT,'||psPreferovanaCT||'\
+    \ ');\n\n2071:           AND TYP IN (:nTypCT1, :nTypCT2) AND STAV = '||C_CENOTVORBA_O.STAV_CT_Uzavreta||'\n\n\
+    2081:           p_nSkladDokladu, p_nSkladDokladu, snSposobObjednania, nDruhDop, pnZakazka, nTypCT1, nTypCT2,\
+    \ psTypUhrady;\n\n2248:     nTypCT1 := TYP_CT_Zmluva; nTypCT2 := TYP_CT_Zmluva;\n\n2250:     nTypCT1 := TYP_CT_ZmluvaDod;\
+    \ nTypCT2 := TYP_CT_ZmluvaDod;\n\n2252:     nTypCT1 := TYP_CT_ZmluvaMOC; nTypCT2 := TYP_CT_ZmluvaMOC;\n\n2255:\
+    \ \toS.set_bind_number ( psName=> ':nTypCT1', pnVal=> nTypCT1);\n\n2256: \t-- musi sa nastavit na nTypCT1, lebo\
+    \ pri akcii to mohlo byt nieco ine\n\n2257: \toS.set_bind_number ( psName=> ':nTypCT2', pnVal=> nTypCT1);\n\n\
+    2259: \tdebugpck('GetCenu_T par. zmluva nTypCT1:'||nTypCT1||' nTypCT2:'||nTypCT2);\n\n2274:         FROM CT_O,\
+    \ CT_L L WHERE L.RID = CT_O.RID_O AND '||sPodm1||sPodm2||' AND ct_o.TYP IN (:nTypCT1, :nTypCT2) AND ct_o.STAV\
+    \ = '||C_CENOTVORBA_O.STAV_CT_Uzavreta||' ORDER BY\n\n2278:           pnTypCT=>ct_o.TYP, pnCena_CT=>ct_o.CENA,\
+    \ pnBitMaskRZ_CT=>ct_o.BITMASK_RZ, pbZlavaSK_Z_CT=>ct_o.ZLAVA_SK, pnJednotkaC_CT=>ct_o.JEDNOTKA_C, pnMena_CT=>ct_o.MENA,\
+    \ pnZlava_Z_CT=>ct_o.ZLAVA,\n\n2290:         nPOcet, sSK_flags, p_nSkladDokladu, p_nSkladDokladu, p_nSkladDokladu,\
+    \ p_nSkladDokladu, snSposobObjednania, nDruhDop, pnZakazka, nTypCT1, nTypCT2,\n\n2302:         FROM CT_O WHERE\
+    \ '||sPodm1||sPodm2||' AND TYP IN (:nTypCT1, :nTypCT2) AND STAV = '||C_CENOTVORBA_O.STAV_CT_Uzavreta||' ORDER\
+    \ BY\n\n2306:           pnTypCT=>TYP, pnCena_CT=>CENA, pnBitMaskRZ_CT=>BITMASK_RZ, pbZlavaSK_Z_CT=>ZLAVA_SK,\
+    \ pnJednotkaC_CT=>JEDNOTKA_C, pnMena_CT=>MENA, pnZlava_Z_CT=>ZLAVA,\n\n2316:         nPOcet, sSK_flags, p_nSkladDokladu,\
+    \ p_nSkladDokladu, snSposobObjednania, nDruhDop, pnZakazka, nTypCT1, nTypCT2,\n\n2338:         FROM CT_O, CT_L\
+    \ L WHERE L.RID = CT_O.RID_O AND '||sPodm1||sPodm2||' AND ct_o.TYP IN (:nTypCT1, :nTypCT2) AND ct_o.STAV = '||C_CENOTVORBA_O.STAV_CT_Uzavreta||'\
+    \ ORDER BY  '|| sOrderZML\n\n2347:         nPOcet, sSK_flags, p_nSkladDokladu, p_nSkladDokladu, p_nSkladDokladu,\
+    \ p_nSkladDokladu, snSposobObjednania, nDruhDop, pnZakazka, nTypCT1, nTypCT2;\n\n2355:         FROM CT_O WHERE\
+    \ '||sPodm1||sPodm2||' AND TYP IN (:nTypCT1, :nTypCT2) AND STAV = '||C_CENOTVORBA_O.STAV_CT_Uzavreta||' ORDER\
+    \ BY  '|| sOrderZML\n\n2362:         nPOcet, sSK_flags, p_nSkladDokladu, p_nSkladDokladu, snSposobObjednania,\
+    \ nDruhDop, pnZakazka, nTypCT1, nTypCT2;\n\n3237: function GetDarcekySql(pnTypCT number, pnPartner number, psM_DOD\
+    \ varchar2) return varchar2\n\n3247:     ( case when CT_O.SK_DRUH = ''0'' OR SK.TYP_T LIKE CT_O.SK_DRUH||''%''\
+    \ then 1 else 0 end ) = 1 AND\n\n3270:   CT_O.TYP = '|| pnTypCT\n\n3290: procedure PrepocitajZlavu( pnTypCT\
+    \ number, pnPartner number, psM_DOD varchar2)\n\n3301:   C_EXC.PRINTString(GetDarcekySql( pnTypCT, pnPartner,\
+    \ psM_DOD));\n\n3302:   open cx for GetDarcekySql( pnTypCT, pnPartner, psM_DOD);\n\n3311: procedure PrepocitajZlavuD(\
+    \ pnTypCT number, pnId_partner number, psM_DOD varchar2) is\n\n3313: \tPrepocitajZlavu( pnTypCT=>pnTypCT, pnPartner=>pnId_partner,\
+    \ psM_DOD=>psM_DOD);\n\n3824: function GetTypCTString( pnTypCT  in number ) return varchar2\n\n3828:     if\
+    \ pnTypCT= 0 then return 'Zmluva';\n\n3829:     elsif pnTypCT=1 then return 'Akcia';\n\n3830:     elsif pnTypCT\
+    \ = 2 then return 'Kumulatívna zlava';\n\n3831:     elsif pnTypCT = 3 then return 'Globálna zlava';\n\n3832:\
+    \     elsif pnTypCT = 4 then return 'Globálna zlava na tovar';\n\n3833:     elsif pnTypCT = 5 then return 'Kumultívny\
+    \ bod';\n\n3834:     elsif pnTypCT = 6 then return 'Darcek/bod';\n\n3835:     elsif pnTypCT = 7 then return\
+    \ 'Skupinový darcek/bod';\n\n3836:     elsif pnTypCT = 8 then return 'Zmluva MOC';\n\n3837:     elsif pnTypCT\
+    \ = 9 then return 'Akcia MOC';\n\n3841: end GetTypCTString;\n\n3843: function GetTypCTNumber( psTypCT  in varchar2\
+    \ ) return number\n\n3846:     if psTypCT = 'Zmluva'then return 0;\n\n3847:     elsif psTypCT = 'Akcia'then\
+    \ return 1;\n\n3848:     elsif psTypCT =  'Zmluva MOC'then return 8;\n\n3849:     elsif psTypCT =  'Akcia MOC'then\
+    \ return 9;\n\n3850:     elsif psTypCT =  'Kumulatívna zlava'then return 2;\n\n3851:     elsif psTypCT =  'Globálna\
+    \ zlava'then return 3;\n\n3852:     elsif psTypCT =  'Globálna zlava na tovar'then return 4;\n\n3853:     elsif\
+    \ psTypCT =  'Kumultívny bod'then return 5;\n\n3854:     elsif psTypCT =  'Darcek/bod'then return 6;\n\n3855:\
+    \     elsif psTypCT =  'Skupinový darcek/bod'then return 7;\n\n3858: end GetTypCTNumber;\n\n3860: procedure\
+    \ GetTypCTStringC( pnTypCT  in number , psTypCT  out varchar2 ) is\n\n3862: psTypCT := GetTypCTString(pnTypCT);\n\
+    \n3863: end GetTypCTStringC;\n\n3865: procedure GetTypCTNumberC( psTypCT  in varchar2 ,pnTypCT  out number \
+    \ ) is\n\n3867: pnTypCT := GetTypCTNumber(psTypCT);\n\n3868: end GetTypCTNumberC;\n\n5007: function GetOkruhCT(pnTypCT\
+    \ number) return number is\n\n5009:   if pnTypCT in (TYP_CT_ZmluvaMOC, TYP_CT_AkciaMOC) then\n\n5011:   elsif\
+    \ pnTypCT in (TYP_CT_ZmluvaDod, TYP_CT_AkciaDod) then\n\n5018: function GetTypCT(pnOkruhCT number, pnTypCT number)\
+    \ return number is\n\n5020:   if pnTypCT in (TYP_CT_ZmluvaDod, TYP_CT_ZmluvaMOC, TYP_CT_Zmluva) then\n\n5028:\
+    \   elsif pnTypCT in (TYP_CT_AkciaDod, TYP_CT_AkciaMOC, TYP_CT_Akcia ) then\n\n5038: end GetTypCT;\n\n5197:\
+    \       oSKarta.ID, oSKarta.typ_t, oSKarta.dod_sk, oSKarta.vyrobca, oSKarta.obch_znacka, oSKarta.cen_skupina,\n\
+    \n5208:     sSQL := replace(sSQL, ':sTovar_typ', '/*:sTovar_typ*/'''||oSKarta.typ_t||'''');\n\n5461: \tsDruhIN\
+    \ := oSKarta.TYP_T;\n\n5465: \tcx := GetCursor_Rid_CTO(pnTypCT=>num_pole(p_nTypPravidla), /*pnLoadParamH=>1,\
+    \ pnLoadParamP=>1,*/\n\n5576: function GetTypCTFromRid( psRidCT C_RID.DT_RID ) return number\n\n5591: end GetTypCTFromRid;\n\
+    \n5615:     If GetTypCTFromRid( psRidKupon ) != TYP_CT_KuponoveZlavy Then Return 0;\n\n5664:         ( Case\
+    \ When ( :nObratNadVratane_Akcie = 0 And ( cenotvorba.GetTypCTFromRid( rid_ct_a ) != '|| TYP_CT_Akcia ||' Or\
+    \ rid_ct_a = ''0'' ) Or :nObratNadVratane_Akcie = 1 ) Then 1 Else 0 End ) = 1';\n\n5709:     If GetTypCTFromRid(\
+    \ psRidKupon ) != TYP_CT_KuponoveZlavy Then Return 0;\n\n5825: function GetCursor_Rid_CTO(pnTypPCT number default\
+    \ null, pnTypCT num_pole default null, pnLoadParamH number default 1, pnLoadParamP number default 1,\n\n5840:\
+    \   nTypCT num_pole;\n\n5866:       select sk.dod_sk, sk.vyrobca, sk.obch_znacka, sk.zlavy, sk.flags, sk.typ_t\n\
+    \n5881:   if pnTypCT is null then\n\n5884:       nTypCT := num_pole(TYP_CT_Akcia);\n\n5886:       nTypCT :=\
+    \ num_pole(TYP_CT_AkciaDod);\n\n5888:       nTypCT := num_pole(TYP_CT_AkciaMOC);\n\n5891:     nTypCT := pnTypCT;\n\
+    \n5923:     select count(*) into nPom from table (nTypCT) where column_value in (TYP_CT_Akcia, TYP_CT_AkciaMOC,\
+    \ TYP_CT_AkciaDod, TYP_CT_Zmluva, TYP_CT_ZmluvaMOC, TYP_CT_ZmluvaDod);\n\n5932:     --select count(*) into nPom\
+    \ from table (nTypCT) where column_value in (TYP_CT_Akcia, TYP_CT_AkciaMOC, TYP_CT_AkciaDod);\n\n5933:     select\
+    \ column_value into nPom from table (nTypCT) where rownum = 1;\n\n6001:       AND TYP in (select * from table\
+    \ (:nTypCT) )\n\n6017:             nvl(pnDoprava,0), nTypCT, psTyp_Uhrady, psKlubKarta, psKlubKarta, psKlubKarta,\
+    \ sDruhServisu, pnZakazka, sRid;\n\n6050:       AND ct_o.TYP in (select * from table(:nTypCT) )\n\n6069:   \
+    \          nvl(pnDoprava,0), nTypCT, psTyp_Uhrady, psKlubKarta, psKlubKarta, psKlubKarta, sDruhServisu, pnZakazka;\n\
+    \n6096:       AND TYP in (select * from table (:nTypCT) )\n\n6111:             nvl(pnDoprava,0), nTypCT, psTyp_Uhrady,\
+    \ psKlubKarta, psKlubKarta, psKlubKarta, sDruhServisu, pnZakazka;\n\n6134:     sSQL := replace(sSQL, ':nTypCT',\
+    \ '/*:nTypCT*/'||NumPoleToText(tNP=> nTypCT));\n\n6145: procedure GetRids_CTO_SQL(poS in out nocopy oSQL, pnTypPCT\
+    \ number default null, ptTypCT num_pole default null, pnLoadParamH number default 1, pnLoadParamP number default\
+    \ 1,\n\n6160:   tTypCT num_pole;\n\n6190:       select sk.dod_sk, sk.vyrobca, sk.obch_znacka, sk.zlavy, sk.flags,\
+    \ sk.typ_t\n\n6207:   if ptTypCT is null then\n\n6210:       tTypCT := num_pole(TYP_CT_Akcia);\n\n6212:    \
+    \   tTypCT := num_pole(TYP_CT_AkciaDod);\n\n6214:       tTypCT := num_pole(TYP_CT_AkciaMOC);\n\n6217:     tTypCT\
+    \ := ptTypCT;\n\n6251:     --select count(*) into nPom from table (tTypCT) where column_value in (TYP_CT_Akcia,\
+    \ TYP_CT_AkciaMOC, TYP_CT_AkciaDod);\n\n6252:     select column_value into nPom from table (tTypCT) where rownum\
+    \ = 1;\n\n6269:     select count(*) into nPom from table (tTypCT) where column_value in (TYP_CT_Akcia, TYP_CT_AkciaMOC,\
+    \ TYP_CT_AkciaDod, TYP_CT_Zmluva, TYP_CT_ZmluvaMOC, TYP_CT_ZmluvaDod);\n\n6425:   --poS.bind_num_pole( psName\
+    \ => ':tTypCT', ptVal=> tTypCT);\n\n6436:   for r in (select rownum as pc, column_value as typ_ct from table(tTypCT))\n\
+    \n6496:     and nvl(sk.typ_t,''0'') like :sStrom||''%''\n\n6554:     cx := GetCursor_Rid_CTO(pnTypPCT=> null,\
+    \ pnTypCT=> num_pole(TYP_CT_AkciaMOC), pnLoadParamH=> 1, pnLoadParamP=> 0,\n\n6583:   nTypCT number; nTypPCT\
+    \ number;\n\n6599:   flags varchar2(254), typ_t varchar2(254), dph number, objVO number\n\n6629:   select typ\
+    \ into nTypCT from ct_l where rid = rC.rid_ct_l;\n\n6630:   nTypPCT := GetOkruhCT(nTypCT);\n\n6643:   open cSK\
+    \ for 'select id, c_sklad_karta.GetDodavatel(pnID=>ID, pnDodavatel=>DOD_SK) DOD_SK, vyrobca, obch_znacka, cen_skupina,\
+    \ flags, typ_t, '||\n\n6650:     fetch cSK into rSK.id, rSK.dod_sk, rSK.vyrobca, rSK.obch_znacka, rSK.cen_skupina,\
+    \ rSK.flags, rSK.typ_t, rSK.dph, rSK.objVO, nOld_cena, nOld_KIR;\n\n6657:     cx := GetCursor_Rid_CTO( pnTypPCT=>\
+    \ nTypPCT, pnTypCT=>num_pole(nTypCT), pnLoadParamH=>0, pnLoadParamP=>0,\n\n6661:       pnKodID=>nKod_id, psSarza=>null,\
+    \ psTovarTyp=>rSK.typ_t,\n\n6862:   nTypCT number; nTypPCT number;\n\n6867:   flags varchar2(254), typ_t varchar2(254),\
+    \ dph number, objVO number\n\n6884:   select typ into nTypCT from ct_l where rid = rC.rid_ct_l;\n\n6885:   nTypPCT\
+    \ := GetOkruhCT(nTypCT);\n\n6889:   open cSK for 'select id, c_sklad_karta.GetDodavatel(pnID=>ID, pnDodavatel=>DOD_SK)\
+    \ DOD_SK, vyrobca, obch_znacka, cen_skupina, flags, typ_t, '||\n\n6895:     fetch cSK into rSK.id, rSK.dod_sk,\
+    \ rSK.vyrobca, rSK.obch_znacka, rSK.cen_skupina, rSK.flags, rSK.typ_t, rSK.dph, rSK.objVO;\n\n6899:     cx :=\
+    \ GetCursor_Rid_CTO( pnTypPCT=> nTypPCT, pnTypCT=>num_pole(nTypCT), pnLoadParamH=>0, pnLoadParamP=>0,\n\n6903:\
+    \       pnKodID=>nKod_id, psSarza=>null, psTovarTyp=>rSK.typ_t,\n\n7031:     cx := GetCursor_Rid_CTO(pnTypPCT=>\
+    \ TYP_PCT_MOC, pnTypCT=> num_pole(TYP_CT_KuponoveZlavy), pnLoadParamH=> 1, pnLoadParamP=> 0,\n\n7324:     and\
+    \ (nvl(typ_t,'0') = decode(sStrom, '0', nvl(typ_t,'0')) or substr(typ_t, 1, greatest(length(sStrom),2)) = sStrom)\n\
+    \n7413:         and ( ct_o.sk_druh = ''0'' or ct_o.sk_druh = decode(sk.typ_t, null, ct_o.sk_druh, substr(sk.typ_t,\
+    \ 1, greatest(length(ct_o.sk_druh), 2))) )\n\n7929: procedure GetRIDs_CTO(pnTypPCT number default null, pnTypCT\
+    \ num_pole default null, pnLoadParamH number default 1, pnLoadParamP number default 1,\n\n7941:   cx := GetCursor_Rid_CTO(pnTypPCT=>pnTypPCT,\
+    \ pnTypCT=>pnTypCT, pnLoadParamH=>pnLoadParamH, pnLoadParamP=>pnLoadParamP,\n\n8069:   cx := GetCursor_Rid_CTO(pnTypCT=>num_pole(TYP_CT_MaxOdbMnozstvoPerioda),\
+    \ /*pnLoadParamH=>1, pnLoadParamP=>1,*/\n\n8073:     pnKodID=>pnKodID, psSarza=>psSarza, psTovarTyp=>oSKarta.TYP_T,\n\
+    \n8509:   cx := GetCursor_Rid_CTO(pnTypPCT=>null, pnTypCT=>num_pole(TYP_CT_HranicaPrecenenia), pnLoadParamH=>0,\
+    \ pnLoadParamP=>0,\n"
+- dependency_id: pm.source.pm-09f.c_alert.package
+  source_ref: pm.oracle.mc.c_alert.package
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '100:   psTyp CIS_ALERTS.TYP%TYPE default null,
+
+
+    118:   psTyp CIS_ALERTS_QUEUE.TYP%TYPE default null,
+
+
+    133: function Alert2Json(pnId number,psAction varchar2 default null,psTyp_Text varchar2 default null,psAkcia
+    varchar2 default null) return varchar2;
+
+    '
+- dependency_id: pm.source.pm-09f.c_alert.package_body
+  source_ref: pm.oracle.mc.c_alert.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "8:   psTyp CIS_ALERTS.TYP%TYPE default null,\n\n59:   sDeclaration:= sDeclaration||'psTyp CIS_ALERTS.TYP%TYPE\
+    \ := :psTyp ;';\n\n99:   psTyp CIS_ALERTS_QUEUE.TYP%TYPE default null,\n\n137:   sDeclaration:= sDeclaration||'psTyp\
+    \ CIS_ALERTS_QUEUE.TYP%TYPE := :psTyp ;';\n\n189: function Alert2Json(pnId number,psAction varchar2 default\
+    \ null,psTyp_Text varchar2 default null,psAkcia varchar2 default null) return varchar2\n\n198: for CA in (SELECT\
+    \  DECODE(psAction,null,DECODE(CA.TYP,TYP_ALERT_PRIPOMIENKA,'INLINE','NEW_ALERT')) as ACTION,\n\n200:    CA.TEXT,CAT.PICTURE,NVL(psTyp_Text,CAT.NAZOV)\
+    \  as TYP,CAT.ID as TYPVAL,\n\n241: function Alert2JsonOld(pnId number,psAction varchar2 default null,psTyp_Text\
+    \ varchar2 default null,psAkcia varchar2 default null) return varchar2\n\n245: select   '{\"ACTION\":\"' ||\
+    \ DECODE(psAction,null,DECODE(CA.TYP,TYP_ALERT_PRIPOMIENKA,'INLINE','NEW_ALERT')) || '\",' ||\n\n249:    ','\
+    \ || GOOGLE_APIS.json_elm('TYP',NVL(psTyp_Text,CAT.NAZOV))  ||\n\n378:                     GOOGLE_APIS.SendGCM(psKontaktRid=>psPrijemca,psJsonData=>Alert2Json(pnId=>nID,psTyp_Text=>sSubject,psAkcia=>sAkcia),pnProgram_flag=>2,\n\
+    \n419:                            GOOGLE_APIS.SendGCM(psKontaktRid=>psPrijemca,psJsonData=>Alert2Json(pnId=>nID,psTyp_Text=>sSubject),pnProgram_flag=>2);\n\
+    \n1083: \t\tfor ALERT in  (select ID,PRIJEMCA FROM CIS_ALERTS WHERE RID_V=psRid_V AND TYP=NVL(psTyp,TYP) AND\
+    \ STAV=C_ALERT.STAV_AlertQueueVlozene)\n\n1194: \t\tINSERT INTO CIS_ALERTS_MONITOR (TYP,TEXT,RID_V,KASO_ADMIN,DRM_ID,ID_CIS_V,PODCIS_V,CAQ_ID)\n\
+    \n1201: \tINSERT INTO CIS_ALERTS_MONITOR (TYP,TEXT,RID_V,KASO_ADMIN,DRM_ID,ID_CIS_V,PODCIS_V,CAQ_ID)\n"
+- dependency_id: pm.source.pm-09f.c_auto.package
+  source_ref: pm.oracle.mc.c_auto.package
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '28: SUBTYPE DT_MOT_TYP IS AUTA.MOT_TYP%TYPE;
+
+
+    162:   psMot_typ AUTA.MOT_TYP%TYPE default null,
+
+    '
+- dependency_id: pm.source.pm-09f.c_auto.package_body
+  source_ref: pm.oracle.mc.c_auto.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '23:   psMot_typ AUTA.MOT_TYP%TYPE default null,
+
+
+    172:   sDeclaration:= sDeclaration||''psMot_typ AUTA.MOT_TYP%TYPE := :psMot_typ ;'' ;
+
+    '
+- dependency_id: pm.source.pm-09f.c_autosql_setup.package
+  source_ref: pm.oracle.mc.c_autosql_setup.package
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '33:                pnTYP AUTOSQL_SETUP.TYP%TYPE  default null,
+
+
+    66: function GetVal_TypStlpca(pnID_ASS number, psNastavenie varchar2 default null) return number;
+
+
+    78: function SetVal_TypStlpca(psNastavenie varchar2, pnHodnota number, pnID_ASS number default null) return
+    varchar2;
+
+
+    83: function GetOknoSqlID(pnID_FORM AUTOSQL_SETUP.ID_FORM%TYPE, pnTYP AUTOSQL_SETUP.TYP%TYPE) return number;
+
+
+    84: function GetOknoTxt(pnID_FORM AUTOSQL_SETUP.ID_FORM%TYPE, pnTYP AUTOSQL_SETUP.TYP%TYPE) return varchar2;
+
+    '
+- dependency_id: pm.source.pm-09f.c_autosql_setup.package_body
+  source_ref: pm.oracle.mc.c_autosql_setup.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "7:                pnTYP AUTOSQL_SETUP.TYP%TYPE  default null,\n\n76: \t\tsNastavenie := SetVal_TypStlpca(psNastavenie=>sNastavenie,\
+    \ pnHodnota=>pnVAL_Ciselnikovy, pnID_ASS=>null);\n\n97: \tsDeclaration:= sDeclaration||' pnTYP AUTOSQL_SETUP.TYP%TYPE\
+    \ := :pnTYP;';\n\n154: \tnTypStlpca number;\n\n207: \t\tsNastavenie := SetVal_TypStlpca(psNastavenie=>sNastavenie,\
+    \ pnHodnota=>nHodnota, pnID_ASS=>null);\n\n249: \t\tif GetVal_TypStlpca(pnID_ASS=>null, psNastavenie=>sNastavenie)\
+    \ = TYP_Ciselnik then\n\n268: \tnTypStlpca number;\n\n291: \t\tnTypStlpca := ToNumber(psFieldValue);\n\n292:\
+    \ \t\tif nTypStlpca = TYP_Cislo then\n\n296: \t\telsif nTypStlpca = TYP_Datum then\n\n306: \t\tif  nTypStlpca\
+    \ = TYP_Ciselnik then\n\n480: function GetVal_TypStlpca(pnID_ASS number, psNastavenie varchar2 default null)\
+    \ return number is\n\n498: end GetVal_TypStlpca;\n\n653: function SetVal_TypStlpca(psNastavenie varchar2, pnHodnota\
+    \ number, pnID_ASS number default null) return varchar2 is\n\n678: end SetVal_TypStlpca;\n\n789: function GetOknoSqlID(pnID_FORM\
+    \ AUTOSQL_SETUP.ID_FORM%TYPE, pnTYP AUTOSQL_SETUP.TYP%TYPE) return number is\n\n807: function GetOknoTxt(pnID_FORM\
+    \ AUTOSQL_SETUP.ID_FORM%TYPE, pnTYP AUTOSQL_SETUP.TYP%TYPE) return varchar2 is\n"
+- dependency_id: pm.source.pm-09f.c_b2mail_pravidlo.package
+  source_ref: pm.oracle.mc.c_b2mail_pravidlo.package
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '29:     IMPORT_FILES_TYP B2MAIL_PRAVIDLA.IMPORT_FILES_TYP%type,
+
+
+    54:     pnTyp B2MAIL_PRAVIDLA.TYP%TYPE default null,
+
+
+    59:     ,pnIMPORT_FILES_TYP B2MAIL_PRAVIDLA.IMPORT_FILES_TYP%TYPE default null
+
+    '
+- dependency_id: pm.source.pm-09f.c_b2mail_pravidlo.package_body
+  source_ref: pm.oracle.mc.c_b2mail_pravidlo.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '15:     pnTyp B2MAIL_PRAVIDLA.TYP%TYPE default null,
+
+
+    20:     ,pnIMPORT_FILES_TYP B2MAIL_PRAVIDLA.IMPORT_FILES_TYP%TYPE default null
+
+
+    44:     sDeclaration:= sDeclaration||''pnTyp B2MAIL_PRAVIDLA.TYP%TYPE := :pnTyp ;'' ;
+
+
+    50:     sDeclaration:= sDeclaration||''pnIMPORT_FILES_TYP B2MAIL_PRAVIDLA.IMPORT_FILES_TYP%TYPE := :pnIMPORT_FILES_TYP;'';
+
+    '
+- dependency_id: pm.source.pm-09f.c_baliaca_davka.package
+  source_ref: pm.oracle.mc.c_baliaca_davka.package
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '66:   ,psTYP BALIACE_DAVKY.TYP%TYPE default null,
+
+
+    232:   pnRezNahradami number default 0
+
+
+    246:   pnRezNahradami number default 0
+
+
+    260:   pnRezNahradami number default 0
+
+    '
+- dependency_id: pm.source.pm-09f.c_baliaca_davka.package_body
+  source_ref: pm.oracle.mc.c_baliaca_davka.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "108:   ,psTYP BALIACE_DAVKY.TYP%TYPE default null,\n\n139:   sDeclaration:= sDeclaration||'psTYP BALIACE_DAVKY.TYP%TYPE\
+    \ := :psTYP;';\n\n2240:   pnRezNahradami number default 0)\n\n2244:     pnRezNahradami=>pnRezNahradami);\n\n\
+    2259:   pnRezNahradami number default 0\n\n2293:         'pnRezPodlaPoradia: '||pnRezPodlaPoradia, 'pnRezNahradami:\
+    \ '||pnRezNahradami);\n\n2295:         pnRezNahradami=>pnRezNahradami);\n\n2337:   pnRezNahradami number default\
+    \ 0\n\n2368: \t\t\t\t'pnRezPodlaPoradia: '||pnRezPodlaPoradia, 'pnRezNahradami: '||pnRezNahradami);\n\n2370:\
+    \ \t\t\t\tpnreznahradami=> pnRezNahradami);\n\n2412:   pnRezNahradami number default 0\n\n2422: \t\tpnRezEkvivalentmi=>\
+    \ pnRezEkvivalentmi, pnRezPodlaPoradia=> pnRezPodlaPoradia, pnRezNahradami=> pnRezNahradami);\n"
+- dependency_id: pm.source.pm-09f.c_baris_update.package_body
+  source_ref: pm.oracle.mc.c_baris_update.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "36: \t\t\tTYP=COALESCE(psTYP,TYP),\n"
+- dependency_id: pm.source.pm-09f.c_bob.package
+  source_ref: pm.oracle.mc.c_bob.package
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '81: procedure InsertTempZasobu(psMIESTO_DOD varchar2,psREG_C varchar2,psNAZOV varchar2,psTYP varchar2,pnZASOBA
+    number,pnDPH number,pnPOC_STAV_KS number,pnPOC_STAV_C number,psEAN varchar2,psMJ varchar2,psREG_C_OBAL varchar2,pnDODAVATEL
+    number,pnHMOTNOST number,pdtLAST_IN date,pdtLAST_OUT date,psDOD_KOD varchar2,pnCENA_S number);
+
+    '
+- dependency_id: pm.source.pm-09f.c_bob.package_body
+  source_ref: pm.oracle.mc.c_bob.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '280:                stav,t_tovaru,dod_kod,substr(nazov,1,254)
+
+
+    532:   nNahrada number;
+
+
+    613:         nNahrada := 0;
+
+
+    621:         COL_SADZBA , MAKRO , FLAGS , DOD_KOD , C_N , ZALOZENA , SKALA , OBJEM ,
+
+
+    622:         HMOTNOST , ZLAVY , ZLAVA_MIN_POC , TYP_T , PAR_1 , PAR_2 , SKLAD , TECHINFO ,
+
+
+    627:         DOD_BAL , VRSTVA_BAL , NAHRADA , ID_PROD_MAN , STAT , SKP , SIRKA , VYSKA , HLBKA ,
+
+
+    640:         r.Bal_dod, r.Bal_row, nNahrada, 0, null, nSKP, r.width, r.height, r.length,
+
+
+    656:                stav,t_tovaru,dod_kod,substr(nazov,1,254)
+
+
+    692:       INSERT INTO bob_dod_kod_u (partner, int_kod, kod_id, kod_id_dod)
+
+
+    698:   UPDATE bob_temp_sklad_karta t set nahrada=
+
+
+    700:   t.nahrada=t2.order_id and t.partner=t2.partner and rownum<2)
+
+
+    703:   UPDATE SKLAD_KARTA SK SET NAHRADA=
+
+
+    704:   (select min(t.nahrada) from bob_temp_sklad_karta t
+
+
+    705:   where t.pridelene_id=sk.id and t.partner=pnPartner and t.nahrada is not null
+
+
+    709:   where t.pridelene_id=sk.id and t.partner=pnPartner and t.nahrada is not null
+
+
+    786:       select kod_id into nKodID from bob_dod_kod_u where partner=pnDodavatel and int_kod=sIntKod;
+
+
+    799:         -- vlozim do bob_dod_kod_u
+
+
+    800:         INSERT INTO bob_dod_kod_u (partner, int_kod, kod_id, kod_id_dod)
+
+
+    842:                stav,t_tovaru,dod_kod,substr(nazov,1,254)
+
+
+    870:       INSERT INTO bob_dod_kod_u (partner, int_kod, kod_id, kod_id_dod)
+
+
+    940:       select kod_id into nKodID from bob_dod_kod_u where partner=pnDodavatel and int_kod=sIntKod;
+
+
+    953:         -- vlozim do bob_dod_kod_u
+
+
+    954:         INSERT INTO bob_dod_kod_u (partner, int_kod, kod_id, kod_id_dod)
+
+
+    995:                stav,t_tovaru,dod_kod,substr(nazov,1,254)
+
+
+    1023:       INSERT INTO bob_dod_kod_u (partner, int_kod, kod_id, kod_id_dod)
+
+
+    1077:       select min(kod_id) into nKodID from bob_dod_kod_u where partner=psDodavatel and int_kod=psReg_c_dod;
+
+
+    1083:     raise_application_error (-20999, ''skladova karta nenajdena pre dod.kod '''''' || psReg_c_dod || ''''''
+    a regc '''''' || psReg_c || '''''' D:'' || psDodavatel);
+
+
+    1158: procedure InsertTempZasobu(psMIESTO_DOD varchar2,psREG_C varchar2,psNAZOV varchar2,psTYP varchar2,pnZASOBA
+    number,pnDPH number,pnPOC_STAV_KS number,pnPOC_STAV_C number,psEAN varchar2,psMJ varchar2,psREG_C_OBAL varchar2,pnDODAVATEL
+    number,pnHMOTNOST number,pdtLAST_IN date,pdtLAST_OUT date,psDOD_KOD varchar2,pnCENA_S number)
+
+
+    1161:     INSERT INTO BOB_TEMP_ZASOBY (STAV,MIESTO_DOD,REG_C,NAZOV,TYP,ZASOBA,DPH,POC_STAV_KS,POC_STAV_C,EAN,MJ,REG_C_OBAL,DODAVATEL,HMOTNOST,LAST_IN,LAST_OUT,DOD_KOD,CENA_S)
+
+
+    1162:      VALUES (0,psMIESTO_DOD,psREG_C,psNAZOV,psTYP,pnZASOBA,pnDPH,pnPOC_STAV_KS,pnPOC_STAV_C,psEAN,psMJ,psREG_C_OBAL,pnDODAVATEL,pnHMOTNOST,pdtLAST_IN,pdtLAST_OUT,psDOD_KOD,pnCENA_S);
+
+    '
+- dependency_id: pm.source.pm-09f.c_bod_cerpania.package_body
+  source_ref: pm.oracle.mc.c_bod_cerpania.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "495:       select o.typ, substr(bc.flags_s,2,1), bc.id into nTypCT, nDarcekZDokladu, sIDBodCerp from ct_o o,\
+    \ body_cerpania bc where o.rid_obj = psRid_ct_a and o.rid_obj=bc.rid_ct_dzb and bc.rid_vyd = sRID_R;\n\n497:\
+    \       if nTypCT = cenotvorba.TYP_CT_DarcekZaBody and nDarcekZDokladu=1 then\n\n529:         select o.typ,\
+    \ substr(bc.flags_s,2,1), bc.id into nTypCT, nDarcekZDokladu, sIDBodCerp from ct_o o, body_cerpania bc where\
+    \ o.rid_obj = psRid_ct_a and o.rid_obj=bc.rid_ct_dzb and bc.rid_vyd = sRID_R;\n\n530:         if nTypCT = cenotvorba.TYP_CT_DarcekZaBody\
+    \ and nDarcekZDokladu=1 then\n\n555: nTypCT number;\n\n573:           select typ, typ_bodu into nTypCT, nTypBodu\
+    \ from ct_o where rid_obj = sRidCtA;\n\n574:         \tif nTypCT = cenotvorba.TYP_CT_DarcekZaBody then\n"
+- dependency_id: pm.source.pm-09f.c_bshop_tree_l.package_body
+  source_ref: pm.oracle.mc.c_bshop_tree_l.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '160:     for O in (select o.rid_o,length(o.typ_t)/2 as lvl, to_char(wm_concat(''''''''|| o.typ_t || ''''''''))
+    as list
+
+
+    162:                         group by o.rid_o,length(typ_t) order by rid_o,lvl)
+
+
+    176:             sPODM := sPODM || '' OR SK.TYP_T_ID_L'' || O.LVL || '' IN ('' || O.LIST || '') '';
+
+
+    178:             sPODM :=  '' SK.TYP_T_ID_L'' || O.LVL || '' IN ('' || O.LIST || '') '';
+
+
+    244:         for O in (SELECT LENGTH(TYP_T)/2 as LVL, listagg(all ''''''''|| typ_t || '''''''', '','')  within
+    group(order by typ_t) as list
+
+
+    246:             SELECT distinct(o.typ_t) FROM BSHOP_TREE_O O WHERE O.RID_O IN(
+
+
+    248:             group by LENGTH(TYP_T)/2 order by lvl)
+
+
+    251:                 sPODM := sPODM || '' OR SK.TYP_T_ID_L'' || O.LVL || '' IN ('' || O.LIST || '') '';
+
+
+    253:                 sPODM :=  '' SK.TYP_T_ID_L'' || O.LVL || '' IN ('' || O.LIST || '') '';
+
+    '
+- dependency_id: pm.source.pm-09f.c_bshop_tree_o.package
+  source_ref: pm.oracle.mc.c_bshop_tree_o.package
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '21:   psTYP_T BSHOP_TREE_O.TYP_T%TYPE default null,
+
+    '
+- dependency_id: pm.source.pm-09f.c_bshop_tree_o.package_body
+  source_ref: pm.oracle.mc.c_bshop_tree_o.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '6:   psTYP_T BSHOP_TREE_O.TYP_T%TYPE default null,
+
+
+    20:   sDeclaration:= sDeclaration||''psTyp_t BSHOP_TREE_O.TYP_T%TYPE := :psTyp_t ;'' ;
+
+
+    29:   If psTYP_T is not null then   sColumns:= sColumns|| ''TYP_T,''; sValues := sValues||''psTYP_T,''; end
+    if;
+
+
+    38:      IN psTyp_t,
+
+    '
+- dependency_id: pm.source.pm-09f.c_bv_ext.package
+  source_ref: pm.oracle.mc.c_bv_ext.package
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '196:         psTyp BV_EXT.TYP%TYPE default null,
+
+    '
+- dependency_id: pm.source.pm-09f.c_bv_ext.package_body
+  source_ref: pm.oracle.mc.c_bv_ext.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '26:         psTyp BV_EXT.TYP%TYPE default null,
+
+
+    91:         sDeclaration:= sDeclaration||''psTyp BV_EXT.TYP%TYPE := :psTyp ;'' ;
+
+
+    7947:   select count(*), sum(decode(typ,TYP_BSHOPAPI,1,TYP_GOPAY,1,0))
+
+    '
+- dependency_id: pm.source.pm-09f.c_b_job_def.package
+  source_ref: pm.oracle.mc.c_b_job_def.package
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "24: SUBTYPE DT_M_TYP IS B_JOB_DEF.M_TYP%TYPE;\n\n77: \tpnM_typ B_JOB_DEF.M_TYP%TYPE default null,\n"
+- dependency_id: pm.source.pm-09f.c_b_job_def.package_body
+  source_ref: pm.oracle.mc.c_b_job_def.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "20: \tpnM_typ B_JOB_DEF.M_TYP%TYPE default null,\n\n64: \tsDeclaration:= sDeclaration||'pnM_typ B_JOB_DEF.M_TYP%TYPE\
+    \ := :pnM_typ ;' ;\n"
+- dependency_id: pm.source.pm-09f.c_cas_cennik_l.package_body
+  source_ref: pm.oracle.mc.c_cas_cennik_l.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '1479:             cenotvorba.GetRIDs_CTO(pnTypCT=>num_pole(rCTL.TYP), pnLoadParamH=>0, pnLoadParamP=>0, pdtDatum=>pdtDatum_od,
+
+
+    1482:                                    pnKodId=>rSk.ID, psTovarTyp=>rSK.typ_t, pnDodavatel=>rSK.dod_sk, pnVyrobca=>rSK.vyrobca,
+    psObchZnacka=>rSK.obch_znacka,
+
+
+    1519:     nTyp CT_L.TYP%TYPE;
+
+
+    1537:     cenotvorba.GetRIDs_CTO(pnTypCT=>num_pole(nTyp), pnLoadParamH=>0, pnLoadParamP=>0, pdtDatum=>pdtDatum,
+
+
+    1540:                            pnKodId=>rSk.ID, psTovarTyp=>rSK.typ_t, pnDodavatel=>rSK.dod_sk, pnVyrobca=>rSK.vyrobca,
+    psObchZnacka=>rSK.obch_znacka,
+
+    '
+- dependency_id: pm.source.pm-09f.c_cenotvorba_l.package
+  source_ref: pm.oracle.mc.c_cenotvorba_l.package
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '176: function GetUplatnenie(pnTypCT number) return number;
+
+
+    184:     pnTyp CT_L.TYP%TYPE default null,
+
+
+    261: function GetMenuRightsAkcia(psPK varchar2, pnTypCT number, psRID_Rabatovnik varchar2) return number;
+
+    '
+- dependency_id: pm.source.pm-09f.c_cenotvorba_l.package_body
+  source_ref: pm.oracle.mc.c_cenotvorba_l.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "9: \tpnTyp CT_L.TYP%TYPE default null,\n\n65: \tnTyp CT_L.TYP%TYPE := pnTyp;\n\n99: \tsDeclaration:= sDeclaration||'nTyp\
+    \ CT_L.TYP%TYPE := :nTyp ;' ;\n\n1026:     nTyp CT_L.TYP%TYPE;\n\n1049:     sDeclaration := sDeclaration ||\
+    \ ' nTyp CT_O.TYP%TYPE := :nTyp; ';\n\n1409: function GetUplatnenie(pnTypCT number) return number is\n\n1412:\
+    \   if pnTypCT in (cenotvorba.TYP_CT_Zmluva, cenotvorba.TYP_CT_Akcia, cenotvorba.TYP_CT_IndividualnaAkcia) then\n\
+    \n1415:   elsif pnTypCT in (cenotvorba.TYP_CT_ZmluvaDod, cenotvorba.TYP_CT_AkciaDod) then\n\n1418:   elsif pnTypCT\
+    \ in (cenotvorba.TYP_CT_ZmluvaMOC, cenotvorba.TYP_CT_AkciaMOC, cenotvorba.TYP_CT_AkciovySetMOC) then\n\n1677:\
+    \   nPozadovane number; nTypCT number;\n\n1679:   select pocet_bl_plan, typ into nPozadovane, nTypCT from ct_o\
+    \ where rid_obj = psRID_CT_A;\n\n1680:   if nPozadovane = 0 or nTypCT != cenotvorba.TYP_CT_AkciaDod then\n\n\
+    1691:   nPozadovane number :=0; nTypCT number;\n\n1693:   select pocet_bl_plan, typ, ukonci_po_vypredani into\
+    \ nPozadovane, nTypCT, nUkonciPoVypredani from ct_o where rid_obj = psRID_CT_A;\n\n1694:   if nPozadovane =\
+    \ 0 or nTypCT != cenotvorba.TYP_CT_AkciaDod then\n\n1844: function GetMenuRightsAkcia(psPK varchar2, pnTypCT\
+    \ number, psRID_Rabatovnik varchar2) return number is\n\n1851:   if pnTypCT in (cenotvorba.TYP_CT_Akcia, cenotvorba.TYP_CT_AkciaMOC)\
+    \ then\n"
+- dependency_id: pm.source.pm-09f.c_cenotvorba_o.package
+  source_ref: pm.oracle.mc.c_cenotvorba_o.package
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "153: SUBTYPE DT_DARCEK_TYP IS CT_O.DARCEK_TYP%TYPE;\n\n198: SUBTYPE DT_TYP IS CT_O.TYP%TYPE;\n\n570: function\
+    \ GetKodIdFromValid(psFieldParams varchar2, pnTypCT number default null) return number;\n\n613:     pnTyp CT_O.TYP%TYPE\
+    \ default null,\n\n655:     pnDarcek_typ CT_O.DARCEK_TYP%TYPE default null,\n\n729:     pnTyp CT_O.TYP%TYPE\
+    \ default null,\n\n776:     pnDarcek_typ CT_O.DARCEK_TYP%TYPE default null,\n\n914:               pnTyp CT_O.TYP%TYPE\
+    \ default null,\n\n956:               pnDarcek_typ CT_O.DARCEK_TYP%TYPE default null,\n\n1050: function GetPodmOkruhCT(pnKtory\
+    \ number, pnTypCT number) return number;\n\n1071: function GetMenuRightsAkcia(psPK varchar2, pnTypCT number,\
+    \ psFLAGS_B varchar2) return number;\n\n1075: function GetTypCenyExpander(psRID_OBJ varchar2, pnTypCT number,\
+    \ pnJeDarcek number, pnJeKupon number, pnPlatPoukazka number, pnTypCeny number) return number;\n\n1076: function\
+    \ GetSetupMultiCenyExpander(psRID_OBJ varchar2, pnTypCT number, pnJeDarcek number, pnJeKupon number, pnPlatPoukazka\
+    \ number, pnTypCeny number,\n\n1080: function GetSetupMultiPocetExpander(psRID_OBJ varchar2, pnTypCT number,\
+    \ pnPARAM_U number,\tpsToken varchar2 default c_const.TOKEN_ValidT) return varchar2;\n\n1081: function GetTypMnozstvaExpander(psRID_OBJ\
+    \ varchar2, pnTypCT number, pnPARAM_U number, pnTypMnozstva number) return number;\n"
+- dependency_id: pm.source.pm-09f.c_cenotvorba_o.package_body
+  source_ref: pm.oracle.mc.c_cenotvorba_o.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "159:               pnTyp CT_O.TYP%TYPE default null,\n\n201:               pnDarcek_typ CT_O.DARCEK_TYP%TYPE\
+    \ default null,\n\n300:   pnTyp CT_O.TYP%TYPE default null,\n\n347:   pnDarcek_typ CT_O.DARCEK_TYP%TYPE default\
+    \ null,\n\n505:   sDeclaration:= sDeclaration||'pnTyp CT_O.TYP%TYPE := :pnTyp ;' ;\n\n553:   sDeclaration:=\
+    \ sDeclaration||'pnDarcek_typ CT_O.DARCEK_TYP%TYPE := :pnDarcek_typ ;' ;\n\n1403:     RID_OBJ,SARZA,SKLAD_UPL,SK_BEZ_DARCEKOV,SK_CS,SK_DODAVATEL,SK_DRUH,SK_FLAGS,SK_VYROBCA,SPOSOB_KONTAKTU,SPOSOB_OBJ,STORNO,TYP,TYP_BODU,\n\
+    \n1683:     BOD_POCET,CAS_DO,CAS_OD,CENA,DARCEK_KOD_ID,DARCEK_N,DARCEK_POCET,DARCEK_PREDPIS,DARCEK_TYP,DAT_DO,DAT_OD,DEN,DRUH_DOPRAVY,/*HMOTNOST,HMOTNOST_M,*/HOTOVOST,IGN_GLOB_ZLAVA,IGN_INC_ZLAVA,INC_ZLAVA,JEDNOTKA_C,KOD_ID,MENA,MIESTO_DOD,/*OBJEM,OBJEM_M,*/OBRAT,/*OBRAT_BEZ_DPH,OBRAT_BEZ_DPH_M,OBRAT_S_DPH,OBRAT_S_DPH_M,*/OP_FLAGS,OS,PARAM_U,PARTNER,POBOC,POCET,/*POCET_PREDANYCH,POCET_PREDANYCH_M,*/POZN,PRIORITA,REGION,RID_OBJ,SARZA,SKLAD_UPL,SK_BEZ_DARCEKOV,SK_CS,SK_DODAVATEL,SK_DRUH,SK_FLAGS,SK_VYROBCA,SPOSOB_KONTAKTU,SPOSOB_OBJ,STORNO,TYP,TYP_BODU,/*ZISK,ZISK_M,*/ZLAVA,ZLAVA_SK,POCET_PLAN,\
+    \ FLAGS_B,ZOSTATOK_PO,SKLAD_V,UPLATNENIE,POCET_KOD_ID,DARCEK_SARZA,DARCEK_UPLATNI_ZA,SK_OBCH_ZNACKA,RID_M,\n\
+    \n3537:     nTypCT number;\n\n3542:         select KOD_ID, DARCEK_KOD_ID, TYP into nKodID, nDarcek, nTypCT from\
+    \ ct_o where rid_obj = psRidCTO;\n\n3543:         if JeDarcekCT(nTypCT) = 1 then\n\n3614: function GetKodIdFromValid(psFieldParams\
+    \ varchar2, pnTypCT number default null) return number is\n\n3617:     nTyp number := pnTypCT;\n\n3632:    \
+    \ nTypCT number;\n\n3638:     c_cis.GetFieldValueNum(psFieldName=>'TYP',psValues=>psFieldParams,pnExist=>nExist,pnValue=>nTypCT);\n\
+    \n3639:     nKodId := GetKodIdFromValid(psFieldParams, nTypCT);\n\n3649:             if nTypCT = TYP_CTO_AkceptaciaZaruky\
+    \ and pnCenaBezDph != 0 then\n\n3674: \tnTypCT number;\n\n3680: \tc_cis.GetFieldValueNum(psFieldName=>'TYP',psValues=>psFieldParams,pnExist=>nExist,pnValue=>nTypCT);\n\
+    \n3681: \tnKodId := GetKodIdFromValid(psFieldParams, nTypCT);\n\n3852:   nTypCT number;\n\n3856:   c_cis.GetFieldValueNum(psfieldname=>'TYP',psvalues=>psFieldParams,pnexist=>nExist,pnvalue=>nTypCT);\n\
+    \n3857:   if nTypCT not in (TYP_CTO_Akcia_Dod, TYP_CTO_Zmluva_Dod) then\n\n3917: \tnTypCT number;\n\n3922: \t\
+    c_cis.GetFieldValueNum(psFieldName=>'TYP', psValues=>psFieldParams, pnExist=>nExist, pnValue=>nTypCT);\n\n3923:\
+    \ \tif nTypCT in (TYP_CTO_Akcia, TYP_CTO_Zmluva) then\n\n3936: \tnTypCT number;\n\n3941: \tc_cis.GetFieldValueNum(psFieldName=>'TYP',\
+    \ psValues=>psFieldParams, pnExist=>nExist, pnValue=>nTypCT);\n\n3942: \tif nTypCT in (TYP_CTO_Akcia, TYP_CTO_Zmluva)\
+    \ then\n\n3958:     nTypCT number;\n\n4243:         c_cis.GetFieldValueNum(psFieldName=>'TYP',psValues=>psFieldParams,pnExist=>nExist,pnValue=>nTypCT);\n\
+    \n4245:             if nTypCT in (TYP_CTO_SkupinovyDarcek, TYP_CTO_SkupinovyDarcekPP) then\n\n4251:        \
+    \     if nTypCT in (TYP_CTO_SkupinovyDarcek, TYP_CTO_SkupinovyDarcekPP) then\n\n4280:         c_cis.GetFieldValueNum(psFieldName=>'TYP',psValues=>psFieldParams,pnExist=>nExist,pnValue=>nTypCT);\n\
+    \n4281:         if nTypCT in (TYP_CTO_KuponoveZlavy, TYP_CTO_DarcekZaBody) then\n\n4286:         c_cis.GetFieldValueNum(psFieldName=>'TYP',psValues=>psFieldParams,pnExist=>nExist,pnValue=>nTypCT);\n\
+    \n4287:         if nTypCT in (TYP_CTO_KuponoveZlavy, TYP_CTO_DarcekZaBody) then\n\n4298:         c_cis.GetFieldValueNum(psFieldName=>'TYP',psValues=>psFieldParams,pnExist=>nExist,pnValue=>nTypCT);\n\
+    \n4300:         psFieldsSetup := c_const.NoValidChar || 'DARCEK_TYP;' || GetDarcekTyp(pnIsKupon=>nIsKupon, pnIsDarcek=>nIsDarcek,\
+    \ pnIsBod=>nIsBod, pnIsZlavaPolozkou=>nIsZlavaPolozkou, pnIsZlavaDoPoloziek=>nIsZlavaDoPoloziek, pnTyp=>nTypCT)\
+    \ || ';';\n\n4306:             if nTypCT in (TYP_CTO_KuponoveZlavy, TYP_CTO_DarcekZaBody) then\n\n4323: \t\t\
+    \tif nTypCT = TYP_CTO_KuponoveZlavy then\n\n4342:             if nTypCT in (TYP_CTO_KuponoveZlavy, TYP_CTO_DarcekZaBody)\
+    \ then\n\n4344: \t\t\t\tif nTypCT  = TYP_CTO_KuponoveZlavy then\n\n4351:         c_cis.GetFieldValueNum(psFieldName=>'TYP',psValues=>psFieldParams,pnExist=>nExist,pnValue=>nTypCT);\n\
+    \n4353:         psFieldsSetup := c_const.NoValidChar || 'DARCEK_TYP;' || GetDarcekTyp(pnIsKupon=>nIsKupon, pnIsDarcek=>nIsDarcek,\
+    \ pnIsBod=>nIsBod, pnIsZlavaPolozkou=>nIsZlavaPolozkou, pnIsZlavaDoPoloziek=>nIsZlavaDoPoloziek, pnTyp=>nTypCT)\
+    \ || ';';\n\n4356:             if nTypCT = TYP_CTO_DarcekZaBody then -- darcek za body => odkliknutie fajky\
+    \ \"Darcek\"\n\n4366: \t\t\tif nTypCT in (TYP_CTO_Darcek, TYP_CTO_SkupinovyDarcek, TYP_CTO_KuponoveZlavy) then\n\
+    \n4369: \t\t\t\tif nValue != 0 and nTypCT in (TYP_CTO_Darcek, TYP_CTO_SkupinovyDarcek) then\n\n4395: \t\t\t\
+    if nTypCT  = TYP_CTO_KuponoveZlavy then\n\n4403: \t\tc_cis.GetFieldValueNum(psFieldName=>'TYP',psValues=>psFieldParams,pnExist=>nExist,pnValue=>nTypCT);\n\
+    \n4408: \t\t\tif nTypCT in (TYP_CTO_KuponoveZlavy) then\n\n4410: \t\t\telsif nTypCT in (TYP_CTO_Darcek, TYP_CTO_SkupinovyDarcek)\
+    \ and nIsDarcek = 0 and nIsZlavaPolozkou = 0 and nIsZlavaDoPoloziek = 0 then\n\n4414: \t\t\tc_cis.SetValidTValueNum(psValues=>psFieldsSetup,\
+    \ psFieldName=>'DARCEK_TYP', pnFieldValue=>GetDarcekTyp(pnIsKupon=>nIsKupon, pnIsDarcek=>nIsDarcek, pnIsBod=>nIsBod,\
+    \ pnIsZlavaPolozkou=>nIsZlavaPolozkou, pnIsZlavaDoPoloziek=>nIsZlavaDoPoloziek, pnTyp=>nTypCT), pnNoValid=>1);\n\
+    \n4438: \t\t\tif nTypCT in (TYP_CTO_KuponoveZlavy) then\n\n4440: \t\t\telsif nTypCT in (TYP_CTO_Darcek, TYP_CTO_SkupinovyDarcek)\
+    \ then\n\n4446: \t\tc_cis.GetFieldValueNum(psFieldName=>'TYP',psValues=>psFieldParams,pnExist=>nExist,pnValue=>nTypCT);\n\
+    \n4451: \t\t\tif nTypCT in (TYP_CTO_Darcek, TYP_CTO_SkupinovyDarcek) and nIsDarcek = 0 and nIsZlavaPolozkou\
+    \ = 0 and nIsZlavaDoPoloziek = 0 then\n\n4455: \t\t\tc_cis.SetValidTValueNum(psValues=>psFieldsSetup, psFieldName=>'DARCEK_TYP',\
+    \ pnFieldValue=>GetDarcekTyp(pnIsKupon=>nIsKupon, pnIsDarcek=>nIsDarcek, pnIsBod=>nIsBod, pnIsZlavaPolozkou=>nIsZlavaPolozkou,\
+    \ pnIsZlavaDoPoloziek=>nIsZlavaDoPoloziek, pnTyp=>nTypCT), pnNoValid=>1);\n\n4487: \t\t\tif nTypCT in (TYP_CTO_Darcek,\
+    \ TYP_CTO_SkupinovyDarcek) then\n\n4493: \t\tc_cis.GetFieldValueNum(psFieldName=>'TYP',psValues=>psFieldParams,pnExist=>nExist,pnValue=>nTypCT);\n\
+    \n4495:         psFieldsSetup := c_const.NoValidChar || 'DARCEK_TYP;' || GetDarcekTyp(pnIsKupon=>nIsKupon, pnIsDarcek=>nIsDarcek,\
+    \ pnIsBod=>nIsBod, pnIsZlavaPolozkou=>nIsZlavaPolozkou, pnIsZlavaDoPoloziek=>nIsZlavaDoPoloziek, pnTyp=>nTypCT)\
+    \ || ';';\n\n4538:       c_cis.GetFieldValueNum(psFieldName=>'TYP',psValues=>psFieldParams,pnExist=>nExist,pnValue=>nTypCT);\n\
+    \n4539:       if nTypCT = TYP_CTO_KN then\n\n4566: \t  c_cis.GetFieldValueNum(psFieldName=>'TYP',psValues=>psFieldParams,pnExist=>nExist,pnValue=>nTypCT);\n\
+    \n4567: \t  if nTypCT = TYP_CTO_KuponoveZlavy then\n\n4599:       c_cis.GetFieldValueNum(psFieldName=>'TYP',psValues=>psFieldParams,pnExist=>nExist,pnValue=>nTypCT);\n\
+    \n4600:       if nTypCT = TYP_CTO_KuponoveZlavy then\n\n4605:           c_cis.SetValidTValue(psValues=>psFieldsSetup,\
+    \ psFieldName=>'DARCEK_TYP', psFieldValue=>GetDarcekTyp(pnIsKupon=>nIsKupon, pnIsDarcek=>nIsDarcek, pnIsBod=>nIsBod,\
+    \ pnIsZlavaPolozkou=>nIsZlavaPolozkou, pnIsZlavaDoPoloziek=>nIsZlavaDoPoloziek, pnTyp=>nTypCT), pnNoValid=>1);\n\
+    \n4654: \t\t\t\tc_cis.GetFieldValueNum(psFieldName=>'TYP',psValues=>psFieldParams,pnExist=>nExist,pnValue=>nTypCT);\n\
+    \n4655: \t\t\t\tif nTypCT in (TYP_CTO_SkupBod, TYP_CTO_SkupinovyDarcek,TYP_CTO_SkupinovyDarcekPP, TYP_CTO_Zmluva_MO)\
+    \ then\n\n4679: \t\t\tc_cis.GetFieldValueNum(psFieldName=>'TYP',psValues=>psFieldParams,pnExist=>nExist,pnValue=>nTypCT);\n\
+    \n4680:       if nTypCT in (TYP_CTO_GZT, TYP_CTO_GZ) then\n\n4815:     nTyp CT_O.TYP%TYPE;\n\n5055:       miesto_dod,sposob_obj,sposob_kontaktu,darcek_n,param_u,sk_flags,op_flags,sklad_upl,pozn,obrat,sk_bez_darcekov,darcek_typ,typ_bodu,\n\
+    \n5065:       miesto_dod,sposob_obj,sposob_kontaktu,darcek_n,param_u,sk_flags,op_flags,sklad_upl,pozn,obrat,sk_bez_darcekov,darcek_typ,typ_bodu,\n\
+    \n5189:   nLimitMnozstvo number; nTypCT number;\n\n5199:   into nLimitMnozstvo, nNaplneneMnozstvo, nTypCT, sRID_CT_L,\
+    \ nStorno\n\n5487:               pnTyp CT_O.TYP%TYPE default null,\n\n5529:               pnDarcek_typ CT_O.DARCEK_TYP%TYPE\
+    \ default null,\n\n6019: function GetPodmOkruhCT(pnKtory number, pnTypCT number) return number is\n\n6022: \
+    \  if pnKtory = 0 and pnTypCT in (cenotvorba.TYP_CT_Akcia, cenotvorba.TYP_CT_Zmluva, cenotvorba.TYP_CT_IndividualnaAkcia,\
+    \ cenotvorba.TYP_CT_AkciaDod, cenotvorba.TYP_CT_ZmluvaDod, cenotvorba.TYP_CT_AkciaMOC, cenotvorba.TYP_CT_ZmluvaMOC)\
+    \ then -- akcie/zmluvy\n\n6025:   elsif pnKtory = 1 and pnTypCT in (cenotvorba.TYP_CT_RZ, cenotvorba.TYP_CT_GZ,\
+    \ cenotvorba.TYP_CT_GZT, cenotvorba.TYP_CT_KumulativnyBod,\n\n6170:   nTypCT number;\n\n6176:     select o.rid_o,\
+    \ o.typ into sRID_O, nTypCT from ct_o o where o.rid_obj = psRID_OBJ;\n\n6177:     if nTypCT not in (cenotvorba.TYP_CT_Akcia,\
+    \ cenotvorba.TYP_CT_AkciaMOC) then\n\n6182:   select l.rid_rabatovnik, l.typ into sRID_Rabatovnik, nTypCT from\
+    \ ct_l l where l.rid = sRID_O;\n\n6183:   if nTypCT in (cenotvorba.TYP_CT_Akcia, cenotvorba.TYP_CT_AkciaMOC)\
+    \ then\n\n6202: function GetMenuRightsAkcia(psPK varchar2, pnTypCT number, psFLAGS_B varchar2) return number\
+    \ is\n\n6209:   if pnTypCT = cenotvorba.TYP_CT_Akcia then\n\n6219: procedure GetEditFieldsCeny(psRID_OBJ varchar2,\
+    \ pnTypCT number, pnJeDarcek number, pnJeKupon number, pnPlatPoukazka number, pnTypCeny number,\n\n6221: \t\
+    nTypCT number := pnTypCT;\n\n6237: \tif nTypCT\tis null or nJeDarcek is null or nJeKupon is null or nPlatPoukazka\
+    \ is null or nTypCeny is null then\n\n6243: \t\tinto nJeDarcek, nJeKupon, nTypCT, nPlatPoukazka, nTypCeny from\
+    \ ct_o o where o.rid_obj = psRID_OBJ;\n\n6249: \tif nTypCT in (TYP_CTO_Akcia, TYP_CTO_Akcia_Dod, TYP_CTO_Akcia_MO,\
+    \ TYP_CTO_Individualna_Akcia, TYP_CTO_Zmluva, TYP_CTO_Zmluva_Dod, TYP_CTO_Zmluva_MO,\n\n6253: \t\tif nTypCT\
+    \ in (TYP_CTO_Akcia, TYP_CTO_Akcia_Dod, TYP_CTO_Akcia_MO, TYP_CTO_Individualna_Akcia) then\n\n6257: \t\telsif\
+    \ nTypCT in (TYP_CTO_SkupinovyDarcek, TYP_CTO_SkupinovyDarcekPP) then\n\n6264: \t\telsif nTypCT = TYP_CTO_KuponoveZlavy\
+    \ then\n\n6273: \t\telsif nTypCT = TYP_CTO_DarcekZaBody then\n\n6281: \telsif nTypCT in (TYP_CTO_RZ, TYP_CTO_GZ,\
+    \ TYP_CTO_GZT, TYP_CTO_KN, TYP_CTO_GN) then\n\n6283: \t\tif nTypCT = TYP_CTO_KN then\n\n6287: \telsif nTypCT\
+    \ in (TYP_CTO_KumulativnyBod, TYP_CTO_Darcek, TYP_CTO_DarcekBodPP)\tthen\n\n6289: \t\tif nTypCT in (TYP_CTO_Darcek,\
+    \ TYP_CTO_DarcekBodPP) then\n\n6295: \telsif nTypCT in (TYP_CTO_ZlavaZaBody, TYP_CTO_Penalizacia)\tthen\n\n\
+    6304: \tnCountTypCT number;\n\n6319: \tselect count(distinct(o.typ)) into nCountTypCT from ct_o o where o.rid_obj\
+    \ in (select column_value from table(ppf.getclobtokenstbl(pcStr=>pck_tools.OdstranApostrofyC(pcRID_OBJ), psToken=>c_const.CIARKA))t\
+    \ );\n\n6320: \tif nCountTypCT > 1 then\n\n6321: \t\tc_exc.raiseerrormsgidp(pnIdMsg=>4388, psP1=>nCountTypCT);\
+    \ -- Máš vybratých \"%s\" rôznych cenotvorieb. Operácia pre zmenu ceny je povolená len na rovnakých typoch !\
+    \ \\\\44946\n\n6324: \tnCountTypCT := 0;\n\n6326: \t\tnCountTypCT := nCountTypCT + 1;\n\n6331: \t\t\tGetEditFieldsCeny(psRID_OBJ=>rCT.rid_obj,\
+    \ pnTypCT=>rO.typ, pnJeDarcek=>rO.je_typ_darcek, pnJeKupon=>rO.je_typ_kupon, pnPlatPoukazka=>rO.plat_poukazka,\
+    \ pnTypCeny=>rO.typ_ceny,\n\n6355: \tif nCountTypCT > 0 and nCountTypCT = nCountUpd then\n\n6358: \t\tc_session.setlastmessage('Bolo\
+    \ zmenených '||nCountUpd||' z '||nCountTypCT||' položiek.');\n\n6399: function GetTypCenyExpander(psRID_OBJ\
+    \ varchar2, pnTypCT number, pnJeDarcek number, pnJeKupon number, pnPlatPoukazka number, pnTypCeny number) return\
+    \ number is\n\n6406: \tGetEditFieldsCeny(psRID_OBJ=>psRID_OBJ, pnTypCT=>pnTypCT, pnJeDarcek=>pnJeDarcek, pnJeKupon=>pnJeKupon,\
+    \ pnPlatPoukazka=>pnPlatPoukazka, pnTypCeny=>pnTypCeny,\n\n6432: function GetSetupMultiCenyExpander(psRID_OBJ\
+    \ varchar2, pnTypCT number, pnJeDarcek number, pnJeKupon number, pnPlatPoukazka number, pnTypCeny number,\n\n\
+    6443: \t\tGetEditFieldsCeny(psRID_OBJ=>psRID_OBJ, pnTypCT=>pnTypCT, pnJeDarcek=>pnJeDarcek, pnJeKupon=>pnJeKupon,\
+    \ pnPlatPoukazka=>pnPlatPoukazka, pnTypCeny=>pnTypCeny,\n\n6498: \tnTypCT number(2,0); nJeDarcek number(1,0);\
+    \ nJeKupon number(1,0); nPlatPoukazka number(1,0); nTypCeny number(1,0); nUplatnenie number(1,0);\n\n6506: \t\
+    into nTypCT, nJeDarcek, nJeKupon, nPlatPoukazka, nTypCeny, nUplatnenie, nCena, nZlava, nZlavaSK, sRID_O, nKodID,\
+    \ nDarcekKodID, nCennik, nCenaBezDPH, nCenaSDPH\n\n6509: \tGetEditFieldsCeny(psRID_OBJ=>psRID_OBJ, pnTypCT=>nTypCT,\
+    \ pnJeDarcek=>nJeDarcek, pnJeKupon=>nJeKupon, pnPlatPoukazka=>nPlatPoukazka, pnTypCeny=>nTypCeny,\n\n6514: \t\
+    if nTypCT in (TYP_CTO_RZ, TYP_CTO_GZ, TYP_CTO_GZT, TYP_CTO_GN, TYP_CTO_KN, TYP_CTO_ZlavaZaBody, TYP_CTO_Penalizacia)\
+    \ or (nEditCennik=0 and nEditCena=0 and nJeDarcek=0) then\n\n6517: \telsif nTypCT not in (TYP_CTO_Darcek, TYP_CTO_DarcekBodPP,\
+    \ TYP_CTO_SkupinovyDarcek, TYP_CTO_SkupinovyDarcekPP) then\n\n6580: procedure GetEditFieldsPocet(psRID_OBJ varchar2,\
+    \ pnTypCT number, pnPARAM_U number, pnPocet out number, pnPlatiPreUB out number, pnTypMnozstva out number) is\n\
+    \n6581: \tnTypCT number(2,0) := pnTypCT;\n\n6584: \tif nTypCT\tis null or nParamU is null then\n\n6588: \t\t\
+    select o.typ, o.param_u into nTypCT, nParamU from ct_o o where o.rid_obj = psRID_OBJ;\n\n6592: \tif nTypCT in\
+    \ (TYP_CTO_Akcia, TYP_CTO_Akcia_MO, TYP_CTO_Zmluva, TYP_CTO_Zmluva_MO) then\n\n6594: \t\tif nTypCT = TYP_CTO_Zmluva_MO\
+    \ then\n\n6598: \telsif nTypCT in (TYP_CTO_Akcia_Dod, TYP_CTO_Zmluva_Dod, TYP_CTO_Individualna_Akcia, TYP_CTO_RZ,\
+    \ TYP_CTO_GZT, TYP_CTO_KumulativnyBod, TYP_CTO_Darcek,\n\n6603: \t\tif nTypCT in (TYP_CTO_GZT, TYP_CTO_KumulativnyBod,\
+    \ TYP_CTO_SkupinovyDarcek, TYP_CTO_SkupinovyDarcekPP, TYP_CTO_GN, TYP_CTO_SkupBod) then\n\n6607: \t\t\tif nTypCT\
+    \ in (TYP_CTO_SkupinovyDarcek, TYP_CTO_SkupinovyDarcekPP, TYP_CTO_SkupBod) then\n\n6640: function GetSetupMultiPocetExpander(psRID_OBJ\
+    \ varchar2, pnTypCT number, pnPARAM_U number,\tpsToken varchar2 default c_const.TOKEN_ValidT) return varchar2\
+    \ is\n\n6647: \tGetEditFieldsPocet(psRID_OBJ=>psRID_OBJ, pnTypCT=>pnTypCT, pnPARAM_U=>pnPARAM_U, pnPocet=>nEditPocet,\
+    \ pnPlatiPreUB=>nEditPlatiPreUB, pnTypMnozstva=>nTypMnozstva);\n\n6672: function GetTypMnozstvaExpander(psRID_OBJ\
+    \ varchar2, pnTypCT number, pnPARAM_U number, pnTypMnozstva number) return number is\n\n6677: \tGetEditFieldsPocet(psRID_OBJ=>psRID_OBJ,\
+    \ pnTypCT=>pnTypCT, pnPARAM_U=>pnPARAM_U, pnPocet=>nEditPocet, pnPlatiPreUB=>nEditPlatiPreUB, pnTypMnozstva=>nTypMnozstva);\n\
+    \n6697: \tnCountTypCT number;\n\n6712: \tselect count(distinct(o.typ)) into nCountTypCT from ct_o o where o.rid_obj\
+    \ in (select column_value from table(ppf.getclobtokenstbl(pcStr=>pck_tools.OdstranApostrofyC(pcRID_OBJ), psToken=>c_const.CIARKA))t\
+    \ );\n\n6713: \tif nCountTypCT > 1 then\n\n6714: \t\tc_exc.raiseerrormsgidp(pnIdMsg=>4390, psP1=>nCountTypCT);\
+    \ -- Máš vybratých \"%s\" rôznych cenotvorieb. Operácia pre zmenu množstva je povolená len na rovnakých typoch\
+    \ ! \\\\44949\n\n6717: \tnCountTypCT := 0;\n\n6719: \t\tnCountTypCT := nCountTypCT + 1;\n\n6722: \t\t\tGetEditFieldsPocet(psRID_OBJ=>rCT.rid_obj,\
+    \ pnTypCT=>rO.typ, pnPARAM_U=>rO.param_u, pnPocet=>nEditPocet, pnPlatiPreUB=>nEditPlatiPreUB, pnTypMnozstva=>nTypMnozstvaVal);\n\
+    \n6749: \tif nCountTypCT > 0 and nCountTypCT = nCountUpd then\n\n6752: \t\tc_session.setlastmessage('Bolo zmenených\
+    \ '||nCountUpd||' z '||nCountTypCT||' položiek.');\n\n6766: \tnTypCT number(2,0);\n\n6769: \tinto nTypCT, nParamU,\
+    \ nTypMnozstva, nPlatiPreUB, nPocet, nPocetBaleni from ct_o o where o.rid_obj = psRID_OBJ;\n\n6771: \tGetEditFieldsPocet(psRID_OBJ=>psRID_OBJ,\
+    \ pnTypCT=>nTypCT, pnPARAM_U=>nParamU, pnPocet=>nEditPocet, pnPlatiPreUB=>nEditPlatiPreUB, pnTypMnozstva=>nTypMnozstvaVal);\n"
+- dependency_id: pm.source.pm-09f.c_cis.package_body
+  source_ref: pm.oracle.mc.c_cis.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - "1413: \tvStr := vStr||' AND cc.constraint_name NOT IN (''XFK_SKLAD_KARTA_HLAVNA_TP'')';\n\n1550: \t\t\t\t\t\
+    \tstav,t_tovaru,dod_kod,substr(nazov,1,254)\n\n2649: \t\t\tc_cis_poznamka.NastavPoznamku(psRID=>sRid, psPoznamka=>substr(psValues,nLast+nPoz+2,nNext-nPoz-nLast-3),\
+    \ psTyp=>c_cis_poznamka_typ.TYP_PoznHlavickyDokl);\n\n2652: \t\t\tc_cis_poznamka.NastavPoznamku(psRID=>sRid,\
+    \ psPoznamka=>substr(psValues,nLast+nPoz+2,nNext-nPoz-nLast-3), psTyp=>c_cis_poznamka_typ.TYP_PoznPatyDokl);\n\
+    \n3524: \t\t\tC_CIS.UpdateTOnly(pnIdCis=>nIDCis, psPK=>sPrimaryKey, psValues=>'TYP_T' || C_Const.TOKEN_UpdateT\
+    \ || '''' || psNodeTree || '''');\n"
+- dependency_id: pm.source.pm-09f.c_cis_clob_data.package_body
+  source_ref: pm.oracle.mc.c_cis_clob_data.package_body
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '17:   sDeclaration:= sDeclaration||'' pnTyp CIS_CLOB_DATA.TYP%TYPE := :pnTyp ;'';
+
+    '
+- dependency_id: pm.source.pm-09f.c_cis_dph_typ_val.package
+  source_ref: pm.oracle.mc.c_cis_dph_typ_val.package
+  target_ref: pm.object.sklad_karta
+  direction: SOURCE CONTEXT
+  depth: 1
+  role: DEPENDENCY ONLY
+  discovery_method: Supplied approved source pack; exact line register
+  source_visible: true
+  runtime_boundary: true
+  status: DEPENDENCY ONLY
+  evidence_refs:
+  - pm.evidence.pm-09f
+  limitations_sk:
+  - Context/hit is not runtime role. Lines may be a partial source window.
+  - '26:                psDph_typ CIS_DPH_TYPY_VAL.DPH_TYP%TYPE default null,
+
+    '

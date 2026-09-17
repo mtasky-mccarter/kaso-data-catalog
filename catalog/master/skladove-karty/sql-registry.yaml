@@ -1,0 +1,545 @@
+schema_version: '1.0'
+kind: sql-registry
+id: pm.sql_registry
+records:
+- sql_id: pm.sql.identity
+  title_sk: Identita skladovej karty
+  sql_file: sql/diagnostic/skladove-karty/identity.sql
+  purpose_sk: Identita skladovej karty
+  input_parameters:
+  - name: id
+    required: true
+    description_sk: Explicit caller-supplied context; preserve code/RID text.
+  - name: int_kod
+    required: true
+    description_sk: Explicit caller-supplied context; preserve code/RID text.
+  - name: rid
+    required: true
+    description_sk: Explicit caller-supplied context; preserve code/RID text.
+  - name: sk_id
+    required: true
+    description_sk: Explicit caller-supplied context; preserve code/RID text.
+  result_grain_sk: One root card
+  fanout_warning_sk: No joins; multiple identifiers may select different cards.
+  proves_sk: Current identity matches.
+  does_not_prove_sk: Historical/global uniqueness; INT_KOD is text, not numeric.
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+    notes_sk: Offline safety checked; no Oracle execution performed.
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.mp01-a
+  - pm.evidence.mp02-a
+- sql_id: pm.sql.current_state
+  title_sk: Aktuálny stav
+  sql_file: sql/diagnostic/skladove-karty/current-state.sql
+  purpose_sk: Aktuálny stav
+  input_parameters:
+  - name: id
+    required: true
+    description_sk: Explicit caller-supplied context; preserve code/RID text.
+  result_grain_sk: One card
+  fanout_warning_sk: None
+  proves_sk: Independent USED and STAV plus technical stamps.
+  does_not_prove_sk: USED=1 is not in sale; N_STAMP not creation; no full history.
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+    notes_sk: Offline safety checked; no Oracle execution performed.
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.mp02-b
+  - pm.evidence.mp03-a
+- sql_id: pm.sql.lookups
+  title_sk: Stav a priame referencie
+  sql_file: sql/diagnostic/skladove-karty/lookups.sql
+  purpose_sk: Stav a priame referencie
+  input_parameters:
+  - name: id
+    required: true
+    description_sk: Explicit caller-supplied context; preserve code/RID text.
+  result_grain_sk: One card and referenced state
+  fanout_warning_sk: Target PK limits fan-out; do not filter lookup S_STAMP silently.
+  proves_sk: Current state dictionary resolution.
+  does_not_prove_sk: Lookup lifecycle alone does not invalidate an existing reference.
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+    notes_sk: Offline safety checked; no Oracle execution performed.
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.mp01-b
+  - pm.evidence.mp02-j
+- sql_id: pm.sql.logistics
+  title_sk: Balenia a EAN podľa úrovne
+  sql_file: sql/diagnostic/skladove-karty/logistics.sql
+  purpose_sk: Balenia a EAN podľa úrovne
+  input_parameters:
+  - name: id
+    required: true
+    description_sk: Explicit caller-supplied context; preserve code/RID text.
+  result_grain_sk: Card x packaging x code
+  fanout_warning_sk: 1:N:N; do not sum root/packaging measures after joining codes.
+  proves_sk: Current packaging hierarchy and level-associated codes.
+  does_not_prove_sk: Root logistics fields are not universal roll-up; missing packaging not universally an error.
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+    notes_sk: Offline safety checked; no Oracle execution performed.
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.lm-02a
+  - pm.evidence.lm-02e
+- sql_id: pm.sql.ean_anomalies
+  title_sk: Aktívne balenie bez presného kusového EAN
+  sql_file: sql/diagnostic/skladove-karty/ean-anomalies.sql
+  purpose_sk: Aktívne balenie bez presného kusového EAN
+  input_parameters: []
+  result_grain_sk: One active packaging row
+  fanout_warning_sk: Anti-join avoids multiplying packaging rows.
+  proves_sk: Missing exact active piece-level code candidate.
+  does_not_prove_sk: Universal business error or remediation; scope by product use.
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+    notes_sk: Offline safety checked; no Oracle execution performed.
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.lm-03c
+- sql_id: pm.sql.supplier
+  title_sk: Dodávateľský kód a hlavný dodávateľ
+  sql_file: sql/diagnostic/skladove-karty/supplier.sql
+  purpose_sk: Dodávateľský kód a hlavný dodávateľ
+  input_parameters:
+  - name: id
+    required: true
+    description_sk: Explicit caller-supplied context; preserve code/RID text.
+  result_grain_sk: Card x supplier row
+  fanout_warning_sk: 1:N; preserve ID_DODAVATELA and lifecycle.
+  proves_sk: Root versus supplier satellite values.
+  does_not_prove_sk: DOD_KOD/KOD_DOD/VYROBCA_KOD equivalence or continuous synchronization.
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+    notes_sk: Offline safety checked; no Oracle execution performed.
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.pm-05e
+- sql_id: pm.sql.vat_context
+  title_sk: DPH podľa skladového kontextu
+  sql_file: sql/diagnostic/skladove-karty/vat-context.sql
+  purpose_sk: DPH podľa skladového kontextu
+  input_parameters:
+  - name: id
+    required: true
+    description_sk: Explicit caller-supplied context; preserve code/RID text.
+  - name: sklad_p
+    required: true
+    description_sk: Explicit caller-supplied context; preserve code/RID text.
+  result_grain_sk: Card x matching active warehouse override
+  fanout_warning_sk: Expose duplicates; no ROWNUM=1.
+  proves_sk: Root and contextual VAT values.
+  does_not_prove_sk: Root VAT is not universal; does not execute session-dependent API resolution.
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+    notes_sk: Offline safety checked; no Oracle execution performed.
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.pm-05f
+- sql_id: pm.sql.partner_grain
+  title_sk: Duplicity kontextu partnerských kódov
+  sql_file: sql/diagnostic/skladove-karty/partner-grain.sql
+  purpose_sk: Duplicity kontextu partnerských kódov
+  input_parameters: []
+  result_grain_sk: KOD_ID + PARTNER + BALENIE
+  fanout_warning_sk: Aggregate only at exact natural grain.
+  proves_sk: Current duplicate active grain.
+  does_not_prove_sk: PARTNER + KOD_PARTNERA is not globally unique.
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+    notes_sk: Offline safety checked; no Oracle execution performed.
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.pm-05g
+- sql_id: pm.sql.typed_notes
+  title_sk: Aktuálne typované poznámky ku karte
+  sql_file: sql/diagnostic/skladove-karty/typed-notes.sql
+  purpose_sk: Aktuálne typované poznámky ku karte
+  input_parameters:
+  - name: id
+    required: true
+    description_sk: Explicit caller-supplied context; preserve code/RID text.
+  result_grain_sk: One active product-context typed note
+  fanout_warning_sk: 1:N root-to-note; no root sums.
+  proves_sk: Current operational typed-note values and dictionary meaning.
+  does_not_prove_sk: Not every note is allergen; not full historical or downstream manufacturing truth.
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+    notes_sk: Offline safety checked; no Oracle execution performed.
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.pm-08e
+  - pm.evidence.pm-09b
+- sql_id: pm.sql.allergen_types
+  title_sk: Priamy alergén a krížová kontaminácia
+  sql_file: sql/diagnostic/skladove-karty/allergen-types.sql
+  purpose_sk: Priamy alergén a krížová kontaminácia
+  input_parameters:
+  - name: cross_type
+    required: true
+    description_sk: Explicit caller-supplied context; preserve code/RID text.
+  - name: direct_type
+    required: true
+    description_sk: Explicit caller-supplied context; preserve code/RID text.
+  - name: id
+    required: true
+    description_sk: Explicit caller-supplied context; preserve code/RID text.
+  result_grain_sk: One selected active allergen note
+  fanout_warning_sk: Multiple notes per card/type remain visible.
+  proves_sk: Separate caller-selected dictionary types.
+  does_not_prove_sk: Caller must select approved dictionary types; 00048/00052 relation unresolved; no free-text
+    inference.
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+    notes_sk: Offline safety checked; no Oracle execution performed.
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.pm-09b
+- sql_id: pm.sql.coefficients
+  title_sk: Aktívne a účinné nákladové koeficienty
+  sql_file: sql/diagnostic/skladove-karty/coefficients.sql
+  purpose_sk: Aktívne a účinné nákladové koeficienty
+  input_parameters:
+  - name: as_of
+    required: true
+    description_sk: Explicit caller-supplied context; preserve code/RID text.
+  - name: id
+    required: true
+    description_sk: Explicit caller-supplied context; preserve code/RID text.
+  result_grain_sk: One stored assignment
+  fanout_warning_sk: Multiple historical assignments; do not collapse to ROWNUM=1.
+  proves_sk: Stored lifecycle and effective-date comparison.
+  does_not_prove_sk: Current coefficient registry is not historical truth; mask is not country code; names not jurisdiction.
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+    notes_sk: Offline safety checked; no Oracle execution performed.
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.pm-04d
+  - pm.evidence.pm-05b
+- sql_id: pm.sql.bom_audit
+  title_sk: BOM aktuálny súčet proti uloženým hodnotám
+  sql_file: sql/diagnostic/skladove-karty/bom-audit.sql
+  purpose_sk: BOM aktuálny súčet proti uloženým hodnotám
+  input_parameters:
+  - name: tolerance
+    required: true
+    description_sk: Explicit caller-supplied context; preserve code/RID text.
+  result_grain_sk: One current product x coefficient group
+  fanout_warning_sk: Components aggregated before stored join; validate code and DU uniqueness before interpreting.
+  proves_sk: BOM aktuálny súčet proti uloženým hodnotám
+  does_not_prove_sk: Diagnostic aggregate, not a corrected writer. Prefix 3 is executable heuristic, not taxonomy.
+    O.POCET may include norm loss; no extra loss multiplication. Current INT_KOD and DU uniqueness must be checked.
+    Unsupported DU7 stays NULL. No historical eligibility or pure packed-weight claim.
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+    notes_sk: Offline safety checked; no Oracle execution performed.
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.pm-06c
+  - pm.evidence.pm-07a
+  - pm.evidence.pm-07b
+- sql_id: pm.sql.dq_coef_001
+  title_sk: DQ-COEF-001 zastarané BOM-auto riadky
+  sql_file: sql/diagnostic/skladove-karty/dq-coef-001.sql
+  purpose_sk: DQ-COEF-001 zastarané BOM-auto riadky
+  input_parameters:
+  - name: tolerance
+    required: true
+    description_sk: Explicit caller-supplied context; preserve code/RID text.
+  result_grain_sk: One current product x coefficient group
+  fanout_warning_sk: Components aggregated before stored join; validate code and DU uniqueness before interpreting.
+  proves_sk: DQ-COEF-001 zastarané BOM-auto riadky
+  does_not_prove_sk: Diagnostic aggregate, not a corrected writer. Prefix 3 is executable heuristic, not taxonomy.
+    O.POCET may include norm loss; no extra loss multiplication. Current INT_KOD and DU uniqueness must be checked.
+    Unsupported DU7 stays NULL. No historical eligibility or pure packed-weight claim.
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+    notes_sk: Offline safety checked; no Oracle execution performed.
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.pm-06c
+  - pm.evidence.pm-07a
+  - pm.evidence.pm-07b
+- sql_id: pm.sql.dq_coef_002
+  title_sk: DQ-COEF-002 viac komponentov pre rovnaký koeficient
+  sql_file: sql/diagnostic/skladove-karty/dq-coef-002.sql
+  purpose_sk: DQ-COEF-002 viac komponentov pre rovnaký koeficient
+  input_parameters:
+  - name: tolerance
+    required: true
+    description_sk: Explicit caller-supplied context; preserve code/RID text.
+  result_grain_sk: One current product x coefficient group
+  fanout_warning_sk: Components aggregated before stored join; validate code and DU uniqueness before interpreting.
+  proves_sk: DQ-COEF-002 viac komponentov pre rovnaký koeficient
+  does_not_prove_sk: Diagnostic aggregate, not a corrected writer. Prefix 3 is executable heuristic, not taxonomy.
+    O.POCET may include norm loss; no extra loss multiplication. Current INT_KOD and DU uniqueness must be checked.
+    Unsupported DU7 stays NULL. No historical eligibility or pure packed-weight claim.
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+    notes_sk: Offline safety checked; no Oracle execution performed.
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.pm-06c
+  - pm.evidence.pm-07a
+  - pm.evidence.pm-07b
+- sql_id: pm.sql.dq_coef_003
+  title_sk: DQ-COEF-003 rozdiel recompute
+  sql_file: sql/diagnostic/skladove-karty/dq-coef-003.sql
+  purpose_sk: DQ-COEF-003 rozdiel recompute
+  input_parameters:
+  - name: tolerance
+    required: true
+    description_sk: Explicit caller-supplied context; preserve code/RID text.
+  result_grain_sk: One current product x coefficient group
+  fanout_warning_sk: Components aggregated before stored join; validate code and DU uniqueness before interpreting.
+  proves_sk: DQ-COEF-003 rozdiel recompute
+  does_not_prove_sk: Diagnostic aggregate, not a corrected writer. Prefix 3 is executable heuristic, not taxonomy.
+    O.POCET may include norm loss; no extra loss multiplication. Current INT_KOD and DU uniqueness must be checked.
+    Unsupported DU7 stays NULL. No historical eligibility or pure packed-weight claim.
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+    notes_sk: Offline safety checked; no Oracle execution performed.
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.pm-06c
+  - pm.evidence.pm-07a
+  - pm.evidence.pm-07b
+- sql_id: pm.sql.dq_coef_004
+  title_sk: DQ-COEF-004 chýbajúci uložený koeficient
+  sql_file: sql/diagnostic/skladove-karty/dq-coef-004.sql
+  purpose_sk: DQ-COEF-004 chýbajúci uložený koeficient
+  input_parameters:
+  - name: tolerance
+    required: true
+    description_sk: Explicit caller-supplied context; preserve code/RID text.
+  result_grain_sk: One current product x coefficient group
+  fanout_warning_sk: Components aggregated before stored join; validate code and DU uniqueness before interpreting.
+  proves_sk: DQ-COEF-004 chýbajúci uložený koeficient
+  does_not_prove_sk: Diagnostic aggregate, not a corrected writer. Prefix 3 is executable heuristic, not taxonomy.
+    O.POCET may include norm loss; no extra loss multiplication. Current INT_KOD and DU uniqueness must be checked.
+    Unsupported DU7 stays NULL. No historical eligibility or pure packed-weight claim.
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+    notes_sk: Offline safety checked; no Oracle execution performed.
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.pm-06c
+  - pm.evidence.pm-07a
+  - pm.evidence.pm-07b
+- sql_id: pm.sql.dq_coef_005
+  title_sk: DQ-COEF-005 prefix názvu nie je krajina
+  sql_file: sql/diagnostic/skladove-karty/dq-coef-005.sql
+  purpose_sk: DQ-COEF-005 prefix názvu nie je krajina
+  input_parameters: []
+  result_grain_sk: One coefficient
+  fanout_warning_sk: None
+  proves_sk: Legacy SK/CZ name prefixes alongside applicability mask.
+  does_not_prove_sk: No jurisdiction classification from name; reporting context remains downstream.
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+    notes_sk: Offline safety checked; no Oracle execution performed.
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.pm-04c
+- sql_id: pm.sql.dq_coef_006
+  title_sk: DQ-COEF-006 história a lifecycle sugar assignments
+  sql_file: sql/diagnostic/skladove-karty/dq-coef-006.sql
+  purpose_sk: DQ-COEF-006 história a lifecycle sugar assignments
+  input_parameters:
+  - name: as_of
+    required: true
+    description_sk: Explicit caller-supplied context; preserve code/RID text.
+  result_grain_sk: Product x sugar coefficient
+  fanout_warning_sk: All history retained intentionally; do not join directly to transaction totals.
+  proves_sk: Potential row multiplication/lifecycle exposure if downstream filter omitted.
+  does_not_prove_sk: Not every historical row is a business error; exact affected report SQL is boundary.
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+    notes_sk: Offline safety checked; no Oracle execution performed.
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.pm-07c
+- sql_id: pm.sql.flag12
+  title_sk: Výluka z odpadového reportingu
+  sql_file: sql/diagnostic/skladove-karty/flag12.sql
+  purpose_sk: Výluka z odpadového reportingu
+  input_parameters: []
+  result_grain_sk: One excluded current card
+  fanout_warning_sk: None
+  proves_sk: Current FLAGS[12] reporting exclusion.
+  does_not_prove_sk: Private-label/cofilling cannot be inferred from name; coefficients may validly exist; no full
+    flag history.
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+    notes_sk: Offline safety checked; no Oracle execution performed.
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.pm-09e
+- sql_id: pm.sql.recycling_reconciliation
+  title_sk: DQ-REPORT-001 porovnanie RF total s FLAGS[12]
+  sql_file: sql/diagnostic/skladove-karty/recycling-reconciliation.sql
+  purpose_sk: DQ-REPORT-001 porovnanie RF total s FLAGS[12]
+  input_parameters:
+  - name: date_from
+    required: true
+    description_sk: Explicit caller-supplied context; preserve code/RID text.
+  - name: date_to_exclusive
+    required: true
+    description_sk: Explicit caller-supplied context; preserve code/RID text.
+  - name: market
+    required: true
+    description_sk: Explicit caller-supplied context; preserve code/RID text.
+  result_grain_sk: One report-scope aggregate
+  fanout_warning_sk: Transaction line x every stored coefficient assignment, as captured RF footer; intentional
+    legacy fan-out.
+  proves_sk: RF footer comparison retaining legacy name-prefix filter, plus explicit eligibility split.
+  does_not_prove_sk: Does not fix report or master. No added coefficient lifecycle filter. Market is explicit SK/CZ
+    context, not inferred jurisdiction; date binds must match captured whole-month periods. Current values cannot
+    reconstruct historical master.
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+    notes_sk: Offline safety checked; no Oracle execution performed.
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.pm-11n
+  - pm.evidence.pm-11p
+  - pm.evidence.pm-11s2
+- sql_id: pm.sql.nahrada
+  title_sk: Technické skupiny NAHRADA
+  sql_file: sql/diagnostic/skladove-karty/nahrada.sql
+  purpose_sk: Technické skupiny NAHRADA
+  input_parameters:
+  - name: anchor_id
+    required: true
+    description_sk: Explicit caller-supplied context; preserve code/RID text.
+  result_grain_sk: One nonzero NAHRADA member
+  fanout_warning_sk: Anchor repeated across members; no merging.
+  proves_sk: Technical self-anchor membership only.
+  does_not_prove_sk: Physical/commercial substitutability, exact runtime business use, automatic remediation.
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+    notes_sk: Offline safety checked; no Oracle execution performed.
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.pm-10f
+- sql_id: pm.sql.typ_t
+  title_sk: Nevyriešený TYP_T
+  sql_file: sql/diagnostic/skladove-karty/typ-t.sql
+  purpose_sk: Nevyriešený TYP_T
+  input_parameters: []
+  result_grain_sk: One current unresolved card
+  fanout_warning_sk: None
+  proves_sk: Current unresolved value population.
+  does_not_prove_sk: No guessed meaning, dictionary join or cleanup rule.
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+    notes_sk: Offline safety checked; no Oracle execution performed.
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.pm-10b2
+- sql_id: pm.sql.dependency_trace
+  title_sk: Priame dependency bez runtime klasifikácie
+  sql_file: sql/diagnostic/skladove-karty/dependency-trace.sql
+  purpose_sk: Priame dependency bez runtime klasifikácie
+  input_parameters: []
+  result_grain_sk: One visible compile-time dependency
+  fanout_warning_sk: Multiple types per object possible.
+  proves_sk: Visible static dependency surface.
+  does_not_prove_sk: Reader/writer/caller role, external runtime completeness or absence.
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+    notes_sk: Offline safety checked; no Oracle execution performed.
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.mp01-g
+  - pm.evidence.mp04-a
+- sql_id: pm.sql.end_of_sale_source
+  title_sk: STAV=8 a zachovaná ochrana zámku
+  sql_file: sql/diagnostic/skladove-karty/end-of-sale-source.sql
+  purpose_sk: STAV=8 a zachovaná ochrana zámku
+  input_parameters: []
+  result_grain_sk: One source line
+  fanout_warning_sk: No data joins
+  proves_sk: Source-visible POZN marker exception and ordinary BITAND(STAV,2)=2 guard; replication condition.
+  does_not_prove_sk: Executing or globally bypassing locks. Package line window is dated PM-12A locator and may
+    move after DDL.
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+    notes_sk: Offline safety checked; no Oracle execution performed.
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.pm-12a
+- sql_id: pm.sql.end_of_sale_rows
+  title_sk: Ukončený predaj aktuálne prognózy
+  sql_file: sql/diagnostic/skladove-karty/end-of-sale-rows.sql
+  purpose_sk: Ukončený predaj aktuálne prognózy
+  input_parameters:
+  - name: id
+    required: true
+    description_sk: Explicit caller-supplied context; preserve code/RID text.
+  result_grain_sk: One marked current forecast row
+  fanout_warning_sk: Header join by RID; do not infer causal history from note alone.
+  proves_sk: Current quantity/marker/lock state for explicit SKU.
+  does_not_prove_sk: Complete event history, global lock bypass or provenance solely from matching note.
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+    notes_sk: Offline safety checked; no Oracle execution performed.
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.pm-12a

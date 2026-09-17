@@ -1,0 +1,76 @@
+schema_version: '1.0'
+kind: revisions
+id: pm.revisions
+records:
+- revision_id: pm.revision.1_0
+  contract_version: '1.0'
+  date: '2026-09-15'
+  breaking_change: false
+  changed_record_refs:
+  - pm.object.sklad_karta
+  - pm.object.sklad_karta_lb
+  - pm.object.b_kod_u
+  - pm.object.sk_log_udaje
+  - pm.object.sklad_dodavatel
+  - pm.object.sklad_karta_fu
+  - pm.object.sklad_partner_kody
+  - pm.object.sk_jednotky
+  - pm.object.cis_poznamky
+  - pm.object.cis_poznamky_typy
+  - pm.object.sk_nakl_polozky
+  - pm.object.nakl_koef
+  - pm.object.cis_du_o
+  - pm.object.imp_mc_sk_nakl_pol
+  change_sk: Initial approved MC Product Master semantic closure. New canonical domain; publications deferred.
+  evidence_refs:
+  - pm.evidence.handoff
+- revision_id: pm.revision.1_0_mc_20260916
+  contract_version: '1.0'
+  date: '2026-09-16'
+  breaking_change: false
+  changed_record_refs:
+  - pm.flow.end_of_sale
+  - pm.flow.forecast_lock
+  - pm.mutations
+  change_sk: "Post-closure MC revalidation 2026-09-16 — STAV 8 / Ukončený predaj forecast reset\n\n### Evidence\
+    \ delta\nApproved new MC B2 evidence: `PM-12A — end of sale forecast reset current source.xlsx`, extracted from\
+    \ current `ALL_SOURCE` / `ALL_TRIGGERS` / `ALL_OBJECTS`. This delta supersedes the earlier unresolved defect\
+    \ description for the lock interaction.\n\n### Confirmed current MC flow\n1. `MC.T_SKLAD_KARTA_STAV_AFTER_MC`\
+    \ is an enabled row trigger on `MC.SKLAD_KARTA`, `AFTER UPDATE OF STAV`. Replication sessions return early through\
+    \ `C_Session.GetReplikacia`.\n2. On the transition `:OLD.STAV <> 8 AND :NEW.STAV = 8`, the trigger calls `MCCARTER_PLAN.MC_UKONCENY_PREDAJ_SK(:NEW.ID)`.\n\
+    3. `MC.MCCARTER_PLAN.MC_UKONCENY_PREDAJ_SK` computes the current week-period code and updates future/current\
+    \ forecast rows in `OBCH_PL_O` for the SKU. It sets `PLAN_POCET2 = 0` and simultaneously replaces `POZN` with\
+    \ text beginning `Ukončený predaj`, including the current date and original planned quantity. Scope is `OBCH_PL_L.TYP_PLANU\
+    \ in (OPTyp_Prognoza, OPTyp_PrognPartn)`, matching `KOD_ID`, from the current week-period forward.\n4. `MC.T_OBCH_PL_LOCK_MC`\
+    \ is an enabled row trigger on `MC.OBCH_PL_O`, `AFTER INSERT OR UPDATE OF PLAN_POCET2`. For ordinary updates\
+    \ it still prevents a changed `PLAN_POCET2` on a locked row where `BITAND(:NEW.STAV,2)=2`.\n5. The current MC\
+    \ trigger contains a dedicated exception before the lock error:\n   - if `POZN` changed and `:NEW.POZN LIKE\
+    \ '%Ukončený predaj%'`, the trigger executes `NULL` and does not raise the lock error.\n6. Therefore the system-driven\
+    \ STAV=8 flow can zero `PLAN_POCET2` even in the locked operative period, while the normal lock remains active\
+    \ for ordinary/user changes. Existing forecast-transfer exceptions based on `(+%)` and `(-%)` notes remain unchanged.\
+    \ Insert-time protection also remains unchanged.\n\n### Change localization\nCurrent MC object timestamps from\
+    \ PM-12A localize the deployed change to the lock trigger:\n- `MC.T_OBCH_PL_LOCK_MC` LAST_DDL_TIME = `2026-09-16\
+    \ 09:39:59`.\n- `MC.T_SKLAD_KARTA_STAV_AFTER_MC` LAST_DDL_TIME = `2026-08-16 10:28:27`.\n- `MC.MCCARTER_PLAN`\
+    \ package body LAST_DDL_TIME = `2026-08-16 10:35:33`.\n\nThis proves the current MC fix was implemented in `T_OBCH_PL_LOCK_MC`;\
+    \ the STAV=8 trigger and `MC_UKONCENY_PREDAJ_SK` procedure were not changed as part of this deployment. TEST/MCCZ\
+    \ source visible in the same export is auxiliary only and must not be treated as MC authority.\n\n### Resolved\
+    \ defect / canonical status\nStatus: `POTVRDENÉ — VYRIEŠENÉ` for MC as of 2026-09-16.\n\nOld defect: the STAV=8\
+    \ procedure attempted to zero future `OBCH_PL_O.PLAN_POCET2`, but `T_OBCH_PL_LOCK_MC` interpreted the system\
+    \ update like an ordinary edit and raised the locked-period error.\n\nResolved behavior: `T_OBCH_PL_LOCK_MC`\
+    \ now recognizes the specific system update by the simultaneous change of `POZN` to the `Ukončený predaj` marker\
+    \ and bypasses only that lock guard. Standard lock behavior remains in place for other changes.\n\n### Mutation\
+    \ Matrix delta\n`SKLAD_KARTA.STAV: !=8 -> 8` -> `T_SKLAD_KARTA_STAV_AFTER_MC` -> replication guard -> `MCCARTER_PLAN.MC_UKONCENY_PREDAJ_SK(SK.ID)`\
+    \ -> `OBCH_PL_O.PLAN_POCET2=0` + `POZN='Ukončený predaj ... (pôvodne: ...)'` -> `T_OBCH_PL_LOCK_MC` detects\
+    \ the dedicated note marker -> lock bypass only for this system flow -> update succeeds.\n\n### DO NOT ASSUME\
+    \ delta\n- Do not describe the new mechanism as a global lock bypass. The bypass is conditional on the simultaneous\
+    \ note mutation matching `Ukončený predaj`.\n- Do not infer that `STAV` lock is removed; ordinary `PLAN_POCET2`\
+    \ updates on locked rows are still rejected.\n- Do not remove the `POZN` mutation from the procedure contract:\
+    \ it is now part of the executable bypass contract.\n- Do not generalize TEST/MCCZ behavior to MC without separate\
+    \ validation.\n\n### Codex acceptance delta\nMaterialize this flow as confirmed B2 evidence in the Product Master\
+    \ mutation/source-flow contract. Add an acceptance assertion that the STAV=8 system flow has an explicit `T_OBCH_PL_LOCK_MC`\
+    \ exception, while the generic `BITAND(STAV,2)=2` lock guard remains documented for ordinary updates. Record\
+    \ this as a non-breaking semantic revision dated 2026-09-16."
+  reason_sk: Earlier locked-period conflict -> POTVRDENÉ — VYRIEŠENÉ on MC. Deployed change localized to T_OBCH_PL_LOCK_MC.
+  evidence_refs:
+  - pm.evidence.handoff
+  - pm.evidence.pm-12a
