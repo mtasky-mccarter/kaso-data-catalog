@@ -27,11 +27,13 @@ def summary_errors(document):
 
 
 class ApiReferenceTests(unittest.TestCase):
-    def test_approved_cp_vyd_and_purchasing_targets_validate(self):
+    def test_approved_cp_vyd_purchasing_and_pm_targets_validate(self):
         targets = ['D_CPR_L', 'D_CPR_O', 'D_VYDAJ_L', 'D_VYDAJ_L_B',
                    'D_VYDAJ_O', 'D_VYDAJ_O2', 'C_VYD_O_P_PRIJ', 'D_OBJD_L',
                    'D_OBJD_O', 'C_OBJ_D_KOMBAJN', 'C_REZ_OBJ_DOD',
-                   'D_OBJ_ODB_L', 'D_OBJ_ODB_L_B', 'D_OBJ_ODB_O']
+                   'D_OBJ_ODB_L', 'D_OBJ_ODB_L_B', 'D_OBJ_ODB_O',
+                   'C_SKLAD_KARTA', 'C_SKLAD_KARTA_LB', 'C_SKLAD_DODAVATEL',
+                   'C_SK_NAKL_POL', 'C_NAKL_KOEF', 'C_CIS_POZNAMKY', 'MCCARTER_PLAN']
         schema = json.loads((ROOT / 'schema/api-references.schema.json').read_text())
         self.assertEqual(targets, schema['$defs']['record']['properties']['target_package']['enum'])
         for target in targets:

@@ -1,0 +1,111 @@
+schema_version: '1.0'
+kind: playbooks
+id: pm.playbooks
+records:
+- playbook_id: pm.playbook.01
+  symptom_sk: Nesedí stav skladovej karty
+  first_sql_ref: pm.sql.current_state
+  proves_sk: Independent USED and STAV plus technical stamps.
+  does_not_prove_sk: USED=1 is not in sale; N_STAMP not creation; no full history.
+  next_step_sk: Interpret with the linked grain/fan-out contract and approved source/evidence. Escalate unresolved
+    business meaning; no automatic master-data fix.
+  flow_refs: []
+  dependency_or_boundary_refs: []
+  temporal_boundary_sk: RAW CURRENT / selective history; no arbitrary historical reconstruction.
+- playbook_id: pm.playbook.02
+  symptom_sk: Chýba / nesedí EAN alebo balenie
+  first_sql_ref: pm.sql.logistics
+  proves_sk: Current packaging hierarchy and level-associated codes.
+  does_not_prove_sk: Root logistics fields are not universal roll-up; missing packaging not universally an error.
+  next_step_sk: Interpret with the linked grain/fan-out contract and approved source/evidence. Escalate unresolved
+    business meaning; no automatic master-data fix.
+  flow_refs: []
+  dependency_or_boundary_refs: []
+  temporal_boundary_sk: RAW CURRENT / selective history; no arbitrary historical reconstruction.
+- playbook_id: pm.playbook.03
+  symptom_sk: Nesedí dodávateľský kód
+  first_sql_ref: pm.sql.supplier
+  proves_sk: Root versus supplier satellite values.
+  does_not_prove_sk: DOD_KOD/KOD_DOD/VYROBCA_KOD equivalence or continuous synchronization.
+  next_step_sk: Interpret with the linked grain/fan-out contract and approved source/evidence. Escalate unresolved
+    business meaning; no automatic master-data fix.
+  flow_refs: []
+  dependency_or_boundary_refs: []
+  temporal_boundary_sk: RAW CURRENT / selective history; no arbitrary historical reconstruction.
+- playbook_id: pm.playbook.04
+  symptom_sk: Nesedí DPH
+  first_sql_ref: pm.sql.vat_context
+  proves_sk: Root and contextual VAT values.
+  does_not_prove_sk: Root VAT is not universal; does not execute session-dependent API resolution.
+  next_step_sk: Interpret with the linked grain/fan-out contract and approved source/evidence. Escalate unresolved
+    business meaning; no automatic master-data fix.
+  flow_refs: []
+  dependency_or_boundary_refs: []
+  temporal_boundary_sk: RAW CURRENT / selective history; no arbitrary historical reconstruction.
+- playbook_id: pm.playbook.05
+  symptom_sk: Nesedia alergény
+  first_sql_ref: pm.sql.typed_notes
+  proves_sk: Current operational typed-note values and dictionary meaning.
+  does_not_prove_sk: Not every note is allergen; not full historical or downstream manufacturing truth.
+  next_step_sk: Interpret with the linked grain/fan-out contract and approved source/evidence. Escalate unresolved
+    business meaning; no automatic master-data fix.
+  flow_refs: []
+  dependency_or_boundary_refs: []
+  temporal_boundary_sk: RAW CURRENT / selective history; no arbitrary historical reconstruction.
+- playbook_id: pm.playbook.06
+  symptom_sk: Nesedia nákladové/recyklačné koeficienty
+  first_sql_ref: pm.sql.bom_audit
+  proves_sk: BOM aktuálny súčet proti uloženým hodnotám
+  does_not_prove_sk: Diagnostic aggregate, not a corrected writer. Prefix 3 is executable heuristic, not taxonomy.
+    O.POCET may include norm loss; no extra loss multiplication. Current INT_KOD and DU uniqueness must be checked.
+    Unsupported DU7 stays NULL. No historical eligibility or pure packed-weight claim.
+  next_step_sk: Interpret with the linked grain/fan-out contract and approved source/evidence. Escalate unresolved
+    business meaning; no automatic master-data fix.
+  flow_refs: []
+  dependency_or_boundary_refs: []
+  temporal_boundary_sk: RAW CURRENT / selective history; no arbitrary historical reconstruction.
+- playbook_id: pm.playbook.07
+  symptom_sk: Recyklačný fond total nesedí detailu
+  first_sql_ref: pm.sql.recycling_reconciliation
+  proves_sk: RF footer comparison retaining legacy name-prefix filter, plus explicit eligibility split.
+  does_not_prove_sk: Does not fix report or master. No added coefficient lifecycle filter. Market is explicit SK/CZ
+    context, not inferred jurisdiction; date binds must match captured whole-month periods. Current values cannot
+    reconstruct historical master.
+  next_step_sk: Interpret with the linked grain/fan-out contract and approved source/evidence. Escalate unresolved
+    business meaning; no automatic master-data fix.
+  flow_refs: []
+  dependency_or_boundary_refs: []
+  temporal_boundary_sk: RAW CURRENT / selective history; no arbitrary historical reconstruction.
+- playbook_id: pm.playbook.08
+  symptom_sk: Historický report nesedí dnešnej karte
+  first_sql_ref: pm.sql.current_state
+  proves_sk: Independent USED and STAV plus technical stamps.
+  does_not_prove_sk: USED=1 is not in sale; N_STAMP not creation; no full history.
+  next_step_sk: Interpret with the linked grain/fan-out contract and approved source/evidence. Escalate unresolved
+    business meaning; no automatic master-data fix.
+  flow_refs: []
+  dependency_or_boundary_refs: []
+  temporal_boundary_sk: RAW CURRENT / selective history; no arbitrary historical reconstruction.
+- playbook_id: pm.playbook.09
+  symptom_sk: NAHRADA vyzerá nesprávne
+  first_sql_ref: pm.sql.nahrada
+  proves_sk: Technical self-anchor membership only.
+  does_not_prove_sk: Physical/commercial substitutability, exact runtime business use, automatic remediation.
+  next_step_sk: Interpret with the linked grain/fan-out contract and approved source/evidence. Escalate unresolved
+    business meaning; no automatic master-data fix.
+  flow_refs: []
+  dependency_or_boundary_refs: []
+  temporal_boundary_sk: RAW CURRENT / selective history; no arbitrary historical reconstruction.
+- playbook_id: pm.playbook.10
+  symptom_sk: STAV=8 a uzamknutá prognóza
+  first_sql_ref: pm.sql.end_of_sale_source
+  proves_sk: Source-visible POZN marker exception and ordinary BITAND(STAV,2)=2 guard; replication condition.
+  does_not_prove_sk: Executing or globally bypassing locks. Package line window is dated PM-12A locator and may
+    move after DDL.
+  next_step_sk: Interpret with the linked grain/fan-out contract and approved source/evidence. Escalate unresolved
+    business meaning; no automatic master-data fix.
+  flow_refs:
+  - pm.flow.end_of_sale
+  - pm.flow.forecast_lock
+  dependency_or_boundary_refs: []
+  temporal_boundary_sk: RAW CURRENT / selective history; no arbitrary historical reconstruction.

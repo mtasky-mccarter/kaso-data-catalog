@@ -68,6 +68,12 @@ def validate(data):
         value, present = get_path(data, path)
         if not present:
             errors.append(f"missing required field: {path}")
+        elif (path == 'target.documentation_version' and value is None
+              and (data.get('publication') or {}).get('enabled') is False
+              and (data.get('target') or {}).get('contract_version')
+              and not is_placeholder(data['target']['contract_version'])):
+            # Canonical-only materialization may explicitly defer publication approval.
+            continue
         elif value in (None, "", []):
             errors.append(f"empty required field: {path}")
         elif is_placeholder(value):

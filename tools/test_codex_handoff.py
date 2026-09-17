@@ -72,6 +72,16 @@ class CodexHandoffTests(unittest.TestCase):
         errors, _ = MOD.validate(handoff)
         self.assertTrue(any("publication.subject_sk" in error for error in errors))
 
+    def test_canonical_only_handoff_can_defer_documentation_version(self):
+        handoff = self.valid_handoff()
+        handoff['target'].update(contract_version='1.0', documentation_version=None)
+        self.assertEqual([], MOD.validate(handoff)[0])
+        handoff['publication']['enabled'] = True
+        self.assertTrue(any('documentation_version' in e for e in MOD.validate(handoff)[0]))
+        handoff['publication']['enabled'] = False
+        handoff['target']['contract_version'] = '<version>'
+        self.assertTrue(any('documentation_version' in e for e in MOD.validate(handoff)[0]))
+
 
 if __name__ == "__main__":
     unittest.main()
