@@ -38,7 +38,7 @@ class ProductMasterAcceptanceTests(unittest.TestCase):
             c=self.byname[s['COLUMN_NAME']]
             for raw,canonical in [('COLUMN_ID','ordinal_position'),('DATA_TYPE','data_type_raw'),('DATA_LENGTH','data_length'),('DATA_PRECISION','data_precision'),('DATA_SCALE','data_scale'),('DATA_DEFAULT','data_default_export_value'),('COMMENTS','oracle_comment')]:self.assertEqual(s[raw],c[canonical],(s['COLUMN_NAME'],raw))
             self.assertEqual(s['NULLABLE']=='Y',c['nullable'])
-            self.assertIsNone(c['canonical_alias']) # explicit user authorization, no inferred aliases
+            self.assertIsNotNone(c['canonical_alias']) # approved dictionary; exact mapping tested separately
         self.assertEqual({'NUMBER':110,'VARCHAR2':55,'DATE':3,'XMLTYPE':1},{t:sum(r['data_type_raw']==t for r in self.fields) for t in ['NUMBER','VARCHAR2','DATE','XMLTYPE']})
 
     def test_root_constraints_losslessly_preserved(self):
@@ -150,7 +150,7 @@ class ProductMasterAcceptanceTests(unittest.TestCase):
         self.assertFalse((ROOT/'generated/skladove-karty').exists())
 
     def test_evidence_integrity_and_registry_links(self):
-        manifests=list((ROOT/'evidence/manifests/skladove-karty').glob('*.yaml'));self.assertEqual(166,len(manifests))
+        manifests=list((ROOT/'evidence/manifests/skladove-karty').glob('*.yaml'));self.assertEqual(168,len(manifests)) # original 166 + approved alias CSV and approval
         for p in manifests:
             m=yaml.safe_load(p.read_text());self.assertRegex(m['sha256'],r'^[a-f0-9]{64}$')
             if m['raw_retained']:self.assertEqual(m['sha256'],hashlib.sha256((ROOT/m['repository_path']).read_bytes()).hexdigest())

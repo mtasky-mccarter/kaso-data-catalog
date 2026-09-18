@@ -10,8 +10,13 @@ under `evidence/snapshots/skladove-karty/`. Other supplied raw exports remain ex
 reproducible evidence, with their actual checksums and source filenames recorded.
 
 Root fields preserve the 169 supplied metadata rows, including original Oracle
-comments and source nulls. English canonical aliases remain null by the user's
-explicit decision; an approved alias dictionary is a separate follow-up.
+comments and source nulls. All 169 root canonical aliases now exactly match the
+approved 2026-09-17 naming dictionary retained in
+`evidence/snapshots/skladove-karty/aliases-v1/`. Its 40 TECHNICAL_NEUTRAL entries do not
+expand unresolved acronyms or introduce business meaning. All other field
+properties are unchanged. Historical field-level notes about the 2026-09-16
+null-alias decision are superseded for root fields by revision
+`pm.revision.1_0_aliases_20260917`; satellite aliases remain deferred.
 Oracle comments alone do not establish business meaning.
 
 The 2026-09-16 non-breaking revision records the resolved STAV=8 forecast reset:
@@ -44,3 +49,8 @@ python -m unittest discover -s tools -p 'test_*.py' -v
 
 No DOCX, PDF, viewer or publication manifest is generated. Contract version 1.0 is
 distinct from the explicitly deferred documentation/publication version.
+
+The retained CSV is the authoritative alias input; the duplicate XLSX is not
+required for replay. The original delta MANIFEST and approval text are retained
+byte-for-byte. Run `python tools/apply_pm_aliases.py` to replay only this naming
+delta. The main materializer also reapplies it automatically.
