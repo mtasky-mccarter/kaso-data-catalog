@@ -311,6 +311,8 @@ def materialize(package):
     for key,m in manifests.items():write('evidence/manifests/skladove-karty/'+slug(key)+'.yaml',m)
     (p/'workbook-inventory.json').write_text(json.dumps({k:{n:dict(rows=len(r)-1,columns=r[0] if r else []) for n,r in v.items()} for k,v in books.items()},ensure_ascii=False,indent=2)+'\n')
     (p/'materialization-counts.json').write_text(json.dumps(dict(root_fields=len(physical['SKLAD_KARTA']),root_constraints=len([r for r in cons if r['object_ref']==obj('SKLAD_KARTA')]),root_outbound_fk=len([r for r in cons if r['object_ref']==obj('SKLAD_KARTA') and r['constraint_type']=='R']),root_indexes=len([r for r in idx if r['object_ref']==obj('SKLAD_KARTA')]),root_triggers=len(rows('MP01-E')),direct_dependency_rows=len(rows('MP01-G')),source_context_objects=len(source_context),inbound_fks=len(inbound),evidence_manifests=len(manifests),null_root_aliases=len(physical['SKLAD_KARTA'])),indent=2)+'\n')
+    from apply_pm_aliases import apply as apply_approved_aliases
+    apply_approved_aliases(ROOT)
     print('PASS: manifest integrity; canonical physical and semantic registries materialized.')
 
 if __name__=='__main__':
