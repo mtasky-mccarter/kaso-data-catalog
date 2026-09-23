@@ -141,16 +141,16 @@ class ProductMasterAcceptanceTests(unittest.TestCase):
         self.assertAlmostEqual(150.787039,r['TONY_FLAG12_OK'],places=6)
         self.assertAlmostEqual(3.629706,r['TONY_FLAG12_EXCL'],places=6)
 
-    def test_backlog_and_publication_deferral(self):
+    def test_backlog_and_publication_approval(self):
         b=records('backlog');self.assertEqual(7,len(b));self.assertFalse(any(r['blocking'] for r in b))
         hand=yaml.safe_load((ROOT/'docs/handoffs/skladove-karty/handoff.yaml').read_text())
-        self.assertIsNone(hand['target']['documentation_version']);self.assertFalse(hand['publication']['enabled'])
+        self.assertEqual('1.0',hand['target']['documentation_version']);self.assertTrue(hand['publication']['enabled'])
         from check_codex_handoff import validate
         self.assertEqual([],validate(hand)[0])
-        self.assertFalse((ROOT/'generated/skladove-karty').exists())
+        self.assertTrue(any(r['revision_id']=='pm.revision.1_0_publication_20260923' for r in records('revisions')))
 
     def test_evidence_integrity_and_registry_links(self):
-        manifests=list((ROOT/'evidence/manifests/skladove-karty').glob('*.yaml'));self.assertEqual(168,len(manifests)) # original 166 + approved alias CSV and approval
+        manifests=list((ROOT/'evidence/manifests/skladove-karty').glob('*.yaml'));self.assertEqual(169,len(manifests)) # original 166 + two alias sources + publication approval
         for p in manifests:
             m=yaml.safe_load(p.read_text());self.assertRegex(m['sha256'],r'^[a-f0-9]{64}$')
             if m['raw_retained']:self.assertEqual(m['sha256'],hashlib.sha256((ROOT/m['repository_path']).read_bytes()).hexdigest())
