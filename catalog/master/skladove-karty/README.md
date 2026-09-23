@@ -47,8 +47,11 @@ python tools/validate_catalog.py
 python -m unittest discover -s tools -p 'test_*.py' -v
 ```
 
-No DOCX, PDF, viewer or publication manifest is generated. Contract version 1.0 is
-distinct from the explicitly deferred documentation/publication version.
+Publication version 1.0 is approved and derived from canonical revisions.
+Generate DOCX/PDF/manifest with `python tools/generate_publication.py skladove-karty`
+and verify with `python tools/generate_publication.py skladove-karty --check`.
+Outputs live in `generated/skladove-karty/`; canonical YAML/SQL stays authoritative.
+The original publication deferral is retained in revision/provenance history.
 
 The retained CSV is the authoritative alias input; the duplicate XLSX is not
 required for replay. The original delta MANIFEST and approval text are retained
