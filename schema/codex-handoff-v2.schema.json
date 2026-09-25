@@ -1,0 +1,428 @@
+{
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "2.0"
+    },
+    "kind": {
+      "const": "codex-handoff"
+    },
+    "handoff_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "const": "READY_FOR_CODEX_HANDOFF"
+    },
+    "mode": {
+      "enum": [
+        "CREATE_DOMAIN",
+        "UPDATE_DOMAIN",
+        "EVIDENCE_REFRESH",
+        "PUBLICATION_ONLY",
+        "CLOSURE",
+        "REPOSITORY_GOVERNANCE"
+      ]
+    },
+    "repository": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "base_commit": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        }
+      },
+      "required": [
+        "name",
+        "base_commit"
+      ],
+      "additionalProperties": false
+    },
+    "scope": {
+      "type": "object",
+      "properties": {
+        "domain": {
+          "type": "string",
+          "minLength": 1
+        },
+        "slug": {
+          "type": "string",
+          "minLength": 1
+        },
+        "canonical_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authoritative_environment": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "domain",
+        "slug",
+        "canonical_path",
+        "authoritative_environment"
+      ],
+      "additionalProperties": false
+    },
+    "canonical_base": {
+      "type": "object",
+      "properties": {
+        "contract_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision_ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "contract_ref",
+        "revision_ref"
+      ],
+      "additionalProperties": false
+    },
+    "target": {
+      "type": "object",
+      "properties": {
+        "maturity": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contract_version": {
+          "type": "string",
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "delta": {
+      "type": "object",
+      "properties": {
+        "revision_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "classification": {
+          "enum": [
+            "BREAKING_SEMANTIC",
+            "NON_BREAKING_SEMANTIC",
+            "EVIDENCE_PROFILE_REFRESH",
+            "PUBLICATION_ONLY",
+            "TOOLING_ONLY"
+          ]
+        },
+        "semantic_change": {
+          "type": "boolean"
+        },
+        "changed_record_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "record_paths": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "approved_evidence_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "approved_delta_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "revision_id",
+        "classification",
+        "semantic_change",
+        "changed_record_refs",
+        "record_paths",
+        "approved_evidence_refs",
+        "approved_delta_refs"
+      ],
+      "additionalProperties": false
+    },
+    "approved_inputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "required": [
+          "path",
+          "sha256"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "materialization_package": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "expected_counts": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "required": [
+        "path",
+        "expected_counts"
+      ],
+      "additionalProperties": false
+    },
+    "backlog_delta": {
+      "type": "object",
+      "properties": {
+        "blocking_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "added": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "resolved": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "nonblocking_changed": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "blocking_count",
+        "added",
+        "resolved",
+        "nonblocking_changed"
+      ],
+      "additionalProperties": false
+    },
+    "publication": {
+      "type": "object",
+      "properties": {
+        "impact": {
+          "enum": [
+            "NONE",
+            "REGENERATE",
+            "INITIAL"
+          ]
+        },
+        "documentation_version": {
+          "type": "string",
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$"
+        },
+        "deferral": {
+          "type": "object",
+          "properties": {
+            "approved_by": {
+              "const": "user"
+            },
+            "canonical_revision_ref": {
+              "type": "string",
+              "minLength": 1
+            },
+            "evidence_ref": {
+              "type": "string",
+              "minLength": 1
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "approved_by",
+            "canonical_revision_ref",
+            "evidence_ref",
+            "reason"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "impact"
+      ],
+      "additionalProperties": false
+    },
+    "execution": {
+      "type": "object",
+      "properties": {
+        "materializer_commands": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "domain_tests": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "sql_tests": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "publication_tests": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "materializer_commands",
+        "domain_tests",
+        "sql_tests",
+        "publication_tests"
+      ],
+      "additionalProperties": false
+    },
+    "repository_actions": {
+      "type": "object",
+      "properties": {
+        "create_or_update": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "preserve": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "forbidden": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "create_or_update",
+        "preserve",
+        "forbidden"
+      ],
+      "additionalProperties": false
+    },
+    "stop_conditions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "kind",
+    "handoff_id",
+    "status",
+    "mode",
+    "repository",
+    "scope",
+    "delta",
+    "approved_inputs",
+    "backlog_delta",
+    "publication",
+    "execution",
+    "repository_actions",
+    "stop_conditions"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "mode": {
+            "const": "CREATE_DOMAIN"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "materialization_package",
+          "target"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "mode": {
+            "enum": [
+              "UPDATE_DOMAIN",
+              "EVIDENCE_REFRESH",
+              "PUBLICATION_ONLY",
+              "CLOSURE"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "canonical_base"
+        ]
+      }
+    }
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.example.invalid/kaso/2.0/codex-handoff-v2.schema.json"
+}

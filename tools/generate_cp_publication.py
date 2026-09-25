@@ -12,6 +12,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import yaml
+from publication_versions import resolve_versions
 import reportlab
 from docx import Document
 from docx.enum.section import WD_ORIENT
@@ -71,6 +72,7 @@ def model(root: Path):
         for row in data["sql-registry.yaml"]["records"]
     }
     data["canonical_sha256"], data["canonical_paths"] = canonical_digest(root)
+    data["contract_version"], data["documentation_version"], _ = resolve_versions(root, DOMAIN / "revisions.yaml")
     return data
 
 
@@ -195,14 +197,14 @@ def build_docx(data, output: Path):
     contract = data["contract.yaml"]
     title = doc.add_paragraph(style="Title")
     title.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    title.add_run("KASO Data Catalog CESTOVNE PR L O v1.1")
+    title.add_run(f"KASO Data Catalog CESTOVNE PR L O v{data['documentation_version']}")
     subtitle = doc.add_paragraph(style="Subtitle")
     subtitle.alignment = WD_ALIGN_PARAGRAPH.CENTER
     subtitle.add_run("Canonical human-readable publication")
     doc.add_paragraph(contract["purpose_sk"])
     docx_table(doc, ["Proveniencia", "Hodnota"], [
         ("Repository", REPOSITORY), ("Canonical branch", BRANCH),
-        ("Contract", contract["contract_id"]), ("Contract version", "1.1"),
+        ("Contract", contract["contract_id"]), ("Contract version", data["contract_version"]),
         ("Maturity", contract["maturity"]), ("Authoritative environment / owner", f"{contract['authoritative_environment']} / {contract['authoritative_owner']}"),
         ("Generated from", "Canonical machine-readable YAML and canonical read-only SQL"),
         ("Canonical input SHA-256", data["canonical_sha256"]),
@@ -294,7 +296,7 @@ def build_docx(data, output: Path):
         (r["revision_id"],r["contract_version"],r["date"],r["breaking_change"],r["change_sk"],r.get("reason_sk")) for r in data["revisions.yaml"]["records"]
     ],[4.0,1.5,2.0,1.5,9.0,9.0])
 
-    doc.core_properties.title = "KASO Data Catalog CESTOVNE PR L O v1.1"
+    doc.core_properties.title = f"KASO Data Catalog CESTOVNE PR L O v{data['documentation_version']}"
     doc.core_properties.subject = "Canonical human-readable publication"
     doc.core_properties.author = REPOSITORY
     doc.core_properties.created = FIXED_TIME
@@ -344,11 +346,11 @@ def build_pdf(data,output:Path):
         canvas.drawRightString(282*mm,10*mm,f"Generated from canonical YAML and SQL | {doc.page}")
         canvas.restoreState()
     output.parent.mkdir(parents=True,exist_ok=True)
-    pdf=SimpleDocTemplate(str(output),pagesize=landscape(A4),leftMargin=15*mm,rightMargin=15*mm,topMargin=14*mm,bottomMargin=16*mm,title="KASO Data Catalog CESTOVNE PR L O v1.1",author=REPOSITORY,invariant=1,pageCompression=1)
+    pdf=SimpleDocTemplate(str(output),pagesize=landscape(A4),leftMargin=15*mm,rightMargin=15*mm,topMargin=14*mm,bottomMargin=16*mm,title=f"KASO Data Catalog CESTOVNE PR L O v{data['documentation_version']}",author=REPOSITORY,invariant=1,pageCompression=1)
     story=[]
     contract=data["contract.yaml"]
-    story += [Paragraph("KASO Data Catalog CESTOVNE PR L O v1.1",PDF_STYLES["title"]),Paragraph("Canonical human-readable publication",PDF_STYLES["h2"]),Paragraph(contract["purpose_sk"],PDF_STYLES["body"]),Spacer(1,4*mm)]
-    story.append(pdf_table([["Proveniencia","Hodnota"],["Repository",REPOSITORY],["Canonical branch",BRANCH],["Contract",contract["contract_id"]],["Contract version","1.1"],["Maturity",contract["maturity"]],["Authoritative environment / owner",f"{contract['authoritative_environment']} / {contract['authoritative_owner']}"],["Generated from","Canonical machine-readable YAML and canonical read-only SQL"],["Canonical input SHA-256",data["canonical_sha256"]]],[45,215]))
+    story += [Paragraph(f"KASO Data Catalog CESTOVNE PR L O v{data['documentation_version']}",PDF_STYLES["title"]),Paragraph("Canonical human-readable publication",PDF_STYLES["h2"]),Paragraph(contract["purpose_sk"],PDF_STYLES["body"]),Spacer(1,4*mm)]
+    story.append(pdf_table([["Proveniencia","Hodnota"],["Repository",REPOSITORY],["Canonical branch",BRANCH],["Contract",contract["contract_id"]],["Contract version",data["contract_version"]],["Maturity",contract["maturity"]],["Authoritative environment / owner",f"{contract['authoritative_environment']} / {contract['authoritative_owner']}"],["Generated from","Canonical machine-readable YAML and canonical read-only SQL"],["Canonical input SHA-256",data["canonical_sha256"]]],[45,215]))
     story += [PageBreak(),Paragraph("1 Contract scope",PDF_STYLES["h1"]),pdf_table([["Vrstva","Canonical obsah"],["Scope includes",contract["scope_includes"]],["Scope excludes",contract["scope_excludes"]],["Limitations",contract["limitations_sk"]],["Boundary refs",contract["boundary_refs"]]],[45,215])]
     story.append(Paragraph("2 Physical field inventory",PDF_STYLES["h1"]))
     for obj,fn in (("MC.CESTOVNE_PR_L","fields-cestovne_pr_l.yaml"),("MC.CESTOVNE_PR_O","fields-cestovne_pr_o.yaml")):
@@ -384,7 +386,7 @@ def build_pdf(data,output:Path):
 def write_manifest(data,docx_path,pdf_path,manifest_path):
     manifest={
         "publication_version":"1.0","repository":REPOSITORY,"canonical_branch":BRANCH,
-        "contract_ref":data["contract.yaml"]["contract_id"],"contract_version":"1.1",
+        "contract_ref":data["contract.yaml"]["contract_id"],"contract_version":data["contract_version"],
         "generated_from":"canonical machine-readable YAML and canonical read-only SQL",
         "generator":"tools/generate_cp_publication.py","generator_version":GENERATOR_VERSION,
         "canonical_input_sha256":data["canonical_sha256"],"canonical_inputs":data["canonical_paths"],

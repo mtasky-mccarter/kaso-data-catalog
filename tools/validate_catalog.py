@@ -101,7 +101,10 @@ def validators():
     return {
         s['properties']['kind']['const']: Draft202012Validator(
             s, registry=registry, format_checker=FORMATS)
+        # Handoffs are execution inputs validated by check_codex_handoff.py,
+        # not canonical catalog documents.
         for s in schemas if 'properties' in s
+        and s['properties']['kind']['const'] != 'codex-handoff'
     }
 
 

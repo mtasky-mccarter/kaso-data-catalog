@@ -17,6 +17,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import yaml
+from publication_versions import resolve_versions
 from docx import Document
 from docx.enum.section import WD_ORIENT
 from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT
@@ -118,10 +119,9 @@ def model(root):
         sql[row["sql_id"]] = path.read_text()
     if {r["sql_file"] for r in registry} != {p.relative_to(root).as_posix() for p in (root / SQL_DIR).glob("*.sql")}:
         raise ValueError("SQL register nepokrýva kanonické SQL nákupných objednávok")
-    versions = {r["contract_version"] for r in docs["revisions.yaml"]["records"]}
-    version = max(versions, key=lambda v: tuple(int(n) for n in v.split(".")))
+    version, documentation_version, explicit_version = resolve_versions(root, DOMAIN / "revisions.yaml")
     digest, inputs = canonical_digest(root)
-    return {"docs": docs, "evidence": evidence, "sql": sql, "version": version,
+    return {"docs": docs, "evidence": evidence, "sql": sql, "version": version, "documentation_version": documentation_version, "explicit_version": explicit_version,
             "subject": "nákupné objednávky", "digest": digest, "inputs": inputs}
 
 
@@ -298,7 +298,7 @@ def build_docx(data, output):
     for name, size in [("Title", 27), ("Heading 1", 17), ("Heading 2", 12), ("Heading 3", 10)]:
         doc.styles[name].font.size = Pt(size)
     header = sec.header.paragraphs[0]
-    header.text = f"KASO Data Catalog  |  nákupné objednávky {data['version']}"
+    header.text = f"KASO Data Catalog  |  nákupné objednávky {data['documentation_version']}"
     header.runs[0].font.size = Pt(8)
     footer = sec.footer.paragraphs[0]
     footer.alignment = WD_ALIGN_PARAGRAPH.RIGHT
@@ -451,7 +451,7 @@ def build_pdf(data, output):
     def footer(canvas, doc):
         canvas.saveState()
         canvas.setFont("Pur", 7)
-        canvas.drawString(15 * mm, 9 * mm, REPOSITORY + " | main | nákupné objednávky " + data["version"])
+        canvas.drawString(15 * mm, 9 * mm, REPOSITORY + " | main | nákupné objednávky " + data["documentation_version"])
         canvas.drawRightString(282 * mm, 9 * mm, str(doc.page))
         canvas.restoreState()
 

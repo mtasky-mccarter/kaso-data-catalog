@@ -60,7 +60,10 @@ def is_placeholder(value):
     return False
 
 
-def validate(data):
+def validate(data, root=None):
+    if data.get("schema_version") == "2.0":
+        from lean_handoff import validate_lean
+        return validate_lean(data, root)
     errors = []
     warnings = []
 
@@ -127,6 +130,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("handoff", type=Path)
     parser.add_argument("--summary", action="store_true")
+    parser.add_argument("--plan", action="store_true")
+    parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
     args = parser.parse_args()
 
     try:
@@ -142,17 +147,22 @@ def main():
         print("HANDOFF BLOCKED: handoff root must be a mapping", file=sys.stderr)
         return 2
 
-    errors, warnings = validate(data)
+    errors, warnings = validate(data, args.root)
 
-    if args.summary:
+    if args.plan and not errors:
+        from lean_handoff import execution_plan
+        print(json.dumps(execution_plan(data), ensure_ascii=False, separators=(",", ":")))
+    elif args.summary:
         summary = {
             "handoff_id": data.get("handoff_id"),
+            "mode": data.get("mode", "LEGACY_HANDOFF"),
+            "base_sha": data.get("repository", {}).get("base_commit"),
             "status": data.get("status"),
             "domain": (data.get("scope") or {}).get("domain"),
             "slug": (data.get("scope") or {}).get("slug"),
             "target_maturity": (data.get("target") or {}).get("maturity"),
-            "documentation_version": (data.get("target") or {}).get("documentation_version"),
-            "blocking_count": (data.get("backlog") or {}).get("blocking_count"),
+            "documentation_version": (data.get("publication") or {}).get("documentation_version", (data.get("target") or {}).get("documentation_version")),
+            "blocking_count": (data.get("backlog_delta") or data.get("backlog") or {}).get("blocking_count"),
             "errors": len(errors),
             "warnings": len(warnings),
         }
@@ -166,7 +176,7 @@ def main():
             print(f"HANDOFF BLOCKED: {error}", file=sys.stderr)
         return 2
 
-    if not args.summary:
+    if not args.summary and not args.plan:
         print("PASS: Codex handoff is structurally ready for engineering intake.")
     return 0
 

@@ -1,0 +1,53 @@
+# UPDATE_DOMAIN example; semantic records appear only in the approved delta package.
+schema_version: '2.0'
+kind: codex-handoff
+handoff_id: '<domain>.handoff.<delta>'
+status: READY_FOR_CODEX_HANDOFF
+mode: UPDATE_DOMAIN
+repository:
+  name: mtasky-mccarter/kaso-data-catalog
+  base_commit: '<40-character canonical main SHA>'
+scope:
+  domain: '<domain>'
+  slug: '<publication-slug>'
+  canonical_path: 'catalog/<domain>/<slug>/'
+  authoritative_environment: MC
+canonical_base:
+  contract_ref: '<canonical contract ID>'
+  revision_ref: '<accepted revision ID>'
+delta:
+  revision_id: '<approved new revision ID>'
+  classification: NON_BREAKING_SEMANTIC
+  semantic_change: true
+  changed_record_refs: ['<changed ID>']
+  record_paths: ['catalog/<domain>/<slug>/<affected-registry>.yaml']
+  approved_evidence_refs: ['<approved evidence ID>']
+  approved_delta_refs: ['<approved delta ID>']
+approved_inputs:
+- path: 'evidence/snapshots/<slug>/<approved-structured-delta>.yaml'
+  sha256: '<64-character SHA-256>'
+backlog_delta:
+  blocking_count: 0
+  added: []
+  resolved: []
+  nonblocking_changed: []
+publication:
+  impact: REGENERATE
+  documentation_version: '<approved x.y>'
+execution:
+  materializer_commands: ['python tools/<materializer>.py --delta <path>']
+  domain_tests: ['python -m unittest discover -s tools -p test_<domain>_acceptance.py -v']
+  sql_tests: []
+  publication_tests: []
+repository_actions:
+  create_or_update: ['catalog/<domain>/<slug>/<affected-registry>.yaml']
+  preserve: []
+  forbidden: []
+stop_conditions:
+- Missing or conflicting approved reference, checksum or base SHA.
+- Semantic interpretation required beyond the approved delta.
+# CREATE_DOMAIN: omit canonical_base; add target.maturity and
+# materialization_package: {path: '<checksummed structured input>', expected_counts: {fields: 169}}
+# target.contract_version is required for BREAKING_SEMANTIC.
+# CLOSURE requires INITIAL/REGENERATE or publication.deferral with approved_by: user,
+# canonical_revision_ref, evidence_ref and reason. Record the deferral in that revision.

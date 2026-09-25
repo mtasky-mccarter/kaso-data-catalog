@@ -64,6 +64,52 @@
         },
         "evidence_refs": {
           "$ref": "common.schema.json#/$defs/refs"
+        },
+        "documentation_version": {
+          "type": "string",
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$"
+        },
+        "change_classification": {
+          "enum": [
+            "BREAKING_SEMANTIC",
+            "NON_BREAKING_SEMANTIC",
+            "EVIDENCE_PROFILE_REFRESH",
+            "PUBLICATION_ONLY",
+            "TOOLING_ONLY"
+          ]
+        },
+        "publication_impact": {
+          "enum": [
+            "NONE",
+            "REGENERATE",
+            "INITIAL"
+          ]
+        },
+        "publication_no_impact_reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "publication_deferral": {
+          "type": "object",
+          "properties": {
+            "approved_by": {
+              "const": "user"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1
+            },
+            "evidence_refs": {
+              "$ref": "common.schema.json#/$defs/refs",
+              "minItems": 1
+            }
+          },
+          "required": [
+            "approved_by",
+            "reason",
+            "evidence_refs"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [
