@@ -12,11 +12,6 @@ from generate_publication import PUBLICATIONS, publication_basename
 from publication_versions import resolve_versions, version_key, CLASSIFICATIONS
 
 ROOT = Path(__file__).resolve().parents[1]
-# Existing canonical user-approved deferral, pinned before v4. It cannot be
-# extended by editing a historical handoff. Future deferrals belong in revisions.
-LEGACY_DEFERRALS = {'catalog/master/skladove-karty': (
-    'docs/handoffs/skladove-karty/handoff.yaml',
-    '6d0fd451e199c1364b7a7725686fa395e8d1f53371cae0e862cc30fc44b5319c')}
 
 def git(root, *args):
     return subprocess.run(['git',*args],cwd=root,check=True,capture_output=True,text=True).stdout
@@ -32,12 +27,7 @@ def current_deferral(root, directory, records):
                    (root/manifests[ref]['repository_path']).is_file() and
                    hashlib.sha256((root/manifests[ref]['repository_path']).read_bytes()).hexdigest()==manifests[ref]['sha256']
                    for ref in deferral['evidence_refs'])
-    entry=LEGACY_DEFERRALS.get(directory)
-    if not entry:return False
-    p=root/entry[0]
-    if not p.is_file() or hashlib.sha256(p.read_bytes()).hexdigest()!=entry[1]:return False
-    hand=load(p)
-    return hand['publication']['enabled'] is False and hand['target']['documentation_version'] is None
+    return False
 
 def generator_digest(root, config):
     path=root/config['generator'];spec=importlib.util.spec_from_file_location('publication_audit_'+path.stem,path)

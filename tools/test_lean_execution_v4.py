@@ -117,6 +117,22 @@ class LeanExecutionTests(unittest.TestCase):
             m=yaml.safe_load(new[2].read_text());self.assertEqual('1.0',m['contract_version']);self.assertEqual('1.1',m['documentation_version'])
             self.assertTrue(all('v1.1' in p.name for p in new));self.assertEqual(before,[p.read_bytes() for p in old])
 
+    def test_product_master_is_registered_without_historical_deferral(self):
+        from check_publication_governance import current_deferral
+        self.assertEqual(5, len(PUBLICATIONS))
+        self.assertEqual('catalog/master/skladove-karty/revisions.yaml', PUBLICATIONS['skladove-karty']['revisions'])
+        self.assertFalse(current_deferral(ROOT, 'catalog/master/skladove-karty', []))
+
+    def test_product_master_uses_normal_documentation_versions(self):
+        from generate_pm_publication import model
+        current = model(ROOT)
+        self.assertEqual(('1.0', '1.0'), (current['version'], current['documentation_version']))
+        with patch('generate_pm_publication.resolve_versions', return_value=('1.0', '1.1', True)):
+            updated = model(ROOT)
+        self.assertEqual(('1.0', '1.1'), (updated['version'], updated['documentation_version']))
+        self.assertEqual(current['docs'], updated['docs'])
+        self.assertEqual(current['sql'], updated['sql'])
+
     def test_scope_router_is_conservative(self):
         self.assertEqual(['skladove-karty'],plan(['catalog/master/skladove-karty/fields.yaml'])['affected_domains'])
         for paths in [['tools/generate_publication.py'],['schema/revisions.schema.json'],['catalog/new/unknown.yaml'],['sql/diagnostic/example.sql'],['evidence/manifests/x.yaml']]:self.assertTrue(plan(paths)['repository_wide_publication_check'])

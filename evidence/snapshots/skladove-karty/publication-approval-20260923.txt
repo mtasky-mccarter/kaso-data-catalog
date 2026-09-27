@@ -1,0 +1,373 @@
+KASO DATA CATALOG
+PRODUCT MASTER / SKLADOVE KARTY
+FINAL PUBLICATION MATERIALIZATION
+
+Repository:
+mtasky-mccarter/kaso-data-catalog
+
+Canonical branch:
+main
+
+Canonical main SHA after mapping closure:
+ae0504f6c6d0b2a74bcac5c5bc29dc046bdf181f
+
+DOMAIN STATUS
+
+Product Master / skladové karty database mapping is CLOSED.
+
+Canonical state:
+
+- contract version: 1.0
+- maturity: AGENT-READY
+- blocking backlog: 0
+- MC is authoritative environment / owner
+- 169/169 root fields mapped
+- 169/169 canonical aliases approved
+- physical/live/source/mutation/dependency/business/temporal mapping closed
+- seven approved non-blocking gaps retained
+- STAV->8 locked-forecast defect is historical and CLOSED:
+  POTVRDENÉ — VYRIEŠENÉ on MC since 2026-09-16
+
+This task must NOT reopen semantic mapping.
+
+OBJECTIVE
+
+Materialize the final human-readable Product Master publication from the
+already-approved canonical main contract.
+
+The publication is derived output only.
+Canonical YAML/SQL on main remains source of truth.
+
+============================================================
+1. READ REPOSITORY STANDARDS
+============================================================
+
+Read and follow:
+
+- AGENTS.md
+- docs/publication-standard.md
+- current Product Master canonical contract under:
+  catalog/master/skladove-karty/
+- current Product Master diagnostic SQL under:
+  sql/diagnostic/skladove-karty/
+
+Inspect the existing publication implementations for:
+
+- cestovne-prikazy
+- vydajky
+- nakupne-objednavky
+- obchodne-pripady
+
+Use their architecture/patterns where appropriate.
+
+Do not copy business semantics from another domain.
+
+============================================================
+2. PUBLICATION IDENTITY
+============================================================
+
+Register a new publication family:
+
+slug:
+skladove-karty
+
+approved Slovak publication subject:
+
+skladové karty
+
+Canonical version source:
+
+catalog/master/skladove-karty/revisions.yaml
+
+Current approved contract/documentation version:
+
+1.0
+
+Do not invent a separate version.
+
+Required basename:
+
+KASO Data Catalog - Technical & Diagnostic Reference - skladové karty v1.0
+
+Required publication directory:
+
+generated/skladove-karty/
+
+============================================================
+3. REMOVE THE EXPLICIT PUBLICATION DEFERRAL
+============================================================
+
+The current Product Master handoff/materializer/tests still encode the historic
+publication deferral:
+
+documentation_version: null
+publication.enabled: false
+
+This deferral was correct during mapping.
+
+Mapping is now closed and publication is explicitly approved by the user.
+
+Update Product Master publication metadata so the canonical repository now
+records publication approval for version 1.0.
+
+Do not alter:
+
+- contract semantics
+- field business definitions
+- status values
+- relationships
+- temporal rules
+- mutation rules
+- DQ findings
+- backlog content
+- domain boundaries
+
+This is a publication/repository delta only.
+
+Update tests which currently assert publication deferral so that they instead
+assert the approved Product Master publication state.
+
+Preserve revision/provenance history showing that publication was previously
+deferred.
+
+Do not rewrite that historical fact.
+
+============================================================
+4. IMPLEMENT PRODUCT MASTER PUBLICATION GENERATOR
+============================================================
+
+Implement the Product Master domain publication generator following the
+existing repository publication architecture.
+
+Expected domain-specific generator path:
+
+tools/generate_pm_publication.py
+
+or another repository-consistent Product Master-specific path if existing
+conventions require it.
+
+Register the new publication in:
+
+tools/generate_publication.py
+
+with:
+
+slug:
+skladove-karty
+
+subject_sk:
+skladové karty
+
+revisions:
+catalog/master/skladove-karty/revisions.yaml
+
+The generator must consume canonical Product Master YAML/SQL/revision/evidence
+references from main.
+
+Do not use the historical handoff document as a substitute for the canonical
+machine-readable contract where canonical records exist.
+
+Do not invent missing business definitions.
+
+TREBA OVERIŤ / DATA GAP / DEPENDENCY ONLY / TECHNICKY ZNÁME statuses must remain
+visible where relevant.
+
+============================================================
+5. PUBLICATION CONTENT
+============================================================
+
+Generate a complete Technical & Diagnostic Reference comparable in quality and
+structure to the existing domain publications.
+
+At minimum include, where supported by canonical Product Master data:
+
+- domain purpose and scope
+- authoritative environment / owner
+- maturity and contract version
+- grain and identity
+- root object MC.SKLAD_KARTA
+- complete 169-field inventory
+- canonical aliases
+- datatype / nullable / defaults / Oracle comments
+- status and business definitions
+- constraints and indexes
+- critical relationships / JOINs / cardinality
+- satellites and reference objects
+- value domains
+- source-of-truth rules
+- temporal behavior
+- source/mutation flows
+- Mutation Matrix
+- STAV -> 8 flow marked explicitly:
+  POTVRDENÉ — VYRIEŠENÉ on MC since 2026-09-16
+- dependency/caller/writer/boundary summary
+- data-quality findings
+- DO NOT ASSUME rules
+- diagnostic playbooks
+- canonical read-only SQL
+- backlog
+- revision history
+- evidence/provenance
+- scope boundaries
+- SQL compatibility notes
+
+Do not convert unresolved items into facts.
+
+Do not describe the resolved STAV->8 defect as an active DQ defect or open
+backlog item.
+
+============================================================
+6. GENERATED OUTPUT
+============================================================
+
+Generate through the canonical orchestrator:
+
+python tools/generate_publication.py skladove-karty
+
+Required committed outputs:
+
+generated/skladove-karty/
+  KASO Data Catalog - Technical & Diagnostic Reference - skladové karty v1.0.docx
+  KASO Data Catalog - Technical & Diagnostic Reference - skladové karty v1.0.pdf
+  KASO Data Catalog - Technical & Diagnostic Reference - skladové karty v1.0.manifest.yaml
+
+Do not place Product Master DOCX/PDF/manifest directly under generated/.
+
+Manifest artifact paths must reference the exact colocated generated paths.
+
+SHA-256 values must match generated artifact bytes.
+
+============================================================
+7. DOCUMENT QUALITY
+============================================================
+
+Check the generated DOCX and PDF structurally.
+
+Verify:
+
+- headings and TOC structure
+- tables fit reasonably
+- no obvious clipped text
+- no broken Unicode/Slovak diacritics
+- no placeholder values accidentally rendered
+- no duplicated sections caused by generator joins
+- field inventory is complete
+- SQL blocks remain readable
+- page breaks are reasonable
+- revision/backlog/DQ sections are present
+
+The publication must remain useful as a Technical & Diagnostic Reference, not
+merely a raw YAML dump.
+
+============================================================
+8. DETERMINISM
+============================================================
+
+After generation run:
+
+python tools/generate_publication.py skladove-karty --check
+
+It must pass.
+
+A second generation must not produce an unexplained diff.
+
+============================================================
+9. VALIDATION
+============================================================
+
+Run:
+
+python tools/validate_catalog.py
+
+python -m unittest discover -s tools -p 'test_*.py' -v
+
+Add Product Master publication tests consistent with existing publication tests.
+
+At minimum verify:
+
+- slug registration
+- version derived from canonical revisions
+- exact required basename
+- DOCX exists
+- PDF exists
+- manifest exists
+- manifest paths resolve
+- artifact hashes match
+- deterministic --check passes
+- no flat generated Product Master artifacts exist
+
+All CI must remain green.
+
+============================================================
+10. REVISION / CHANGE MANAGEMENT
+============================================================
+
+Record this as a NON-BREAKING publication/materialization revision.
+
+Do NOT increment Product Master contract version.
+
+Contract remains:
+
+1.0
+
+This change publishes the already-approved canonical contract and does not alter
+database semantics.
+
+Preserve all previous Product Master revisions.
+
+============================================================
+11. PR
+============================================================
+
+Create a focused publication PR.
+
+PR scope must be limited to:
+
+- Product Master publication enablement metadata
+- Product Master publication generator
+- publication orchestrator registration
+- Product Master publication tests
+- generated/skladove-karty/ artifacts
+- minimal revision/provenance updates required by repository standards
+
+Do not include unrelated cleanup.
+
+============================================================
+12. FINAL REPORT
+============================================================
+
+Return:
+
+- branch name
+- commit SHA
+- PR number
+- changed files
+- generated DOCX path
+- generated PDF path
+- generated manifest path
+- publication version
+- deterministic --check result
+- Product Master publication test result
+- full repository test result
+- YAML validator result
+- CI result
+
+Explicitly confirm:
+
+- canonical Product Master contract remains 1.0
+- maturity remains AGENT-READY
+- blocking backlog remains 0
+- no semantic mapping was reopened
+- no business-definition/status/JOIN/temporal/mutation changes were made
+- STAV->8 remains recorded as POTVRDENÉ — VYRIEŠENÉ
+- generated/skladove-karty/ now contains the final publication family
+
+If all checks pass, finish with:
+
+PRODUCT MASTER / SKLADOVE KARTY
+PUBLICATION READY FOR MERGE
+DOCUMENTATION VERSION: 1.0
+CANONICAL CONTRACT: 1.0
+MAPPING REMAINS CLOSED
+
+END OF TASK
