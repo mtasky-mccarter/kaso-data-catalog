@@ -313,6 +313,8 @@ def materialize(package):
     (p/'materialization-counts.json').write_text(json.dumps(dict(root_fields=len(physical['SKLAD_KARTA']),root_constraints=len([r for r in cons if r['object_ref']==obj('SKLAD_KARTA')]),root_outbound_fk=len([r for r in cons if r['object_ref']==obj('SKLAD_KARTA') and r['constraint_type']=='R']),root_indexes=len([r for r in idx if r['object_ref']==obj('SKLAD_KARTA')]),root_triggers=len(rows('MP01-E')),direct_dependency_rows=len(rows('MP01-G')),source_context_objects=len(source_context),inbound_fks=len(inbound),evidence_manifests=len(manifests),null_root_aliases=len(physical['SKLAD_KARTA'])),indent=2)+'\n')
     from apply_pm_aliases import apply as apply_approved_aliases
     apply_approved_aliases(ROOT)
+    from pm_publication_metadata import approve_publication
+    approve_publication(ROOT)
     print('PASS: manifest integrity; canonical physical and semantic registries materialized.')
 
 if __name__=='__main__':
