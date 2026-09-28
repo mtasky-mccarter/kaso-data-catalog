@@ -12,6 +12,7 @@ import tempfile
 from pathlib import Path
 
 import yaml
+from publication_versions import resolve_versions
 
 
 ROOT_DEFAULT = Path(__file__).resolve().parents[1]
@@ -58,17 +59,7 @@ def sha256(path: Path) -> str:
 
 
 def current_version(root: Path, config: dict) -> str:
-    revisions = yaml.safe_load((root / config["revisions"]).read_text(encoding="utf-8"))
-    records = revisions.get("records") or []
-    versions = []
-    for record in records:
-        value = str(record.get("contract_version") or "")
-        match = VERSION_RE.fullmatch(value)
-        if match:
-            versions.append(((int(match.group(1)), int(match.group(2))), value))
-    if not versions:
-        raise RuntimeError(f"Missing x.y contract_version in {config['revisions']}")
-    return max(versions, key=lambda item: item[0])[1]
+    return resolve_versions(root, config["revisions"])[1]
 
 
 def publication_basename(config: dict, version: str) -> str:
@@ -143,11 +134,12 @@ def generate_one(root: Path, slug: str, output_root: Path) -> tuple[Path, Path, 
         target_docx = target_dir / f"{basename}.docx"
         target_pdf = target_dir / f"{basename}.pdf"
         target_manifest = target_dir / f"{basename}.manifest.yaml"
-        shutil.copyfile(source_docx, target_docx)
-        shutil.copyfile(source_pdf, target_pdf)
 
         manifest = yaml.safe_load(source_manifest.read_text(encoding="utf-8"))
-        manifest["contract_version"] = version
+        contract_version, documentation_version, explicit = resolve_versions(root, config["revisions"])
+        manifest["contract_version"] = contract_version
+        if explicit:
+            manifest["documentation_version"] = documentation_version
         manifest["publication_layout_version"] = LAYOUT_VERSION
         manifest["publication_slug"] = slug
         manifest["publication_title"] = basename
@@ -155,17 +147,20 @@ def generate_one(root: Path, slug: str, output_root: Path) -> tuple[Path, Path, 
         manifest["artifacts"] = [
             {
                 "path": (Path("generated") / slug / target_docx.name).as_posix(),
-                "sha256": sha256(target_docx),
+                "sha256": sha256(source_docx),
             },
             {
                 "path": (Path("generated") / slug / target_pdf.name).as_posix(),
-                "sha256": sha256(target_pdf),
+                "sha256": sha256(source_pdf),
             },
         ]
-        target_manifest.write_text(
-            yaml.safe_dump(manifest, allow_unicode=True, sort_keys=False, width=110),
-            encoding="utf-8",
-        )
+        manifest_bytes = yaml.safe_dump(manifest, allow_unicode=True, sort_keys=False, width=110).encode("utf-8")
+        outputs = [(target_docx, source_docx.read_bytes()), (target_pdf, source_pdf.read_bytes()), (target_manifest, manifest_bytes)]
+        for path, content in outputs:
+            if path.exists() and path.read_bytes() != content:
+                raise RuntimeError(f"Refusing to overwrite publication history: {path}; approve a new documentation_version")
+        for path, content in outputs:
+            path.write_bytes(content)
 
     return target_docx, target_pdf, target_manifest
 

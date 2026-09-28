@@ -31,7 +31,7 @@ Rules:
 - Keep the prefix exactly `KASO Data Catalog - Technical & Diagnostic Reference - `.
 - `<subject_sk>` is the approved Slovak document subject and preserves Slovak diacritics and normal human-readable spacing.
 - Use lowercase subject wording unless the approved document title requires otherwise.
-- `<documentation_version>` is the current approved documentation/contract version from the canonical domain revision history. It must not be invented independently by a generator.
+- `<documentation_version>` is the explicit approved documentation version in canonical revision metadata. It is independent of contract_version and must never be invented by a generator.
 - Use the same basename for DOCX, PDF and publication manifest.
 
 Example for cestovné príkazy v1.1:
@@ -54,9 +54,11 @@ generated/vydajky/
 
 ## 3. Version rule
 
-Publication versioning follows the domain documentation version. The generator/orchestrator must read the current `contract_version` from the canonical domain revision history and use it in the publication basename and manifest. A version change in canonical documentation therefore changes the generated filename automatically.
+`contract_version` versions the semantic/data contract. `documentation_version` versions this derived reference. They may differ: contract 1.0 can have documentation 1.1. New revision records carry the approved documentation_version; the orchestrator prefers the last explicit value in append-only revision order. Versions must not regress.
 
-Do not use an unversioned publication filename. Do not silently overwrite a differently versioned publication by removing the version suffix.
+For historical domains with no explicit documentation_version, retain their already-approved maximum contract_version behavior until the next domain revision. Introducing v4 does not bump versions or regenerate unrelated artifacts. A published domain's next revision must explicitly record documentation_version. Generators and document titles read the approved value; the manifest keeps contract_version separate.
+
+Preserve every previous versioned family. Never replace v1.0 bytes with v1.1 or silently remove historical artifacts. The orchestrator refuses to overwrite an existing family with different bytes. Stage/regenerate a new approved version instead.
 
 ## 4. Manifest rule
 
@@ -92,3 +94,12 @@ A PR changing publication layout, naming or generator behavior must keep generic
 ## 7. Scope and authority
 
 This naming/layout standard controls generated publication artifacts only. It does not change Oracle semantics, domain contract IDs, canonical aliases, evidence requirements or documentation maturity. A filename or folder rename is a publication/repository change, not a business-semantic change, unless accompanied by a separate approved contract revision.
+## Closure and synchronized change management (v4)
+
+Every approved mapped-domain closure (normally AGENT-READY) includes a registered DOCX/PDF/manifest family in the same delivery. Do not report delivery complete when publication is missing or stale. The only exception is an explicit user-approved deferral in the latest canonical revision: publication_deferral has approved_by: user, reason and retained approval evidence_refs. Product Master / skladové karty v1.0 is a normal registered publication family, delivered by merged PR #18. Its historical publication deferral remains provenance only and cannot exempt the current domain from publication checks. All five registered families follow the same version and integrity governance.
+
+Every new accepted canonical revision records change_classification (BREAKING_SEMANTIC, NON_BREAKING_SEMANTIC, EVIDENCE_PROFILE_REFRESH, PUBLICATION_ONLY, TOOLING_ONLY) and publication_impact (NONE, INITIAL, REGENERATE). NONE requires publication_no_impact_reason. A breaking semantic change advances the approved contract version. A publication-visible change advances approved documentation_version and commits a regenerated family in the same PR. Fields, aliases, meanings/statuses, grain, identity, JOIN/cardinality, source-of-truth, temporal/mutation/flow/dependency/boundary rules, DQ, DO NOT ASSUME, SQL, playbooks, resolved defects and interpretive evidence are publication-visible. Do not infer NONE merely from a non-breaking classification.
+
+Historical artifacts retain historical input digests and valid artifact hashes. Only the current family must match current canonical inputs. The cheap always-on `python tools/check_publication_governance.py --base <base-sha>` checks closure/registration, current version/digest/input inventory, artifact structure/hashes and append-only revision/artifact history. Base comparison is mandatory in PR and main CI. `python tools/plan_change_validation.py` selects repository-wide deterministic `all --check` for canonical, evidence, SQL, generated or shared publication/tooling changes; unknown paths under those roots fail safe to full checking. Staleness is a CI failure, never a warning.
+
+Default review is automated: existence, manifest identity/hashes, canonical digest, expected sections/field/SQL counts, Unicode, ZIP/XML/PDF integrity, geometry and deterministic regeneration. Domain tests retain content assertions. Sample only title, ordinary table, wide table, SQL and final/revision pages visually; expand on a detected defect. Never render/review every page simply because the reference is long.

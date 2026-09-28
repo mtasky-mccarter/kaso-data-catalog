@@ -13,6 +13,7 @@ from pathlib import Path
 
 import reportlab
 import yaml
+from publication_versions import resolve_versions
 from docx import Document
 from docx.enum.section import WD_ORIENT
 from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT, WD_TABLE_ALIGNMENT
@@ -76,6 +77,7 @@ def model(root: Path):
         for row in data["sql-registry.yaml"]["records"]
     }
     data["canonical_sha256"], data["canonical_paths"] = canonical_digest(root)
+    data["contract_version"], data["documentation_version"], _ = resolve_versions(root, DOMAIN / "revisions.yaml")
     return data
 
 
@@ -227,12 +229,12 @@ def build_docx(data, output: Path):
     add_docx_field(footer, "PAGE")
 
     contract = data["contract.yaml"]
-    doc.add_heading("KASO Data Catalog VYD v1.1", 0)
+    doc.add_heading(f"KASO Data Catalog VYD v{data['documentation_version']}", 0)
     doc.add_paragraph("Canonical human-readable publication", style="Subtitle")
     doc.add_paragraph(contract["purpose_sk"])
     docx_table(doc, ["Proveniencia", "Hodnota"], [
         ("Repository", REPOSITORY), ("Canonical branch", BRANCH),
-        ("Contract", contract["contract_id"]), ("Contract version", "1.1"),
+        ("Contract", contract["contract_id"]), ("Contract version", data["contract_version"]),
         ("Maturity", contract["maturity"]),
         ("Authoritative environment / owner", f"{contract['authoritative_environment']} / {contract['authoritative_owner']}"),
         ("Generated from", "Canonical machine-readable YAML and canonical read-only SQL"),
@@ -335,7 +337,7 @@ def build_docx(data, output: Path):
          r.get("reason_sk")) for r in data["revisions.yaml"]["records"]
     ], [4.0, 1.5, 2.0, 1.5, 9.0, 9.0])
 
-    doc.core_properties.title = "KASO Data Catalog VYD v1.1"
+    doc.core_properties.title = f"KASO Data Catalog VYD v{data['documentation_version']}"
     doc.core_properties.subject = "Canonical human-readable publication"
     doc.core_properties.author = REPOSITORY
     doc.core_properties.created = FIXED_TIME
@@ -407,17 +409,17 @@ def build_pdf(data, output: Path):
     output.parent.mkdir(parents=True, exist_ok=True)
     document = SimpleDocTemplate(
         str(output), pagesize=landscape(A4), leftMargin=15 * mm, rightMargin=15 * mm,
-        topMargin=14 * mm, bottomMargin=16 * mm, title="KASO Data Catalog VYD v1.1",
+        topMargin=14 * mm, bottomMargin=16 * mm, title=f"KASO Data Catalog VYD v{data['documentation_version']}",
         author=REPOSITORY, invariant=1, pageCompression=1,
     )
     story = []
     contract = data["contract.yaml"]
-    story += [Paragraph("KASO Data Catalog VYD v1.1", styles["title"]),
+    story += [Paragraph(f"KASO Data Catalog VYD v{data['documentation_version']}", styles["title"]),
               Paragraph("Canonical human-readable publication", styles["h2"]),
               Paragraph(escape(contract["purpose_sk"]), styles["body"]), Spacer(1, 4 * mm)]
     story.append(pdf_table([
         ["Proveniencia", "Hodnota"], ["Repository", REPOSITORY], ["Canonical branch", BRANCH],
-        ["Contract", contract["contract_id"]], ["Contract version", "1.1"], ["Maturity", contract["maturity"]],
+        ["Contract", contract["contract_id"]], ["Contract version", data["contract_version"]], ["Maturity", contract["maturity"]],
         ["Authoritative environment / owner", f"{contract['authoritative_environment']} / {contract['authoritative_owner']}"],
         ["Generated from", "Canonical machine-readable YAML and canonical read-only SQL"],
         ["Canonical input SHA-256", data["canonical_sha256"]],
@@ -511,7 +513,7 @@ def build_pdf(data, output: Path):
 def write_manifest(data, docx_path, pdf_path, manifest_path):
     manifest = {
         "publication_version": "1.0", "repository": REPOSITORY, "canonical_branch": BRANCH,
-        "contract_ref": data["contract.yaml"]["contract_id"], "contract_version": "1.1",
+        "contract_ref": data["contract.yaml"]["contract_id"], "contract_version": data["contract_version"],
         "generated_from": "canonical machine-readable YAML and canonical read-only SQL",
         "generator": "tools/generate_vyd_publication.py", "generator_version": GENERATOR_VERSION,
         "canonical_input_sha256": data["canonical_sha256"], "canonical_inputs": data["canonical_paths"],

@@ -108,10 +108,16 @@ def canonical_digest(root):
     return digest.hexdigest(), [p.relative_to(root).as_posix() for p in paths]
 
 
+from publication_versions import resolve_versions
+
+
 def model(root):
     handoff = yaml.safe_load((root / "docs/handoffs/skladove-karty/handoff.yaml").read_text())
-    if handoff["publication"]["enabled"] is not True or handoff["target"]["documentation_version"] != "1.0":
-        raise ValueError("Product Master publication is not approved for version 1.0")
+    if handoff["publication"]["enabled"] is not True:
+        raise ValueError("Product Master publication is not approved: documentation metadata required")
+    version, documentation_version, explicit = resolve_versions(root, DOMAIN / "revisions.yaml")
+    if not explicit and handoff["target"]["documentation_version"] != documentation_version:
+        raise ValueError("Product Master publication is not approved: documentation metadata required")
     docs = {p.name: yaml.safe_load(p.read_text()) for p in sorted((root / DOMAIN).glob("*.yaml"))}
     evidence = {p.name: yaml.safe_load(p.read_text()) for p in sorted((root / EVIDENCE).glob("*.yaml"))}
     if docs["contract.yaml"]["maturity"] != "AGENT-READY" or any(r["blocking"] for r in docs["backlog.yaml"]["records"]):
@@ -125,10 +131,8 @@ def model(root):
         sql[row["sql_id"]] = path.read_text()
     if {r["sql_file"] for r in registry} != {p.relative_to(root).as_posix() for p in (root / SQL_DIR).glob("*.sql")}:
         raise ValueError("SQL register nepokrýva kanonické SQL skladových kariet")
-    versions = {r["contract_version"] for r in docs["revisions.yaml"]["records"]}
-    version = max(versions, key=lambda v: tuple(int(n) for n in v.split(".")))
     digest, inputs = canonical_digest(root)
-    return {"docs": docs, "evidence": evidence, "sql": sql, "version": version,
+    return {"docs": docs, "evidence": evidence, "sql": sql, "version": version, "documentation_version": documentation_version,
             "subject": "skladové karty", "digest": digest, "inputs": inputs}
 
 
@@ -306,7 +310,7 @@ def build_docx(data, output):
     for name, size in [("Title", 27), ("Heading 1", 17), ("Heading 2", 12), ("Heading 3", 10)]:
         doc.styles[name].font.size = Pt(size)
     header = sec.header.paragraphs[0]
-    header.text = f"KASO Data Catalog  |  skladové karty {data['version']}"
+    header.text = f"KASO Data Catalog  |  skladové karty {data['documentation_version']}"
     header.runs[0].font.size = Pt(8)
     footer = sec.footer.paragraphs[0]
     footer.alignment = WD_ALIGN_PARAGRAPH.RIGHT
@@ -459,7 +463,7 @@ def build_pdf(data, output):
     def footer(canvas, doc):
         canvas.saveState()
         canvas.setFont("Pur", 7)
-        canvas.drawString(15 * mm, 9 * mm, REPOSITORY + " | main | skladové karty " + data["version"])
+        canvas.drawString(15 * mm, 9 * mm, REPOSITORY + " | main | skladové karty " + data["documentation_version"])
         canvas.drawRightString(282 * mm, 9 * mm, str(doc.page))
         canvas.restoreState()
 
@@ -478,7 +482,7 @@ def generate(root, output):
     build_docx(data, docx)
     build_pdf(data, pdf)
     payload = {
-        "publication_version": "1.0", "repository": REPOSITORY, "canonical_branch": "main",
+        "publication_version": data["documentation_version"], "repository": REPOSITORY, "canonical_branch": "main",
         "contract_ref": data["docs"]["contract.yaml"]["contract_id"], "contract_version": data["version"],
         "generator": "tools/generate_pm_publication.py", "generator_version": "1.0",
         "generated_from": "kanonické YAML skladových kariet, read-only SQL a manifesty dôkazov skladových kariet",
