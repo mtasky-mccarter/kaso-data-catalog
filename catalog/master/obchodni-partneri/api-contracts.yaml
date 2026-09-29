@@ -1,0 +1,112 @@
+schema_version: '1.0'
+kind: flows
+id: op.registry.api_contracts
+records:
+- flow_id: op.api.c_partner.inst
+  trigger_or_procedure_ref: op.entity.mc.c_partner.package
+  business_effect_sk: Primary package insert routine for OBCH_PARTNERI with parameterized field population and optional
+    delivery-place creation flow.
+  diagnostic_meaning_sk: '{"api_id":"op.api.c_partner.inst","body_range":[23,446],"evidence_refs":["op.evidence.mp_03_08_c_partner_source"],"meaning_sk":"Primary
+    package insert routine for OBCH_PARTNERI with parameterized field population and optional delivery-place creation
+    flow.","member":"InsT","role":"DIRECT WRITER / INSERT API","spec_line":181,"status":"POTVRDENÉ"}'
+  evidence_refs:
+  - op.evidence.mp_03_08_c_partner_source
+- flow_id: op.api.c_partner.get_splatnost_c
+  trigger_or_procedure_ref: op.entity.mc.c_partner.package
+  business_effect_sk: 'Effective due-days precedence: SKLAD_SPL -> ZAKAZKY -> MIESTA_DODANIA -> partner when inheritance
+    flag says use partner, then C_TYP_UHRADY.NastavSplatnost.'
+  diagnostic_meaning_sk: '{"api_id":"op.api.c_partner.get_splatnost_c","body_range":[999,1032],"evidence_refs":["op.evidence.mp_03_08_c_partner_source"],"meaning_sk":"Effective
+    due-days precedence: SKLAD_SPL -> ZAKAZKY -> MIESTA_DODANIA -> partner when inheritance flag says use partner,
+    then C_TYP_UHRADY.NastavSplatnost.","member":"GetSplatnostC","role":"READER / PRECEDENCE API","spec_line":321,"status":"POTVRDENÉ"}'
+  evidence_refs:
+  - op.evidence.mp_03_08_c_partner_source
+- flow_id: op.api.c_partner.get_typ_uhrady
+  trigger_or_procedure_ref: op.entity.mc.c_partner.package
+  business_effect_sk: Returns delivery-place payment type unless inheritance flag selects partner TYP_UHRADY.
+  diagnostic_meaning_sk: '{"api_id":"op.api.c_partner.get_typ_uhrady","body_range":[1034,1046],"evidence_refs":["op.evidence.mp_03_08_c_partner_source"],"meaning_sk":"Returns
+    delivery-place payment type unless inheritance flag selects partner TYP_UHRADY.","member":"GetTypUhrady","role":"READER
+    / PRECEDENCE API","spec_line":322,"status":"POTVRDENÉ"}'
+  evidence_refs:
+  - op.evidence.mp_03_08_c_partner_source
+- flow_id: op.api.c_partner.vystornuj_zavisle
+  trigger_or_procedure_ref: op.entity.mc.c_partner.package
+  business_effect_sk: On storno, iterates partner MIESTA_DODANIA and calls C_M_DOD.StornoRIDC; visible un-storno
+    branch returns before restore logic.
+  diagnostic_meaning_sk: '{"api_id":"op.api.c_partner.vystornuj_zavisle","body_range":[970,997],"evidence_refs":["op.evidence.mp_03_08_c_partner_source"],"meaning_sk":"On
+    storno, iterates partner MIESTA_DODANIA and calls C_M_DOD.StornoRIDC; visible un-storno branch returns before
+    restore logic.","member":"VystornujZavisle","role":"SIDE-EFFECT API","spec_line":319,"status":"POTVRDENÉ"}'
+  evidence_refs:
+  - op.evidence.mp_03_08_c_partner_source
+- flow_id: op.api.c_partner.get_partner_by_ico
+  trigger_or_procedure_ref: op.entity.mc.c_partner.package
+  business_effect_sk: Finds first current partner by ICO with ROWNUM=1; does not prove ICO uniqueness.
+  diagnostic_meaning_sk: '{"api_id":"op.api.c_partner.get_partner_by_ico","body_range":[3417,3427],"evidence_refs":["op.evidence.mp_03_08_c_partner_source"],"meaning_sk":"Finds
+    first current partner by ICO with ROWNUM=1; does not prove ICO uniqueness.","member":"GetPartnerByICO","role":"LOOKUP
+    API","spec_line":444,"status":"POTVRDENÉ"}'
+  evidence_refs:
+  - op.evidence.mp_03_08_c_partner_source
+- flow_id: op.api.c_partner.get_partner_by_ic_dph
+  trigger_or_procedure_ref: op.entity.mc.c_partner.package
+  business_effect_sk: Finds first current partner by DIC column with ROWNUM=1; does not prove tax identifier uniqueness.
+  diagnostic_meaning_sk: '{"api_id":"op.api.c_partner.get_partner_by_ic_dph","body_range":[3404,3414],"evidence_refs":["op.evidence.mp_03_08_c_partner_source"],"meaning_sk":"Finds
+    first current partner by DIC column with ROWNUM=1; does not prove tax identifier uniqueness.","member":"GetPartnerByIC_DPH","role":"LOOKUP
+    API","spec_line":443,"status":"POTVRDENÉ"}'
+  evidence_refs:
+  - op.evidence.mp_03_08_c_partner_source
+- flow_id: op.api.c_partner.get_typ_cis_from_md
+  trigger_or_procedure_ref: op.entity.mc.c_partner.package
+  business_effect_sk: Derives partner TYP_CIS from supplier/customer role flags of delivery places.
+  diagnostic_meaning_sk: '{"api_id":"op.api.c_partner.get_typ_cis_from_md","body_range":[2280,2332],"evidence_refs":["op.evidence.mp_03_08_c_partner_source"],"meaning_sk":"Derives
+    partner TYP_CIS from supplier/customer role flags of delivery places.","member":"GetTypCisFromM_DOD","role":"DERIVATION
+    API","spec_line":398,"status":"POTVRDENÉ"}'
+  evidence_refs:
+  - op.evidence.mp_03_08_c_partner_source
+- flow_id: op.api.c_partner.get_nakupca_sk
+  trigger_or_procedure_ref: op.entity.mc.c_partner.package
+  business_effect_sk: Returns most frequent SKLAD_KARTA.ID_PROD_MAN among active cards using supplier resolution.
+  diagnostic_meaning_sk: '{"api_id":"op.api.c_partner.get_nakupca_sk","body_range":[2334,2343],"evidence_refs":["op.evidence.mp_03_08_c_partner_source"],"meaning_sk":"Returns
+    most frequent SKLAD_KARTA.ID_PROD_MAN among active cards using supplier resolution.","member":"GetNakupcaSK","role":"DERIVATION
+    API","spec_line":400,"status":"POTVRDENÉ"}'
+  evidence_refs:
+  - op.evidence.mp_03_08_c_partner_source
+- flow_id: op.api.c_partner.get_zastupca_sk
+  trigger_or_procedure_ref: op.entity.mc.c_partner.package
+  business_effect_sk: Returns most frequent SKLAD_KARTA.ZASTUPCA among active cards using supplier resolution.
+  diagnostic_meaning_sk: '{"api_id":"op.api.c_partner.get_zastupca_sk","body_range":[2345,2354],"evidence_refs":["op.evidence.mp_03_08_c_partner_source"],"meaning_sk":"Returns
+    most frequent SKLAD_KARTA.ZASTUPCA among active cards using supplier resolution.","member":"GetZastupcaSK","role":"DERIVATION
+    API","spec_line":401,"status":"POTVRDENÉ"}'
+  evidence_refs:
+  - op.evidence.mp_03_08_c_partner_source
+- flow_id: op.api.c_partner.set_nazov
+  trigger_or_procedure_ref: op.entity.mc.c_partner.package
+  business_effect_sk: Updates OBCH_PARTNERI.NAZOV by ID after null guards.
+  diagnostic_meaning_sk: '{"api_id":"op.api.c_partner.set_nazov","body_range":[2259,2269],"evidence_refs":["op.evidence.mp_03_08_c_partner_source"],"meaning_sk":"Updates
+    OBCH_PARTNERI.NAZOV by ID after null guards.","member":"SetNazov","role":"DIRECT WRITER","spec_line":395,"status":"POTVRDENÉ"}'
+  evidence_refs:
+  - op.evidence.mp_03_08_c_partner_source
+- flow_id: op.api.c_partner.vloz_md_z_partnera
+  trigger_or_procedure_ref: op.entity.mc.c_partner.package
+  business_effect_sk: Creates MIESTA_DODANIA from partner attributes and can set PREF_MIESTO_DOD. Delivery-place
+    lifecycle remains boundary domain.
+  diagnostic_meaning_sk: '{"api_id":"op.api.c_partner.vloz_md_z_partnera","body_range":[3796,3878],"evidence_refs":["op.evidence.mp_03_08_c_partner_source"],"meaning_sk":"Creates
+    MIESTA_DODANIA from partner attributes and can set PREF_MIESTO_DOD. Delivery-place lifecycle remains boundary
+    domain.","member":"VlozMiestoDodZPartnera","role":"SIDE-EFFECT / BOUNDARY API","spec_line":476,"status":"POTVRDENÉ"}'
+  evidence_refs:
+  - op.evidence.mp_03_08_c_partner_source
+- flow_id: op.api.c_partner.get_banka
+  trigger_or_procedure_ref: op.entity.mc.c_partner.package
+  business_effect_sk: Reads ID_BANKY_O through C_CIS field override by warehouse/location and falls back to main
+    bank.
+  diagnostic_meaning_sk: '{"api_id":"op.api.c_partner.get_banka","body_range":[1709,1734],"evidence_refs":["op.evidence.mp_03_08_c_partner_source"],"meaning_sk":"Reads
+    ID_BANKY_O through C_CIS field override by warehouse/location and falls back to main bank.","member":"GetBanka","role":"READER
+    / OVERRIDE API","spec_line":371,"status":"POTVRDENÉ"}'
+  evidence_refs:
+  - op.evidence.mp_03_08_c_partner_source
+- flow_id: op.api.c_partner.set_banka_trigg
+  trigger_or_procedure_ref: op.entity.mc.c_partner.package
+  business_effect_sk: Writes ID_BANKY_O through C_CIS.SetCisFieldValueRID for location-aware override.
+  diagnostic_meaning_sk: '{"api_id":"op.api.c_partner.set_banka_trigg","body_range":[1749,1758],"evidence_refs":["op.evidence.mp_03_08_c_partner_source"],"meaning_sk":"Writes
+    ID_BANKY_O through C_CIS.SetCisFieldValueRID for location-aware override.","member":"SetBankaTrigg","role":"WRITER
+    / OVERRIDE API","spec_line":373,"status":"POTVRDENÉ"}'
+  evidence_refs:
+  - op.evidence.mp_03_08_c_partner_source

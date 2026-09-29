@@ -1,0 +1,191 @@
+schema_version: '1.0'
+kind: flows
+id: op.registry.flows
+records:
+- flow_id: op.flow.t_c_t_obch_partneri_clear
+  trigger_or_procedure_ref: op.entity.mc.t_c_t_obch_partneri_clear.trigger
+  event_sk: BEFORE DELETE OR UPDATE OF OBCH_SKUPINA,ZLAVA
+  watched_field_refs: []
+  session_or_bypass_sk: Replication session returns early via C_SESSION.GETREPLIKACIA.
+  business_effect_sk: Calls CENOTVORBA.ClearObchPartner(:old.id).
+  diagnostic_meaning_sk: '{"business_effect_sk":"Calls CENOTVORBA.ClearObchPartner(:old.id).","event_sk":"BEFORE
+    DELETE OR UPDATE OF OBCH_SKUPINA,ZLAVA","evidence_refs":["op.evidence.06_triggers_on_table","op.evidence.mp_03_07_trigger_source"],"flow_id":"op.flow.t_c_t_obch_partneri_clear","mapping_status":"POTVRDENÉ","oracle_name":"T_C_T_OBCH_PARTNERI_CLEAR","semantic_role_sk":"Cenotvorba/cache
+    invalidation","session_or_bypass_sk":"Replication session returns early via C_SESSION.GETREPLIKACIA.","source_line_from":1,"source_line_to":13,"status":"ENABLED","trigger_type":"BEFORE
+    EACH ROW","triggering_event":"UPDATE OR DELETE","watched_fields":[],"when_clause":null}'
+  evidence_refs:
+  - op.evidence.06_triggers_on_table
+  - op.evidence.mp_03_07_trigger_source
+- flow_id: op.flow.t_hz_obch_partneri_2
+  trigger_or_procedure_ref: op.entity.mc.t_hz_obch_partneri_2.trigger
+  event_sk: AFTER INSERT/UPDATE/DELETE with change condition
+  watched_field_refs: []
+  session_or_bypass_sk: No explicit replication bypass in trigger source.
+  business_effect_sk: Writes HIST_ZMIEN via C_DEF_HIST_ZMENA.HIST_ZMIEN_Ins with definition 000-2.
+  diagnostic_meaning_sk: '{"business_effect_sk":"Writes HIST_ZMIEN via C_DEF_HIST_ZMENA.HIST_ZMIEN_Ins with definition
+    000-2.","event_sk":"AFTER INSERT/UPDATE/DELETE with change condition","evidence_refs":["op.evidence.06_triggers_on_table","op.evidence.mp_03_07_trigger_source"],"flow_id":"op.flow.t_hz_obch_partneri_2","mapping_status":"POTVRDENÉ","oracle_name":"T_HZ_OBCH_PARTNERI_2","semantic_role_sk":"Selective
+    history PREF_BANKA/ID_MESTO","session_or_bypass_sk":"No explicit replication bypass in trigger source.","source_line_from":1,"source_line_to":16,"status":"ENABLED","trigger_type":"AFTER
+    EACH ROW","triggering_event":"INSERT OR UPDATE OR DELETE","watched_fields":[],"when_clause":"(nvl(old.PREF_BANKA,-112233445566778899)
+    != nvl(new.PREF_BANKA,-112233445566778899))or(nvl(old.ID_MESTO,-112233445566778899) != nvl(new.ID_MESTO,-112233445566778899))"}'
+  evidence_refs:
+  - op.evidence.06_triggers_on_table
+  - op.evidence.mp_03_07_trigger_source
+- flow_id: op.flow.t_obch_partneri_os
+  trigger_or_procedure_ref: op.entity.mc.t_obch_partneri_os.trigger
+  event_sk: BEFORE UPDATE OF OBCH_SKUPINA,TYP_UHRADY,AKCEPT_ZAR
+  watched_field_refs: []
+  session_or_bypass_sk: Replication session returns early.
+  business_effect_sk: Updates MIESTA_DODANIA only where field-specific inheritance bit in FLAGS_B is enabled.
+  diagnostic_meaning_sk: '{"business_effect_sk":"Updates MIESTA_DODANIA only where field-specific inheritance bit
+    in FLAGS_B is enabled.","event_sk":"BEFORE UPDATE OF OBCH_SKUPINA,TYP_UHRADY,AKCEPT_ZAR","evidence_refs":["op.evidence.06_triggers_on_table","op.evidence.mp_03_07_trigger_source"],"flow_id":"op.flow.t_obch_partneri_os","mapping_status":"POTVRDENÉ","oracle_name":"T_OBCH_PARTNERI_OS","semantic_role_sk":"Propagation
+    to delivery places","session_or_bypass_sk":"Replication session returns early.","source_line_from":1,"source_line_to":29,"status":"ENABLED","trigger_type":"BEFORE
+    EACH ROW","triggering_event":"UPDATE","watched_fields":[],"when_clause":null}'
+  evidence_refs:
+  - op.evidence.06_triggers_on_table
+  - op.evidence.mp_03_07_trigger_source
+- flow_id: op.flow.t_obch_partneri_zast_mccarter
+  trigger_or_procedure_ref: op.entity.mc.t_obch_partneri_zast_mccarter.trigger
+  event_sk: AFTER INSERT OR UPDATE OF ZASTUPCA
+  watched_field_refs: []
+  session_or_bypass_sk: No explicit replication bypass in trigger source.
+  business_effect_sk: For nonzero representative changes inserts MCCARTER_ZASTUPCA_HIST with DAT_OD=TRUNC(SYSDATE,MM),
+    I_DATE=SYSDATE.
+  diagnostic_meaning_sk: '{"business_effect_sk":"For nonzero representative changes inserts MCCARTER_ZASTUPCA_HIST
+    with DAT_OD=TRUNC(SYSDATE,MM), I_DATE=SYSDATE.","event_sk":"AFTER INSERT OR UPDATE OF ZASTUPCA","evidence_refs":["op.evidence.06_triggers_on_table","op.evidence.mp_03_07_trigger_source"],"flow_id":"op.flow.t_obch_partneri_zast_mccarter","mapping_status":"POTVRDENÉ","oracle_name":"T_OBCH_PARTNERI_ZAST_MCCARTER","semantic_role_sk":"Representative
+    selective history","session_or_bypass_sk":"No explicit replication bypass in trigger source.","source_line_from":1,"source_line_to":21,"status":"ENABLED","trigger_type":"AFTER
+    EACH ROW","triggering_event":"INSERT OR UPDATE","watched_fields":[],"when_clause":null}'
+  evidence_refs:
+  - op.evidence.06_triggers_on_table
+  - op.evidence.mp_03_07_trigger_source
+- flow_id: op.flow.t_r_obch_partneri
+  trigger_or_procedure_ref: op.entity.mc.t_r_obch_partneri.trigger
+  event_sk: BEFORE INSERT OR UPDATE OF 78 watched fields
+  watched_field_refs:
+  - op.field.obch_partneri.blizsia_spec
+  - op.field.obch_partneri.ulica
+  - op.field.obch_partneri.oslovenie
+  - op.field.obch_partneri.typ_u
+  - op.field.obch_partneri.zlava
+  - op.field.obch_partneri.ico
+  - op.field.obch_partneri.dic
+  - op.field.obch_partneri.fax
+  - op.field.obch_partneri.last_in
+  - op.field.obch_partneri.flags
+  - op.field.obch_partneri.splatnost
+  - op.field.obch_partneri.splatnost_c
+  - op.field.obch_partneri.perc_cs
+  - op.field.obch_partneri.danovy_urad
+  - op.field.obch_partneri.e_mail
+  - op.field.obch_partneri.kredit
+  - op.field.obch_partneri.mena_p
+  - op.field.obch_partneri.nazov
+  - op.field.obch_partneri.pref_banka
+  - op.field.obch_partneri.obch_skupina
+  - op.field.obch_partneri.par_1
+  - op.field.obch_partneri.par_str_1
+  - op.field.obch_partneri.tlac_zostava
+  - op.field.obch_partneri.id_banky_o
+  - op.field.obch_partneri.fakt_link_p
+  - op.field.obch_partneri.fakt_kedy
+  - op.field.obch_partneri.edifact_ean
+  - op.field.obch_partneri.typ_el_kom
+  - op.field.obch_partneri.cr_ix
+  - op.field.obch_partneri.id_mesto
+  - op.field.obch_partneri.pref_miesto_dod
+  - op.field.obch_partneri.sklad
+  - op.field.obch_partneri.skratka
+  - op.field.obch_partneri.id_tree
+  - op.field.obch_partneri.flags_b
+  - op.field.obch_partneri.pozn
+  - op.field.obch_partneri.s_stamp
+  - op.field.obch_partneri.tel
+  - op.field.obch_partneri.krajina
+  - op.field.obch_partneri.flags_s
+  - op.field.obch_partneri.sposob_el_kom
+  - op.field.obch_partneri.zdroj_email
+  - op.field.obch_partneri.splatnost_tol
+  - op.field.obch_partneri.gar_ceny
+  - op.field.obch_partneri.koef_refakt
+  - op.field.obch_partneri.offset_u_sk
+  - op.field.obch_partneri.dic_old
+  - op.field.obch_partneri.dic_new
+  - op.field.obch_partneri.kod_o_vyd
+  - op.field.obch_partneri.pref_kontakt
+  - op.field.obch_partneri.dbs_user_kons
+  - op.field.obch_partneri.segment_trhu
+  - op.field.obch_partneri.url
+  - op.field.obch_partneri.psc
+  - op.field.obch_partneri.typ_uhrady
+  - op.field.obch_partneri.dealer_p
+  - op.field.obch_partneri.dod_obj_par
+  - op.field.obch_partneri.akcept_zar
+  - op.field.obch_partneri.stav
+  - op.field.obch_partneri.forma_vybavenia_vratky
+  - op.field.obch_partneri.penale
+  - op.field.obch_partneri.xml_data
+  - op.field.obch_partneri.splatnost_d
+  - op.field.obch_partneri.nakupca
+  - op.field.obch_partneri.perioda_obj
+  - op.field.obch_partneri.akcept_nahr
+  - op.field.obch_partneri.splatnost_d_tol
+  - op.field.obch_partneri.typ_mo
+  - op.field.obch_partneri.hodnota_mo
+  - op.field.obch_partneri.obch_reg
+  - op.field.obch_partneri.kod_odvetvia
+  - op.field.obch_partneri.typ_splatnosti
+  - op.field.obch_partneri.typ_round_nc
+  - op.field.obch_partneri.typ_cis
+  - op.field.obch_partneri.zastupca
+  - op.field.obch_partneri.sscc_stitok
+  - op.field.obch_partneri.akcept_zar_d
+  - op.field.obch_partneri.typ_vzd_rozvozu
+  session_or_bypass_sk: No session bypass in source; trigger itself creates replication markers.
+  business_effect_sk: INSERT assigns MODIF_I from SQ_REPLIK_INS and MODIF_U=-1; UPDATE assigns MODIF_U from SQ_REPLIK_UPD.
+  diagnostic_meaning_sk: '{"business_effect_sk":"INSERT assigns MODIF_I from SQ_REPLIK_INS and MODIF_U=-1; UPDATE
+    assigns MODIF_U from SQ_REPLIK_UPD.","event_sk":"BEFORE INSERT OR UPDATE OF 78 watched fields","evidence_refs":["op.evidence.06_triggers_on_table","op.evidence.mp_03_07_trigger_source"],"flow_id":"op.flow.t_r_obch_partneri","mapping_status":"POTVRDENÉ","oracle_name":"T_R_OBCH_PARTNERI","semantic_role_sk":"Replication
+    marker","session_or_bypass_sk":"No session bypass in source; trigger itself creates replication markers.","source_line_from":1,"source_line_to":16,"status":"ENABLED","trigger_type":"BEFORE
+    EACH ROW","triggering_event":"INSERT OR UPDATE","watched_fields":["BLIZSIA_SPEC","ULICA","OSLOVENIE","TYP_U","ZLAVA","ICO","DIC","FAX","LAST_IN","FLAGS","SPLATNOST","SPLATNOST_C","PERC_CS","DANOVY_URAD","E_MAIL","KREDIT","MENA_P","NAZOV","PREF_BANKA","OBCH_SKUPINA","PAR_1","PAR_STR_1","TLAC_ZOSTAVA","ID_BANKY_O","FAKT_LINK_P","FAKT_KEDY","EDIFACT_EAN","TYP_EL_KOM","CR_IX","ID_MESTO","PREF_MIESTO_DOD","SKLAD","SKRATKA","ID_TREE","FLAGS_B","POZN","S_STAMP","TEL","KRAJINA","FLAGS_S","SPOSOB_EL_KOM","ZDROJ_EMAIL","SPLATNOST_TOL","GAR_CENY","KOEF_REFAKT","OFFSET_U_SK","DIC_OLD","DIC_NEW","KOD_O_VYD","PREF_KONTAKT","DBS_USER_KONS","SEGMENT_TRHU","URL","PSC","TYP_UHRADY","DEALER_P","DOD_OBJ_PAR","AKCEPT_ZAR","STAV","FORMA_VYBAVENIA_VRATKY","PENALE","XML_DATA","SPLATNOST_D","NAKUPCA","PERIODA_OBJ","AKCEPT_NAHR","SPLATNOST_D_TOL","TYP_MO","HODNOTA_MO","OBCH_REG","KOD_ODVETVIA","TYP_SPLATNOSTI","TYP_ROUND_NC","TYP_CIS","ZASTUPCA","SSCC_STITOK","AKCEPT_ZAR_D","TYP_VZD_ROZVOZU"],"when_clause":null}'
+  evidence_refs:
+  - op.evidence.06_triggers_on_table
+  - op.evidence.mp_03_07_trigger_source
+- flow_id: op.flow.t_s_obch_partneri
+  trigger_or_procedure_ref: op.entity.mc.t_s_obch_partneri.trigger
+  event_sk: BEFORE DELETE OR UPDATE
+  watched_field_refs: []
+  session_or_bypass_sk: Replication session returns early.
+  business_effect_sk: Sets U_STAMP on update; protects ID=0 from storno/rename/delete; on S_STAMP change calls C_PARTNER.VystornujZavisle;
+    contains cross-location bank override path.
+  diagnostic_meaning_sk: '{"business_effect_sk":"Sets U_STAMP on update; protects ID=0 from storno/rename/delete;
+    on S_STAMP change calls C_PARTNER.VystornujZavisle; contains cross-location bank override path.","event_sk":"BEFORE
+    DELETE OR UPDATE","evidence_refs":["op.evidence.06_triggers_on_table","op.evidence.mp_03_07_trigger_source"],"flow_id":"op.flow.t_s_obch_partneri","mapping_status":"POTVRDENÉ","oracle_name":"T_S_OBCH_PARTNERI","semantic_role_sk":"Lifecycle/storno
+    guard","session_or_bypass_sk":"Replication session returns early.","source_line_from":1,"source_line_to":36,"status":"ENABLED","trigger_type":"BEFORE
+    EACH ROW","triggering_event":"UPDATE OR DELETE","watched_fields":[],"when_clause":null}'
+  evidence_refs:
+  - op.evidence.06_triggers_on_table
+  - op.evidence.mp_03_07_trigger_source
+- flow_id: op.flow.t_s_obch_partneri_ins
+  trigger_or_procedure_ref: op.entity.mc.t_s_obch_partneri_ins.trigger
+  event_sk: BEFORE INSERT
+  watched_field_refs: []
+  session_or_bypass_sk: Replication session returns early.
+  business_effect_sk: Calls C_CIS.Do_trg_ins, initializes payment-state flag when absent, and applies cross-location
+    bank handling.
+  diagnostic_meaning_sk: '{"business_effect_sk":"Calls C_CIS.Do_trg_ins, initializes payment-state flag when absent,
+    and applies cross-location bank handling.","event_sk":"BEFORE INSERT","evidence_refs":["op.evidence.06_triggers_on_table","op.evidence.mp_03_07_trigger_source"],"flow_id":"op.flow.t_s_obch_partneri_ins","mapping_status":"POTVRDENÉ","oracle_name":"T_S_OBCH_PARTNERI_INS","semantic_role_sk":"Insert
+    initialization","session_or_bypass_sk":"Replication session returns early.","source_line_from":1,"source_line_to":25,"status":"ENABLED","trigger_type":"BEFORE
+    EACH ROW","triggering_event":"INSERT","watched_fields":[],"when_clause":null}'
+  evidence_refs:
+  - op.evidence.06_triggers_on_table
+  - op.evidence.mp_03_07_trigger_source
+- flow_id: op.flow.t_s_obch_partneri_rid_check
+  trigger_or_procedure_ref: op.entity.mc.t_s_obch_partneri_rid_check.trigger
+  event_sk: AFTER INSERT
+  watched_field_refs: []
+  session_or_bypass_sk: No explicit replication bypass.
+  business_effect_sk: Raises error unless RID follows XXX00000ID pattern for inserted row.
+  diagnostic_meaning_sk: '{"business_effect_sk":"Raises error unless RID follows XXX00000ID pattern for inserted
+    row.","event_sk":"AFTER INSERT","evidence_refs":["op.evidence.06_triggers_on_table","op.evidence.mp_03_07_trigger_source"],"flow_id":"op.flow.t_s_obch_partneri_rid_check","mapping_status":"POTVRDENÉ","oracle_name":"T_S_OBCH_PARTNERI_RID_CHECK","semantic_role_sk":"RID
+    format validation","session_or_bypass_sk":"No explicit replication bypass.","source_line_from":1,"source_line_to":17,"status":"ENABLED","trigger_type":"AFTER
+    EACH ROW","triggering_event":"INSERT","watched_fields":[],"when_clause":null}'
+  evidence_refs:
+  - op.evidence.06_triggers_on_table
+  - op.evidence.mp_03_07_trigger_source
