@@ -106,13 +106,13 @@ class PurchasingAcceptance(unittest.TestCase):
         handoff = (SNAP / 'accepted.txt').read_text()
         section = handoff.split('23. DO NOT ASSUME REGISTER')[1].split('24. TEMPORAL CLASSIFICATION')[0]
         expected = {' '.join(m[2].split()) for m in re.finditer(r'\n(\d+)\.\n(.*?)(?=\n\d+\.\n|\n=|\Z)', section, re.S)}
-        self.assertEqual(expected, {r['statement_sk'] for r in load('do-not-assume')['records']})
+        self.assertEqual(expected, {r['statement_sk'] for r in load('do-not-assume')['records'] if not r['rule_id'].startswith('pur.rule.coa.')})
         self.assertFalse(any(r['blocking'] for r in load('backlog')['records']))
         values = load('value-domains')['records']
         for state in (3, 4):
             item = next(r for r in values if r['scope_ref'] == 'mc.field.obj_d_navrh.stav' and r['raw_value'] == state)
             self.assertIs(item['observed_live'], False)
-        self.assertEqual(7, len(load('playbooks')['records']))
+        self.assertEqual(8, len(load('playbooks')['records']))
 
     def test_subtype_codes_are_explicit_strings(self):
         records = [r for r in load('value-domains')['records']
@@ -172,7 +172,7 @@ class PurchasingAcceptance(unittest.TestCase):
 
     def test_evidence_retained_and_checksums(self):
         manifests = list((ROOT / 'evidence/manifests/pur').glob('*.yaml'))
-        self.assertEqual(28, len(manifests))
+        self.assertEqual(31, len(manifests))
         for p in manifests:
             doc = load_yaml(p)
             self.assertTrue(doc['raw_retained'])

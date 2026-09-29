@@ -1,0 +1,537 @@
+{
+  "delta_id": "pur.delta.coa.20260929",
+  "base_commit": "e7743fc70b3367411be6f5463aacb13483f60d02",
+  "approval_sources": [
+    {
+      "evidence_id": "pur.evidence.coa_ui.20260929",
+      "path": "evidence/snapshots/pur/coa-ui-select-20260929.sql",
+      "sha256": "bbebddda76e2b24d65380a3cf2eb0dcb5fb7889ef349bea1625097c062c710bc"
+    },
+    {
+      "evidence_id": "pur.evidence.coa_business.20260929",
+      "path": "evidence/snapshots/pur/coa-business-handoff-20260929.txt",
+      "sha256": "329e5a2756702142d726793844bbd18dd8a194ab1712bc594fb7336512e57bf6"
+    },
+    {
+      "evidence_id": "pur.evidence.coa_version.20260929",
+      "path": "evidence/snapshots/pur/coa-version-approval-20260929.txt",
+      "sha256": "736edd51730969b5cb291d6b92d64188d0040d065d19e5176b35dd3a8fbb1b0c"
+    },
+    {
+      "evidence_id": "pur.input.coa_ui_submission",
+      "path": "evidence/snapshots/pur/coa-ui-submission-20260929.txt",
+      "sha256": "78501c21a6223294be8e3259391644a85acf0a99d8797be24d9e342728012753"
+    }
+  ],
+  "operations": [
+    {
+      "path": "catalog/purchasing/fields-objd_o.yaml",
+      "update_records": [
+        {
+          "id_key": "field_id",
+          "id": "mc.field.objd_o.sarza",
+          "set": {
+            "evidence_refs": [
+              "pur.evidence.mp01_b",
+              "pur.evidence.coa_ui.20260929",
+              "pur.evidence.coa_business.20260929"
+            ],
+            "limitations_sk": [
+              "Alias je technická normalizácia Oracle názvu; chýbajúci business význam sa neodvodzuje z názvu ani komentára.",
+              "UI „Šarža na CoA“ je v dodanom SELECTe odvodené z OBJD_O.XML_DATA/U2, kontext -2020; zdrojom nie je preukázaný tento fyzický stĺpec. Jeho použitie inde nie je vylúčené; neoznačovať ako nepoužívaný."
+            ]
+          }
+        },
+        {
+          "id_key": "field_id",
+          "id": "mc.field.objd_o.datum_exp",
+          "set": {
+            "evidence_refs": [
+              "pur.evidence.mp01_b",
+              "pur.evidence.coa_ui.20260929",
+              "pur.evidence.coa_business.20260929"
+            ],
+            "limitations_sk": [
+              "Alias je technická normalizácia Oracle názvu; chýbajúci business význam sa neodvodzuje z názvu ani komentára.",
+              "UI „Dátum expirácie na CoA“ je v dodanom SELECTe odvodené z OBJD_O.XML_DATA/U3, kontext -2020; zdrojom nie je preukázaný tento fyzický stĺpec. Jeho použitie inde nie je vylúčené; neoznačovať ako nepoužívaný."
+            ]
+          }
+        },
+        {
+          "id_key": "field_id",
+          "id": "mc.field.objd_o.xml_data",
+          "set": {
+            "evidence_refs": [
+              "pur.evidence.mp01_b",
+              "pur.evidence.coa_ui.20260929",
+              "pur.evidence.coa_business.20260929"
+            ],
+            "business_definition_sk": "XML_DATA obsahuje okrem iných technických dát CoA metadáta dodávateľa používané v UI riadka nákupnej objednávky: U1 stav certifikátu, U2 šarža na CoA, U3 dátum expirácie na CoA; potvrdený XML kontext je -2020.",
+            "status": "POTVRDENÉ",
+            "temporal_classification": "RAW CURRENT",
+            "limitations_sk": [
+              "Potvrdenie sa vzťahuje na U1/U2/U3 v kontexte -2020; nie na celý obsah XML_DATA.",
+              "Súčasná hodnota XML_DATA nepreukazuje históriu zmien jednotlivých tagov."
+            ]
+          }
+        }
+      ],
+      "base_sha256": "f2c3316fc020b222bc80aaf9db6df0a52c7bcb88b1975343237d965a29810d40"
+    },
+    {
+      "path": "catalog/purchasing/temporal.yaml",
+      "append_records": [
+        {
+          "temporal_rule_id": "pur.temporal.coa_certificate_status",
+          "scope_refs": [
+            "mc.object.objd_o",
+            "mc.field.objd_o.xml_data"
+          ],
+          "classification": "DERIVED CURRENT",
+          "canonical_alias": "coa_certificate_status",
+          "source_ref": "mc.field.objd_o.xml_data",
+          "writer_or_source_ref": "mc.field.objd_o.xml_data",
+          "business_label_sk": "CoA certifikát",
+          "transition_or_event_sk": "Stav/evidencia dodávateľského CoA certifikátu pre riadok nákupnej objednávky alebo dodávky.",
+          "derivation_expression": "c_xml_tags.GetTagValueNumT(C.XML_DATA,'U1', -2020, NULL)",
+          "xml_tag": "U1",
+          "xml_context": -2020,
+          "ui_binding": "tblObjD_LFormular.m_sValues[155]",
+          "reconstructable": false,
+          "history_limitations_sk": "Len current OBJD_O.XML_DATA. História U1/U2/U3 ani historická rekonštrukcia nie sú preukázané.",
+          "status": "POTVRDENÉ",
+          "evidence_refs": [
+            "pur.evidence.coa_ui.20260929",
+            "pur.evidence.coa_business.20260929"
+          ],
+          "limitations_sk": [
+            "Význam tagu platí iba pre potvrdený XML kontext -2020.",
+            "Možnosť zadania týchto CoA údajov na formulári príjemky nie je podľa používateľa dostupná.",
+            "Lookup CIS_X.ID_CIS=-1006; HODNOTA je raw U1. Zobrazené stavy: prázdne, Nie, Áno. Raw kódy Nie/Áno sú TREBA OVERIŤ; žiadne kódy sa nepriraďujú.",
+            "Pôvodný UI colTag1 pripája k labelu raw HODNOTA a obmedzuje text na 254 znakov; diagnostika vracia label a raw U1 samostatne."
+          ],
+          "display_expression": "(SELECT pck_multilang.DecodeTextX(27, NAZOV) FROM CIS_X WHERE ID_CIS = -1006 AND HODNOTA = c_xml_tags.GetTagValueNumT(C.XML_DATA,'U1', -2020, NULL))"
+        },
+        {
+          "temporal_rule_id": "pur.temporal.coa_batch",
+          "scope_refs": [
+            "mc.object.objd_o",
+            "mc.field.objd_o.xml_data"
+          ],
+          "classification": "DERIVED CURRENT",
+          "canonical_alias": "coa_batch",
+          "source_ref": "mc.field.objd_o.xml_data",
+          "writer_or_source_ref": "mc.field.objd_o.xml_data",
+          "business_label_sk": "Šarža na CoA",
+          "transition_or_event_sk": "Šarža/lot uvedená na dodanom CoA certifikáte.",
+          "derivation_expression": "c_xml_tags.GetTagValueT(C.XML_DATA,'U2', -2020, NULL)",
+          "xml_tag": "U2",
+          "xml_context": -2020,
+          "ui_binding": "tblObjD_LFormular.m_sValues[157]",
+          "reconstructable": false,
+          "history_limitations_sk": "Len current OBJD_O.XML_DATA. História U1/U2/U3 ani historická rekonštrukcia nie sú preukázané.",
+          "status": "POTVRDENÉ",
+          "evidence_refs": [
+            "pur.evidence.coa_ui.20260929",
+            "pur.evidence.coa_business.20260929"
+          ],
+          "limitations_sk": [
+            "Význam tagu platí iba pre potvrdený XML kontext -2020.",
+            "Možnosť zadania týchto CoA údajov na formulári príjemky nie je podľa používateľa dostupná.",
+            "Pôvodný UI colTag3 skracuje text na 254 znakov; diagnostika vracia hodnotu GetTagValueT. OBJD_O.SARZA nie je preukázaný zdroj tohto UI údaja."
+          ]
+        },
+        {
+          "temporal_rule_id": "pur.temporal.coa_expiry_date",
+          "scope_refs": [
+            "mc.object.objd_o",
+            "mc.field.objd_o.xml_data"
+          ],
+          "classification": "DERIVED CURRENT",
+          "canonical_alias": "coa_expiry_date",
+          "source_ref": "mc.field.objd_o.xml_data",
+          "writer_or_source_ref": "mc.field.objd_o.xml_data",
+          "business_label_sk": "Dátum expirácie na CoA",
+          "transition_or_event_sk": "Dátum expirácie uvedený na dodanom CoA certifikáte.",
+          "derivation_expression": "c_xml_tags.GetTagValueDateT(C.XML_DATA,'U3', -2020, NULL)",
+          "xml_tag": "U3",
+          "xml_context": -2020,
+          "ui_binding": "tblObjD_LFormular.m_sValues[156]",
+          "reconstructable": false,
+          "history_limitations_sk": "Len current OBJD_O.XML_DATA. História U1/U2/U3 ani historická rekonštrukcia nie sú preukázané.",
+          "status": "POTVRDENÉ",
+          "evidence_refs": [
+            "pur.evidence.coa_ui.20260929",
+            "pur.evidence.coa_business.20260929"
+          ],
+          "limitations_sk": [
+            "Význam tagu platí iba pre potvrdený XML kontext -2020.",
+            "Možnosť zadania týchto CoA údajov na formulári príjemky nie je podľa používateľa dostupná.",
+            "OBJD_O.DATUM_EXP nie je preukázaný zdroj tohto UI údaja."
+          ]
+        }
+      ],
+      "base_sha256": "2f8de5200eb207ddb582c7c71eaf7260ffeea7d1ed723bd841a2081850016f4c"
+    },
+    {
+      "path": "catalog/purchasing/value-domains.yaml",
+      "append_records": [
+        {
+          "value_domain_id": "pur.value.coa.empty",
+          "scope_ref": "pur.temporal.coa_certificate_status",
+          "canonical_value": "",
+          "business_label_sk": "prázdne",
+          "status": "POTVRDENÉ",
+          "evidence_refs": [
+            "pur.evidence.coa_business.20260929",
+            "pur.evidence.coa_ui.20260929"
+          ],
+          "limitations_sk": [
+            "Potvrdená je zobrazená business hodnota, nie raw CIS_X.HODNOTA. Raw mapovanie je TREBA OVERIŤ.",
+            "Lookup CIS_X.ID_CIS=-1006; decode pck_multilang.DecodeTextX(27, NAZOV).",
+            "Prázdne zobrazenie nie je dôkazom konkrétnej raw hodnoty, NULL ani kódu 0."
+          ]
+        },
+        {
+          "value_domain_id": "pur.value.coa.no",
+          "scope_ref": "pur.temporal.coa_certificate_status",
+          "canonical_value": "Nie",
+          "business_label_sk": "Nie",
+          "status": "POTVRDENÉ",
+          "evidence_refs": [
+            "pur.evidence.coa_business.20260929",
+            "pur.evidence.coa_ui.20260929"
+          ],
+          "limitations_sk": [
+            "Potvrdená je zobrazená business hodnota, nie raw CIS_X.HODNOTA. Raw mapovanie je TREBA OVERIŤ.",
+            "Lookup CIS_X.ID_CIS=-1006; decode pck_multilang.DecodeTextX(27, NAZOV).",
+            "Prázdne zobrazenie nie je dôkazom konkrétnej raw hodnoty, NULL ani kódu 0."
+          ]
+        },
+        {
+          "value_domain_id": "pur.value.coa.yes",
+          "scope_ref": "pur.temporal.coa_certificate_status",
+          "canonical_value": "Áno",
+          "business_label_sk": "Áno",
+          "status": "POTVRDENÉ",
+          "evidence_refs": [
+            "pur.evidence.coa_business.20260929",
+            "pur.evidence.coa_ui.20260929"
+          ],
+          "limitations_sk": [
+            "Potvrdená je zobrazená business hodnota, nie raw CIS_X.HODNOTA. Raw mapovanie je TREBA OVERIŤ.",
+            "Lookup CIS_X.ID_CIS=-1006; decode pck_multilang.DecodeTextX(27, NAZOV).",
+            "Prázdne zobrazenie nie je dôkazom konkrétnej raw hodnoty, NULL ani kódu 0."
+          ]
+        }
+      ],
+      "base_sha256": "628254ba7014be295b6ff132ac911ed9f49c1d2252a6c8b07b6b06fcf4bb59ef"
+    },
+    {
+      "path": "catalog/purchasing/do-not-assume.yaml",
+      "append_records": [
+        {
+          "rule_id": "pur.rule.coa.batch",
+          "scope_refs": [
+            "mc.field.objd_o.xml_data",
+            "pur.temporal.coa_certificate_status",
+            "pur.temporal.coa_batch",
+            "pur.temporal.coa_expiry_date"
+          ],
+          "statement_sk": "UI „Šarža na CoA“ nemožno stotožniť s OBJD_O.SARZA; potvrdený zdroj je XML_DATA/U2 v kontexte -2020.",
+          "evidence_refs": [
+            "pur.evidence.coa_ui.20260929",
+            "pur.evidence.coa_business.20260929"
+          ]
+        },
+        {
+          "rule_id": "pur.rule.coa.expiry",
+          "scope_refs": [
+            "mc.field.objd_o.xml_data",
+            "pur.temporal.coa_certificate_status",
+            "pur.temporal.coa_batch",
+            "pur.temporal.coa_expiry_date"
+          ],
+          "statement_sk": "UI „Dátum expirácie na CoA“ nemožno stotožniť s OBJD_O.DATUM_EXP; potvrdený zdroj je XML_DATA/U3 v kontexte -2020.",
+          "evidence_refs": [
+            "pur.evidence.coa_ui.20260929",
+            "pur.evidence.coa_business.20260929"
+          ]
+        },
+        {
+          "rule_id": "pur.rule.coa.codes",
+          "scope_refs": [
+            "mc.field.objd_o.xml_data",
+            "pur.temporal.coa_certificate_status",
+            "pur.temporal.coa_batch",
+            "pur.temporal.coa_expiry_date"
+          ],
+          "statement_sk": "Nepriraďovať raw CIS_X.HODNOTA kódy pre Nie/Áno; kódy zostávajú TREBA OVERIŤ.",
+          "evidence_refs": [
+            "pur.evidence.coa_ui.20260929",
+            "pur.evidence.coa_business.20260929"
+          ]
+        },
+        {
+          "rule_id": "pur.rule.coa.context",
+          "scope_refs": [
+            "mc.field.objd_o.xml_data",
+            "pur.temporal.coa_certificate_status",
+            "pur.temporal.coa_batch",
+            "pur.temporal.coa_expiry_date"
+          ],
+          "statement_sk": "Významy U1/U2/U3 nezovšeobecňovať mimo potvrdeného XML kontextu -2020.",
+          "evidence_refs": [
+            "pur.evidence.coa_ui.20260929",
+            "pur.evidence.coa_business.20260929"
+          ]
+        },
+        {
+          "rule_id": "pur.rule.coa.filter",
+          "scope_refs": [
+            "mc.field.objd_o.xml_data",
+            "pur.temporal.coa_certificate_status",
+            "pur.temporal.coa_batch",
+            "pur.temporal.coa_expiry_date"
+          ],
+          "statement_sk": "ID_R_V=0 je iba potvrdená podmienka dodaného UI SELECTu; business význam nie je preukázaný.",
+          "evidence_refs": [
+            "pur.evidence.coa_ui.20260929",
+            "pur.evidence.coa_business.20260929"
+          ]
+        },
+        {
+          "rule_id": "pur.rule.coa.runtime",
+          "scope_refs": [
+            "mc.field.objd_o.xml_data",
+            "pur.temporal.coa_certificate_status",
+            "pur.temporal.coa_batch",
+            "pur.temporal.coa_expiry_date"
+          ],
+          "statement_sk": "RID_O = '020260003197' je runtime filter konkrétnej zachytenej inštancie formulára, nie všeobecné business pravidlo.",
+          "evidence_refs": [
+            "pur.evidence.coa_ui.20260929",
+            "pur.evidence.coa_business.20260929"
+          ]
+        }
+      ],
+      "base_sha256": "a6a98015660b1acf8b1a0a07fc83d10ffa9d1df1223ee136c9165ff8cd692f5d"
+    },
+    {
+      "path": "sql/diagnostic/purchasing/coa_metadata.sql",
+      "text": "-- CoA údaje riadka nákupnej objednávky; read-only MC diagnostika.\n-- Grain: jeden OBJD_O riadok identifikovaný RID_O a ID_R.\n-- ID_R_V=0: UI query condition; business meaning not established.\n-- RID_O zo zachyteného formulára je nahradené parametrom, nie business pravidlom.\n-- Raw U1 kódy Nie/Áno nie sú známe. Prázdny decode nie je dôkazom 'Nie'.\n-- Skalárny lookup zachová grain; pri duplicitnom CIS_X kóde môže zlyhať ORA-01427.\n-- História XML tagov ani fyzické receipt údaje sa nerekonštruujú.\nSELECT C.RID_O,\n       C.ID_R,\n       C.KOD_ID,\n       c_xml_tags.GetTagValueNumT(C.XML_DATA,'U1', -2020, NULL) AS coa_certificate_status_raw,\n       (SELECT pck_multilang.DecodeTextX(27, NAZOV)\n          FROM CIS_X\n         WHERE ID_CIS = -1006\n           AND HODNOTA = c_xml_tags.GetTagValueNumT(C.XML_DATA,'U1', -2020, NULL)) AS coa_certificate_status,\n       c_xml_tags.GetTagValueT(C.XML_DATA,'U2', -2020, NULL) AS coa_batch,\n       c_xml_tags.GetTagValueDateT(C.XML_DATA,'U3', -2020, NULL) AS coa_expiry_date\n  FROM OBJD_O C\n WHERE C.RID_O = :p_rid_o\n   AND C.ID_R = :p_id_r\n   AND C.ID_R_V = 0;\n",
+      "base_sha256": null
+    },
+    {
+      "path": "catalog/purchasing/sql-registry.yaml",
+      "append_records": [
+        {
+          "sql_id": "pur.sql.coa_metadata",
+          "title_sk": "Aktuálne CoA údaje riadka nákupnej objednávky",
+          "sql_file": "sql/diagnostic/purchasing/coa_metadata.sql",
+          "purpose_sk": "Skontrolovať raw U1, dekódovaný stav certifikátu, U2 šaržu a U3 expiráciu z aktuálneho XML_DATA.",
+          "input_parameters": [
+            {
+              "name": "p_rid_o",
+              "required": true,
+              "description_sk": "RID hlavičky ako text; konkrétny runtime RID z dôkazu sa nepovažuje za pravidlo."
+            },
+            {
+              "name": "p_id_r",
+              "required": true,
+              "description_sk": "Identifikátor riadka ID_R."
+            }
+          ],
+          "result_grain_sk": "Jeden OBJD_O riadok (RID_O, ID_R); pri ID_R_V odlišnom od 0 sa riadok nezobrazí.",
+          "fanout_warning_sk": "Skalárny lookup CIS_X neduplikuje riadky; jedinečnosť ID_CIS/HODNOTA nie je preukázaná, viac zhôd vyvolá ORA-01427.",
+          "proves_sk": "Current raw U1 a lookup label z CIS_X -1006, U2 šaržu a U3 expiráciu v XML kontexte -2020. ID_R_V=0: UI query condition; business meaning not established.",
+          "does_not_prove_sk": "Raw kódy Nie/Áno, históriu, receipt vstup, fyzický zdroj SARZA/DATUM_EXP ani business význam ID_R_V=0. Prázdny label nerozlišuje chýbajúci tag od chýbajúceho lookupu.",
+          "compatibility": {
+            "sql_client": "SQL Navigator 5.5.4.847",
+            "oracle_server_version": null,
+            "read_only": true,
+            "notes_sk": "Výrazy getterov a lookupu prevzaté z pôvodného UI SELECTu; parametrizovaná diagnostika nebola spustená proti Oracle."
+          },
+          "evidence_refs": [
+            "pur.evidence.coa_ui.20260929",
+            "pur.evidence.coa_business.20260929"
+          ]
+        }
+      ],
+      "base_sha256": "89b1ded775b3719b773546288fd75fc46bcdd3233fd31e95aaaaf235ce027600"
+    },
+    {
+      "path": "catalog/purchasing/playbooks.yaml",
+      "append_records": [
+        {
+          "playbook_id": "pur.playbook.coa_metadata",
+          "symptom_sk": "CoA údaj na nákupnej objednávke chýba alebo nesedí",
+          "first_sql_ref": "pur.sql.coa_metadata",
+          "proves_sk": "Ako prvé skontrolovať current OBJD_O.XML_DATA: U1 CoA certifikát, U2 Šarža na CoA, U3 Dátum expirácie na CoA; XML kontext -2020.",
+          "does_not_prove_sk": "Históriu zmien, raw kódy Nie/Áno, dostupnosť zadania na príjemke ani zhodu so SARZA/DATUM_EXP.",
+          "next_step_sk": "Porovnať tri hodnoty s dodávateľským CoA certifikátom. Pri U1 rozlíšiť raw hodnotu a dekódovaný label CIS_X -1006; chýbajúci label neinterpretovať ako Nie. Pri chýbajúcom riadku skontrolovať parametre a technický filter ID_R_V=0 bez priradenia business významu. Nezačínať na receipt poliach ani OBJD_O.SARZA/DATUM_EXP.",
+          "temporal_boundary_sk": "DERIVED CURRENT z aktuálneho XML_DATA; individuálna história U1/U2/U3 nie je preukázaná."
+        }
+      ],
+      "base_sha256": "c1dec4dc5fa3716f7789532449e9667dbf9eaef34632c08fbc0aee19bc72763e"
+    },
+    {
+      "path": "catalog/purchasing/revisions.yaml",
+      "append_records": [
+        {
+          "revision_id": "pur.revision.coa.20260929",
+          "contract_version": "1.0",
+          "documentation_version": "1.1",
+          "date": "2026-09-29",
+          "breaking_change": false,
+          "change_classification": "NON_BREAKING_SEMANTIC",
+          "publication_impact": "REGENERATE",
+          "changed_record_refs": [
+            "mc.field.objd_o.sarza",
+            "mc.field.objd_o.datum_exp",
+            "mc.field.objd_o.xml_data",
+            "pur.temporal.coa_certificate_status",
+            "pur.temporal.coa_batch",
+            "pur.temporal.coa_expiry_date",
+            "pur.value.coa.empty",
+            "pur.value.coa.no",
+            "pur.value.coa.yes",
+            "pur.rule.coa.batch",
+            "pur.rule.coa.expiry",
+            "pur.rule.coa.codes",
+            "pur.rule.coa.context",
+            "pur.rule.coa.filter",
+            "pur.rule.coa.runtime",
+            "pur.sql.coa_metadata",
+            "pur.playbook.coa_metadata"
+          ],
+          "change_sk": "Additive semantic enrichment: CoA zdroj OBJD_O.XML_DATA, U1 stav certifikátu, U2 šarža, U3 expirácia; kontext -2020 a lookup CIS_X -1006. Explicitné oddelenie od fyzických SARZA/DATUM_EXP. Grain, identity, JOINy a lifecycle bez zmeny; maturity zostáva AGENT-READY.",
+          "reason_sk": "Schválený business handoff a pôvodný UI SELECT; dokumentačná verzia 1.1 schválená používateľom, kontrakt zostáva 1.0, historická publikácia 1.0 sa zachováva.",
+          "evidence_refs": [
+            "pur.evidence.coa_ui.20260929",
+            "pur.evidence.coa_business.20260929",
+            "pur.evidence.coa_version.20260929"
+          ]
+        }
+      ],
+      "base_sha256": "47d6201777e95e6c34e8f3e0718156c6e2b7e7f0307fcc1a82ef7d28afd166f5"
+    },
+    {
+      "path": "evidence/manifests/pur/coa-ui-20260929.yaml",
+      "document": {
+        "schema_version": "1.0",
+        "kind": "evidence-manifest",
+        "evidence_id": "pur.evidence.coa_ui.20260929",
+        "evidence_class": "C",
+        "environment": "MC",
+        "oracle_owner": "MC",
+        "captured_at": null,
+        "snapshot_date": null,
+        "source_client": "Používateľom dodaný pôvodný UI SELECT",
+        "source_file": "coa-ui-select-20260929.sql",
+        "retention_class": "SNAPSHOT_CRITICAL",
+        "raw_retained": true,
+        "repository_path": "evidence/snapshots/pur/coa-ui-select-20260929.sql",
+        "sha256": "bbebddda76e2b24d65380a3cf2eb0dcb5fb7889ef349bea1625097c062c710bc",
+        "supports_record_refs": [
+          "mc.field.objd_o.sarza",
+          "mc.field.objd_o.datum_exp",
+          "mc.field.objd_o.xml_data",
+          "pur.temporal.coa_certificate_status",
+          "pur.temporal.coa_batch",
+          "pur.temporal.coa_expiry_date",
+          "pur.value.coa.empty",
+          "pur.value.coa.no",
+          "pur.value.coa.yes",
+          "pur.rule.coa.batch",
+          "pur.rule.coa.expiry",
+          "pur.rule.coa.codes",
+          "pur.rule.coa.context",
+          "pur.rule.coa.filter",
+          "pur.rule.coa.runtime",
+          "pur.sql.coa_metadata",
+          "pur.playbook.coa_metadata"
+        ],
+        "review_status": "ACCEPTED",
+        "result_summary_sk": "Pôvodný UI SELECT dodaný používateľom: FROM OBJD_O C; U1 colTag1 -> m_sValues[155], U3 colTag2 -> m_sValues[156], U2 colTag3 -> m_sValues[157]; XML kontext -2020; CIS_X -1006; ID_R_V=0.",
+        "limitations_sk": [
+          "Zachytený SQL text, nie výsledok nového Oracle dotazu. Čas pôvodného zachytenia nie je známy.",
+          "RID_O 020260003197 je iba runtime/form instance filter. Raw Nie/Áno kódy ani business význam ID_R_V=0 nie sú preukázané."
+        ]
+      },
+      "base_sha256": null
+    },
+    {
+      "path": "evidence/manifests/pur/coa-business-20260929.yaml",
+      "document": {
+        "schema_version": "1.0",
+        "kind": "evidence-manifest",
+        "evidence_id": "pur.evidence.coa_business.20260929",
+        "evidence_class": "D",
+        "environment": "MC",
+        "oracle_owner": "MC",
+        "captured_at": null,
+        "snapshot_date": null,
+        "source_client": "Používateľský handoff/schválenie",
+        "source_file": "coa-business-handoff-20260929.txt",
+        "retention_class": "SNAPSHOT_CRITICAL",
+        "raw_retained": true,
+        "repository_path": "evidence/snapshots/pur/coa-business-handoff-20260929.txt",
+        "sha256": "329e5a2756702142d726793844bbd18dd8a194ab1712bc594fb7336512e57bf6",
+        "supports_record_refs": [
+          "mc.field.objd_o.sarza",
+          "mc.field.objd_o.datum_exp",
+          "mc.field.objd_o.xml_data",
+          "pur.temporal.coa_certificate_status",
+          "pur.temporal.coa_batch",
+          "pur.temporal.coa_expiry_date",
+          "pur.value.coa.empty",
+          "pur.value.coa.no",
+          "pur.value.coa.yes",
+          "pur.rule.coa.batch",
+          "pur.rule.coa.expiry",
+          "pur.rule.coa.codes",
+          "pur.rule.coa.context",
+          "pur.rule.coa.filter",
+          "pur.rule.coa.runtime",
+          "pur.sql.coa_metadata",
+          "pur.playbook.coa_metadata"
+        ],
+        "review_status": "ACCEPTED",
+        "result_summary_sk": "Používateľské business potvrdenie významu troch CoA údajov, stavov prázdne/Nie/Áno a neprítomnosti rovnakej možnosti zadávania na formulári príjemky.",
+        "limitations_sk": [
+          "Business/user evidence; nejde o odvodené Oracle metadata ani raw číselník HODNOTA."
+        ]
+      },
+      "base_sha256": null
+    },
+    {
+      "path": "evidence/manifests/pur/coa-version-20260929.yaml",
+      "document": {
+        "schema_version": "1.0",
+        "kind": "evidence-manifest",
+        "evidence_id": "pur.evidence.coa_version.20260929",
+        "evidence_class": "D",
+        "environment": "MC",
+        "oracle_owner": "MC",
+        "captured_at": null,
+        "snapshot_date": null,
+        "source_client": "Používateľský handoff/schválenie",
+        "source_file": "coa-version-approval-20260929.txt",
+        "retention_class": "SNAPSHOT_CRITICAL",
+        "raw_retained": true,
+        "repository_path": "evidence/snapshots/pur/coa-version-approval-20260929.txt",
+        "sha256": "736edd51730969b5cb291d6b92d64188d0040d065d19e5176b35dd3a8fbb1b0c",
+        "supports_record_refs": [
+          "pur.revision.coa.20260929"
+        ],
+        "review_status": "ACCEPTED",
+        "result_summary_sk": "Používateľské schválenie documentation_version 1.1, contract_version 1.0, NON_BREAKING_SEMANTIC / REGENERATE; v1.0 zachovať.",
+        "limitations_sk": [
+          "PR sa nesmie zlúčiť pred finálnym semantic delta QA."
+        ]
+      },
+      "base_sha256": null
+    }
+  ]
+}

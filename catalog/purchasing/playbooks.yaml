@@ -79,3 +79,13 @@ records:
   dependency_or_boundary_refs:
   - pur.rel.pl_receipt
   temporal_boundary_sk: Current snapshot nie je úplná event história.
+- playbook_id: pur.playbook.coa_metadata
+  symptom_sk: CoA údaj na nákupnej objednávke chýba alebo nesedí
+  first_sql_ref: pur.sql.coa_metadata
+  proves_sk: 'Ako prvé skontrolovať current OBJD_O.XML_DATA: U1 CoA certifikát, U2 Šarža na CoA, U3 Dátum expirácie
+    na CoA; XML kontext -2020.'
+  does_not_prove_sk: Históriu zmien, raw kódy Nie/Áno, dostupnosť zadania na príjemke ani zhodu so SARZA/DATUM_EXP.
+  next_step_sk: Porovnať tri hodnoty s dodávateľským CoA certifikátom. Pri U1 rozlíšiť raw hodnotu a dekódovaný
+    label CIS_X -1006; chýbajúci label neinterpretovať ako Nie. Pri chýbajúcom riadku skontrolovať parametre a technický
+    filter ID_R_V=0 bez priradenia business významu. Nezačínať na receipt poliach ani OBJD_O.SARZA/DATUM_EXP.
+  temporal_boundary_sk: DERIVED CURRENT z aktuálneho XML_DATA; individuálna história U1/U2/U3 nie je preukázaná.

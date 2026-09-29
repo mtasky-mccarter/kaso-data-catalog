@@ -1,0 +1,686 @@
+PURCHASING SEMANTIC DELTA — CoA METADATA
+
+Repository:
+mtasky-mccarter/kaso-data-catalog
+
+Canonical branch:
+main
+
+Domain:
+catalog/purchasing/
+
+This is an approved additive semantic enrichment.
+
+Do NOT reopen purchasing mapping.
+Do NOT change grain, JOIN keys, lifecycle, maturity or existing semantic corrections.
+No new Oracle export is required.
+
+
+============================================================
+1. BUSINESS CONFIRMATION
+============================================================
+
+At purchase-order line level we use three UI fields related to the
+supplier CoA certificate:
+
+1. CoA certifikát
+2. Šarža na CoA
+3. Dátum expirácie na CoA
+
+These values are used to record data from the supplier CoA certificate
+received for the purchase order / delivery.
+
+The same user-entry capability is not available on the receipt form.
+
+The field "CoA certifikát" is a selection/status field.
+
+Observed business values:
+- empty
+- Nie
+- Áno
+
+The values are selected from a lookup / code list.
+
+
+============================================================
+2. TECHNICAL UI SQL EVIDENCE
+============================================================
+
+The supplied UI SQL explicitly confirms:
+
+FROM OBJD_O C
+
+Therefore alias C = OBJD_O.
+
+The three UI values are derived from:
+
+OBJD_O.XML_DATA
+
+
+------------------------------------------------------------
+2.1 CoA certifikát
+------------------------------------------------------------
+
+Source expression:
+
+c_xml_tags.GetTagValueNumT(
+  C.XML_DATA,
+  'U1',
+  -2020,
+  NULL
+)
+
+The displayed UI value is decoded through:
+
+CIS_X.ID_CIS = -1006
+
+with:
+
+CIS_X.HODNOTA =
+c_xml_tags.GetTagValueNumT(
+  C.XML_DATA,
+  'U1',
+  -2020,
+  NULL
+)
+
+and:
+
+pck_multilang.DecodeTextX(27, NAZOV)
+
+Canonical alias:
+
+coa_certificate_status
+
+Business label:
+
+CoA certifikát
+
+Business meaning:
+
+Status/evidence of the supplier CoA certificate for the purchase-order /
+delivery line.
+
+Confirmed displayed business values:
+- empty
+- Nie
+- Áno
+
+IMPORTANT:
+Do NOT invent or assign the raw CIS_X.HODNOTA codes for "Nie" or "Áno".
+
+Those raw codes remain TREBA OVERIŤ unless independently evidenced.
+
+
+------------------------------------------------------------
+2.2 Šarža na CoA
+------------------------------------------------------------
+
+Source expression:
+
+c_xml_tags.GetTagValueT(
+  C.XML_DATA,
+  'U2',
+  -2020,
+  NULL
+)
+
+Canonical alias:
+
+coa_batch
+
+Business label:
+
+Šarža na CoA
+
+Business meaning:
+
+Batch / lot stated on the supplied CoA certificate.
+
+
+------------------------------------------------------------
+2.3 Dátum expirácie na CoA
+------------------------------------------------------------
+
+Source expression:
+
+c_xml_tags.GetTagValueDateT(
+  C.XML_DATA,
+  'U3',
+  -2020,
+  NULL
+)
+
+Canonical alias:
+
+coa_expiry_date
+
+Business label:
+
+Dátum expirácie na CoA
+
+Business meaning:
+
+Expiry date stated on the supplied CoA certificate.
+
+
+============================================================
+3. XML CONTEXT
+============================================================
+
+Confirmed XML context/type for these three tags:
+
+-2020
+
+Confirmed tag meanings in this purchasing UI context:
+
+U1 = CoA certifikát status
+U2 = Šarža na CoA
+U3 = Dátum expirácie na CoA
+
+Do NOT generalize these tag meanings to unrelated XML contexts without
+separate evidence.
+
+
+============================================================
+4. IMPORTANT DISTINCTION FROM PHYSICAL COLUMNS
+============================================================
+
+OBJD_O physically also contains:
+
+OBJD_O.SARZA
+OBJD_O.DATUM_EXP
+
+These physical fields already exist in the catalog.
+
+Do NOT rename them.
+
+Keep their canonical aliases as they are:
+
+sarza
+datum_exp
+
+Keep their current semantic status unless separate evidence already
+supports a stronger meaning.
+
+The supplied purchasing UI SQL proves that the CoA fields are sourced
+from XML_DATA, not from these physical columns.
+
+Therefore:
+
+UI "Šarža na CoA"
+!= proven source OBJD_O.SARZA
+
+UI "Dátum expirácie na CoA"
+!= proven source OBJD_O.DATUM_EXP
+
+Do NOT mark OBJD_O.SARZA or OBJD_O.DATUM_EXP as unused.
+
+Their actual business use may exist elsewhere and is not established by
+this evidence.
+
+
+============================================================
+5. UI QUERY FILTER
+============================================================
+
+The supplied UI query also contains:
+
+ID_R_V = 0
+
+This is TECHNICALLY KNOWN for the supplied form query.
+
+Do NOT invent a business meaning for ID_R_V=0.
+
+Document only:
+
+- the filter is present in the supplied UI SELECT
+- its business purpose is not established by this evidence
+
+
+============================================================
+6. CANONICAL TEMPORAL CLASSIFICATION
+============================================================
+
+Physical source:
+
+OBJD_O.XML_DATA
+
+classification:
+RAW CURRENT
+
+Derived UI values:
+
+coa_certificate_status
+coa_batch
+coa_expiry_date
+
+classification:
+DERIVED CURRENT
+
+Historical reconstruction / change history for individual U1/U2/U3
+values is not proven.
+
+Do NOT claim full history.
+
+
+============================================================
+7. REPOSITORY DELTA
+============================================================
+
+Update the existing purchasing canonical contract using current repository
+schemas and conventions.
+
+At minimum:
+
+
+------------------------------------------------------------
+7.1 catalog/purchasing/fields-objd_o.yaml
+------------------------------------------------------------
+
+Enrich:
+
+mc.field.objd_o.xml_data
+
+with confirmed business meaning that XML_DATA contains, among other
+technical data, CoA metadata used in the purchase-order line UI.
+
+Add limitations to:
+
+mc.field.objd_o.sarza
+
+stating that the supplied CoA UI "Šarža na CoA" is derived from
+OBJD_O.XML_DATA/U2 and is NOT proven to come from OBJD_O.SARZA.
+
+Add limitations to:
+
+mc.field.objd_o.datum_exp
+
+stating that the supplied CoA UI "Dátum expirácie na CoA" is derived
+from OBJD_O.XML_DATA/U3 and is NOT proven to come from OBJD_O.DATUM_EXP.
+
+Do not otherwise reinterpret SARZA or DATUM_EXP.
+
+
+------------------------------------------------------------
+7.2 Add canonical derived-field representation
+------------------------------------------------------------
+
+Using the repository's current canonical pattern, materialize three
+derived purchasing values:
+
+coa_certificate_status
+coa_batch
+coa_expiry_date
+
+Each record must contain:
+
+- source_ref = mc.field.objd_o.xml_data
+- UI/business label
+- exact derivation expression
+- XML tag
+- XML context/type -2020
+- status
+- evidence refs
+- temporal classification DERIVED CURRENT
+- limitations
+
+Do NOT invent a new schema if an existing repository schema already
+supports derived/current semantic values.
+
+Follow current repository conventions.
+
+
+------------------------------------------------------------
+7.3 catalog/purchasing/value-domains.yaml
+------------------------------------------------------------
+
+Add the confirmed business domain for:
+
+coa_certificate_status
+
+Confirmed displayed values:
+
+- empty
+- Nie
+- Áno
+
+Lookup source:
+
+CIS_X
+ID_CIS = -1006
+
+Do NOT materialize raw HODNOTA codes for Nie / Áno unless they are
+actually present in evidence.
+
+If raw codes are not known, preserve that as TREBA OVERIŤ / DATA GAP
+according to repository convention.
+
+
+------------------------------------------------------------
+7.4 catalog/purchasing/temporal.yaml
+------------------------------------------------------------
+
+Add non-breaking DERIVED CURRENT semantics for:
+
+- coa_certificate_status
+- coa_batch
+- coa_expiry_date
+
+Source:
+current OBJD_O.XML_DATA
+
+History:
+not reconstructable from current evidence.
+
+
+------------------------------------------------------------
+7.5 catalog/purchasing/do-not-assume.yaml
+------------------------------------------------------------
+
+Add explicit rules:
+
+1.
+Do NOT assume:
+
+UI "Šarža na CoA" = OBJD_O.SARZA
+
+2.
+Do NOT assume:
+
+UI "Dátum expirácie na CoA" = OBJD_O.DATUM_EXP
+
+3.
+Do NOT assume raw CIS_X.HODNOTA codes for "Nie" / "Áno".
+
+4.
+Do NOT generalize U1/U2/U3 meanings outside the confirmed XML context
+-2020.
+
+5.
+Do NOT assign business meaning to ID_R_V=0 from this query alone.
+
+
+------------------------------------------------------------
+7.6 Evidence
+------------------------------------------------------------
+
+Materialize the supplied UI SELECT as retained purchasing evidence using
+the repository's current evidence convention.
+
+The retained evidence must prove at minimum:
+
+FROM OBJD_O C
+
+U1:
+c_xml_tags.GetTagValueNumT(C.XML_DATA,'U1',-2020,NULL)
+
+U2:
+c_xml_tags.GetTagValueT(C.XML_DATA,'U2',-2020,NULL)
+
+U3:
+c_xml_tags.GetTagValueDateT(C.XML_DATA,'U3',-2020,NULL)
+
+CIS_X.ID_CIS = -1006
+
+ID_R_V = 0
+
+UI bindings:
+
+m_sValues[155]
+m_sValues[156]
+m_sValues[157]
+
+Business confirmation about:
+- CoA meaning
+- empty / Nie / Áno
+- receipt-form limitation
+
+must be represented as business/user evidence, not inferred Oracle
+metadata.
+
+
+------------------------------------------------------------
+7.7 Diagnostic SQL
+------------------------------------------------------------
+
+Add a read-only purchasing diagnostic SQL for CoA metadata.
+
+Grain:
+
+one OBJD_O line
+
+Expose at minimum:
+
+RID_O
+ID_R
+KOD_ID
+
+raw U1 value
+
+decoded CoA certificate status
+
+U2 as coa_batch
+
+U3 as coa_expiry_date
+
+Use the confirmed XML expressions.
+
+If the diagnostic SQL intentionally mirrors the supplied UI form,
+preserve:
+
+ID_R_V = 0
+
+and explicitly document:
+
+"UI query condition; business meaning not established."
+
+Do NOT use:
+
+OBJD_O.SARZA
+
+or
+
+OBJD_O.DATUM_EXP
+
+as substitutes for CoA values.
+
+
+------------------------------------------------------------
+7.8 Playbook
+------------------------------------------------------------
+
+Add or update a purchasing playbook for:
+
+"CoA údaj na nákupnej objednávke chýba alebo nesedí"
+
+First diagnostic step:
+
+inspect current OBJD_O.XML_DATA U1/U2/U3.
+
+The playbook must distinguish:
+
+- CoA certifikát status
+- Šarža na CoA
+- Dátum expirácie na CoA
+
+Explain what the query proves and does not prove.
+
+Do NOT redirect first to receipt fields.
+
+Do NOT redirect first to OBJD_O.SARZA / DATUM_EXP.
+
+
+------------------------------------------------------------
+7.9 Revision history
+------------------------------------------------------------
+
+Add a non-breaking semantic revision dated:
+
+2026-09-29
+
+Classification:
+
+additive semantic enrichment
+
+The revision must state:
+
+- CoA metadata source confirmed as OBJD_O.XML_DATA
+- U1/U2/U3 meanings confirmed
+- CIS_X -1006 lookup confirmed for CoA status
+- explicit distinction from OBJD_O.SARZA and DATUM_EXP
+- no grain / JOIN / lifecycle change
+- maturity unchanged
+
+Do not silently overwrite earlier revisions.
+
+
+============================================================
+8. VERSIONING
+============================================================
+
+Do NOT invent a documentation or contract version bump.
+
+Preserve the currently approved contract/publication version unless the
+repository's current version governance explicitly requires a bump.
+
+If governance requires a bump:
+STOP and report the exact rule before changing the version.
+
+
+============================================================
+9. PUBLICATION
+============================================================
+
+Regenerate the current canonical purchasing publication using current
+main publication governance.
+
+Current publication slug:
+
+nakupne-objednavky
+
+Current publication subject:
+
+nákupné objednávky
+
+Use:
+
+python tools/generate_publication.py nakupne-objednavky
+
+Then verify:
+
+python tools/generate_publication.py nakupne-objednavky --check
+
+python tools/generate_publication.py all --check
+
+The Technical & Diagnostic Reference must include:
+
+- CoA certifikát
+- Šarža na CoA
+- Dátum expirácie na CoA
+- exact XML sources
+- value-domain limitation
+- DO NOT ASSUME rules
+- diagnostic SQL
+- playbook
+- revision entry
+
+
+============================================================
+10. ACCEPTANCE TESTS
+============================================================
+
+Add regression checks proving:
+
+- OBJD_O.XML_DATA is the documented CoA source
+- U1 = coa_certificate_status
+- U2 = coa_batch
+- U3 = coa_expiry_date
+- XML context/type = -2020
+- certificate lookup uses CIS_X.ID_CIS=-1006
+- displayed business states include empty / Nie / Áno
+- raw Nie / Áno codes are NOT invented
+- OBJD_O.SARZA is NOT asserted as CoA batch source
+- OBJD_O.DATUM_EXP is NOT asserted as CoA expiry source
+- ID_R_V=0 has no invented business interpretation
+- maturity remains AGENT-READY
+- existing non-blocking backlog is not silently changed
+- no existing JOIN/grain/lifecycle semantics changed
+- publication regeneration is deterministic
+- unresolved references = 0
+- duplicate IDs = 0
+
+
+============================================================
+11. VALIDATION
+============================================================
+
+Run:
+
+python tools/validate_catalog.py
+
+python -m unittest discover -s tools -p 'test_*.py' -v
+
+python tools/generate_publication.py nakupne-objednavky --check
+
+python tools/generate_publication.py all --check
+
+Confirm:
+
+- validator PASS
+- full unit suite PASS
+- purchasing acceptance PASS
+- purchasing SQL safety PASS
+- purchasing publication PASS
+- generic publication layout PASS
+- unresolved refs = 0
+- duplicate IDs = 0
+
+
+============================================================
+12. WORKFLOW
+============================================================
+
+Create a focused feature branch from current main.
+
+Suggested branch:
+
+codex/purchasing-coa-metadata
+
+Open a focused PR.
+
+Do NOT merge before semantic delta QA.
+
+
+============================================================
+13. RETURN
+============================================================
+
+Return:
+
+- base main SHA
+- branch
+- head SHA
+- PR number / URL
+- exact semantic files changed
+- evidence files added
+- diagnostic SQL added
+- revision ID
+- publication paths regenerated
+- validator result
+- total test count/result
+- purchasing acceptance result
+- purchasing SQL safety result
+- publication determinism result
+- unresolved refs
+- duplicate IDs
+- CI result
+- confirmation of zero breaking changes
+- confirmation that OBJD_O.SARZA and OBJD_O.DATUM_EXP were not
+  reinterpreted as CoA fields
+- any remaining blocker
+
+If any semantic point is missing from evidence:
+use TREBA OVERIŤ / DATA GAP.
+
+Do not guess.

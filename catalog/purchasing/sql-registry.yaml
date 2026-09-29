@@ -189,3 +189,30 @@ records:
     oracle_server_version: null
     read_only: true
     notes_sk: Statically checked conservative SELECT. Nebolo spustené proti MC.
+- sql_id: pur.sql.coa_metadata
+  title_sk: Aktuálne CoA údaje riadka nákupnej objednávky
+  sql_file: sql/diagnostic/purchasing/coa_metadata.sql
+  purpose_sk: Skontrolovať raw U1, dekódovaný stav certifikátu, U2 šaržu a U3 expiráciu z aktuálneho XML_DATA.
+  input_parameters:
+  - name: p_rid_o
+    required: true
+    description_sk: RID hlavičky ako text; konkrétny runtime RID z dôkazu sa nepovažuje za pravidlo.
+  - name: p_id_r
+    required: true
+    description_sk: Identifikátor riadka ID_R.
+  result_grain_sk: Jeden OBJD_O riadok (RID_O, ID_R); pri ID_R_V odlišnom od 0 sa riadok nezobrazí.
+  fanout_warning_sk: Skalárny lookup CIS_X neduplikuje riadky; jedinečnosť ID_CIS/HODNOTA nie je preukázaná, viac
+    zhôd vyvolá ORA-01427.
+  proves_sk: 'Current raw U1 a lookup label z CIS_X -1006, U2 šaržu a U3 expiráciu v XML kontexte -2020. ID_R_V=0:
+    UI query condition; business meaning not established.'
+  does_not_prove_sk: Raw kódy Nie/Áno, históriu, receipt vstup, fyzický zdroj SARZA/DATUM_EXP ani business význam
+    ID_R_V=0. Prázdny label nerozlišuje chýbajúci tag od chýbajúceho lookupu.
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+    notes_sk: Výrazy getterov a lookupu prevzaté z pôvodného UI SELECTu; parametrizovaná diagnostika nebola spustená
+      proti Oracle.
+  evidence_refs:
+  - pur.evidence.coa_ui.20260929
+  - pur.evidence.coa_business.20260929

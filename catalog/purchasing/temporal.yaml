@@ -138,3 +138,81 @@ records:
   evidence_refs:
   - pur.evidence.accepted
   - pur.evidence.mp01_f
+- temporal_rule_id: pur.temporal.coa_certificate_status
+  scope_refs:
+  - mc.object.objd_o
+  - mc.field.objd_o.xml_data
+  classification: DERIVED CURRENT
+  canonical_alias: coa_certificate_status
+  source_ref: mc.field.objd_o.xml_data
+  writer_or_source_ref: mc.field.objd_o.xml_data
+  business_label_sk: CoA certifikát
+  transition_or_event_sk: Stav/evidencia dodávateľského CoA certifikátu pre riadok nákupnej objednávky alebo dodávky.
+  derivation_expression: c_xml_tags.GetTagValueNumT(C.XML_DATA,'U1', -2020, NULL)
+  xml_tag: U1
+  xml_context: -2020
+  ui_binding: tblObjD_LFormular.m_sValues[155]
+  reconstructable: false
+  history_limitations_sk: Len current OBJD_O.XML_DATA. História U1/U2/U3 ani historická rekonštrukcia nie sú preukázané.
+  status: POTVRDENÉ
+  evidence_refs:
+  - pur.evidence.coa_ui.20260929
+  - pur.evidence.coa_business.20260929
+  limitations_sk:
+  - Význam tagu platí iba pre potvrdený XML kontext -2020.
+  - Možnosť zadania týchto CoA údajov na formulári príjemky nie je podľa používateľa dostupná.
+  - 'Lookup CIS_X.ID_CIS=-1006; HODNOTA je raw U1. Zobrazené stavy: prázdne, Nie, Áno. Raw kódy Nie/Áno sú TREBA
+    OVERIŤ; žiadne kódy sa nepriraďujú.'
+  - Pôvodný UI colTag1 pripája k labelu raw HODNOTA a obmedzuje text na 254 znakov; diagnostika vracia label a raw
+    U1 samostatne.
+  display_expression: (SELECT pck_multilang.DecodeTextX(27, NAZOV) FROM CIS_X WHERE ID_CIS = -1006 AND HODNOTA =
+    c_xml_tags.GetTagValueNumT(C.XML_DATA,'U1', -2020, NULL))
+- temporal_rule_id: pur.temporal.coa_batch
+  scope_refs:
+  - mc.object.objd_o
+  - mc.field.objd_o.xml_data
+  classification: DERIVED CURRENT
+  canonical_alias: coa_batch
+  source_ref: mc.field.objd_o.xml_data
+  writer_or_source_ref: mc.field.objd_o.xml_data
+  business_label_sk: Šarža na CoA
+  transition_or_event_sk: Šarža/lot uvedená na dodanom CoA certifikáte.
+  derivation_expression: c_xml_tags.GetTagValueT(C.XML_DATA,'U2', -2020, NULL)
+  xml_tag: U2
+  xml_context: -2020
+  ui_binding: tblObjD_LFormular.m_sValues[157]
+  reconstructable: false
+  history_limitations_sk: Len current OBJD_O.XML_DATA. História U1/U2/U3 ani historická rekonštrukcia nie sú preukázané.
+  status: POTVRDENÉ
+  evidence_refs:
+  - pur.evidence.coa_ui.20260929
+  - pur.evidence.coa_business.20260929
+  limitations_sk:
+  - Význam tagu platí iba pre potvrdený XML kontext -2020.
+  - Možnosť zadania týchto CoA údajov na formulári príjemky nie je podľa používateľa dostupná.
+  - Pôvodný UI colTag3 skracuje text na 254 znakov; diagnostika vracia hodnotu GetTagValueT. OBJD_O.SARZA nie je
+    preukázaný zdroj tohto UI údaja.
+- temporal_rule_id: pur.temporal.coa_expiry_date
+  scope_refs:
+  - mc.object.objd_o
+  - mc.field.objd_o.xml_data
+  classification: DERIVED CURRENT
+  canonical_alias: coa_expiry_date
+  source_ref: mc.field.objd_o.xml_data
+  writer_or_source_ref: mc.field.objd_o.xml_data
+  business_label_sk: Dátum expirácie na CoA
+  transition_or_event_sk: Dátum expirácie uvedený na dodanom CoA certifikáte.
+  derivation_expression: c_xml_tags.GetTagValueDateT(C.XML_DATA,'U3', -2020, NULL)
+  xml_tag: U3
+  xml_context: -2020
+  ui_binding: tblObjD_LFormular.m_sValues[156]
+  reconstructable: false
+  history_limitations_sk: Len current OBJD_O.XML_DATA. História U1/U2/U3 ani historická rekonštrukcia nie sú preukázané.
+  status: POTVRDENÉ
+  evidence_refs:
+  - pur.evidence.coa_ui.20260929
+  - pur.evidence.coa_business.20260929
+  limitations_sk:
+  - Význam tagu platí iba pre potvrdený XML kontext -2020.
+  - Možnosť zadania týchto CoA údajov na formulári príjemky nie je podľa používateľa dostupná.
+  - OBJD_O.DATUM_EXP nie je preukázaný zdroj tohto UI údaja.
