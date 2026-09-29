@@ -16,7 +16,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 
 ROOT = Path(__file__).resolve().parents[1]
 GENERATED = ROOT / "generated/nakupne-objednavky"
-BASENAME = "KASO Data Catalog - Technical & Diagnostic Reference - nákupné objednávky v1.0"
+BASENAME = "KASO Data Catalog - Technical & Diagnostic Reference - nákupné objednávky v1.1"
 
 
 def normalized(text):
@@ -28,6 +28,7 @@ class PurchasingPublicationTests(unittest.TestCase):
         manifest = yaml.safe_load((GENERATED / (BASENAME + ".manifest.yaml")).read_text())
         self.assertEqual("pur.contract.purchasing.1_0", manifest["contract_ref"])
         self.assertEqual("1.0", manifest["contract_version"])
+        self.assertEqual("1.1", manifest["documentation_version"])
         self.assertEqual("1.0", manifest["publication_layout_version"])
         self.assertEqual("nakupne-objednavky", manifest["publication_slug"])
         self.assertEqual(BASENAME, manifest["publication_title"])
@@ -72,8 +73,8 @@ class PurchasingPublicationTests(unittest.TestCase):
         for sql in data["sql"].values():
             self.assertIn(normalized(sql), text)
         self.assertEqual(328, sum(len(d["records"]) for n, d in data["docs"].items() if n.startswith("fields-")))
-        self.assertEqual(10, len(data["sql"]))
-        self.assertEqual(7, len(data["docs"]["playbooks.yaml"]["records"]))
+        self.assertEqual(11, len(data["sql"]))
+        self.assertEqual(8, len(data["docs"]["playbooks.yaml"]["records"]))
         self.assertEqual(700, len(data["docs"]["api-references.yaml"]["records"]))
 
     def test_factoring_preserves_record_values_and_absence(self):

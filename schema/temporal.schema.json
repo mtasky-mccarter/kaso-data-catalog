@@ -98,6 +98,42 @@
         },
         "evidence_refs": {
           "$ref": "common.schema.json#/$defs/refs"
+        },
+        "canonical_alias": {
+          "$ref": "common.schema.json#/$defs/alias"
+        },
+        "source_ref": {
+          "$ref": "common.schema.json#/$defs/ref"
+        },
+        "business_label_sk": {
+          "type": "string",
+          "minLength": 1
+        },
+        "derivation_expression": {
+          "type": "string",
+          "minLength": 1
+        },
+        "display_expression": {
+          "type": "string",
+          "minLength": 1
+        },
+        "xml_tag": {
+          "type": "string",
+          "minLength": 1
+        },
+        "xml_context": {
+          "type": "integer"
+        },
+        "ui_binding": {
+          "type": "string",
+          "minLength": 1
+        },
+        "limitations_sk": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
         }
       },
       "required": [
@@ -129,6 +165,26 @@
             "required": [
               "evidence_refs"
             ]
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "canonical_alias"
+            ]
+          },
+          "then": {
+            "required": [
+              "source_ref",
+              "business_label_sk",
+              "derivation_expression",
+              "limitations_sk"
+            ],
+            "properties": {
+              "classification": {
+                "const": "DERIVED CURRENT"
+              }
+            }
           }
         }
       ]

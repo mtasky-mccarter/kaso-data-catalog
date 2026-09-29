@@ -1,0 +1,108 @@
+schema_version: '2.0'
+kind: codex-handoff
+handoff_id: pur.handoff.coa.20260929
+status: READY_FOR_CODEX_HANDOFF
+mode: UPDATE_DOMAIN
+repository:
+  name: mtasky-mccarter/kaso-data-catalog
+  base_commit: e7743fc70b3367411be6f5463aacb13483f60d02
+scope:
+  domain: purchasing
+  slug: nakupne-objednavky
+  canonical_path: catalog/purchasing/
+  authoritative_environment: MC
+canonical_base:
+  contract_ref: pur.contract.purchasing.1_0
+  revision_ref: pur.revision.schema.001
+target:
+  maturity: AGENT-READY
+  contract_version: '1.0'
+delta:
+  revision_id: pur.revision.coa.20260929
+  classification: NON_BREAKING_SEMANTIC
+  semantic_change: true
+  changed_record_refs:
+  - mc.field.objd_o.sarza
+  - mc.field.objd_o.datum_exp
+  - mc.field.objd_o.xml_data
+  - pur.temporal.coa_certificate_status
+  - pur.temporal.coa_batch
+  - pur.temporal.coa_expiry_date
+  - pur.value.coa.empty
+  - pur.value.coa.no
+  - pur.value.coa.yes
+  - pur.rule.coa.batch
+  - pur.rule.coa.expiry
+  - pur.rule.coa.codes
+  - pur.rule.coa.context
+  - pur.rule.coa.filter
+  - pur.rule.coa.runtime
+  - pur.sql.coa_metadata
+  - pur.playbook.coa_metadata
+  record_paths:
+  - catalog/purchasing/fields-objd_o.yaml
+  approved_evidence_refs:
+  - pur.evidence.coa_ui.20260929
+  - pur.evidence.coa_business.20260929
+  - pur.evidence.coa_version.20260929
+  approved_delta_refs:
+  - pur.delta.coa.20260929
+approved_inputs:
+- path: evidence/source-extracts/pur/coa-delta-20260929.json
+  sha256: ba2baf5c46567547044d6c338e3cd7c20e936b4c50e7acac5721053237f1354c
+- path: evidence/snapshots/pur/coa-ui-select-20260929.sql
+  sha256: bbebddda76e2b24d65380a3cf2eb0dcb5fb7889ef349bea1625097c062c710bc
+- path: evidence/snapshots/pur/coa-business-handoff-20260929.txt
+  sha256: 329e5a2756702142d726793844bbd18dd8a194ab1712bc594fb7336512e57bf6
+- path: evidence/snapshots/pur/coa-version-approval-20260929.txt
+  sha256: 736edd51730969b5cb291d6b92d64188d0040d065d19e5176b35dd3a8fbb1b0c
+- path: evidence/snapshots/pur/coa-ui-submission-20260929.txt
+  sha256: 78501c21a6223294be8e3259391644a85acf0a99d8797be24d9e342728012753
+backlog_delta:
+  blocking_count: 0
+  added: []
+  resolved: []
+  nonblocking_changed: []
+publication:
+  impact: REGENERATE
+  documentation_version: '1.1'
+execution:
+  materializer_commands:
+  - python tools/materialize_pur_coa.py
+  domain_tests:
+  - python -m unittest discover -s tools -p test_pur_acceptance.py -v
+  - python -m unittest discover -s tools -p test_pur_coa.py -v
+  sql_tests:
+  - python -m unittest discover -s tools -p test_pur_sql_safety.py -v
+  publication_tests:
+  - python -m unittest discover -s tools -p test_pur_publication.py -v
+repository_actions:
+  create_or_update:
+  - catalog/purchasing/fields-objd_o.yaml
+  - catalog/purchasing/temporal.yaml
+  - catalog/purchasing/value-domains.yaml
+  - catalog/purchasing/do-not-assume.yaml
+  - sql/diagnostic/purchasing/coa_metadata.sql
+  - catalog/purchasing/sql-registry.yaml
+  - catalog/purchasing/playbooks.yaml
+  - catalog/purchasing/revisions.yaml
+  - evidence/manifests/pur/coa-ui-20260929.yaml
+  - evidence/manifests/pur/coa-business-20260929.yaml
+  - evidence/manifests/pur/coa-version-20260929.yaml
+  - schema/temporal.schema.json
+  - generated/nakupne-objednavky/
+  - tools/materialize_pur_coa.py
+  - tools/test_pur_coa.py
+  - tools/test_pur_acceptance.py
+  - tools/test_pur_publication.py
+  preserve:
+  - catalog/purchasing/backlog.yaml
+  - catalog/purchasing/contract.yaml
+  - catalog/purchasing/relationships.yaml
+  - catalog/purchasing/constraints.yaml
+  - catalog/purchasing/flows.yaml
+  forbidden: []
+stop_conditions:
+- Nedomýšľať raw kódy Nie/Áno ani význam ID_R_V=0.
+- Nezmeniť grain, identity, JOINy, lifecycle ani historickú publikáciu v1.0.
+- Nezlúčiť PR pred finálnym semantic delta QA.
