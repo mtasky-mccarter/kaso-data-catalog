@@ -21,6 +21,12 @@ LAYOUT_VERSION = "1.0"
 VERSION_RE = re.compile(r"^(\d+)\.(\d+)$")
 
 PUBLICATIONS = {
+    "obchodni-partneri": {
+        "subject_sk": "obchodní partneri",
+        "generator": "tools/generate_op_publication.py",
+        "legacy_basename": "obchodni-partneri-v1.0",
+        "revisions": "catalog/master/obchodni-partneri/revisions.yaml",
+    },
     "skladove-karty": {
         "subject_sk": "skladové karty",
         "generator": "tools/generate_pm_publication.py",

@@ -228,6 +228,24 @@ def project(p, root):
     for path,doc in documents.items():files[path]=dump(doc)
     return documents,files
 
+def preserve_closure(root, docs, files):
+    """Reapply the approved closure in memory; reject unknown later revisions."""
+    rel = str(DOMAIN/'revisions.yaml')
+    current = load_yaml(root/rel) if (root/rel).exists() else docs[rel]
+    original = docs[rel]['records']
+    if current['records'] == original:
+        return
+    from materialize_op_publication import project as closure_project
+    closed = closure_project(root, docs[str(DOMAIN/'contract.yaml')], docs[rel])
+    if current != closed[rel]:
+        raise ValueError('Later revision would be overwritten; use its approved materializer')
+    for path, expected in closed.items():
+        if not (root/path).exists() or load_yaml(root/path) != expected:
+            raise ValueError('Closure metadata drift: '+path)
+        docs[path] = expected
+        files[path] = dump(expected)
+
+
 def main(argv=None):
     ap=argparse.ArgumentParser(description=__doc__)
     ap.add_argument('package',type=Path)
@@ -235,12 +253,17 @@ def main(argv=None):
     args=ap.parse_args(argv)
     p,h,counts=verify_inputs(ROOT,args.package.resolve())
     docs,files=project(p,ROOT)
+    preserve_closure(ROOT,docs,files)
     # Validate against a temporary projection before changing repository outputs.
     with tempfile.TemporaryDirectory(prefix='op-materialize-') as tmp:
         stage=Path(tmp)
         staged=dict(files)
         for rel in (str(INPUT),'evidence/snapshots/obchodni-partneri/delivery-scope.md'):
             staged[rel]=(ROOT/rel).read_bytes()
+        for doc in docs.values():
+            if doc.get('kind') == 'evidence-manifest' and doc.get('repository_path') not in staged:
+                rel = doc['repository_path']
+                staged[rel] = (ROOT/rel).read_bytes()
         for rel,content in staged.items():
             path=stage/rel
             path.parent.mkdir(parents=True,exist_ok=True)

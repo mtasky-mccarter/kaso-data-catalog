@@ -1,0 +1,107 @@
+schema_version: '2.0'
+kind: codex-handoff
+handoff_id: op.handoff.publication_closure.20260930
+status: READY_FOR_CODEX_HANDOFF
+mode: CLOSURE
+repository:
+  name: mtasky-mccarter/kaso-data-catalog
+  base_commit: 5a8cca22f90003510b5d45442dca71088b80ea15
+scope:
+  domain: master
+  slug: obchodni-partneri
+  canonical_path: catalog/master/obchodni-partneri/
+  authoritative_environment: MC
+canonical_base:
+  contract_ref: op.contract.obchodni_partneri.1_0
+  revision_ref: op.revision.initial_1_0
+target:
+  maturity: AGENT-READY
+  contract_version: '1.0'
+delta:
+  revision_id: op.revision.publication_1_0.20260930
+  classification: PUBLICATION_ONLY
+  semantic_change: false
+  changed_record_refs:
+  - op.contract.obchodni_partneri.1_0
+  - op.revision.publication_1_0.20260930
+  record_paths:
+  - catalog/master/obchodni-partneri/contract.yaml
+  - catalog/master/obchodni-partneri/revisions.yaml
+  approved_evidence_refs:
+  - op.evidence.publication_approval.20260930
+  approved_delta_refs:
+  - op.delta.publication_1_0.20260930
+approved_inputs:
+- path: evidence/source-extracts/op/publication-delta-20260930.json
+  sha256: 2304669457c4ff76c1f820db200e2be7e81b21d4bd16908554dd3f0f0474ae0f
+- path: evidence/snapshots/obchodni-partneri/publication-approval-20260930.yaml
+  sha256: 24cd239f061687041e9a9037acf32b866e09eae63dee4430ebbe4304e6d35400
+backlog_delta:
+  blocking_count: 0
+  added: []
+  resolved: []
+  nonblocking_changed: []
+publication:
+  impact: INITIAL
+  documentation_version: '1.0'
+execution:
+  materializer_commands:
+  - python tools/materialize_op_publication.py evidence/source-extracts/op/publication-delta-20260930.json
+  - python tools/generate_publication.py obchodni-partneri
+  domain_tests:
+  - python -m unittest discover -s tools -p 'test_op_acceptance.py' -v
+  sql_tests:
+  - python -m unittest discover -s tools -p 'test_op_sql_safety.py' -v
+  publication_tests:
+  - python -m unittest discover -s tools -p 'test_op_publication.py' -v
+  - python tools/generate_publication.py obchodni-partneri --check
+repository_actions:
+  create_or_update:
+  - catalog/master/obchodni-partneri/contract.yaml
+  - catalog/master/obchodni-partneri/revisions.yaml
+  - evidence/source-extracts/op/publication-delta-20260930.json
+  - evidence/snapshots/obchodni-partneri/publication-approval-20260930.yaml
+  - evidence/manifests/obchodni-partneri/op.evidence.publication_approval.20260930.yaml
+  - docs/handoffs/obchodni-partneri/publication-closure-20260930.yaml
+  - tools/materialize_op_publication.py
+  - tools/generate_op_publication.py
+  - tools/generate_publication.py
+  - tools/test_op_publication.py
+  - tools/test_lean_execution_v4.py
+  # Explicitly user-approved INITIAL publication governance correction.
+  - tools/check_publication_governance.py
+  # User-approved engineering scope extension: preserve later closure metadata.
+  - tools/test_op_acceptance.py
+  - tools/materialize_obchodni_partneri.py
+  - generated/obchodni-partneri
+  preserve:
+  - catalog/master/obchodni-partneri/fields.yaml
+  - catalog/master/obchodni-partneri/constraints.yaml
+  - catalog/master/obchodni-partneri/indexes.yaml
+  - catalog/master/obchodni-partneri/relationships.yaml
+  - catalog/master/obchodni-partneri/flows.yaml
+  - catalog/master/obchodni-partneri/mutations.yaml
+  - catalog/master/obchodni-partneri/temporal.yaml
+  - catalog/master/obchodni-partneri/data-quality.yaml
+  - catalog/master/obchodni-partneri/do-not-assume.yaml
+  - catalog/master/obchodni-partneri/boundaries.yaml
+  - catalog/master/obchodni-partneri/backlog.yaml
+  - sql/diagnostic/obchodni-partneri
+  - evidence/snapshots/obchodni-partneri/raw
+  forbidden:
+  - schema
+  - generated/cestovne-prikazy
+  - generated/nakupne-objednavky
+  - generated/obchodne-pripady
+  - generated/skladove-karty
+  - generated/vydajky
+stop_conditions:
+- Do not reopen or reinterpret OBCH_PARTNERI semantic mapping; this is publication-only closure.
+- Do not change contract_version 1.0, maturity AGENT-READY, grain, identity, JOINs, source-of-truth, temporal, mutation, DQ,
+  DO NOT ASSUME, backlog or boundaries.
+- Do not create documentation_version other than the explicitly approved 1.0.
+- Do not modify shared schemas or validators except the explicitly user-approved correction distinguishing first INITIAL
+  publication from existing documentation history in tools/check_publication_governance.py, with regression tests.
+- Do not absorb MIESTA_DODANIA, KONTAKTY or PARTNER_BANKY into the partner master contract.
+- Do not overwrite or regenerate unrelated historical publication families.
+- Stop and report HANDOFF BLOCKED on any semantic conflict or inability to represent canonical records losslessly.
