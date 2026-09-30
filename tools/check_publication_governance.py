@@ -78,14 +78,16 @@ def transition_errors(root, base, publications=None):
         relative=path.relative_to(root).as_posix();directory=path.parent.relative_to(root).as_posix()
         config=next((c for c in publications.values() if c['revisions']==relative),None)
         related=[p for p in changed if p.startswith(directory+'/')]
+        was_published=False
         if config:
             slug=next(s for s,c in publications.items() if c==config)
             related.extend(p for p in changed if p.startswith(('sql/diagnostic/'+slug+'/', 'evidence/manifests/'+slug+'/', 'evidence/snapshots/'+slug+'/')))
             try:
-                oldfiles=git(root,'ls-tree','-r','--name-only',base,'generated').splitlines()
+                oldfiles=git(root,'ls-tree','-r','--name-only','-z',base,'generated').split('\0')
                 slug=next(s for s,c in publications.items() if c==config)
                 for mf in oldfiles:
                     if mf.startswith('generated/'+slug+'/') and mf.endswith('.manifest.yaml'):
+                        was_published=True
                         m=yaml.safe_load(git(root,'show',base+':'+mf))
                         related.extend(p for p in changed if p in m.get('canonical_inputs',[]))
             except subprocess.CalledProcessError as exc:errors.append(str(exc))
@@ -105,7 +107,11 @@ def transition_errors(root, base, publications=None):
         if config:
             # A new canonical revision on a published domain exits the legacy fallback.
             if not current[-1].get('documentation_version'):errors.append('Next published-domain revision requires explicit documentation_version: '+directory)
-            if any(r.get('publication_impact') in ('INITIAL','REGENERATE') for r in added) and previous:
+            # INITIAL on a never-published domain has no prior documentation version.
+            # Keep legacy fallback for published families and all REGENERATE deltas.
+            requires_advance=(was_published or any(r.get('documentation_version') for r in previous)
+                              or any(r.get('publication_impact')=='REGENERATE' for r in added))
+            if requires_advance and any(r.get('publication_impact') in ('INITIAL','REGENERATE') for r in added) and previous:
                 old_doc=next((r['documentation_version'] for r in reversed(previous) if r.get('documentation_version')),max((r['contract_version'] for r in previous),key=version_key))
                 if version_key(current[-1].get('documentation_version',old_doc))<=version_key(old_doc):errors.append('Publication-visible change must advance documentation_version: '+directory)
     return errors

@@ -82,6 +82,36 @@ class LeanExecutionTests(unittest.TestCase):
         self.assertTrue(any('advance documentation_version' in e for e in transition_errors(self.root,self.base,conf)))
         rows[-1]['documentation_version']='1.1';self.put('catalog/test/revisions.yaml',{'records':rows});self.commit()
         self.assertEqual([],transition_errors(self.root,self.base,conf))
+    def test_initial_publication_does_not_invent_previous_documentation_version(self):
+        old=dict(self.old, publication_impact='NONE', publication_deferral={'approved_by':'user','reason':'Later closure'})
+        self.put('catalog/test/revisions.yaml',{'records':[old]});base=self.commit()
+        new={'revision_id':'test.revision.2','contract_version':'1.0','documentation_version':'1.0',
+             'change_classification':'PUBLICATION_ONLY','publication_impact':'INITIAL'}
+        self.put('catalog/test/revisions.yaml',{'records':[old,new]});self.commit()
+        conf={'test':{'revisions':'catalog/test/revisions.yaml'}}
+        self.assertEqual([],transition_errors(self.root,base,conf))
+
+    def test_initial_label_cannot_bypass_explicit_documentation_history(self):
+        old=dict(self.old,documentation_version='1.0')
+        self.put('catalog/test/revisions.yaml',{'records':[old]});base=self.commit()
+        new={'revision_id':'test.revision.2','contract_version':'1.0','documentation_version':'1.0',
+             'change_classification':'PUBLICATION_ONLY','publication_impact':'INITIAL'}
+        self.put('catalog/test/revisions.yaml',{'records':[old,new]});self.commit()
+        conf={'test':{'revisions':'catalog/test/revisions.yaml'}}
+        self.assertTrue(any('advance documentation_version' in e for e in transition_errors(self.root,base,conf)))
+
+    def test_initial_label_cannot_bypass_legacy_unicode_publication_history(self):
+        self.put('generated/test/KASO Reference - skúška v1.0.manifest.yaml',{'canonical_inputs':[]})
+        base=self.commit()
+        new={'revision_id':'test.revision.2','contract_version':'1.0','documentation_version':'1.0',
+             'change_classification':'PUBLICATION_ONLY','publication_impact':'INITIAL'}
+        self.put('catalog/test/revisions.yaml',{'records':[self.old,new]});self.commit()
+        conf={'test':{'revisions':'catalog/test/revisions.yaml'}}
+        self.assertTrue(any('advance documentation_version' in e for e in transition_errors(self.root,base,conf)))
+        new['documentation_version']='1.1'
+        self.put('catalog/test/revisions.yaml',{'records':[self.old,new]});self.commit()
+        self.assertEqual([],transition_errors(self.root,base,conf))
+
     def test_orchestrator_never_overwrites_old_family(self):
         config={'subject_sk':'test','revisions':'catalog/test/revisions.yaml'};source=self.root/'stage';source.mkdir()
         doc=source/'x.docx';pdf=source/'x.pdf';manifest=source/'x.manifest.yaml';doc.write_bytes(b'doc');pdf.write_bytes(b'pdf');manifest.write_text('{}')
