@@ -1,0 +1,80 @@
+schema_version: '1.0'
+kind: sql-registry
+id: op.registry.sql_registry
+records:
+- sql_id: op.sql.partner_current_by_id
+  title_sk: partner-current-by-id
+  sql_file: sql/diagnostic/obchodni-partneri/partner-current-by-id.sql
+  purpose_sk: 'Grain: exactly one OBCH_PARTNERI row when :partner_id exists in MC.
+
+    Limit: current master snapshot; not historical partner truth.'
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+  evidence_refs:
+  - op.evidence.semantic_approval.20260927
+- sql_id: op.sql.partner_current_enriched
+  title_sk: partner-current-enriched
+  sql_file: sql/diagnostic/obchodni-partneri/partner-current-enriched.sql
+  purpose_sk: 'Grain: one OBCH_PARTNERI row; only 1:1 / identity lookups.
+
+    Do not add target S_STAMP=''0'' to JOINs; expose target lifecycle separately.'
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+  evidence_refs:
+  - op.evidence.semantic_approval.20260927
+- sql_id: op.sql.partner_representative
+  title_sk: partner-representative
+  sql_file: sql/diagnostic/obchodni-partneri/partner-representative.sql
+  purpose_sk: 'Grain: one partner row. ZASTUPCA is partner-level representative, not delivery-place dealer.'
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+  evidence_refs:
+  - op.evidence.semantic_approval.20260927
+- sql_id: op.sql.partner_search_ico_dic
+  title_sk: partner-search-ico-dic
+  sql_file: sql/diagnostic/obchodni-partneri/partner-search-ico-dic.sql
+  purpose_sk: Returns ALL current matches; do not add ROWNUM=1. ICO/DIC are not unique identity.
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+  evidence_refs:
+  - op.evidence.semantic_approval.20260927
+- sql_id: op.sql.partner_state_role
+  title_sk: partner-state-role
+  sql_file: sql/diagnostic/obchodni-partneri/partner-state-role.sql
+  purpose_sk: S_STAMP, STAV and TYP_CIS are separate axes.
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+  evidence_refs:
+  - op.evidence.semantic_approval.20260927
+- sql_id: op.sql.partner_reference_quality
+  title_sk: partner-reference-quality
+  sql_file: sql/diagnostic/obchodni-partneri/partner-reference-quality.sql
+  purpose_sk: 'Grain: one row per relationship quality summary.'
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+  evidence_refs:
+  - op.evidence.semantic_approval.20260927
+- sql_id: op.sql.partner_delivery_dealer_boundary
+  title_sk: partner-delivery-dealer-boundary
+  sql_file: sql/diagnostic/obchodni-partneri/partner-delivery-dealer-boundary.sql
+  purpose_sk: 'BOUNDARY helper only. Grain: one partner x current delivery place.
+
+    Full MIESTA_DODANIA semantics belong to its separate master mapping.'
+  compatibility:
+    sql_client: SQL Navigator 5.5.4.847
+    oracle_server_version: null
+    read_only: true
+  evidence_refs:
+  - op.evidence.semantic_approval.20260927

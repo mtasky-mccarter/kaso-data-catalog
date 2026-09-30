@@ -1,0 +1,68 @@
+schema_version: '1.0'
+kind: temporal
+id: op.registry.temporal
+records:
+- temporal_rule_id: op.temporal.raw_current
+  scope_refs:
+  - op.object.obch_partneri
+  classification: RAW CURRENT
+  reconstructable: false
+  history_limitations_sk: OBCH_PARTNERI je primárne current master. Historical transaction joined to current partner
+    does not reconstruct historical partner attributes.
+  status: POTVRDENÉ
+  evidence_refs:
+  - op.evidence.semantic_approval.20260927
+  - op.evidence.mp_04_13_temporal_source_context
+- temporal_rule_id: op.temporal.s_stamp
+  scope_refs:
+  - op.field.obch_partneri.s_stamp
+  classification: TRANSITION STAMP
+  reconstructable: false
+  history_limitations_sk: S_STAMP technical storno/current axis. Ordinary analytical business-current filter is
+    S_STAMP=0 AND ID>0; not universal app predicate.
+  status: POTVRDENÉ
+  evidence_refs:
+  - op.evidence.mp_04_10_lifecycle_credit_profile
+  - op.evidence.mp_03_07_trigger_source
+- temporal_rule_id: op.temporal.u_stamp
+  scope_refs:
+  - op.field.obch_partneri.u_stamp
+  classification: LAST UPDATE
+  reconstructable: false
+  history_limitations_sk: Technical last update stamp; not per-field history.
+  status: POTVRDENÉ
+  evidence_refs:
+  - op.evidence.mp_03_07_trigger_source
+- temporal_rule_id: op.temporal.pref_bank_city_history
+  scope_refs:
+  - op.field.obch_partneri.pref_banka
+  - op.field.obch_partneri.id_mesto
+  classification: SELECTIVE HISTORY
+  reconstructable: false
+  history_limitations_sk: T_HZ_OBCH_PARTNERI_2 writes HIST_ZMIEN definition 000-2 for PREF_BANKA and ID_MESTO changes.
+  status: POTVRDENÉ
+  evidence_refs:
+  - op.evidence.mp_03_07_trigger_source
+  - op.evidence.mp_05_16_temporal_population
+- temporal_rule_id: op.temporal.representative_history
+  scope_refs:
+  - op.field.obch_partneri.zastupca
+  classification: SELECTIVE HISTORY
+  reconstructable: false
+  history_limitations_sk: MCCARTER_ZASTUPCA_HIST stores nonzero representative changes with DAT_OD month start and
+    I_DATE tie-break.
+  status: POTVRDENÉ
+  evidence_refs:
+  - op.evidence.mp_03_07_trigger_source
+  - op.evidence.mp_05_16_temporal_population_2
+- temporal_rule_id: op.temporal.zaloh_not_authority
+  scope_refs:
+  - op.entity.mc.zaloh_obch_partneri.table
+  classification: DATA GAP
+  reconstructable: false
+  history_limitations_sk: 1127-row older-like table observed, but complete authoritative history semantics not proven.
+    Do not use as full partner history.
+  status: NEPOUŽÍVAŤ
+  evidence_refs:
+  - op.evidence.mp_05_17_zaloh_profile
+  - op.evidence.mp_05_17_zaloh_profile_2

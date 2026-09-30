@@ -1,0 +1,87 @@
+schema_version: '1.0'
+kind: data-quality
+id: op.registry.data_quality
+records:
+- dq_id: op.dq.country_city_mismatch
+  observation_sk: 510 partner rows had OBCH_PARTNERI.KRAJINA != MESTA.KRAJINA while all joins matched. This is not
+    automatically an error.
+  snapshot_date: '2026-09-17'
+  severity: INFO
+  blocking: false
+  status: POTVRDENÉ
+  evidence_refs:
+  - op.evidence.mp_07_03a_geo_consistency
+  - op.evidence.mp_07_03a_geo_consistency_2
+  scope_refs:
+  - op.object.obch_partneri
+- dq_id: op.dq.credit_comment_conflict
+  observation_sk: Oracle comment says KREDIT=0 unlimited, while executable source explicitly bypasses credit check
+    for KREDIT=-1. Source operational semantics are canonical; comment conflict remains nonblocking.
+  snapshot_date: '2026-09-17'
+  severity: WARNING
+  blocking: false
+  status: TREBA OVERIŤ
+  evidence_refs:
+  - op.evidence.02_columns
+  - op.evidence.mp_03_08_c_partner_source
+  scope_refs:
+  - op.object.obch_partneri
+- dq_id: op.dq.nakupca_soft_no_match
+  observation_sk: 194 partner rows across 10 distinct NAKUPCA values had no B_USERS match in the validated snapshot.
+    No FK exists; no-match is not automatically corruption.
+  snapshot_date: '2026-09-17'
+  severity: INFO
+  blocking: false
+  status: POTVRDENÉ
+  evidence_refs:
+  - op.evidence.mp_05_21_nakupca_join_validation
+  - op.evidence.mp_05_21_nakupca_join_validation_2
+  scope_refs:
+  - op.object.obch_partneri
+- dq_id: op.dq.lookup_noncurrent_targets
+  observation_sk: 'Some partner rows point to non-current lookup rows while target identity still matches: MENA_P
+    22, OBCH_SKUPINA 41, ID_BANKY_O 102, ZASTUPCA 606, PREF_MIESTO_DOD 1283, etc. Do not filter target S_STAMP inside
+    identity JOIN.'
+  snapshot_date: '2026-09-17'
+  severity: INFO
+  blocking: false
+  status: POTVRDENÉ
+  evidence_refs:
+  - op.evidence.mp_08_01_reference_join_quality
+  scope_refs:
+  - op.object.obch_partneri
+- dq_id: op.dq.preferred_owner_boundary
+  observation_sk: Preferred target existence is clean, but ownership differs for PREF_BANKA 3465, PREF_KONTAKT 5809,
+    PREF_MIESTO_DOD 25. Treat as sentinel/shared/boundary semantics, not automatic corruption.
+  snapshot_date: '2026-09-17'
+  severity: INFO
+  blocking: false
+  status: POTVRDENÉ
+  evidence_refs:
+  - op.evidence.mp_07_06_preferred_reference_ownership
+  scope_refs:
+  - op.object.obch_partneri
+- dq_id: op.dq.akcept_nahr_comment_lookup
+  observation_sk: AKCEPT_NAHR Oracle comment points to CIS_X -1585, but live -1585 domain contains dimensions/weight/volume
+    values and must not be used as canonical substitution lookup.
+  snapshot_date: '2026-09-17'
+  severity: WARNING
+  blocking: false
+  status: POTVRDENÉ
+  evidence_refs:
+  - op.evidence.02_columns
+  - op.evidence.mp_09_06_soft_enum_values
+  scope_refs:
+  - op.object.obch_partneri
+- dq_id: op.dq.delivery_incoterm_boundary
+  observation_sk: Transport rows named DAP point to DODACIE_PODMIENKY ID 00013 / DDP. Join is live-valid but business
+    discrepancy belongs to transport/delivery boundary.
+  snapshot_date: '2026-09-27'
+  severity: WARNING
+  blocking: false
+  status: TREBA OVERIŤ
+  evidence_refs:
+  - op.evidence.mp_12a_03_dod_podm_values
+  - op.evidence.mp_12a_04_dod_podm_usage
+  scope_refs:
+  - op.object.obch_partneri
