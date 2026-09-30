@@ -119,7 +119,7 @@ class LeanExecutionTests(unittest.TestCase):
 
     def test_product_master_is_registered_without_historical_deferral(self):
         from check_publication_governance import current_deferral
-        self.assertEqual(5, len(PUBLICATIONS))
+        self.assertEqual(6, len(PUBLICATIONS))
         self.assertEqual('catalog/master/skladove-karty/revisions.yaml', PUBLICATIONS['skladove-karty']['revisions'])
         self.assertFalse(current_deferral(ROOT, 'catalog/master/skladove-karty', []))
 

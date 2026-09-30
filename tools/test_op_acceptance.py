@@ -14,6 +14,7 @@ class OPAcceptance(unittest.TestCase):
     def setUpClass(cls):
         cls.p, cls.h, cls.counts=m.verify_inputs(m.ROOT,m.ROOT/m.INPUT)
         cls.docs,cls.files=m.project(cls.p,m.ROOT)
+        m.preserve_closure(m.ROOT,cls.docs,cls.files)
 
     def test_approved_counts_and_physical_inventory(self):
         self.assertEqual(self.p['expected_counts'],self.counts)
@@ -26,7 +27,9 @@ class OPAcceptance(unittest.TestCase):
         self.assertEqual(fields,load_yaml(m.ROOT/m.DOMAIN/'fields.yaml')['records'])
 
     def test_deterministic_projection_and_committed_bytes(self):
-        self.assertEqual(self.files,m.project(copy.deepcopy(self.p),m.ROOT)[1])
+        docs, files = m.project(copy.deepcopy(self.p),m.ROOT)
+        m.preserve_closure(m.ROOT,docs,files)
+        self.assertEqual(self.files,files)
         for rel,content in self.files.items():
             with self.subTest(path=rel):
                 self.assertEqual(content.encode() if isinstance(content,str) else content,(m.ROOT/rel).read_bytes())
@@ -72,7 +75,7 @@ class OPAcceptance(unittest.TestCase):
         self.assertEqual(self.p['source_roles'],[json.loads(r['diagnostic_meaning_sk']) for r in mutations])
         self.assertTrue(all(r['role']=='DEPENDENCY ONLY' for r in self.p['direct_dependencies']))
 
-    def test_sql_exact_copy_and_no_publication(self):
+    def test_sql_exact_copy_and_historical_publication_deferral(self):
         for r in self.p['canonical_sql']:
             self.assertEqual(r['text'],(m.ROOT/r['file']).read_text())
         self.assertFalse(any(p.startswith('generated/') for p in self.files))
@@ -80,7 +83,10 @@ class OPAcceptance(unittest.TestCase):
         self.assertNotIn('documentation_version',rev)
         self.assertEqual('NONE',rev['publication_impact'])
         self.assertEqual('user',rev['publication_deferral']['approved_by'])
-        self.assertFalse((m.ROOT/'generated/obchodni-partneri').exists())
+        revisions=load_yaml(m.ROOT/m.DOMAIN/'revisions.yaml')['records']
+        if (m.ROOT/'generated/obchodni-partneri').exists():
+            self.assertEqual('1.0',revisions[-1]['documentation_version'])
+            self.assertEqual('INITIAL',revisions[-1]['publication_impact'])
 
 if __name__=='__main__':
     unittest.main()
